@@ -1,6 +1,5 @@
 """Tests for the hybrid readout (TSFM + LLM adjustment)."""
 
-import numpy as np
 
 from td_one.models.hybrid import HybridReadout
 
@@ -51,3 +50,22 @@ def test_hybrid_count_coherence() -> None:
     )
     assert (counts >= 0).all()
     assert (counts <= 100).all()
+
+
+def test_hybrid_degenerate_base_rate_clipped_not_rejected() -> None:
+    """base_rate of exactly 0/1 is epsilon-clipped, not rejected.
+
+    Regression test: the old code raised ValueError on degenerate rates
+    even though the TSFM wrapper clips outputs to [0, 1] inclusive.
+    """
+    readout = HybridReadout()
+    assert 0.0 < readout.apply_adjustment(0.0, 0.5) < 1.0
+    assert 0.0 < readout.apply_adjustment(1.0, -0.5) < 1.0
+
+
+def test_hybrid_concentration_parameter() -> None:
+    """Concentration controls interval width (ablation comparability)."""
+    readout = HybridReadout()
+    narrow = readout.predict_counts(0.2, 0.0, 100, n_samples=2000, seed=1, concentration=1200.0)
+    wide = readout.predict_counts(0.2, 0.0, 100, n_samples=2000, seed=1, concentration=20.0)
+    assert narrow.std() < wide.std()

@@ -10,11 +10,11 @@ Source: docs/Mortgage_Base_Data_and_Resources_2_nar3.xlsx
 from datetime import date
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class MortgageHistoryRecord(BaseModel):
-    """Single monthly snapshot of a mortgage (37 core fields).
+    """Single monthly snapshot of a mortgage (37 core + 9 optional fields).
 
     Key: (mortgage_id, snapshot_date).
     """
@@ -58,6 +58,20 @@ class MortgageHistoryRecord(BaseModel):
     marketing_contacts_90d: int = Field(ge=0, le=30)
     campaign_member_90d: bool
     marketing_channel_last: str
+    # --- 9 optional fields (Excel spec; load-bearing for attrition) ---
+    employment_status: Literal[
+        "employed", "self_employed", "retired", "unemployed", "unknown"
+    ] = "unknown"
+    adjusted_family_net_income_cad: float | None = Field(default=None, ge=0)
+    government_benefit_income_monthly_cad: float | None = Field(default=None, ge=0)
+    property_value_cad: float | None = Field(default=None, gt=0)
+    property_value_asof: date | None = None
+    insured_flag: bool | None = None  # OSFI stress-test exemption driver
+    occupancy_type: Literal[
+        "owner_occupied", "rental", "second_home", "unknown"
+    ] = "unknown"
+    other_debt_payment_monthly_cad: float | None = Field(default=None, ge=0)
+    credit_utilization_pct: float | None = Field(default=None, ge=0, le=100)
 
 
 class RenewalOutcomeRecord(BaseModel):
@@ -89,3 +103,19 @@ class RenewalOutcomeRecord(BaseModel):
     event_date: date | None = None
     outcome_observed_at: date | None = None
     record_asof: date
+
+    @model_validator(mode="after")
+    def _resolved_requires_flag(self) -> "RenewalOutcomeRecord":
+        """Enforce: resolved outcomes carry a non-null switched_lender_flag."""
+        resolved = self.outcome not in ("pending", "unknown")
+        if resolved and self.switched_lender_flag is None:
+            raise ValueError(
+                f"outcome={self.outcome!r} is resolved but "
+                "switched_lender_flag is None"
+            )
+        if not resolved and self.switched_lender_flag is not None:
+            raise ValueError(
+                f"outcome={self.outcome!r} is unresolved but "
+                "switched_lender_flag is not None"
+            )
+        return self

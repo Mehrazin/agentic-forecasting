@@ -25,8 +25,17 @@ def brier_score(
 
     Returns:
         Mean Brier score.
+
     """
-    return float(np.mean((prob_pred - actual) ** 2))
+    p = np.asarray(prob_pred, dtype=float)
+    y = np.asarray(actual, dtype=float)
+    if p.shape != y.shape:
+        raise ValueError(f"shape mismatch: {p.shape} vs {y.shape}")
+    if bool((p < 0).any() or (p > 1).any()):
+        raise ValueError("prob_pred must be in [0, 1]")
+    if not bool(((y == 0) | (y == 1)).all()):
+        raise ValueError("actual must be binary (0/1)")
+    return float(np.mean((p - y) ** 2))
 
 
 def mae(pred: np.ndarray, actual: np.ndarray) -> float:
@@ -53,6 +62,7 @@ def interval_coverage(
 
     Returns:
         Fraction inside [q10, q90]. Target: 0.80 ± 0.05.
+
     """
     inside = (actual >= q10) & (actual <= q90)
     return float(np.mean(inside))
@@ -61,6 +71,7 @@ def interval_coverage(
 def crps_counts(
     samples: np.ndarray,
     actual: np.ndarray,
+    seed: int = 0,
 ) -> np.ndarray:
     """CRPS for count predictive distributions.
 
@@ -71,16 +82,20 @@ def crps_counts(
     Args:
         samples: Shape (n_segments, n_samples) of predictive draws.
         actual: Shape (n_segments,) of realized counts.
+        seed: RNG seed for the pairwise subsample. A metric must be
+            deterministic given its inputs.
 
     Returns:
         CRPS per segment (lower is better).
+
     """
     n_segments, n_samples = samples.shape
     # E|X - y|
     term1 = np.mean(np.abs(samples - actual[:, None]), axis=1)
     # 0.5 * E|X - X'| (using all pairs, O(n^2) but n_samples=1000 is OK)
     # For efficiency, use a subsample for the pairwise term
-    idx = np.random.choice(n_samples, size=min(100, n_samples), replace=False)
+    rng = np.random.default_rng(seed)
+    idx = rng.choice(n_samples, size=min(100, n_samples), replace=False)
     subs = samples[:, idx]
     # Pairwise differences via broadcasting
     diff = np.abs(subs[:, :, None] - subs[:, None, :])

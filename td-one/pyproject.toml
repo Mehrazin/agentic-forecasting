@@ -17,7 +17,12 @@ dependencies = [
 [project.optional-dependencies]
 tsfm = [
     "chronos-forecasting>=1.0.0",
-    "timesfm>=1.0.0",
+    "timesfm>=3.0.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.4.0",
+    "mypy>=1.10.0",
 ]
 
 [build-system]
@@ -35,6 +40,10 @@ target-version = "py312"
 select = ["E", "F", "W", "I", "N", "D", "UP", "B", "A", "C4", "DTZ", "T20", "SIM", "BLE"]
 ignore = ["D100", "D101", "D102", "D103", "D104", "D105", "D107"]
 
+[tool.ruff.lint.per-file-ignores]
+"scripts/*" = ["T201"]
+"experiments/*" = ["T201"]
+
 [tool.mypy]
 python_version = "3.12"
 strict = true
@@ -42,6 +51,10 @@ warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
 disallow_any_generics = true
+
+[[tool.mypy.overrides]]
+module = ["torch.*", "chronos.*", "timesfm.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -3,6 +3,8 @@
 **Author**: Vandad Davoodnia (solo)
 **Date**: 2026-10-15
 **Status**: Revised from team plan for solo YOLO development
+**Canonical note**: This file supersedes the root `plan.md` (original team
+spec, retained for reference) for all solo execution.
 
 ## Changes from team plan
 
@@ -20,21 +22,29 @@
 - **Problem**: Forecast P(switch | renewal) for mortgage segments
 - **Data**: Synthetic 10k customers × 66 months (60 train + 6 OOT)
 - **PIT**: All queries enforce `record_asof <= run_date`; leakage auditor verifies 0%
-- **Tools**: data_segment, evidence, forecasting (same 3-tool design)
-- **Models**: M0 (historical + Beta-Binomial) → M1 (Chronos-2/TimesFM-2.5) → M2 (LLM) → M3 (hybrid agent)
+- **Tools**: data_segment, evidence, forecasting (same 3-tool design; not yet implemented)
+- **Models**: M0 ✅ → M1 ✅ (Chronos-2/TimesFM-2.5, real weights) → M2 ❌ (LLM) → M3 ❌ (hybrid agent)
 - **Readout**: Beta-Binomial for count coherence: A ~ BetaBinomial(N, α, β)
+
+Ladder status: M0 ✅ done, M1 ✅ done, M2 ❌ planned, M3 ❌ planned
+(hybrid math exists in `models/hybrid.py`; no agent drives it yet).
 
 ## Build order (TDD)
 
-1. **Schemas** (from Excel): Pydantic models for all 4 tables
-2. **Synthetic DGP**: mortgage_simulator with planted shocks (rate, OSFI, family)
-3. **PIT store**: DuckDB with `record_asof` filtering
-4. **M0 baseline**: Historical rate + Jeffreys Beta-Binomial
-5. **TSFM wrappers**: Chronos-2, TimesFM-2.5 (per survey results)
-6. **Hybrid readout**: TSFM + LLM log-odds adjustment (bounded ±0.75)
-7. **Agent controller**: ReAct loop with Groq (adapt from AI2 patterns)
-8. **Evaluation**: Metrics (MAE/CRPS/Brier/coverage), leakage auditor, backtest runner
-9. **Experiments**: exp1 (M0-M3 on predefined), exp2 (segment discovery), exp3 (context ablation)
+1. **Schemas** (from Excel): Pydantic models for mortgage history + renewal
+   outcomes ✅ (renewal offers + propensity scores: not yet modeled)
+2. **Synthetic DGP**: mortgage_simulator with planted shocks (rate, OSFI, family) ✅
+   (structural outcome DGP + observation lag added in the 2026-10-15 audit)
+3. **PIT store**: DuckDB with `record_asof` filtering ✅ (history + outcomes tables)
+4. **M0 baseline**: Historical rate + Jeffreys Beta-Binomial ✅ (trailing-6)
+5. **TSFM wrappers**: Chronos-2, TimesFM-2.5 (per survey results) ✅ (real weights)
+6. **Hybrid readout**: TSFM + LLM log-odds adjustment (bounded ±0.75) ✅ (math only)
+7. **Agent controller**: ReAct loop with Groq ❌ (helpers only: evidence-prompt
+   builder + adjustment estimator; orchestration loop not yet implemented)
+8. **Evaluation**: Metrics (MAE/CRPS/Brier/coverage) ✅, leakage auditor ✅,
+   backtest runner ❌ (not yet implemented)
+9. **Experiments**: exp1 (M0 vs M1 mocks) ✅, exp2 (M0 vs M1 real weights,
+   3-scenario redesign) ✅, exp3 (M2/M3 ablation) ❌ planned
 
 ## Enterprise controls (from AI2)
 
@@ -49,3 +59,10 @@
 - M4 (silicon crowd, ALMA memory): needs more time
 - Live evidence retrieval: no API keys
 - Real FRED: mocked
+
+## Deviations from the TSFM survey (recorded 2026-10-15)
+
+- Survey (`docs/research/survey-tsfm.md`) recommended the Darts unified API;
+  built custom wrappers on raw `chronos-forecasting` + `timesfm` instead.
+  Rationale: the evaluation needs the native quantile grids directly
+  (CRPS/coverage on the true levels), which Darts abstracts away.

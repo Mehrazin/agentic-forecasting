@@ -13,9 +13,9 @@ from __future__ import annotations
 import numpy as np
 
 from td_one.data_gen.simulator import MortgageSimulator
+from td_one.evaluation.metrics import mae
 from td_one.models.baseline import HistoricalBaseline
 from td_one.models.tsfm import Chronos2Wrapper, TimesFMWrapper
-from td_one.evaluation.metrics import mae
 
 
 def run_exp1() -> dict[str, float]:
@@ -23,6 +23,7 @@ def run_exp1() -> dict[str, float]:
 
     Returns:
         Dict of model_id -> MAE.
+
     """
     print("Generating synthetic data (500 customers, 24 months)...")
     sim = MortgageSimulator(n_customers=500, n_months=24, seed=42)
