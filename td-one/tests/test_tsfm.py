@@ -41,3 +41,20 @@ def test_timesfm_forecast_shape() -> None:
     mean, quantiles = wrapper.forecast_quantiles(series, horizon=6)
     assert mean.shape == (6,)
     assert quantiles.shape == (6, 10)  # 10 quantiles (q10..q90)
+
+
+def test_timesfm_quantiles_monotonic() -> None:
+    """Mock quantiles are non-decreasing across quantile levels."""
+    wrapper = TimesFMWrapper(use_mock=True)
+    series = np.full(60, 0.2)
+    _, quantiles = wrapper.forecast_quantiles(series, horizon=6)
+    diffs = np.diff(quantiles, axis=1)
+    assert (diffs >= -1e-9).all(), "quantiles must be non-decreasing"
+
+
+def test_chronos2_unload_frees_pipeline() -> None:
+    """unload() clears the loaded pipeline."""
+    wrapper = Chronos2Wrapper(use_mock=True)
+    wrapper._pipeline = object()  # simulate loaded state
+    wrapper.unload()
+    assert wrapper._pipeline is None

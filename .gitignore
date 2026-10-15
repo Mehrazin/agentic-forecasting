@@ -56,3 +56,6 @@ implementations/**/data/
 data/yfinance/
 
 .claude/
+
+# TD-One model weights (downloaded via td-one/scripts/bootstrap_models.py, never commit)
+td-one/models/weights/

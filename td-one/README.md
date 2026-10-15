@@ -20,8 +20,22 @@ uv run pytest tests/ -q
   - `agent/` — ReAct controller (Groq-powered)
   - `evaluation/` — metrics, leakage auditor, backtest runner
 - `configs/` — YAML configs for DGP, segments, models, experiments
-- `experiments/` — exp1 (MVP1), exp2 (segments), exp3 (ablation)
+- `experiments/` — exp1 (M0 vs M1 mocks), exp2 (M0 vs M1 real weights),
+  `REPRODUCIBILITY.md`, per-experiment reports + `*_results.json`
+- `scripts/` — `bootstrap_models.py` (download + pin TSFM weights)
+- `models/` — `MANIFEST.json` (pinned revisions); `weights/` (gitignored)
 - `tests/` — TDD test suite
+
+## Model weights
+
+TSFM weights are bootstrapped reproducibly (never committed):
+
+```bash
+export no_proxy="localhost,127.0.0.1" NO_PROXY="localhost,127.0.0.1"
+uv run --with huggingface_hub python scripts/bootstrap_models.py
+```
+
+See `experiments/REPRODUCIBILITY.md` for the full reproduction steps.
 
 ## Key design decisions
 

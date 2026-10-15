@@ -1,0 +1,31 @@
+{
+  "mode": "real",
+  "manifest_date": "2026-10-15T20:18:35.684849+00:00",
+  "models": {
+    "M1a_chronos2": {
+      "repo_id": "amazon/chronos-2",
+      "revision_requested": "main",
+      "revision_resolved": "29ec3766d36d6f73f0696f85560a422f50e8498c",
+      "local_path": "models/weights/chronos2",
+      "size_mb": 455.8,
+      "dir_hash": "7c449474ebde119c",
+      "status": "ok"
+    },
+    "M1b_timesfm25": {
+      "repo_id": "google/timesfm-2.5-200m-pytorch",
+      "revision_requested": "main",
+      "revision_resolved": "1d952420fba87f3c6dee4f240de0f1a0fbc790e3",
+      "local_path": "models/weights/timesfm25",
+      "size_mb": 882.3,
+      "dir_hash": "199a192b5ccd2e13",
+      "status": "ok"
+    }
+  },
+  "mae": {
+    "M0": 5.0,
+    "M1a_chronos2": 3.9972953274846077,
+    "M1b_timesfm25": 4.617684635023276
+  },
+  "n_test_periods": 6,
+  "seed": 42
+}
