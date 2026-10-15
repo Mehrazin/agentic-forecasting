@@ -6,8 +6,11 @@ tool output, or trace entry with timestamp > run_date is a violation.
 
 from __future__ import annotations
 
+import logging
 from datetime import date
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 
 class LeakageAuditor:
@@ -18,6 +21,7 @@ class LeakageAuditor:
 
         Args:
             run_date: No data after this date may appear in the trace.
+
         """
         self.run_date = run_date
 
@@ -29,10 +33,12 @@ class LeakageAuditor:
 
         Returns:
             Leakage rate in [0, 1]. Must be 0.0 to pass.
+
         """
         if not trace:
             return 0.0
         leaked = 0
+        unparseable = 0
         for entry in trace:
             ts = entry.get("timestamp", "")
             try:
@@ -40,9 +46,16 @@ class LeakageAuditor:
                 if entry_date > self.run_date:
                     leaked += 1
             except (ValueError, TypeError):
-                # Unparseable timestamp: treat as safe (not leakage)
-                # (strict mode would flag these; we log them separately)
-                continue
+                # Fail-closed: an unparseable timestamp cannot be proven
+                # pre-cutoff, so it counts as leakage. A malformed date is
+                # exactly what a sloppy tool or injected value produces.
+                unparseable += 1
+                leaked += 1
+        if unparseable:
+            logger.warning(
+                "%d trace entries had unparseable timestamps (counted as leakage)",
+                unparseable,
+            )
         return leaked / len(trace)
 
     def assert_no_leakage(self, trace: list[dict[str, Any]]) -> None:
@@ -53,6 +66,7 @@ class LeakageAuditor:
 
         Raises:
             ValueError: If leakage rate > 0.
+
         """
         rate = self.audit(trace)
         if rate > 0:

@@ -86,7 +86,7 @@ Uses calibrated mocks instead of real weights. Results are marked
 | `Invalid port: ':1]'` on download | Sanitize `no_proxy`/`NO_PROXY` (see §2) |
 | OOM during inference | Reduce `n_samples` in exp2 script; models already load sequentially |
 | `chronos-forecasting` import error | Ensure `--with chronos-forecasting` is passed to `uv run` |
-| `TimesFm.from_pretrained` missing | Ensure `timesfm>=2.0` (`--with timesfm` pulls latest) |
+| `TimesFM_2p5_200M_torch` import fails | Ensure `timesfm>=3.0` — the 3.x API moved to `timesfm.timesfm_2p5.timesfm_2p5_torch.TimesFM_2p5_200M_torch`; the 2.x `TimesFm` class no longer exists |
 | Gated repo 401/403 | Set `HF_TOKEN` env var or run `hf auth login` |
 
 ## 6. Version history

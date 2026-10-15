@@ -12,7 +12,7 @@ from __future__ import annotations
 def _monthly_rate(annual_rate_pct: float) -> float:
     """Convert annual rate (semi-annual compounding) to monthly rate."""
     i_semi = annual_rate_pct / 100.0 / 2.0
-    return (1.0 + i_semi) ** (1.0 / 6.0) - 1.0
+    return float((1.0 + i_semi) ** (1.0 / 6.0) - 1.0)
 
 
 def canadian_monthly_payment(
@@ -29,6 +29,7 @@ def canadian_monthly_payment(
 
     Returns:
         Monthly payment amount.
+
     """
     if principal <= 0:
         raise ValueError("principal must be positive")
@@ -55,6 +56,7 @@ def canadian_balance_after_payment(
 
     Returns:
         New balance (never negative; floors at 0).
+
     """
     i_m = _monthly_rate(annual_rate_pct)
     interest = balance * i_m

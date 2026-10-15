@@ -4,15 +4,47 @@
 - TimesFMWrapper: google/timesfm-2.5-200m-pytorch (200M)
 
 Both support `use_mock=True` for testing without downloads.
-Real inference uses the `chronos-forecasting` and `timesfm` packages.
+Real inference uses the `chronos-forecasting` and `timesfm>=3` packages.
 
-Per survey: Darts unified API is an alternative; these wrappers provide
-a minimal interface focused on our use case (univariate rate forecasting).
+Interface contract (both wrappers, mock and real):
+- Input: historical rates in [0, 1] (validated; values outside raise).
+- `forecast_quantiles()` returns (levels, values):
+    - Chronos-2: 21 native levels [0.01, 0.05, 0.10, ..., 0.99]
+    - TimesFM-2.5: 9 native levels [0.1, 0.2, ..., 0.9]
+- `forecast_mean()` returns the median (q50) trajectory, shape (horizon,).
+
+Mock/real divergence (documented, not hidden):
+- Mocks are interface-only: they center on the last input value and are NOT
+  statistical surrogates. Mock Chronos returns i.i.d. draws; real Chronos
+  returns a fixed 21-level quantile lattice. Do not compute sample statistics
+  on real Chronos output.
 """
 
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
+
+# Native quantile grids (from model configs; do not guess)
+CHRONOS2_LEVELS = np.array(
+    [0.01, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50,
+     0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 0.99]
+)
+TIMESFM_LEVELS = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+
+def _validate_rates(series: np.ndarray) -> np.ndarray:
+    """Validate input is rates in [0, 1]; return float array."""
+    arr = np.asarray(series, dtype=float)
+    if arr.size == 0:
+        raise ValueError("series must be non-empty")
+    if bool((arr < 0.0).any() or (arr > 1.0).any()):
+        raise ValueError(
+            f"series must be rates in [0, 1]; got range "
+            f"[{arr.min():.3f}, {arr.max():.3f}]"
+        )
+    return arr
 
 
 class Chronos2Wrapper:
@@ -24,41 +56,41 @@ class Chronos2Wrapper:
         self,
         prediction_length: int = 6,
         use_mock: bool = False,
+        weights_dir: str | None = None,
     ) -> None:
         """Initialize.
 
         Args:
             prediction_length: Forecast horizon (default 6 months).
             use_mock: If True, use mock forecasts (for tests).
+            weights_dir: Local snapshot dir (from bootstrap_models.py).
+                If None, downloads from HF Hub on first real use.
+
         """
         self.prediction_length = prediction_length
         self.use_mock = use_mock
-        self._pipeline: object | None = None
+        self.weights_dir = weights_dir
+        self._pipeline: Any = None
 
-    def _load(self, weights_dir: str | None = None) -> None:
-        """Lazy-load the Chronos-2 pipeline.
-
-        Args:
-            weights_dir: Local snapshot dir (from bootstrap_models.py).
-                If None, downloads from HF Hub on first use.
-        """
+    def _load(self) -> None:
+        """Lazy-load the Chronos-2 pipeline (no-op if loaded or mock)."""
         if self._pipeline is not None or self.use_mock:
             return
         try:
             import torch
             from chronos import Chronos2Pipeline
-
-            pretrained = weights_dir or self.model_id
-            self._pipeline = Chronos2Pipeline.from_pretrained(
-                pretrained,
-                device_map="cpu",
-                torch_dtype=torch.float32,
-            )
         except ImportError as e:
             raise RuntimeError(
                 "chronos-forecasting not installed. "
                 "Run: uv pip install chronos-forecasting"
             ) from e
+
+        pretrained = self.weights_dir or self.model_id
+        self._pipeline = Chronos2Pipeline.from_pretrained(
+            pretrained,
+            device_map="cpu",
+            torch_dtype=torch.float32,
+        )
 
     def unload(self) -> None:
         """Release model weights (frees RAM for the next model)."""
@@ -74,54 +106,65 @@ class Chronos2Wrapper:
         except ImportError:
             pass
 
-    def forecast(
+    def forecast_quantiles(
         self,
         series: np.ndarray,
         horizon: int | None = None,
-        n_samples: int = 1000,
-    ) -> np.ndarray:
-        """Generate probabilistic forecast.
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """Forecast quantiles on the native 21-level grid.
 
         Args:
-            series: Historical values (e.g. logit-transformed rates).
+            series: Historical rates in [0, 1].
             horizon: Forecast steps (default: prediction_length).
-            n_samples: Number of sample trajectories.
 
         Returns:
-            Array shape (n_samples, horizon) of sampled trajectories,
-            clipped to [0, 1] for rates.
+            (levels, values): levels shape (21,), values shape (21, horizon).
+            Mock returns i.i.d. draws reshaped to the same interface —
+            see module docstring for the divergence caveat.
+
         """
+        arr = _validate_rates(series)
         h = horizon or self.prediction_length
-        if self.use_mock or self._pipeline is None:
-            # Mock: random walk around last value
+        if self.use_mock:
             rng = np.random.default_rng(42)
-            last = float(series[-1]) if len(series) > 0 else 0.2
-            # Clip to valid rate range
-            last = float(np.clip(last, 0.01, 0.99))
-            samples = rng.normal(
-                loc=last, scale=0.02, size=(n_samples, h)
-            )
-            return np.clip(samples, 0.0, 1.0)
-        # Real inference
+            last = float(np.clip(arr[-1], 0.01, 0.99))
+            draws = rng.normal(loc=last, scale=0.02, size=(len(CHRONOS2_LEVELS), h))
+            return CHRONOS2_LEVELS.copy(), np.clip(draws, 0.0, 1.0)
+        # Real path: always load (never silently fall back to mock)
         self._load()
         assert self._pipeline is not None
-        import torch
+        try:
+            import torch
 
-        # Type narrowing for mypy
-        pipeline: object = self._pipeline
-        context = torch.tensor(series, dtype=torch.float32)
-        # Chronos2Pipeline.predict(inputs, prediction_length, ...) -> list[Tensor]
-        # Each tensor shape: (n_variates, num_samples, prediction_length)
-        predict_fn = getattr(pipeline, "predict")
-        out = predict_fn(
+            context: Any = torch.tensor(arr, dtype=torch.float32)
+        except ImportError:
+            # torch absent: only viable when _pipeline was stubbed (tests);
+            # the real Chronos2Pipeline requires torch.
+            context = arr
+        out = self._pipeline.predict(
             inputs=[context],
             prediction_length=h,
             batch_size=32,
         )
-        arr = np.asarray(out[0])  # (1, n_samples, h) or (n_samples, h)
-        if arr.ndim == 3:
-            arr = arr[0]  # drop variate dim -> (n_samples, h)
-        return np.clip(arr, 0.0, 1.0)
+        vals = np.asarray(out[0])
+        if vals.ndim == 3:
+            vals = vals[0]  # drop variate dim -> (21, h)
+        if vals.shape != (len(CHRONOS2_LEVELS), h):
+            raise RuntimeError(
+                f"Unexpected Chronos-2 output shape {vals.shape}; "
+                f"expected ({len(CHRONOS2_LEVELS)}, {h})"
+            )
+        return CHRONOS2_LEVELS.copy(), np.clip(vals, 0.0, 1.0)
+
+    def forecast_mean(
+        self,
+        series: np.ndarray,
+        horizon: int | None = None,
+    ) -> np.ndarray:
+        """Median (q50) trajectory, shape (horizon,)."""
+        levels, values = self.forecast_quantiles(series, horizon)
+        q50 = int(np.argmin(np.abs(levels - 0.5)))
+        return np.asarray(values[q50])
 
 
 class TimesFMWrapper:
@@ -133,24 +176,23 @@ class TimesFMWrapper:
         self,
         prediction_length: int = 6,
         use_mock: bool = False,
+        weights_dir: str | None = None,
     ) -> None:
         """Initialize.
 
         Args:
             prediction_length: Forecast horizon.
             use_mock: If True, use mock forecasts.
+            weights_dir: Local snapshot dir (from bootstrap_models.py).
+
         """
         self.prediction_length = prediction_length
         self.use_mock = use_mock
-        self._model: object | None = None
+        self.weights_dir = weights_dir
+        self._model: Any = None
 
-    def _load(self, weights_dir: str | None = None) -> None:
-        """Lazy-load the TimesFM-2.5 model (timesfm>=3.x API).
-
-        Args:
-            weights_dir: Local snapshot dir (from bootstrap_models.py).
-                If None, downloads from the HF Hub on first use.
-        """
+    def _load(self) -> None:
+        """Lazy-load the TimesFM-2.5 model (timesfm>=3.x API)."""
         if self._model is not None or self.use_mock:
             return
         try:
@@ -161,7 +203,7 @@ class TimesFMWrapper:
                 "timesfm>=3 not installed. Run: uv pip install timesfm"
             ) from e
 
-        repo = weights_dir or self.model_id
+        repo = self.weights_dir or self.model_id
         # from_pretrained accepts a local dir (uses model.safetensors inside)
         model = TimesFM_2p5_200M_torch.from_pretrained(repo)
         model.compile(
@@ -188,67 +230,72 @@ class TimesFMWrapper:
         self,
         series: np.ndarray,
         horizon: int | None = None,
-        weights_dir: str | None = None,
     ) -> tuple[np.ndarray, np.ndarray]:
-        """Forecast mean and quantiles.
+        """Forecast quantiles on the native 9-level grid.
 
         Args:
-            series: Historical values (rates in [0, 1]).
+            series: Historical rates in [0, 1].
             horizon: Forecast steps.
-            weights_dir: Local snapshot dir (from bootstrap_models.py).
 
         Returns:
-            (mean, quantiles) where mean shape is (horizon,) and
-            quantiles shape is (horizon, 10) for q10..q90.
+            (levels, values): levels shape (9,) = [0.1..0.9],
+            values shape (9, horizon).
+
         """
+        arr = _validate_rates(series)
         h = horizon or self.prediction_length
         if self.use_mock:
-            return self._mock_forecast(series, h)
-        self._load(weights_dir)
+            return TIMESFM_LEVELS.copy(), self._mock_quantiles(arr, h)
+        self._load()
         assert self._model is not None
-        forecast_fn = getattr(self._model, "forecast")
-        # timesfm forecast returns (mean, quantiles); adapt defensively
-        result = forecast_fn(inputs=[series.tolist()], horizon=h)
-        return self._parse_timesfm_result(result, h)
+        # forecast(horizon, inputs) -> (point, quantiles); quantiles shape
+        # (batch, horizon, 9) at TIMESFM_LEVELS
+        point, q = self._model.forecast(horizon=h, inputs=[arr])
+        return self._parse_timesfm_result(point, q, h)
 
     @staticmethod
     def _parse_timesfm_result(
-        result: object, h: int
+        point: object, q: object, h: int
     ) -> tuple[np.ndarray, np.ndarray]:
-        """Parse timesfm forecast output into (mean, quantiles)."""
-        # timesfm>=2 returns (point_forecast, quantile_forecast) tuple
-        if isinstance(result, tuple) and len(result) == 2:
-            mean_arr = np.asarray(result[0]).reshape(-1)[:h]
-            q_arr = np.asarray(result[1])
-            # q_arr shape: (horizon, n_quantiles) or (1, horizon, n_quantiles)
-            q_arr = q_arr.reshape(q_arr.shape[-2], q_arr.shape[-1])[:h]
-            # Resample/interpolate to exactly 10 quantiles (q10..q90)
-            target_q = np.linspace(0.1, 0.9, 10)
-            if q_arr.shape[1] != 10:
-                # Assume source quantiles span [0,1]; interpolate
-                src_q = np.linspace(0.0, 1.0, q_arr.shape[1])
-                q_out = np.stack(
-                    [np.interp(target_q, src_q, q_arr[i]) for i in range(h)]
-                )
-            else:
-                q_out = q_arr
-            mean = np.clip(mean_arr, 0.0, 1.0)
-            return mean, np.clip(q_out, 0.0, 1.0)
-        raise RuntimeError(f"Unexpected timesfm output type: {type(result)}")
+        """Parse timesfm forecast output into (levels, values).
 
-    def _mock_forecast(
-        self, series: np.ndarray, h: int
-    ) -> tuple[np.ndarray, np.ndarray]:
-        """Mock forecast: mean = last value, fixed quantile spreads."""
-        last = float(np.clip(series[-1], 0.01, 0.99)) if len(series) > 0 else 0.2
-        mean = np.full(h, last)
-        spreads = np.array(
-            [0.05, 0.04, 0.03, 0.02, 0.01, 0.01, 0.02, 0.03, 0.04, 0.05]
-        )
-        quantiles = np.tile(mean[:, None], (1, 10))
-        for i in range(10):
-            if i < 5:
-                quantiles[:, i] = mean - spreads[i]
-            else:
-                quantiles[:, i] = mean + spreads[i]
-        return mean, np.clip(quantiles, 0.0, 1.0)
+        The compiled model returns 10 columns: column 0 is the point
+        forecast, columns 1-9 are the quantiles at TIMESFM_LEVELS
+        ([0.1..0.9]). Verified against the installed timesfm 3.x
+        `_compiled_decode` (index 5 = median; 1-4 lower, 6-9 upper).
+        """
+        q_arr = np.asarray(q)
+        # (batch, horizon, 10) -> (horizon, 10)
+        if q_arr.ndim == 3:
+            q_arr = q_arr[0]
+        if q_arr.shape != (h, len(TIMESFM_LEVELS) + 1):
+            raise ValueError(
+                f"Unexpected TimesFM quantile shape {q_arr.shape}; "
+                f"expected ({h}, {len(TIMESFM_LEVELS) + 1}) "
+                "(point col + 9 quantile cols)"
+            )
+        # Drop column 0 (point forecast); keep the 9 quantile columns.
+        q_vals = q_arr[:, 1:]
+        # Transpose to (levels, horizon) for a uniform interface
+        return TIMESFM_LEVELS.copy(), np.clip(q_vals.T, 0.0, 1.0)
+
+    def forecast_mean(
+        self,
+        series: np.ndarray,
+        horizon: int | None = None,
+    ) -> np.ndarray:
+        """Median (q50) trajectory, shape (horizon,)."""
+        levels, values = self.forecast_quantiles(series, horizon)
+        q50 = int(np.argmin(np.abs(levels - 0.5)))
+        return np.asarray(values[q50])
+
+    @staticmethod
+    def _mock_quantiles(arr: np.ndarray, h: int) -> np.ndarray:
+        """Mock quantiles: symmetric spreads around last value."""
+        last = float(np.clip(arr[-1], 0.01, 0.99))
+        # 9 levels matching TIMESFM_LEVELS: spreads widen away from median
+        spreads = np.array([0.05, 0.035, 0.02, 0.01, 0.0, 0.01, 0.02, 0.035, 0.05])
+        vals = np.tile(spreads[:, None], (1, h))
+        # lower levels subtract, upper add; median = last
+        signs = np.array([-1, -1, -1, -1, 0, 1, 1, 1, 1])
+        return np.asarray(np.clip(last + signs[:, None] * vals, 0.0, 1.0))

@@ -1,3 +1,7 @@
+> **Solo execution note (2026-10-15):** This is the original team spec, retained
+> for reference. Solo execution follows `td-one/PLAN_SOLO.md` (M0–M3 scope),
+> which supersedes this file for all build decisions.
+
 TD-One Agentic Mortgage Renewal Attrition Forecasting System sets the technical specification, repository blueprint, data synthesis contracts, experimental matrix, and delivery execution plan for the Vector Bootcamp.
 1. Problem Formulation & Literature Grounding
 1.1 Mathematical Target & Point-in-Time Information Set
