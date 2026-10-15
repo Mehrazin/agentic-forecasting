@@ -24,9 +24,8 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 MODELS = [
@@ -67,7 +66,11 @@ def main() -> int:
         from huggingface_hub import snapshot_download
     except ImportError:
         print("ERROR: huggingface_hub not installed.", file=sys.stderr)
-        print("Run: uv run --with huggingface_hub python scripts/bootstrap_models.py", file=sys.stderr)
+        print(
+            "Run: uv run --with huggingface_hub "
+            "python scripts/bootstrap_models.py",
+            file=sys.stderr,
+        )
         return 1
 
     root = Path(__file__).resolve().parent.parent  # td-one/
@@ -75,7 +78,7 @@ def main() -> int:
     weights_dir.mkdir(parents=True, exist_ok=True)
 
     manifest: dict = {
-        "bootstrap_date": datetime.now(timezone.utc).isoformat(),
+        "bootstrap_date": datetime.now(UTC).isoformat(),
         "models": {},
     }
 
@@ -89,7 +92,7 @@ def main() -> int:
         print(f"{'='*60}")
 
         try:
-            snapshot_path = snapshot_download(
+            snapshot_download(
                 repo_id=repo_id,
                 revision=spec["revision"],
                 local_dir=str(dest),
@@ -97,7 +100,7 @@ def main() -> int:
                 allow_patterns=spec["allow_patterns"],
                 resume_download=True,
             )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - record any download failure
             print(f"FAILED to download {repo_id}: {e}", file=sys.stderr)
             manifest["models"][key] = {
                 "repo_id": repo_id,
@@ -108,15 +111,17 @@ def main() -> int:
 
         # Resolve actual commit hash
         actual_revision = spec["revision"]
-        refs_dir = dest / ".cache" / "huggingface"  # not used with local_dir
-        # With local_dir, get commit from .no_exist or just record 'main' + hash
         try:
             from huggingface_hub import HfApi
             api = HfApi()
             info = api.repo_info(repo_id=repo_id, revision=spec["revision"])
             actual_revision = info.sha
-        except Exception:
-            pass  # offline or no API; keep 'main'
+        except Exception:  # noqa: BLE001 - offline/no-token: keep requested rev
+            print(
+                f"WARNING: could not resolve SHA for {repo_id}; "
+                'recording "UNRESOLVED" — manifest is NOT reproducible',
+            )
+            actual_revision = "UNRESOLVED (offline or no HF_TOKEN)"
 
         size_mb = dir_size_mb(dest)
         dir_hash = sha256_of_dir(dest)

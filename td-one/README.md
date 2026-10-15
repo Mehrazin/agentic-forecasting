@@ -7,18 +7,19 @@ Solo implementation for the Vector Agentic Forecasting Bootcamp by Vandad Davood
 ```bash
 cd td-one
 uv sync
-uv run pytest tests/ -q
+uv run --with pytest pytest tests/ -q
 ```
 
 ## Structure
 
 - `src/td_one/` — main package
-  - `data_gen/` — synthetic mortgage data simulator
-  - `data_service/` — point-in-time DuckDB store
-  - `tools/` — agent tools (segment, evidence, forecasting)
-  - `models/` — M0 baseline, TSFM wrappers, hybrid readout
-  - `agent/` — ReAct controller (Groq-powered)
-  - `evaluation/` — metrics, leakage auditor, backtest runner
+  - `data_gen/` — synthetic mortgage data simulator (history + structural outcome DGP)
+  - `data_service/` — point-in-time DuckDB store (history + outcomes tables)
+  - `tools/` — agent tool interfaces (not yet implemented)
+  - `models/` — M0 baseline ✅, TSFM wrappers ✅, hybrid readout ✅ (math only)
+  - `agent/` — forecast-agent helpers (evidence prompt, bounded adjustment;
+    ReAct orchestration loop not yet implemented)
+  - `evaluation/` — metrics, leakage auditor (backtest runner not yet implemented)
 - `configs/` — YAML configs for DGP, segments, models, experiments
 - `experiments/` — exp1 (M0 vs M1 mocks), exp2 (M0 vs M1 real weights),
   `REPRODUCIBILITY.md`, per-experiment reports + `*_results.json`
@@ -40,6 +41,6 @@ See `experiments/REPRODUCIBILITY.md` for the full reproduction steps.
 ## Key design decisions
 
 - **LLM**: Groq `openai/gpt-oss-120b` (via vault surrogate, never in code)
-- **FRED**: Mocked for development (file cache in `data/fred/`)
+- **FRED**: Mocked for development (no live key needed yet; file-cache location TBD)
 - **TSFMs**: Chronos-2 / TimesFM-2.5 (CPU-compatible, per survey)
 - **Point-in-time**: All queries enforce `record_asof <= run_date`; leakage auditor verifies 0%

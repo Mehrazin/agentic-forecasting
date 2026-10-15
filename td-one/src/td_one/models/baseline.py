@@ -1,8 +1,8 @@
 """M0: Historical-rate baseline with Jeffreys Beta-Binomial.
 
-The simplest model: trailing 6-month empirical switching rate with a
-Jeffreys Beta(0.5, 0.5) prior. Predictive distribution for counts is
-Beta-Binomial, guaranteeing 0 <= A <= N coherence.
+Trailing-window empirical switching rate with a Jeffreys Beta(0.5, 0.5)
+prior. Predictive distribution for counts is Beta-Binomial, guaranteeing
+0 <= A <= N coherence.
 
 This is the K=0 non-agentic baseline in the ablation ladder.
 """
@@ -12,12 +12,21 @@ from __future__ import annotations
 import numpy as np
 from scipy import stats
 
+#: Default trailing window in months (matches the docstring contract).
+TRAILING_WINDOW = 6
+
 
 class HistoricalBaseline:
-    """Trailing historical switching rate forecaster."""
+    """Trailing-window historical switching rate forecaster."""
 
-    def __init__(self) -> None:
-        """Initialize unfitted baseline."""
+    def __init__(self, trailing_window: int = TRAILING_WINDOW) -> None:
+        """Initialize unfitted baseline.
+
+        Args:
+            trailing_window: Number of most recent periods to pool.
+
+        """
+        self.trailing_window = trailing_window
         self._alpha: float | None = None
         self._beta: float | None = None
         self._fitted = False
@@ -27,18 +36,27 @@ class HistoricalBaseline:
         n_renewals: np.ndarray,
         n_switches: np.ndarray,
     ) -> None:
-        """Fit on historical (N, A) pairs.
+        """Fit on the trailing window of (N, A) pairs.
 
         Uses Jeffreys prior Beta(0.5, 0.5):
-            alpha = 0.5 + sum(A)
-            beta = 0.5 + sum(N - A)
+            alpha = 0.5 + sum(A[-w:])
+            beta = 0.5 + sum(N[-w:] - A[-w:])
 
         Args:
             n_renewals: Array of renewal counts per period.
             n_switches: Array of switch counts per period.
+
         """
-        total_n = int(n_renewals.sum())
-        total_a = int(n_switches.sum())
+        n = np.asarray(n_renewals, dtype=float)
+        a = np.asarray(n_switches, dtype=float)
+        if n.shape != a.shape or n.size == 0:
+            raise ValueError("n_renewals and n_switches must be non-empty and aligned")
+        if bool((a < 0).any() or (a > n).any()):
+            raise ValueError("switch counts must satisfy 0 <= A <= N")
+        w = self.trailing_window
+        n_w, a_w = n[-w:], a[-w:]
+        total_n = float(n_w.sum())
+        total_a = float(a_w.sum())
         # Jeffreys prior prevents collapse on zero counts
         self._alpha = 0.5 + total_a
         self._beta = 0.5 + (total_n - total_a)
@@ -67,6 +85,7 @@ class HistoricalBaseline:
 
         Returns:
             Array of sampled switch counts (each in [0, N]).
+
         """
         if not self._fitted:
             raise RuntimeError("Must call fit() first")
@@ -88,6 +107,7 @@ class HistoricalBaseline:
 
         Returns:
             (q10, q50, q90) quantiles.
+
         """
         if not self._fitted:
             raise RuntimeError("Must call fit() first")
