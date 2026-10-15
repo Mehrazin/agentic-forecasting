@@ -11,12 +11,16 @@ from __future__ import annotations
 
 import logging
 import re
+import time
 from typing import Protocol, TypedDict
 
 logger = logging.getLogger(__name__)
 
 #: Bound on the contextual log-odds adjustment (literature-derived).
 MAX_DELTA = 0.75
+#: Retry policy for the LLM call (Groq 429s are a known recurring issue).
+_LLM_MAX_ATTEMPTS = 3
+_LLM_BACKOFF_S = 2.0
 
 
 class EvidenceCard(TypedDict, total=False):
@@ -85,6 +89,30 @@ class ForecastAgent:
             "(increase_switching/decrease_switching/neutral)."
         )
 
+    def _complete_with_retry(self, prompt: str) -> str:
+        """Call the LLM with exponential backoff on transient failures.
+
+        Raises:
+            The last exception if all attempts fail.
+
+        """
+        last_exc: Exception | None = None
+        for attempt in range(1, _LLM_MAX_ATTEMPTS + 1):
+            try:
+                return self.llm.complete(prompt, json_mode=False, timeout_s=60.0)
+            except Exception as e:  # noqa: BLE001 - retry any transient failure
+                last_exc = e
+                logger.warning(
+                    "LLM attempt %d/%d failed: %s",
+                    attempt,
+                    _LLM_MAX_ATTEMPTS,
+                    e,
+                )
+                if attempt < _LLM_MAX_ATTEMPTS:
+                    time.sleep(_LLM_BACKOFF_S * 2 ** (attempt - 1))
+        assert last_exc is not None
+        raise last_exc
+
     def estimate_adjustment(
         self,
         segment_id: str,
@@ -124,7 +152,7 @@ class ForecastAgent:
             "Output ONLY the number, e.g. 0.25 or -0.10."
         )
         try:
-            text = self.llm.complete(prompt, json_mode=False, timeout_s=60.0)
+            text = self._complete_with_retry(prompt)
         except Exception as e:  # noqa: BLE001 - any LLM failure -> None (logged)
             # Do NOT conflate outages with "no adjustment needed" — the
             # caller must be able to tell them apart for honest ablations.

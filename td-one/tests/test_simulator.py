@@ -52,7 +52,7 @@ def test_balance_follows_amortization(small_sim: MortgageSimulator) -> None:
     for recs in by_customer.values():
         if recs[0].rate_type != "fixed" or checked >= 5:
             continue
-        for prev, cur in zip(recs, recs[1:]):
+        for prev, cur in zip(recs, recs[1:]):  # noqa: B905 - shifted window, lengths differ by 1 by construction
             expected = canadian_balance_after_payment(
                 prev.mortgage_balance_cad,
                 prev.mortgage_rate_pct,
@@ -73,7 +73,8 @@ def test_amortization_decrements(small_sim: MortgageSimulator) -> None:
         by_customer.setdefault(r.mortgage_id, []).append(r)
     for recs in list(by_customer.values())[:10]:
         amorts = [r.remaining_amortization_months for r in recs]
-        assert all(b == a - 1 for a, b in zip(amorts, amorts[1:]))
+        pairs = zip(amorts, amorts[1:])  # noqa: B905 - shifted window, lengths differ by 1
+        assert all(b == a - 1 for a, b in pairs)
 
 
 def test_insured_flag_threaded(small_sim: MortgageSimulator) -> None:

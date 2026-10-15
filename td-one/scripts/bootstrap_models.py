@@ -27,8 +27,19 @@ import json
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import TypedDict
 
-MODELS = [
+
+class ModelSpec(TypedDict):
+    """Bootstrap spec for one model."""
+
+    key: str
+    repo_id: str
+    revision: str
+    allow_patterns: list[str]
+
+
+MODELS: list[ModelSpec] = [
     {
         "key": "chronos2",
         "repo_id": "amazon/chronos-2",
@@ -45,13 +56,23 @@ MODELS = [
 
 
 def sha256_of_dir(path: Path) -> str:
-    """Hash of sorted file listing + sizes (fast, no full read)."""
+    """Content fingerprint: samples first+last 1MB of each file.
+
+    Cheap at 1.3GB scale and actually sensitive to weight corruption,
+    unlike a filename+size listing.
+    """
     h = hashlib.sha256()
     for f in sorted(path.rglob("*")):
-        if f.is_file():
-            rel = str(f.relative_to(path))
-            h.update(rel.encode())
-            h.update(str(f.stat().st_size).encode())
+        if not f.is_file():
+            continue
+        h.update(str(f.relative_to(path)).encode())
+        size = f.stat().st_size
+        h.update(str(size).encode())
+        with open(f, "rb") as fh:
+            h.update(fh.read(1024 * 1024))
+            if size > 2 * 1024 * 1024:
+                fh.seek(-1024 * 1024, 2)
+                h.update(fh.read(1024 * 1024))
     return h.hexdigest()[:16]
 
 

@@ -192,12 +192,13 @@ def test_timesfm_real_path_forecast_signature() -> None:
 
 _REAL_OK = False
 try:
+    from pathlib import Path
+
     import torch  # noqa: F401
-    from pathlib import Path as _P
 
     _REAL_OK = (
-        _P("models/weights/chronos2").exists()
-        and _P("models/weights/timesfm25").exists()
+        Path("models/weights/chronos2").exists()
+        and Path("models/weights/timesfm25").exists()
     )
 except ImportError:
     _REAL_OK = False

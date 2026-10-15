@@ -89,3 +89,26 @@ def test_estimate_adjustment_unparseable_returns_none() -> None:
     """No number in the response -> None, not a silent 0.0."""
     agent = _agent_with_text("no number here")
     assert agent.estimate_adjustment("s", "2026-10-15", "p", 0.2, [{"fact": "x"}]) is None
+
+
+def test_estimate_adjustment_retries_transient_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Transient LLM failures are retried; success on retry returns delta."""
+    import time as _time
+    monkeypatch.setattr(_time, "sleep", lambda s: None)
+    mock_llm = MagicMock()
+    mock_llm.complete.side_effect = [RuntimeError("429"), "0.30"]
+    agent = ForecastAgent(llm=mock_llm)
+    delta = agent.estimate_adjustment("s", "2026-10-15", "p", 0.2, [{"fact": "x"}])
+    assert delta == pytest.approx(0.30)
+    assert mock_llm.complete.call_count == 2
+
+
+def test_estimate_adjustment_gives_up_after_retries(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Persistent failure -> None after exhausting retries (not silent 0.0)."""
+    import time as _time
+    monkeypatch.setattr(_time, "sleep", lambda s: None)
+    mock_llm = MagicMock()
+    mock_llm.complete.side_effect = RuntimeError("500")
+    agent = ForecastAgent(llm=mock_llm)
+    assert agent.estimate_adjustment("s", "2026-10-15", "p", 0.2, [{"fact": "x"}]) is None
+    assert mock_llm.complete.call_count == 3
