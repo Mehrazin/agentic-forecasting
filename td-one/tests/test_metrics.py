@@ -44,3 +44,17 @@ def test_crps_counts() -> None:
     actual = np.array([10])
     score = crps_counts(samples, actual)
     assert score[0] < 0.1  # Near zero for perfect
+
+
+def test_crps_deterministic() -> None:
+    """CRPS is deterministic given its inputs (seeded subsample).
+
+    Regression test: the old implementation used the global RNG, so the
+    metric itself was stochastic run-to-run.
+    """
+    rng = np.random.default_rng(7)
+    samples = rng.integers(0, 30, size=(3, 500))
+    actual = np.array([10, 15, 20])
+    s1 = crps_counts(samples, actual, seed=0)
+    s2 = crps_counts(samples, actual, seed=0)
+    np.testing.assert_array_equal(s1, s2)

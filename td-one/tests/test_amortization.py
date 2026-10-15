@@ -5,11 +5,10 @@ Verification values from plan §3.1 (Excel C001):
 - PMT = $2,171.20, B_{t+1} = $418,872.30 (to the cent)
 """
 
-import pytest
 
 from td_one.data_gen.amortization import (
-    canadian_monthly_payment,
     canadian_balance_after_payment,
+    canadian_monthly_payment,
 )
 
 

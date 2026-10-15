@@ -1,16 +1,31 @@
-"""TD-One forecast agent controller (Groq-powered ReAct loop).
+"""TD-One forecast agent helpers (Groq-powered).
 
-The agent orchestrates the 3 tools:
-1. data_segment_tool: query segment history and profiles
-2. evidence_tool: retrieve macro/policy evidence (frozen corpus)
-3. forecasting_tool: run numerical backend + apply contextual adjustment
+Currently: evidence-prompt builder + bounded log-odds adjustment estimator.
+The full ReAct orchestration loop (tool calls, iteration, trace) is not yet
+implemented — see PLAN_SOLO.md build order.
 
 Uses Groq `openai/gpt-oss-120b` via the vault surrogate pattern.
 """
 
 from __future__ import annotations
 
-from typing import Any, Protocol
+import logging
+import re
+from typing import Protocol, TypedDict
+
+logger = logging.getLogger(__name__)
+
+#: Bound on the contextual log-odds adjustment (literature-derived).
+MAX_DELTA = 0.75
+
+
+class EvidenceCard(TypedDict, total=False):
+    """A retrieved evidence card."""
+
+    source_url: str
+    published_date: str
+    fact: str
+    directional_impact: str
 
 
 class LLMProvider(Protocol):
@@ -21,19 +36,21 @@ class LLMProvider(Protocol):
         prompt: str,
         system: str | None = None,
         json_mode: bool = False,
+        timeout_s: float = 60.0,
     ) -> str:
         """Complete a prompt."""
         ...
 
 
 class ForecastAgent:
-    """ReAct controller for mortgage attrition forecasting."""
+    """Forecast-agent helpers for mortgage attrition forecasting."""
 
     def __init__(self, llm: LLMProvider) -> None:
         """Initialize with an LLM provider.
 
         Args:
             llm: Groq-backed provider (or mock for tests).
+
         """
         self.llm = llm
 
@@ -52,6 +69,7 @@ class ForecastAgent:
 
         Returns:
             Prompt string.
+
         """
         return (
             f"Segment: {segment_id}\n"
@@ -73,8 +91,8 @@ class ForecastAgent:
         run_date: str,
         segment_profile: str,
         base_rate: float,
-        evidence: list[dict[str, Any]],
-    ) -> float:
+        evidence: list[EvidenceCard],
+    ) -> float | None:
         """Estimate contextual log-odds adjustment from evidence.
 
         Args:
@@ -85,7 +103,10 @@ class ForecastAgent:
             evidence: Retrieved evidence cards.
 
         Returns:
-            Delta in [-0.75, +0.75] (bounded).
+            Delta in [-0.75, +0.75] (bounded), 0.0 when there is no
+            evidence, or None when the LLM call fails (distinct from a
+            genuine "no adjustment" verdict so ablations stay honest).
+
         """
         if not evidence:
             return 0.0
@@ -103,15 +124,21 @@ class ForecastAgent:
             "Output ONLY the number, e.g. 0.25 or -0.10."
         )
         try:
-            text = self.llm.complete(prompt, json_mode=False)
-            # Extract first float from response
-            import re
-
-            m = re.search(r"-?\d+\.?\d*", text.strip())
-            if m:
-                delta = float(m.group(0))
-                # Clip to bounds
-                return float(max(-0.75, min(0.75, delta)))
-        except Exception:
-            pass
-        return 0.0
+            text = self.llm.complete(prompt, json_mode=False, timeout_s=60.0)
+        except Exception as e:  # noqa: BLE001 - any LLM failure -> None (logged)
+            # Do NOT conflate outages with "no adjustment needed" — the
+            # caller must be able to tell them apart for honest ablations.
+            logger.warning("estimate_adjustment LLM call failed: %s", e)
+            return None
+        # Take the LAST float: models often echo context first
+        # ("based on 3 sources, delta 0.25" -> 0.25, not 3).
+        matches = re.findall(r"-?\d+\.?\d*", text.strip())
+        if not matches:
+            logger.warning("estimate_adjustment: no number in LLM response")
+            return None
+        try:
+            delta = float(matches[-1])
+        except ValueError:
+            logger.warning("estimate_adjustment: unparseable number %r", matches[-1])
+            return None
+        return float(max(-MAX_DELTA, min(MAX_DELTA, delta)))

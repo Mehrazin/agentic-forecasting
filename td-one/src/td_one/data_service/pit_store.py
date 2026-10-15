@@ -16,7 +16,7 @@ from pathlib import Path
 import duckdb
 import pandas as pd
 
-from td_one.schemas import MortgageHistoryRecord
+from td_one.schemas import MortgageHistoryRecord, RenewalOutcomeRecord
 
 
 class PITStore:
@@ -27,6 +27,7 @@ class PITStore:
 
         Args:
             db_path: Path to DuckDB file (created if not exists).
+
         """
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
@@ -49,7 +50,24 @@ class PITStore:
                 children_under6 INTEGER,
                 children_6to17 INTEGER,
                 mortgage_balance_cad DOUBLE,
+                insured_flag BOOLEAN,
                 PRIMARY KEY (mortgage_id, snapshot_date)
+            )
+            """
+        )
+        self._conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS renewal_outcomes (
+                customer_id VARCHAR,
+                mortgage_id VARCHAR,
+                renewal_episode_id VARCHAR,
+                scheduled_maturity_date DATE,
+                outcome VARCHAR,
+                switched_lender_flag BOOLEAN,
+                event_date DATE,
+                outcome_observed_at DATE,
+                record_asof DATE,
+                PRIMARY KEY (mortgage_id, renewal_episode_id, record_asof)
             )
             """
         )
@@ -59,6 +77,7 @@ class PITStore:
 
         Args:
             records: Validated mortgage history records.
+
         """
         if not records:
             return
@@ -75,17 +94,74 @@ class PITStore:
                 r.children_under6,
                 r.children_6to17,
                 r.mortgage_balance_cad,
+                r.insured_flag,
             )
             for r in records
         ]
         self._conn.executemany(
             """
             INSERT OR REPLACE INTO mortgage_history VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )
             """,
             rows,
         )
+
+    def ingest_outcomes(self, records: list[RenewalOutcomeRecord]) -> None:
+        """Bulk ingest renewal outcome records.
+
+        Args:
+            records: Validated renewal outcome records.
+
+        """
+        if not records:
+            return
+        rows = [
+            (
+                r.customer_id,
+                r.mortgage_id,
+                r.renewal_episode_id,
+                r.scheduled_maturity_date.isoformat(),
+                r.outcome,
+                r.switched_lender_flag,
+                r.event_date.isoformat() if r.event_date else None,
+                r.outcome_observed_at.isoformat() if r.outcome_observed_at else None,
+                r.record_asof.isoformat(),
+            )
+            for r in records
+        ]
+        self._conn.executemany(
+            """
+            INSERT OR REPLACE INTO renewal_outcomes VALUES (
+                ?, ?, ?, ?, ?, ?, ?, ?, ?
+            )
+            """,
+            rows,
+        )
+
+    def get_outcomes(self, run_date: date) -> pd.DataFrame:
+        """Get outcomes visible at point-in-time.
+
+        Enforces both guards:
+        - record_asof <= run_date (row existed)
+        - outcome_observed_at <= run_date (outcome was known; otherwise the
+          row is masked even if record_asof passed)
+
+        Args:
+            run_date: Point-in-time cutoff (inclusive).
+
+        Returns:
+            DataFrame of visible outcome records.
+
+        """
+        return self._conn.execute(
+            """
+            SELECT * FROM renewal_outcomes
+            WHERE record_asof <= ?
+              AND (outcome_observed_at IS NULL OR outcome_observed_at <= ?)
+            """,
+            [run_date.isoformat(), run_date.isoformat()],
+        ).df()
 
     def get_history(self, run_date: date) -> pd.DataFrame:
         """Get all history with snapshot_date <= run_date.
@@ -95,6 +171,7 @@ class PITStore:
 
         Returns:
             DataFrame of history records.
+
         """
         return self._conn.execute(
             """
@@ -121,6 +198,7 @@ class PITStore:
 
         Returns:
             Filtered DataFrame.
+
         """
         query = "SELECT * FROM mortgage_history WHERE snapshot_date <= ?"
         params: list[str | float | int] = [run_date.isoformat()]
