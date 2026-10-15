@@ -186,3 +186,50 @@ def test_timesfm_real_path_forecast_signature() -> None:
     assert w._model.kwargs["horizon"] == 6
     assert "inputs" in w._model.kwargs
     assert values.shape == (9, 6)
+
+
+# --- Real-weights tests (gated; skipped in CI) ---
+
+_REAL_OK = False
+try:
+    import torch  # noqa: F401
+    from pathlib import Path as _P
+
+    _REAL_OK = (
+        _P("models/weights/chronos2").exists()
+        and _P("models/weights/timesfm25").exists()
+    )
+except ImportError:
+    _REAL_OK = False
+
+needs_real_weights = pytest.mark.skipif(
+    not _REAL_OK or __import__("os").environ.get("TD_ONE_REAL_WEIGHTS") != "1",
+    reason="real-weights test: set TD_ONE_REAL_WEIGHTS=1 with models/weights/ present",
+)
+
+
+@needs_real_weights
+def test_chronos2_real_output_is_21_level_lattice() -> None:
+    """Real Chronos-2 emits the native 21-level quantile grid (not samples)."""
+    w = Chronos2Wrapper(weights_dir="models/weights/chronos2")
+    try:
+        levels, values = w.forecast_quantiles(np.full(60, 0.2), horizon=6)
+    finally:
+        w.unload()
+    np.testing.assert_array_equal(levels, CHRONOS2_LEVELS)
+    assert values.shape == (21, 6)
+    # Quantile lattice: rows ordered by level (non-decreasing down the levels)
+    assert (np.diff(values, axis=0) >= -1e-6).all()
+
+
+@needs_real_weights
+def test_timesfm_real_quantiles_monotonic_true_levels() -> None:
+    """Real TimesFM quantiles are monotonic and labeled from true levels."""
+    w = TimesFMWrapper(weights_dir="models/weights/timesfm25")
+    try:
+        levels, values = w.forecast_quantiles(np.full(60, 0.2), horizon=6)
+    finally:
+        w.unload()
+    np.testing.assert_array_equal(levels, TIMESFM_LEVELS)
+    assert values.shape == (9, 6)
+    assert (np.diff(values, axis=0) >= -1e-6).all()
