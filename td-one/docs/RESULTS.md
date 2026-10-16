@@ -566,6 +566,13 @@ from github.com/Mcompetitions/M4-methods, no registration).
    (350.85/356.35 vs 445.40). The synthetic DGPs were too kind to
    M0 — real series have the complex seasonal/trend structure where
    pretrained TSFMs earn their keep.
+   *Caveat (soundness audit 2026-10-16):* two measurement asymmetries
+   penalize TSFs — TimesFM's 9 quantile levels are flat-extrapolated
+   onto the 0.05–0.95 grid (truncated tails vs Chronos-2), and both
+   TSFMs' quantiles are clipped to the context's historical [min, max].
+   Both biases are conservative (understate the TSFM edge), so the
+   ~20% headline survives, but the Chronos-2 vs TimesFM-2.5 margin
+   (1.6%) should be treated cautiously.
 2. **Conformal calibration transfers perfectly.** conf_naive hits
    exactly 0.800 coverage on real data (naive: 0.740). The CQR
    machinery is not a synthetic artifact.
