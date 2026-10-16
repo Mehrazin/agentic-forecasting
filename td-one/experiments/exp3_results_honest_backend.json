@@ -1,0 +1,47 @@
+{
+  "experiment": "exp3_m2",
+  "date": "2025-06-30",
+  "mode": "real",
+  "forecast_model": "chronos2",
+  "panels": [
+    {
+      "segment_id": "seg-0",
+      "n_test": 17,
+      "actual": 11.0,
+      "crps": 0.7586000000000002,
+      "mae": 2.0,
+      "coverage": 1.0,
+      "m2_crps": 5.404501319334193,
+      "m2_mae": 6.239999999999999,
+      "m2_coverage": 0.0,
+      "m2_steps": 5,
+      "evidence_cards": -1
+    },
+    {
+      "segment_id": "seg-1",
+      "n_test": 17,
+      "actual": 10.0,
+      "crps": 1.3348999999999998,
+      "mae": 2.0,
+      "coverage": 1.0,
+      "m2_crps": 1.2528021062475394,
+      "m2_mae": 1.8399999999999999,
+      "m2_coverage": 1.0,
+      "m2_steps": 6,
+      "evidence_cards": -1
+    },
+    {
+      "segment_id": "seg-2",
+      "n_test": 17,
+      "actual": 8.0,
+      "crps": 1.3990999999999998,
+      "mae": 2.0,
+      "coverage": 1.0,
+      "m2_crps": 4.347176724991814,
+      "m2_mae": 4.9399999999999995,
+      "m2_coverage": 0.0,
+      "m2_steps": 5,
+      "evidence_cards": -1
+    }
+  ]
+}

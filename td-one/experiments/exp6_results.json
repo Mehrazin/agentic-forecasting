@@ -1,0 +1,482 @@
+{
+  "experiment": "exp6_m3plus",
+  "mode": "mock (mechanism test; deltas replicate the real-Groq error model)",
+  "tuned": {
+    "k_star": 0.5,
+    "threshold_star": 1.25
+  },
+  "tuning_grid": [
+    {
+      "k": 0.0,
+      "threshold": 1.0,
+      "mean_crps": 4.4385
+    },
+    {
+      "k": 0.0,
+      "threshold": 1.25,
+      "mean_crps": 4.4385
+    },
+    {
+      "k": 0.0,
+      "threshold": 1.5,
+      "mean_crps": 4.4385
+    },
+    {
+      "k": 0.0,
+      "threshold": 1.75,
+      "mean_crps": 4.4385
+    },
+    {
+      "k": 0.0,
+      "threshold": 2.0,
+      "mean_crps": 4.4385
+    },
+    {
+      "k": 0.0,
+      "threshold": 2.5,
+      "mean_crps": 4.4385
+    },
+    {
+      "k": 0.1,
+      "threshold": 1.0,
+      "mean_crps": 4.4109
+    },
+    {
+      "k": 0.1,
+      "threshold": 1.25,
+      "mean_crps": 4.4534
+    },
+    {
+      "k": 0.1,
+      "threshold": 1.5,
+      "mean_crps": 4.4024
+    },
+    {
+      "k": 0.1,
+      "threshold": 1.75,
+      "mean_crps": 4.4024
+    },
+    {
+      "k": 0.1,
+      "threshold": 2.0,
+      "mean_crps": 4.4024
+    },
+    {
+      "k": 0.1,
+      "threshold": 2.5,
+      "mean_crps": 4.4385
+    },
+    {
+      "k": 0.2,
+      "threshold": 1.0,
+      "mean_crps": 4.6849
+    },
+    {
+      "k": 0.2,
+      "threshold": 1.25,
+      "mean_crps": 4.5587
+    },
+    {
+      "k": 0.2,
+      "threshold": 1.5,
+      "mean_crps": 4.4828
+    },
+    {
+      "k": 0.2,
+      "threshold": 1.75,
+      "mean_crps": 4.4828
+    },
+    {
+      "k": 0.2,
+      "threshold": 2.0,
+      "mean_crps": 4.4828
+    },
+    {
+      "k": 0.2,
+      "threshold": 2.5,
+      "mean_crps": 4.4385
+    },
+    {
+      "k": 0.3,
+      "threshold": 1.0,
+      "mean_crps": 4.366
+    },
+    {
+      "k": 0.3,
+      "threshold": 1.25,
+      "mean_crps": 4.369
+    },
+    {
+      "k": 0.3,
+      "threshold": 1.5,
+      "mean_crps": 4.3772
+    },
+    {
+      "k": 0.3,
+      "threshold": 1.75,
+      "mean_crps": 4.3772
+    },
+    {
+      "k": 0.3,
+      "threshold": 2.0,
+      "mean_crps": 4.3772
+    },
+    {
+      "k": 0.3,
+      "threshold": 2.5,
+      "mean_crps": 4.4385
+    },
+    {
+      "k": 0.4,
+      "threshold": 1.0,
+      "mean_crps": 4.3083
+    },
+    {
+      "k": 0.4,
+      "threshold": 1.25,
+      "mean_crps": 4.3335
+    },
+    {
+      "k": 0.4,
+      "threshold": 1.5,
+      "mean_crps": 4.3586
+    },
+    {
+      "k": 0.4,
+      "threshold": 1.75,
+      "mean_crps": 4.3586
+    },
+    {
+      "k": 0.4,
+      "threshold": 2.0,
+      "mean_crps": 4.3586
+    },
+    {
+      "k": 0.4,
+      "threshold": 2.5,
+      "mean_crps": 4.4385
+    },
+    {
+      "k": 0.5,
+      "threshold": 1.0,
+      "mean_crps": 4.2589
+    },
+    {
+      "k": 0.5,
+      "threshold": 1.25,
+      "mean_crps": 4.2527
+    },
+    {
+      "k": 0.5,
+      "threshold": 1.5,
+      "mean_crps": 4.3369
+    },
+    {
+      "k": 0.5,
+      "threshold": 1.75,
+      "mean_crps": 4.3369
+    },
+    {
+      "k": 0.5,
+      "threshold": 2.0,
+      "mean_crps": 4.3369
+    },
+    {
+      "k": 0.5,
+      "threshold": 2.5,
+      "mean_crps": 4.4385
+    },
+    {
+      "k": 0.6,
+      "threshold": 1.0,
+      "mean_crps": 4.2672
+    },
+    {
+      "k": 0.6,
+      "threshold": 1.25,
+      "mean_crps": 4.2855
+    },
+    {
+      "k": 0.6,
+      "threshold": 1.5,
+      "mean_crps": 4.3609
+    },
+    {
+      "k": 0.6,
+      "threshold": 1.75,
+      "mean_crps": 4.3609
+    },
+    {
+      "k": 0.6,
+      "threshold": 2.0,
+      "mean_crps": 4.3609
+    },
+    {
+      "k": 0.6,
+      "threshold": 2.5,
+      "mean_crps": 4.4385
+    },
+    {
+      "k": 0.7,
+      "threshold": 1.0,
+      "mean_crps": 4.5868
+    },
+    {
+      "k": 0.7,
+      "threshold": 1.25,
+      "mean_crps": 4.4491
+    },
+    {
+      "k": 0.7,
+      "threshold": 1.5,
+      "mean_crps": 4.4183
+    },
+    {
+      "k": 0.7,
+      "threshold": 1.75,
+      "mean_crps": 4.4183
+    },
+    {
+      "k": 0.7,
+      "threshold": 2.0,
+      "mean_crps": 4.4183
+    },
+    {
+      "k": 0.7,
+      "threshold": 2.5,
+      "mean_crps": 4.4385
+    },
+    {
+      "k": 0.8,
+      "threshold": 1.0,
+      "mean_crps": 4.4537
+    },
+    {
+      "k": 0.8,
+      "threshold": 1.25,
+      "mean_crps": 4.3707
+    },
+    {
+      "k": 0.8,
+      "threshold": 1.5,
+      "mean_crps": 4.3829
+    },
+    {
+      "k": 0.8,
+      "threshold": 1.75,
+      "mean_crps": 4.3829
+    },
+    {
+      "k": 0.8,
+      "threshold": 2.0,
+      "mean_crps": 4.3829
+    },
+    {
+      "k": 0.8,
+      "threshold": 2.5,
+      "mean_crps": 4.4385
+    },
+    {
+      "k": 0.9,
+      "threshold": 1.0,
+      "mean_crps": 4.6049
+    },
+    {
+      "k": 0.9,
+      "threshold": 1.25,
+      "mean_crps": 4.4285
+    },
+    {
+      "k": 0.9,
+      "threshold": 1.5,
+      "mean_crps": 4.4072
+    },
+    {
+      "k": 0.9,
+      "threshold": 1.75,
+      "mean_crps": 4.4072
+    },
+    {
+      "k": 0.9,
+      "threshold": 2.0,
+      "mean_crps": 4.4072
+    },
+    {
+      "k": 0.9,
+      "threshold": 2.5,
+      "mean_crps": 4.4385
+    },
+    {
+      "k": 1.0,
+      "threshold": 1.0,
+      "mean_crps": 4.5988
+    },
+    {
+      "k": 1.0,
+      "threshold": 1.25,
+      "mean_crps": 4.4662
+    },
+    {
+      "k": 1.0,
+      "threshold": 1.5,
+      "mean_crps": 4.4396
+    },
+    {
+      "k": 1.0,
+      "threshold": 1.75,
+      "mean_crps": 4.4396
+    },
+    {
+      "k": 1.0,
+      "threshold": 2.0,
+      "mean_crps": 4.4396
+    },
+    {
+      "k": 1.0,
+      "threshold": 2.5,
+      "mean_crps": 4.4385
+    }
+  ],
+  "tune_sids": [
+    "boc_hike_175",
+    "boc_cut_200",
+    "cashback_war",
+    "benign_steady",
+    "benign_noise",
+    "benign_seasonal"
+  ],
+  "heldout_sids": [
+    "osfi_relax",
+    "recession_fear",
+    "portability_reform",
+    "benign_mixed",
+    "benign_local",
+    "benign_technical"
+  ],
+  "tune_mean_crps": {
+    "m0": 4.4385,
+    "m3": 5.7569,
+    "m3_shrink": 4.731,
+    "m3_gate": 4.4662,
+    "m3_both": 4.2527
+  },
+  "heldout_mean_crps": {
+    "m0": 7.8584,
+    "m3": 9.6623,
+    "m3_shrink": 8.6189,
+    "m3_gate": 7.5993,
+    "m3_both": 7.7332
+  },
+  "heldout_scenarios": [
+    {
+      "id": "osfi_relax",
+      "kind": "shock",
+      "z_stat": 1.953,
+      "gate_fired": true,
+      "mock_delta": -0.046,
+      "correct_delta": -0.13,
+      "crps": {
+        "m0": 3.3658,
+        "m3": 3.5046,
+        "m3_shrink": 3.1909,
+        "m3_gate": 3.5046,
+        "m3_both": 3.1909
+      }
+    },
+    {
+      "id": "recession_fear",
+      "kind": "shock",
+      "z_stat": -1.953,
+      "gate_fired": true,
+      "mock_delta": -0.25,
+      "correct_delta": 0.301,
+      "crps": {
+        "m0": 8.6071,
+        "m3": 16.7421,
+        "m3_shrink": 12.7109,
+        "m3_gate": 16.7421,
+        "m3_both": 12.7109
+      }
+    },
+    {
+      "id": "portability_reform",
+      "kind": "shock",
+      "z_stat": 1.279,
+      "gate_fired": true,
+      "mock_delta": 0.215,
+      "correct_delta": 0.292,
+      "crps": {
+        "m0": 24.4473,
+        "m3": 14.6191,
+        "m3_shrink": 19.7672,
+        "m3_gate": 14.6191,
+        "m3_both": 19.7672
+      }
+    },
+    {
+      "id": "benign_mixed",
+      "kind": "benign",
+      "z_stat": -0.789,
+      "gate_fired": false,
+      "mock_delta": -0.224,
+      "correct_delta": 0.0,
+      "crps": {
+        "m0": 3.9359,
+        "m3": 10.9492,
+        "m3_shrink": 6.9949,
+        "m3_gate": 3.9359,
+        "m3_both": 3.9359
+      }
+    },
+    {
+      "id": "benign_local",
+      "kind": "benign",
+      "z_stat": -0.453,
+      "gate_fired": false,
+      "mock_delta": 0.025,
+      "correct_delta": 0.0,
+      "crps": {
+        "m0": 4.0423,
+        "m3": 3.4388,
+        "m3_shrink": 4.1373,
+        "m3_gate": 4.0423,
+        "m3_both": 4.0423
+      }
+    },
+    {
+      "id": "benign_technical",
+      "kind": "benign",
+      "z_stat": 0.317,
+      "gate_fired": false,
+      "mock_delta": -0.236,
+      "correct_delta": 0.0,
+      "crps": {
+        "m0": 2.7518,
+        "m3": 8.7197,
+        "m3_shrink": 4.9119,
+        "m3_gate": 2.7518,
+        "m3_both": 2.7518
+      }
+    }
+  ],
+  "gate_confusion_heldout": {
+    "tp": 3,
+    "fp": 0,
+    "tn": 3,
+    "fn": 0
+  },
+  "gate_confusion_all": {
+    "tp": 5,
+    "fp": 1,
+    "tn": 5,
+    "fn": 1
+  },
+  "config": {
+    "n_customers": 4000,
+    "n_months": 24,
+    "panel_months": 12,
+    "shift_months": 3,
+    "n_test": 200,
+    "seed": 1234
+  }
+}
