@@ -80,9 +80,7 @@ def rate_quantiles_to_count_samples(
     n_int = int(round(n))
     h = q_values.shape[1]
     u = rng.random((n_samples, h))
-    rates = np.stack(
-        [np.interp(u[:, hh], levels, q_values[:, hh]) for hh in range(h)], axis=1
-    )
+    rates = np.stack([np.interp(u[:, hh], levels, q_values[:, hh]) for hh in range(h)], axis=1)
     rates = np.clip(rates, 0.0, 1.0)
     return rng.binomial(n_int, rates)
 
@@ -105,8 +103,10 @@ def run_experiment() -> dict:
 
     # Load models ONCE
     t0 = time.time()
+
     def wdir(k: str) -> str | None:
         return None if use_mock else str(ROOT / manifest["models"][k]["local_path"])
+
     m1a = Chronos2Wrapper(use_mock=use_mock, weights_dir=wdir("chronos2"))
     m1b = TimesFMWrapper(use_mock=use_mock, weights_dir=wdir("timesfm25"))
     hybrid = HybridReadout()
@@ -119,16 +119,13 @@ def run_experiment() -> dict:
 
     # results[scenario][model] = list of per-seed pooled CRPS
     results: dict[str, dict[str, list[float]]] = {
-        s: {m: [] for m in ("M0", "M1a_chronos2", "M1b_timesfm25", "oracle")}
-        for s in SCENARIOS
+        s: {m: [] for m in ("M0", "M1a_chronos2", "M1b_timesfm25", "oracle")} for s in SCENARIOS
     }
     mae_res: dict[str, dict[str, list[float]]] = {
-        s: {m: [] for m in ("M0", "M1a_chronos2", "M1b_timesfm25", "oracle")}
-        for s in SCENARIOS
+        s: {m: [] for m in ("M0", "M1a_chronos2", "M1b_timesfm25", "oracle")} for s in SCENARIOS
     }
     cov_res: dict[str, dict[str, list[float]]] = {
-        s: {m: [] for m in ("M0", "M1a_chronos2", "M1b_timesfm25")}
-        for s in SCENARIOS
+        s: {m: [] for m in ("M0", "M1a_chronos2", "M1b_timesfm25")} for s in SCENARIOS
     }
     # M3 probe: delta -> list of (crps, coverage) pooled per seed
     m3_crps: dict[str, dict[float, list[float]]] = {
@@ -154,8 +151,8 @@ def run_experiment() -> dict:
             for origin in ORIGINS:
                 train_n, train_a = n_all[:origin], a_all[:origin]
                 train_rates = np.clip(train_a / np.maximum(train_n, 1), 0.01, 0.99)
-                test_n, test_a = n_all[origin:origin + HORIZON], a_all[origin:origin + HORIZON]
-                test_true = true_all[origin:origin + HORIZON]
+                test_n, test_a = n_all[origin : origin + HORIZON], a_all[origin : origin + HORIZON]
+                test_true = true_all[origin : origin + HORIZON]
                 hh = len(test_n)
 
                 # ---- M0 ----
@@ -164,8 +161,7 @@ def run_experiment() -> dict:
                 m0.fit(train_n, train_a)
                 m0_conc = (m0._alpha or 1.0) + (m0._beta or 1.0)
                 m0_samples = np.stack(
-                    [m0.predict_counts(int(round(n)), N_COUNT_SAMPLES, seed=seed)
-                     for n in test_n]
+                    [m0.predict_counts(int(round(n)), N_COUNT_SAMPLES, seed=seed) for n in test_n]
                 ).T  # (n_samples, h)
                 timings["M0"] += time.time() - t_m0
                 m0_q10 = np.quantile(m0_samples, 0.10, axis=0)
@@ -181,9 +177,9 @@ def run_experiment() -> dict:
                 c_mean = m1a.forecast_mean(train_rates, horizon=hh)
                 m1a_samples = np.array(
                     [
-                        rate_quantiles_to_count_samples(
-                            c_levels, c_vals[:, [i]], n, seed=seed
-                        )[:, 0]
+                        rate_quantiles_to_count_samples(c_levels, c_vals[:, [i]], n, seed=seed)[
+                            :, 0
+                        ]
                         for i, n in enumerate(test_n)
                     ]
                 ).T  # (n_samples, h)
@@ -196,16 +192,16 @@ def run_experiment() -> dict:
 
                 # ---- M1b: TimesFM-2.5 ----
                 t_m1b = time.time()
-                f_levels, f_vals = m1b.forecast_quantiles(
-                    train_rates, horizon=hh
-                )
+                f_levels, f_vals = m1b.forecast_quantiles(train_rates, horizon=hh)
                 f_mean = m1b.forecast_mean(train_rates, horizon=hh)
-                m1b_samples = np.array([
-                    rate_quantiles_to_count_samples(
-                        f_levels, f_vals[:, [i]], n, seed=seed + 1
-                    )[:, 0]
-                    for i, n in enumerate(test_n)
-                ]).T
+                m1b_samples = np.array(
+                    [
+                        rate_quantiles_to_count_samples(f_levels, f_vals[:, [i]], n, seed=seed + 1)[
+                            :, 0
+                        ]
+                        for i, n in enumerate(test_n)
+                    ]
+                ).T
                 timings["M1b"] += time.time() - t_m1b
                 m1b_q10 = np.quantile(m1b_samples, 0.10, axis=0)
                 m1b_q90 = np.quantile(m1b_samples, 0.90, axis=0)
@@ -216,23 +212,30 @@ def run_experiment() -> dict:
 
                 # ---- Oracle: true rates (noise floor) ----
                 rng_o = np.random.default_rng(seed + 2)
-                oracle_samples = np.stack([
-                    rng_o.binomial(int(round(n)), float(np.clip(p, 0, 1)), size=N_COUNT_SAMPLES)
-                    for n, p in zip(test_n, test_true, strict=True)
-                ]).T
+                oracle_samples = np.stack(
+                    [
+                        rng_o.binomial(int(round(n)), float(np.clip(p, 0, 1)), size=N_COUNT_SAMPLES)
+                        for n, p in zip(test_n, test_true, strict=True)
+                    ]
+                ).T
                 seed_crps["oracle"].append(float(np.mean(crps_counts(oracle_samples.T, test_a))))
                 seed_mae["oracle"].append(mae(np.median(oracle_samples, axis=0), test_a))
 
                 # ---- M3 probe: Delta grid on M1a's median rate ----
                 for delta in DELTA_GRID:
-                    d_samples = np.stack([
-                        hybrid.predict_counts(
-                            float(np.clip(r, 0.01, 0.99)), delta,
-                            int(round(n)), N_COUNT_SAMPLES, seed=seed,
-                            concentration=m0_conc,  # comparable intervals
-                        )
-                        for r, n in zip(c_mean, test_n, strict=True)
-                    ]).T
+                    d_samples = np.stack(
+                        [
+                            hybrid.predict_counts(
+                                float(np.clip(r, 0.01, 0.99)),
+                                delta,
+                                int(round(n)),
+                                N_COUNT_SAMPLES,
+                                seed=seed,
+                                concentration=m0_conc,  # comparable intervals
+                            )
+                            for r, n in zip(c_mean, test_n, strict=True)
+                        ]
+                    ).T
                     d_q10 = np.quantile(d_samples, 0.10, axis=0)
                     d_q90 = np.quantile(d_samples, 0.90, axis=0)
                     seed_m3_crps[delta].append(float(np.mean(crps_counts(d_samples.T, test_a))))
@@ -294,8 +297,7 @@ def run_experiment() -> dict:
             for s, models in mae_res.items()
         },
         "coverage_mean": {
-            s: {m: float(np.mean(v)) for m, v in models.items()}
-            for s, models in cov_res.items()
+            s: {m: float(np.mean(v)) for m, v in models.items()} for s, models in cov_res.items()
         },
         "paired_vs_M0": comparisons,
         "m3_probe_crps": {
@@ -303,8 +305,7 @@ def run_experiment() -> dict:
             for s, ds in m3_crps.items()
         },
         "m3_probe_coverage": {
-            s: {str(d): float(np.mean(v)) for d, v in ds.items()}
-            for s, ds in m3_cov.items()
+            s: {str(d): float(np.mean(v)) for d, v in ds.items()} for s, ds in m3_cov.items()
         },
         "timings_s": {k: round(v, 1) for k, v in timings.items()},
     }
@@ -324,8 +325,10 @@ def run_experiment() -> dict:
             print(f"  {m:15s} {mu:.3f} ± {sd:.3f}")
         for m in ("M1a_chronos2", "M1b_timesfm25"):
             c = comparisons[s][m]
-            print(f"    {m} vs M0: Δ={c['mean_diff_crps']:+.3f}±{c['std_diff_crps']:.3f} "
-                  f"p={c['wilcoxon_p']}")
+            print(
+                f"    {m} vs M0: Δ={c['mean_diff_crps']:+.3f}±{c['std_diff_crps']:.3f} "
+                f"p={c['wilcoxon_p']}"
+            )
     print("\n80% PI coverage (target 0.80):")
     for s in SCENARIOS:
         covs = summary["coverage_mean"][s]

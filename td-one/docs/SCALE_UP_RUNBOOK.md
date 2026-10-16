@@ -72,6 +72,8 @@ entry point is `scripts/scale_up.py`:
 ```bash
 cd td-one && uv run python scripts/scale_up.py --n-customers 10000 --n-months 66 --models m0
 # smoke: --n-customers 500 --n-months 24 --models m0 --skip-ingest
+# M0 trailing window: --m0-window 3 (default 6; window=6 reproduces the published M0)
+# multi-seed: --seed 1 --tag seed1-m0w6
 ```
 
 ## 5. ✅/⏳ Experiments

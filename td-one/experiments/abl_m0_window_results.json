@@ -1,0 +1,32 @@
+{
+  "experiment": "abl_m0_window",
+  "config": {
+    "n_customers": 10000,
+    "n_months": 66,
+    "seed": 0
+  },
+  "windows": [
+    {
+      "window": 3,
+      "mean_crps": 3.1961814285714287,
+      "mean_mae": 4.582474187349649,
+      "mean_coverage_80": 0.8142857142857143,
+      "n_cells": 70
+    },
+    {
+      "window": 6,
+      "mean_crps": 5.360205714285715,
+      "mean_mae": 7.223880893677781,
+      "mean_coverage_80": 0.6714285714285715,
+      "n_cells": 70
+    },
+    {
+      "window": 12,
+      "mean_crps": 8.73119857142857,
+      "mean_mae": 11.302325818238035,
+      "mean_coverage_80": 0.49999999999999994,
+      "n_cells": 70
+    }
+  ],
+  "elapsed_s": 146.9
+}

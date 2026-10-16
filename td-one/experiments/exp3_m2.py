@@ -159,7 +159,7 @@ def evaluate_m0(panels: list[dict[str, object]], seed: int = 42) -> list[dict[st
     return rows
 
 
-def wire_tools() -> dict[str, ToolFn]:
+def wire_tools(backend: str = MOCK_MODEL) -> dict[str, ToolFn]:
     """Adapt the real td_one.tools implementations to the agent's callable contract.
 
     Raises:
@@ -185,7 +185,7 @@ def wire_tools() -> dict[str, ToolFn]:
 
     def forecasting(args: dict[str, object]) -> str:
         panel = data_segment_tool(str(args["segment_id"]), _run_date(args))
-        quantiles = forecast(MOCK_MODEL, panel, _run_date(args))
+        quantiles = forecast(backend, panel, _run_date(args))
         return json.dumps({str(k): v for k, v in quantiles.items()})
 
     return {
@@ -359,6 +359,7 @@ def run_exp3(
     tools: dict[str, ToolFn] | None = None,
     seed: int = 42,
     use_real_llm: bool = False,
+    backend: str = MOCK_MODEL,
 ) -> Path:
     """Run the M2 experiment and write results JSON + report."""
     out_path = Path(out_dir)
@@ -367,7 +368,7 @@ def run_exp3(
         panels = build_panels()
         write_pilot_segments(panels)
     if tools is None:
-        tools = wire_tools()
+        tools = wire_tools(backend=backend)
 
     m0_rows = evaluate_m0(panels, seed=seed)
     m2_rows = run_m2_agent(panels, tools, seed=seed, use_real_llm=use_real_llm)
@@ -380,7 +381,7 @@ def run_exp3(
         "experiment": "exp3_m2",
         "date": RUN_DATE.isoformat(),
         "mode": "real" if use_real_llm else "mock",
-        "forecast_model": MOCK_MODEL,
+        "forecast_model": backend,
         "panels": combined,
     }
     results_path = out_path / "exp3_results.json"
@@ -389,12 +390,13 @@ def run_exp3(
     valid = [r for r in combined if not math.isnan(_row_float(r, "m2_crps"))]
     n_better = sum(1 for r in valid if _row_float(r, "m2_crps") < _row_float(r, "crps"))
     total_cards = sum(_row_int(r, "evidence_cards") for r in combined)
+    backend_kind = "interface-only mock" if backend == MOCK_MODEL else "real weights"
     lines = [
         "# Experiment 3 Report: M2 (ReAct LLM Agent) vs M0",
         "",
         f"**Date:** {datetime.now(UTC).date().isoformat()} (run_date: {RUN_DATE.isoformat()}).",
         f" **Mode:** {'real (Groq)' if use_real_llm else 'mock (scripted LLM)'}.",
-        f"Forecast backend: {MOCK_MODEL} (interface-only mock on the real grid).",
+        f"Forecast backend: {backend} ({backend_kind} on the real grid).",
         "",
         "The scripted ReAct agent runs the 3-tool trace",
         "(data_segment → evidence → forecasting) per pilot segment; the",
@@ -436,11 +438,17 @@ def run_exp3(
 def main() -> int:
     """CLI entrypoint."""
     use_real = os.environ.get("TD_ONE_REAL_LLM") == "1"
+    backend = os.environ.get("TD_ONE_TSFM_BACKEND", MOCK_MODEL)
     if use_real:
-        print("exp3: real-LLM mode (Groq, <=20 calls, backoff on 429)")
+        print(f"exp3: real-LLM mode (Groq, <=20 calls, backoff on 429), backend={backend}")
     else:
         print("exp3: mock mode (scripted LLM). Wiring td_one.tools ...")
-    out = run_exp3(Path(__file__).resolve().parent, seed=42, use_real_llm=use_real)
+    out = run_exp3(
+        Path(__file__).resolve().parent,
+        seed=42,
+        use_real_llm=use_real,
+        backend=backend,
+    )
     print(f"wrote {out}")
     return 0
 

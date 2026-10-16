@@ -24,6 +24,7 @@ secondary: MAE and 80% interval coverage.
 | exp2 v2 | M0 vs M1 (real weights) | 3 scenarios × 5 seeds | real weights | `exp2_report.md` |
 | exp3 | M2 vs M0 | 3 pilot segments | mock + real Groq | `exp3_report.md` |
 | exp4 | M3 vs M0 | 6 macro scenarios | mock + real Groq | `exp4_report.md` |
+| exp6 | M3+shrinkage/gate vs M3/M0 | 12 scenarios (6 tune + 6 held-out) | mock (mechanism test) | `exp6_results.json` |
 | scale-up | M0 vs `*_mock` | 10k×66, 14 seg × 5 origins | mock (plumbing) | `scale_up_report.md` |
 | scale-up | M0 vs real Chronos-2 | 10k×66, 14 seg × 5 origins | real weights | `scale_up_report_real-chronos2.md` |
 | scale-up | M0 vs real TimesFM-2.5 | 10k×66, 14 seg × 5 origins | real weights | `scale_up_report_real-timesfm25.md` |
@@ -83,7 +84,18 @@ the same reason, leaving **5 scored origins per segment**.
    0.45–0.70). Direction doesn't predict the score: `rate_shock_down`
    was a CRPS loss despite correct direction.
 
-6. **Calibration is the open work.** Coverage sits below the 80%
+6. **M3 over-adjustment fixes (exp6, mock mechanism test):** plain M3 is
+   worse than M0 (held-out mean CRPS 9.66 vs 7.86) — over-adjustment
+   hurts. A **regime gate** (two-proportion z-test on the panel; delta
+   forced to 0 unless |z| ≥ 1.25) restores M3 to 7.60, beating M0 by
+   killing catastrophic spurious adjustments on benign scenarios
+   (gate confusion on held-out: 3 TP / 0 FP / 3 TN / 0 FN).
+   **Shrinkage** (k*=0.5, tuned) helps vs plain M3 (8.62) but not vs M0;
+   gate+shrinkage (7.73) ≈ gate alone. The gate is a risk-management
+   device, not a win-rate device. Small-n (6+6 scenarios); mock deltas
+   replicate the real-Groq error model.
+
+7. **Calibration is the open work.** Coverage sits below the 80%
    nominal for M0 and the mocks at scale; Chronos-2 overcovers.
 
 ## Reproducing
@@ -109,6 +121,7 @@ budgets, 429 backoff with 60s floor, 2.5s process-wide throttle.
 ## Artifacts
 
 - `exp{1,2,3,4}_report.md` + `exp{2,3,4}_results.json` — per-experiment reports and raw results
+- `exp6_m3plus.py` + `exp6_results.json` — M3 over-adjustment fixes (shrinkage + regime gate), 6 tune + 6 held-out scenarios
 - `scale_up_report*.md` + `scale_up_results*.json` — scale-up reports (mock, real-chronos2, real-timesfm25)
 - `evidence_corpus/corpus.json` — frozen 12-entry illustrative evidence corpus (PIT-filtered at `run_date`)
 - `REPRODUCIBILITY.md` — weights bootstrap, exact commands, pinned revisions

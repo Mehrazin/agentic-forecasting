@@ -167,6 +167,127 @@ adjustment destroys the forecast; kept as context in
 
 ---
 
+## 2b. Macro-grounded DGP — `experiments/exp8_macro.py` ✅ done
+
+The default DGP has no macro dynamics, so macro-aware models cannot win
+by construction. exp8 overlays a FRED-driven component: the 30y mortgage
+rate's z-scored 3-month change shifts the switching logit each month
+(β=0.6, calendar-aligned 2021-04 → 2026-09, 1:1 with FRED history).
+2k customers × 66 months.
+
+| Model | Mean CRPS | Mean MAE | Mean coverage_80 |
+|---|---|---|---|
+| M0 (macro-blind) | 2.305 | 3.120 | 0.786 |
+| M0-macro-oracle (knows β + series) | **1.573** | 2.160 | 0.914 |
+| M0-macro-est (OLS β̂, no oracle) | **1.624** | 2.121 | 0.786 |
+
+**Finding:** the oracle cuts CRPS 32%; the simple estimated version
+captures **93% of the oracle gain**. When macro structure exists, macro
+awareness pays — and it doesn't need oracle knowledge. This justifies
+the FRED integration workstream (17 series currently unused by any
+model) and macro-evidence for the M3 agent on real data.
+
+## 2c. M3 over-adjustment fixes — `experiments/exp6_m3plus.py` ✅ done
+
+Two mechanisms for exp4's over-adjustment failures (wrong-sign deltas,
+spurious benign adjustments): **shrinkage** (`ShrunkHybridReadout`, delta
+× k, k tuned) and a **regime gate** (`gate_delta`: two-proportion z-test
+on the panel, delta forced to 0 unless |z| ≥ threshold — the "do nothing"
+prior). 12 new scenarios (6 shock + 6 benign), 6 tune / 6 held-out; mock
+deltas replicate the real-Groq error model (seeded undershoot, 15%
+sign flips, benign spurious).
+
+Tuned: k*=0.5, threshold*=1.25.
+
+| Variant | Tune mean CRPS | Held-out mean CRPS |
+|---|---|---|
+| M0 | 4.44 | 7.86 |
+| M3 (bound 0.75) | 5.76 | 9.66 |
+| M3+shrinkage | 4.73 | 8.62 |
+| M3+gate | 4.47 | **7.60** |
+| M3+both | **4.25** | 7.73 |
+
+Gate confusion (held-out): 3 TP / 0 FP / 3 TN / 0 FN; all 12: 5/1/5/1.
+
+**Finding:** plain M3 is worse than M0 — over-adjustment hurts. The gate
+restores M3 past M0 on held-out (7.60 < 7.86) by killing catastrophic
+spurious adjustments on benign scenarios (e.g. 10.95→3.94). Shrinkage
+helps vs plain M3 but not vs M0; gate+shrinkage ≈ gate alone. The gate
+is a **risk-management device, not a win-rate device** (1/6 strict wins
+vs M0, but the wins are large and the ties are exact). Small-n caveat:
+6+6 scenarios; mock error model is constructed, not observed.
+
+## 2d. Better baseline models — `experiments/exp5_models.py` ✅ done
+
+Nine models on the standard config (10k×66, seed 0): hierarchical
+partial-pooling, EWM (half-life 2/4), split-conformal M0 (w3/w6),
+equal + inverse-CRPS ensembles, vs M0 windows 3/6.
+
+| Model | Mean CRPS | Mean MAE | Mean coverage_80 |
+|---|---|---|---|
+| m0_w3 | **3.196** | 4.582 | 0.814 |
+| conf_w3 | 3.495 | 4.582 | **0.914** |
+| ens_crpsw | 4.078 | 5.693 | 0.743 |
+| ens_equal | 4.251 | 5.923 | 0.729 |
+| ewm_hl2 | 4.442 | 6.196 | 0.714 |
+| conf_w6 | 5.044 | 7.224 | **0.914** |
+| hier | 5.254 | 7.073 | 0.686 |
+| m0_w6 | 5.360 | 7.224 | 0.671 |
+| ewm_hl4 | 6.555 | 8.798 | 0.571 |
+
+**Findings:** nothing beats m0_w3 — the short window is stubbornly
+optimal on this DGP (recency dominates). **Conformal is the calibration
+fix** the project needed: coverage 0.671→0.914 (w6), and conf_w6 even
+beats m0_w6 on CRPS (5.044 < 5.360). Hierarchical pooling adds almost
+nothing (segments are large; would matter on thin segments). ewm_hl2 is
+the best non-w3 model; long memory (hl4) hurts. Adaptive ensemble
+weights help but can't beat the best component.
+
+## 2e. Multi-seed scale-up — `experiments/multiseed_report.md` ✅ done
+
+Seeds 0–4, 10k×66, 14 segments × 5 origins. M0 w6/w3, real Chronos-2,
+real TimesFM-2.5. 19/20 runs (seed1-m0w6 lost to OOM).
+
+| Seed | M0 w6 | M0 w3 | Chronos-2 | TimesFM-2.5 |
+|---|---|---|---|---|
+| 0 | 5.360 | 3.196 | 4.463 | 4.591 |
+| 1 | — | 2.976 | 4.263 | 4.508 |
+| 2 | 2.916 | 3.695 | 3.886 | 4.197 |
+| 3 | 4.372 | 2.070 | 3.464 | 3.621 |
+| 4 | 3.873 | 2.794 | 3.618 | 3.886 |
+
+**Findings:**
+1. M0's window is a genuine tuning parameter with **seed-dependent
+   direction**: w3 beats w6 significantly on 3/4 seeds, but w6 beats w3
+   significantly on seed 2 (p=0.022). Future M1-vs-M0 comparisons must
+   tune the window or report the envelope.
+2. **Neither TSFM beats M0_w6 significantly on any seed.** The seed-0
+   mean edge does not generalize; on seed 2 M0_w6 wins significantly
+   vs both. Honest summary: *no model significantly beats the baseline;
+   the tuned-window baseline beats both TSFMs on 3/5 seeds.* This
+   strengthens exp2 v2.
+3. Coverage: Chronos-2 overcovers on **every** seed (0.90–0.97, most
+   consistent pattern); TimesFM-2.5 is best calibrated (|cov−0.80|=0.06).
+
+## 2f. Honest M2 — real Groq + real Chronos-2 backend ✅ done
+
+`experiments/exp3_results_honest_backend.json` (`TD_ONE_TSFM_BACKEND=chronos2`).
+The earlier real-Groq exp3 used `timesfm_mock`; this is the first fully-real
+M2 run.
+
+| Segment | M0 CRPS | M2 CRPS (real Groq + Chronos-2) | Steps |
+|---|---|---|---|
+| seg-0 | 0.76 | 5.40 | 5 |
+| seg-1 | 1.33 | 1.25 | 6 |
+| seg-2 | 1.40 | 4.35 | 5 |
+
+**Clean negative result.** With a real numerical backend, the ReAct agent
+loses badly on 2/3 segments and ekes out a marginal win on the third
+(1.25 vs 1.33 — far smaller than the mock-backend "win" of 0.82 vs 1.33).
+The agent's interventions hurt more than they help: it overrides a decent
+Chronos-2 forecast with worse judgment. Orchestration does not compensate
+for the backend, and the LLM's "reasoning" is net-negative here.
+
 ## 3. Planned experiments
 
 1. **Multi-seed scale-up** (seeds 1–4): the paired non-significance
@@ -203,6 +324,7 @@ adjustment destroys the forecast; kept as context in
 | `experiments/scale_up_report*.md` + `scale_up_results*.json` | Scale-up (mock, real-chronos2, real-timesfm25) |
 | `experiments/abl_m0_window_results.json` | Ablation B |
 | `experiments/abl_m3_bound_results.json` | Ablation A |
+| `experiments/exp6_m3plus.py` + `exp6_results.json` | M3 over-adjustment fixes ( §2c ) |
 | `experiments/evidence_corpus/corpus.json` | Frozen 12-entry evidence corpus |
 | `docs/METHODOLOGY.md` | CVPR-style methodology reference |
 | `docs/CRITIC_SYNTHESIS.md` | 2026-10-15 six-angle audit + exp2 v1 retraction |
