@@ -3,14 +3,15 @@
 **Date:** 2026-10-16
 **Scope:** Full data pipeline — Freddie Mac ingest, FRED, news KB, PIT store, simulator
 **Method:** Code review + live DB inspection + manifest/parquet verification
+**Status:** All P0s and P1s fixed (commit 9a5665f). P2s documented for follow-up.
 
 ## Summary
 
-| Severity | Count | Definition |
-|----------|-------|------------|
-| P0 | 2 | Data leakage / corruption — wrong results |
-| P1 | 5 | Robustness — silent failures, wrong metadata |
-| P2 | 5 | Docs / performance |
+| Severity | Count | Definition | Status |
+|----------|-------|------------|--------|
+| P0 | 2 | Data leakage / corruption — wrong results | ✅ Fixed |
+| P1 | 5 | Robustness — silent failures, wrong metadata | ✅ Fixed |
+| P2 | 5 | Docs / performance | 📝 Documented |
 
 ---
 
