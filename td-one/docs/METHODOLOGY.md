@@ -19,8 +19,11 @@ On 10,000 synthetic customers × 66 months, the real-weight TSFMs beat M0
 on mean CRPS (Chronos-2 4.46, TimesFM-2.5 4.59 vs M0 5.36); TimesFM
 lands on nominal 80% coverage (mean 0.80 across segments). A Groq-driven ReAct agent finalized 2 of 3
 pilot traces and beat M0 on one. We retract an earlier claim that
-Chronos-2 beats M0 by 20% — it was a circular-DGP artifact caught by our
-critic audit. Calibration remains the open problem.
+Chronos-2 beats M0 by 20% on synthetic data — it was a circular-DGP
+artifact caught by our critic audit; on 2,000 real M4 Monthly series,
+both TSFMs genuinely beat the classical baselines by ~20% CRPS
+(§6.5). Conformal intervals fix classical calibration (exactly nominal
+80% coverage on real data); TSFM calibration remains DGP-dependent.
 
 ---
 
@@ -246,6 +249,15 @@ unbounded adjustment destroys calibration.
 | exp3 | Can the ReAct agent beat M0? | 3 pilot segments; mock vs real Groq | Mock: plumbing only. Real: 1/2 finalized segments beat M0 |
 | exp4 | Does bounded agent adjustment help? | 6 macro scenarios, real Groq deltas | 3/6 beat M0; LLM directional but over-adjusts |
 | scale-up | At full scale? | 10k×66, 14 seg × 6 origins | Real weights: Chronos-2 4.46, TimesFM 4.59 vs M0 5.36 |
+| exp5 | Better classical baselines? | 9 models, 10k×66, seed 0 | Nothing beats m0_w3 (3.20); conformal fixes coverage 0.67→0.91 |
+| exp6 | Fix M3 over-adjustment? | Statistical gate + shrinkage, 12 scenarios | "Do nothing" z-gate edges past M0 (7.60 vs 7.86); shrinkage helps vs M3 only |
+| multi-seed | Does the scale-up generalize? | Seeds 0–4, real TSFMs | No TSFM beats M0 significantly on any seed; M0's window is a seed-dependent tuning parameter |
+| exp8 | Is macro structure worth modeling? | Real FRED 30y-mortgage overlay on the simulator | Oracle cuts CRPS 32%; OLS captures 93% — justifies the FRED workstream |
+| exp10 | Promote better classical defaults? | 2 DGPs; conformal, ACI, macro, hierarchical | Conformal M0 now default; macro_m0 honest null on standard DGP, 93% oracle recovery on macro DGP; hierarchical niche on thin segments |
+| exp11 | Redesign the agent's role? | Regime-reader → gate, real Groq | Qualified positive: 3.59 vs M0 4.82 — first agentic win with real components |
+| exp12 | LLM as ensemble router? | 4 scenarios, real Groq | Clean negative: 2.60 vs inverse-CRPS 2.32 — the survey's top-ranked role fails here |
+| exp13 | TSFM + FRED rematch | Macro-conditioned TSFMs, 2 DGPs × 3 seeds | Mechanism works (+13–18% on macro DGP); hurts on standard DGP — conditioning needs a gate |
+| exp14 | Real data? | M4 Monthly, 2000 series, real weights | TSFMs beat classical ~20% CRPS; "M0 beats everything" was a DGP artifact (§6.5) |
 
 ### 6.1 Experiment 2 (the one that matters for M1)
 
@@ -319,35 +331,83 @@ shared segments find **no significant difference** (Chronos-2 wins
 conclusion reproduces at scale. Single seed, single DGP: any future
 superiority claim must be pre-registered across seeds/DGPs.
 
+### 6.5 Real-data benchmark — M4 Monthly (exp14)
+
+Every comparison above uses synthetic DGPs, and the literature survey
+warns our DGP may be too easy for M0. The first real-data test runs on
+M4 Monthly (Finance + Macro, n=2000 stratified, seed 0): H=6 ahead,
+quantile CRPS for levels; Brier for binary direction (is y[t+6] > y[t],
+n=24000 origins).
+
+| Model | Mean CRPS | 80% coverage |
+|---|---|---|
+| naive | 445.40 | 0.740 |
+| snaive | 542.10 | 0.692 |
+| conf_naive | 447.37 | **0.800** |
+| Chronos-2 (real) | **350.85** | 0.662 |
+| TimesFM-2.5 (real) | 356.35 | 0.689 |
+
+On direction: Chronos-2-derived P(up) scores Brier **0.2519**, beating
+m0_binary (0.2604); conformal shrinkage helps M0 slightly (0.2582) but
+doesn't close the gap.
+
+**Findings.** The synthetic headline does not generalize: both real
+TSFMs beat the classical baselines by ~20% CRPS on real series, whose
+seasonal/trend structure is where pretrained TSFMs earn their keep. Two
+results transfer cleanly: conformal calibration hits exactly 0.800 on
+real data, and TimesFM-2.5 stays best-calibrated among TSFMs. The
+research question flips from "can anything beat M0" to "where does
+classical still win — thin segments, macro structure, calibration?"
+Caveats: single seed-0 sample; CRPS is scale-dependent across M4
+series; no significance testing yet. Full table in RESULTS.md §2k.
+
 ---
 
 ## 7. Discussion and limitations
 
-1. **Everything is synthetic.** The simulator is realistic but the
-   DGP is ours; real portfolio data is the obvious next validation.
-2. **Calibration is open.** M0 undercovers at scale; Chronos-2
-   overcovers; only TimesFM is near nominal. Interval calibration —
-   not point accuracy — is the next modeling task.
+1. **Real-data validation has begun — and it overturned the
+   headline.** M4 (§6.5): real TSFMs beat classical baselines by ~20%
+   CRPS on 2,000 real series. The mortgage-specific test — loan-level
+   portfolio data (Freddie Mac, free but gated on registration) — is
+   the next target.
+2. **Calibration is half-solved.** Conformal fixes the classical
+   baseline (0.67→0.91 coverage on synthetic; exactly 0.800 on M4).
+   TSFM calibration stays DGP-dependent: Chronos-2 overcovers on
+   synthetic but *under*covers on M4 (0.662).
 3. **The agent is rate-limit-bound, not skill-bound**, on the free
    tier. Paid-tier or local inference would separate the two.
-4. **M3's over-adjustment** suggests the ±0.75 bound is necessary but
-   not sufficient — the agent needs a "do nothing" prior for benign
-   regimes.
-5. **Scale-up is single-seed, single-DGP** — the paired
-   non-significance guards against overclaim, but a multi-seed,
-   pre-registered comparison is the next required step.
+4. **M3's over-adjustment is confirmed and partially tamed.** A
+   statistical "do nothing" gate (exp6) edges past M0 on held-out
+   scenarios; the redesigned M4 regime-reader (exp11) is the first
+   agentic variant to beat M0 with real components — fragile, but
+   real.
+5. **Multi-seed is done on synthetic** (5 seeds: no TSFM beats M0
+   significantly anywhere; M0's window is a seed-dependent tuning
+   parameter). Real data is a single seed-0 sample so far — no
+   significance testing yet.
+6. **The DGP lesson.** M0's synthetic dominance was an artifact of an
+   easy DGP: on simulator v2 (burnout, seasoning, S-curve, FRED
+   macro) the M0 window ranking *reverses* (w6 beats w3). The testbed
+   must be hard enough that synthetic conclusions survive contact
+   with real data — every comparison should run on both DGPs.
 
 ---
 
 ## 8. Conclusion
 
-A Bayesian baseline remains stubbornly competitive: neither TSFMs nor
-LLM agents beat it significantly in designed comparisons, though both
-show real signal (TimesFM's mean CRPS edge, the agent's first ReAct
-win, M3's 3/6 macro scenarios). The honest contribution is the
-machinery — a PIT-clean ladder, a tool-injected agent with bounded
-hybrid readout, and a documented retraction — more than any single
-leaderboard number.
+A Bayesian baseline remains stubbornly competitive on our synthetic
+DGPs: neither TSFMs nor LLM agents beat it significantly in designed
+comparisons, though both show real signal (TimesFM's mean CRPS edge,
+the M4 regime-reader's first real-component win, M3's 3/6 macro
+scenarios). On real M4 data, pretrained TSFMs beat classical baselines
+by ~20% — the synthetic M0 dominance was a DGP artifact. The honest
+contribution is the machinery — a PIT-clean ladder, a tool-injected
+agent with bounded readout, conformal calibration that transfers
+exactly to real data, and a documented retraction — more than any
+single leaderboard number. The forward design (docs/REDESIGN.md), set
+by the literature survey: the LLM never outputs numbers; adjustment
+needs evidence plus shrinkage; report the M0 envelope across seeds
+and DGPs, not a point M0.
 
 ## References
 
