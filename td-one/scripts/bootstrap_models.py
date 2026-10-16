@@ -88,8 +88,7 @@ def main() -> int:
     except ImportError:
         print("ERROR: huggingface_hub not installed.", file=sys.stderr)
         print(
-            "Run: uv run --with huggingface_hub "
-            "python scripts/bootstrap_models.py",
+            "Run: uv run --with huggingface_hub python scripts/bootstrap_models.py",
             file=sys.stderr,
         )
         return 1
@@ -108,9 +107,9 @@ def main() -> int:
         repo_id = spec["repo_id"]
         dest = weights_dir / key
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"Downloading {repo_id} -> {dest}")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
 
         try:
             snapshot_download(
@@ -134,6 +133,7 @@ def main() -> int:
         actual_revision = spec["revision"]
         try:
             from huggingface_hub import HfApi
+
             api = HfApi()
             info = api.repo_info(repo_id=repo_id, revision=spec["revision"])
             actual_revision = info.sha
@@ -163,9 +163,9 @@ def main() -> int:
     print(f"\nManifest written to {manifest_path}")
 
     # Summary
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("SUMMARY")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     ok = sum(1 for m in manifest["models"].values() if m.get("status") == "ok")
     print(f"  {ok}/{len(MODELS)} models downloaded successfully")
     for key, m in manifest["models"].items():
