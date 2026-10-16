@@ -137,6 +137,39 @@ flowchart LR
     HYB --> EV
 ```
 
+### 4.1 Simulator v2 — richer DGP
+
+The v1 DGP missed the three structural features the prepayment literature
+identifies as first-order (see `docs/LITERATURE_SURVEY.md` §5–6), plus the
+economically central renewal-competition mechanism. Simulator v2
+(`src/td_one/data_gen/simulator_v2.py`, subclassing v1 — v1 untouched) adds:
+
+**Renewal offers.** Each renewal episode generates 1 TD + 1–2 competitor
+offers (rate, term, type, offer/expiry dates, accepted/declined/expired).
+TD's offer is the market fixed rate at maturity plus a 0–25bp premium;
+competitors disperse around market (±30bp). Statuses are outcome-consistent:
+switchers accept a competitor, renewers accept TD or let offers expire.
+
+**Offer-competition incentive (S-curved).** Switching responds to
+`max(0, TD_rate − best_competitor_rate)` via `atan(spread / 0.75)` — a
+saturating S-curve, not the linear incentive v1 used. This is the mechanism
+v1 missed: borrowers react to *TD's* competitiveness, not just the level.
+
+**Customer heterogeneity** (all with real DGP effects): credit-utilization
+drift (+1.0 logit per pp/month), life events within 6m of maturity (+0.6),
+digital channel (+0.35, shops more), advisor relationship (−0.45, retention).
+
+**Prepayment-canon mechanics.** *Burnout*: prior refinances lower switching
+(−0.45 each) and dampen rate sensitivity 25% each (selection). *Seasoning*:
+30-month ramp — v2 adds 12/24-month terms so young mortgages switch less.
+*FRED macro*: MORTGAGE30US 3m-change z-scores shift the logit by default
+(negative sign: rate spikes *reduce* switching via lock-in; winsorized ±2.5σ).
+
+The v2 base switch rate is ~11% (vs v1's higher rate); the intercept is
+empirically recalibrated since the new incentive terms add positive logit.
+Experiment 9 (`experiments/exp9_richdgp.py`) re-runs M0 vs the best models
+on the v2 DGP to test whether the richer structure changes conclusions.
+
 ---
 
 ## 5. The ladder

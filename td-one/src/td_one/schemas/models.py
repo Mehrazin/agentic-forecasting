@@ -70,6 +70,20 @@ class MortgageHistoryRecord(BaseModel):
     credit_utilization_pct: float | None = Field(default=None, ge=0, le=100)
 
 
+class MortgageHistoryRecordV2(MortgageHistoryRecord):
+    """v2 extension of the history record with richer heterogeneity.
+
+    Adds observable customer attributes used by the simulator v2 DGP:
+    acquisition channel, advisor relationship, and recent life events.
+    All defaulted so v1 records remain valid inputs.
+    """
+
+    channel: Literal["branch", "digital"] = "branch"
+    has_advisor: bool = False
+    life_event_6m: bool = False
+    life_event_type: Literal["none", "job_change", "new_child", "relocation"] = "none"
+
+
 class RenewalOutcomeRecord(BaseModel):
     """Renewal outcome for a mortgage episode (9 fields).
 
