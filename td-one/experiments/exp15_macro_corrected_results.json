@@ -1,0 +1,53 @@
+{
+  "experiment": "exp15_macro_corrected",
+  "config": {
+    "n_customers": 2000,
+    "n_months": 66,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "dgp": "simulator_v2, use_fred_macro=True (default)",
+    "true_beta": -0.3,
+    "fred_z_cap": 2.5,
+    "note": "Corrected negative lock-in sign. exp8's +0.6 beta on v1 was the wrong economics."
+  },
+  "per_seed_crps": {
+    "0": {
+      "m0": 0.8477,
+      "m0_macro_oracle": 0.8701,
+      "m0_macro_est": 0.9683
+    },
+    "1": {
+      "m0": 0.609,
+      "m0_macro_oracle": 0.6272,
+      "m0_macro_est": 0.7817
+    },
+    "2": {
+      "m0": 0.48,
+      "m0_macro_oracle": 0.4562,
+      "m0_macro_est": 0.6394
+    }
+  },
+  "beta_hats": {
+    "0": [
+      0.4025
+    ],
+    "1": [
+      1.7909
+    ],
+    "2": [
+      -0.4756
+    ]
+  },
+  "mean_crps": {
+    "m0": 0.6456,
+    "m0_macro_oracle": 0.6512,
+    "m0_macro_est": 0.7965
+  },
+  "oracle_gain": -0.0056,
+  "est_gain": -0.1509,
+  "fraction_oracle_gain_captured": null,
+  "elapsed_s": 114.9
+}

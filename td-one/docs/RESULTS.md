@@ -212,12 +212,12 @@ rate's z-scored 3-month change shifts the switching logit each month
 | M0-macro-oracle (knows β + series) | **1.573** | 2.160 | 0.914 |
 | M0-macro-est (OLS β̂, no oracle) | **1.624** | 2.121 | 0.786 |
 
-**Finding:** the oracle cuts CRPS 32%; the simple estimated version
-captures **93% of the oracle gain**. When macro structure exists, macro
-awareness pays — and it doesn't need oracle knowledge. This justifies
-the FRED integration workstream (19 series cached as of 2026-10-16;
-`macro_m0` in `src/td_one/models/macro_m0.py` now consumes them) and
-macro-evidence for the M3 agent on real data.
+**Finding (SUPERSEDED by §2m/exp15):** the oracle cuts CRPS 32%; the
+simple estimated version captures **93% of the oracle gain** — but this
+used the wrong sign (β=+0.6, rising rates → more switching). With the
+corrected negative lock-in economics on simulator v2, the oracle gain
+is ≈ 0 and the estimated overlay hurts. The 93% was a DGP artifact;
+see §2m for the retraction.
 
 ## 2c. M3 over-adjustment fixes — `experiments/exp6_m3plus.py` ✅ done
 
@@ -451,8 +451,14 @@ aci_m0 (ACI γ=0.05), macro_m0 (FRED OLS), hier_thin vs m0_w6_thin
 1. **Honest null confirmed:** macro_m0 is *worse* than m0_w6 on the
    standard DGP (1.472 vs 1.401). The FRED overlay adds noise when
    there's no macro structure — as it should.
-2. **Macro recovery:** on the macro DGP, macro_m0 (1.627) captures 93%
-   of the oracle gain ((2.305−1.627)/(2.305−1.573)), matching exp8.
+2. **Macro recovery (CAVEAT — see §2m):** on the macro DGP, macro_m0
+   (1.627) captures 93% of the oracle gain
+   ((2.305−1.627)/(2.305−1.573)), matching exp8. **But** this used the
+   v1 macro DGP with the wrong sign (β=+0.6); exp15 reran the question
+   on simulator v2 with corrected negative lock-in and the 93% did not
+   survive (oracle gain ≈ 0, estimated overlay hurts). Treat this
+   finding as superseded pending a corrected-sign rerun of exp10's
+   macro-DGP arm.
    It beats every w6-based model, though m0_w3 (1.491) still wins
    outright — recency dominates even with macro structure.
 3. **Hierarchical has a niche:** on thin (p=0.1 subsampled) segments,
@@ -622,6 +628,36 @@ reward the longer window. This is the evidence behind the design rule
 that every model comparison must run on both DGPs — and it validates
 the literature survey's warning (§5) that v1 was too easy for M0.
 Full DGP description in `docs/METHODOLOGY.md` §4.1.
+
+## 2m. Corrected-sign macro overlay — `experiments/exp15_macro_corrected.py` ✅ done
+
+exp8's "93% of oracle gain" used the **wrong economics**: β=+0.6
+(rising rates → more switching) on the simple v1 DGP. Simulator v2
+corrected this to negative lock-in (rising rates → less switching,
+β=−0.3). This experiment reruns the macro question on v2 with the
+corrected sign, seeds 0–2, 2000×66.
+
+| Model | Mean CRPS (3 seeds) |
+|---|---|
+| M0 (macro-blind) | **0.646** |
+| M0-macro-oracle (knows −0.3·z exactly) | 0.651 |
+| M0-macro-est (MacroM0, OLS β̂) | 0.796 |
+
+Per-seed CRPS (m0 / oracle / est): seed 0: 0.848 / 0.870 / 0.968;
+seed 1: 0.609 / 0.627 / 0.782; seed 2: 0.480 / 0.456 / 0.639.
+MacroM0's β̂: +0.40, +1.79, −0.48 (true β=−0.3) — wrong sign 2/3 seeds.
+
+**Finding — the 93% does NOT survive.** Oracle gain ≈ 0 (vs 32% in
+exp8); the estimated overlay **actively hurts** (−0.15 CRPS). Three
+reasons: (1) the corrected signal is weaker (β=−0.3 vs +0.6) and
+winsorized; (2) M0's 6-month trailing window already adapts to the
+slow-moving macro baked into its training data; (3) OLS on sparse
+noisy panels gives unstable β̂ — wrong sign most seeds, so the
+"correction" points the wrong way. **Retraction:** exp8's 93% was an
+artifact of the stronger wrong-signed signal on the simpler DGP. A
+simple OLS macro overlay is not justified; macro value (if any) needs
+a more careful mechanism than trailing-logit OLS.
+Results JSON: `experiments/exp15_macro_corrected_results.json`.
 
 ## 3. Planned experiments (status 2026-10-16)
 

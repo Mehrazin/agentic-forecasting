@@ -6,8 +6,13 @@ forecast in logit space by ``beta_hat * z[forecast_month]``.
 
 On DGPs without macro structure the estimated beta is ~0 and the model
 reduces to plain M0 (honest null -- see ``experiments/exp10_classical.py``).
-On macro-driven DGPs it recovers most of the oracle gain (see
-``experiments/exp8_macro.py``: oracle -32% CRPS, estimated captures 93%).
+On the v1 macro DGP it recovered most of the oracle gain (see
+``experiments/exp8_macro.py``: oracle -32% CRPS, estimated captures 93%)
+-- BUT that DGP used the wrong sign (beta=+0.6). With the corrected
+negative lock-in on simulator v2 (``experiments/exp15_macro_corrected.py``),
+the oracle gain is ~0 and the OLS overlay hurts (unstable beta_hat, often
+the wrong sign). The 93% was a DGP artifact; do not cite it as a general
+result.
 """
 
 from __future__ import annotations
