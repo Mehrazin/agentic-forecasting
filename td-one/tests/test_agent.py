@@ -94,6 +94,7 @@ def test_estimate_adjustment_unparseable_returns_none() -> None:
 def test_estimate_adjustment_retries_transient_failure(monkeypatch: pytest.MonkeyPatch) -> None:
     """Transient LLM failures are retried; success on retry returns delta."""
     import time as _time
+
     monkeypatch.setattr(_time, "sleep", lambda s: None)
     mock_llm = MagicMock()
     mock_llm.complete.side_effect = [RuntimeError("429"), "0.30"]
@@ -106,6 +107,7 @@ def test_estimate_adjustment_retries_transient_failure(monkeypatch: pytest.Monke
 def test_estimate_adjustment_gives_up_after_retries(monkeypatch: pytest.MonkeyPatch) -> None:
     """Persistent failure -> None after exhausting retries (not silent 0.0)."""
     import time as _time
+
     monkeypatch.setattr(_time, "sleep", lambda s: None)
     mock_llm = MagicMock()
     mock_llm.complete.side_effect = RuntimeError("500")

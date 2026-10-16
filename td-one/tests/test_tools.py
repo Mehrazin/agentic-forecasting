@@ -337,3 +337,41 @@ def test_real_forecast_enforces_monotone_quantiles() -> None:
     finally:
         fm._real_wrappers.clear()
     assert out == {0.1: 0.10, 0.5: 0.20, 0.9: 0.30}, out
+
+
+def test_crossing_stats_recorded() -> None:
+    """The monotone rearrangement is instrumented, not silent."""
+    import numpy as np
+
+    from td_one.tools import forecasting as fm
+
+    class CrossingWrapper:
+        def forecast_quantiles(self, series, horizon=1):
+            levels = np.array([0.1, 0.5, 0.9])
+            return levels, np.array([[0.30], [0.10], [0.20]])
+
+        def unload(self):
+            pass
+
+    class CleanWrapper:
+        def forecast_quantiles(self, series, horizon=1):
+            levels = np.array([0.1, 0.5, 0.9])
+            return levels, np.array([[0.10], [0.20], [0.30]])
+
+        def unload(self):
+            pass
+
+    fm.reset_crossing_stats()
+    fm._real_wrappers["chronos2"] = CrossingWrapper()
+    fm._real_wrappers["timesfm25"] = CleanWrapper()
+    try:
+        fm._real_forecast("chronos2", np.full(12, 0.12))
+        fm._real_forecast("timesfm25", np.full(12, 0.12))
+        stats = fm.crossing_stats()
+    finally:
+        fm._real_wrappers.clear()
+        fm.reset_crossing_stats()
+    assert stats["chronos2"]["forecasts"] == 1
+    assert stats["chronos2"]["crossed"] == 1
+    assert stats["chronos2"]["inversions"] == 2  # (0.30,0.10) and (0.30,0.20)
+    assert stats["timesfm25"]["crossed"] == 0

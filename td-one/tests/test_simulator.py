@@ -153,3 +153,29 @@ def test_maturities_spread_across_calendar() -> None:
     assert len(maturities) >= 24, f"only {len(maturities)} distinct maturity months"
     june_share = sum(1 for y, m in maturities if m == 6) / len(maturities)
     assert june_share < 0.5, f"maturities still June-concentrated: {june_share:.2f}"
+
+
+def test_macro_shifts_raise_switching_rate() -> None:
+    """macro_shifts add a logit shift per maturity month (FRED overlay)."""
+    from td_one.data_gen.simulator import MortgageSimulator
+
+    sim = MortgageSimulator(n_customers=2000, n_months=24, seed=7)
+    history = sim.generate_history()
+    base = sim.generate_outcomes(history)
+    base_rate = sum(o.switched_lender_flag for o in base) / len(base)
+
+    # +2 logit shift every month must raise the switch rate substantially.
+    sim2 = MortgageSimulator(n_customers=2000, n_months=24, seed=7)
+    shifts = dict.fromkeys(sim2._month_dates(), 2.0)
+    shifted = sim2.generate_outcomes(history, macro_shifts=shifts)
+    shifted_rate = sum(o.switched_lender_flag for o in shifted) / len(shifted)
+    assert shifted_rate > base_rate + 0.15, (base_rate, shifted_rate)
+
+    # No shifts -> identical to default (backwards compatible).
+    sim3 = MortgageSimulator(n_customers=2000, n_months=24, seed=7)
+    history3 = sim3.generate_history()
+    plain = sim3.generate_outcomes(history3, macro_shifts=None)
+    sim4 = MortgageSimulator(n_customers=2000, n_months=24, seed=7)
+    history4 = sim4.generate_history()
+    default = sim4.generate_outcomes(history4)
+    assert [o.switched_lender_flag for o in plain] == [o.switched_lender_flag for o in default]

@@ -49,9 +49,7 @@ def test_pit_segment_query(pit_store: PITStore) -> None:
     assert (df["province"] == "ON").all()
 
 
-def _outcome(
-    mortgage_id: str, record_asof: date, observed_at: date | None
-) -> RenewalOutcomeRecord:
+def _outcome(mortgage_id: str, record_asof: date, observed_at: date | None) -> RenewalOutcomeRecord:
     return RenewalOutcomeRecord(
         customer_id="C001",
         mortgage_id=mortgage_id,

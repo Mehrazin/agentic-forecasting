@@ -61,9 +61,7 @@ def test_mortgage_history_optional_fields_default() -> None:
     rec = MortgageHistoryRecord(**_history_kwargs())
     assert rec.insured_flag is None
     assert rec.property_value_cad is None
-    rec2 = MortgageHistoryRecord(
-        **_history_kwargs(insured_flag=True, property_value_cad=650000.0)
-    )
+    rec2 = MortgageHistoryRecord(**_history_kwargs(insured_flag=True, property_value_cad=650000.0))
     assert rec2.insured_flag is True
     assert rec2.property_value_cad == 650000.0
 
