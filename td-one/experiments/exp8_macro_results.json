@@ -1,0 +1,31 @@
+{
+  "experiment": "exp8_macro",
+  "config": {
+    "n_customers": 2000,
+    "n_months": 66,
+    "seed": 0,
+    "beta_macro": 0.6,
+    "fred_series": "MORTGAGE30US"
+  },
+  "results": [
+    {
+      "model": "m0",
+      "mean_crps": 2.305,
+      "mean_mae": 3.12,
+      "mean_coverage_80": 0.786
+    },
+    {
+      "model": "m0_macro_oracle",
+      "mean_crps": 1.573,
+      "mean_mae": 2.16,
+      "mean_coverage_80": 0.914
+    },
+    {
+      "model": "m0_macro_est",
+      "mean_crps": 1.624,
+      "mean_mae": 2.121,
+      "mean_coverage_80": 0.786
+    }
+  ],
+  "elapsed_s": 112.8
+}

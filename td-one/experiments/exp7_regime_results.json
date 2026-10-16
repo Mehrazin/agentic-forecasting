@@ -1,0 +1,12 @@
+{
+  "experiment": "exp7_regime_prototype",
+  "mode": "mock (simulated classifier accuracy; mechanism test only)",
+  "class_deltas": {
+    "UP": 0.25,
+    "DOWN": -0.25,
+    "NONE": 0.0
+  },
+  "m0_mean_crps": 11.1604,
+  "m3_direct_mean_crps": 10.4292,
+  "elapsed_s": 15.7
+}

@@ -1,0 +1,59 @@
+{
+  "experiment": "exp7b_regime_real",
+  "mode": "real",
+  "accuracy": 0.6666666666666666,
+  "mean_m0_crps": 11.1604,
+  "mean_m3c_crps": 13.2374,
+  "m3_direct_reference": 10.429,
+  "scenarios": [
+    {
+      "id": "rate_shock_up",
+      "true_class": "UP",
+      "predicted": "DOWN",
+      "delta": -0.25,
+      "m0_crps": 19.8704,
+      "m3c_crps": 26.5318
+    },
+    {
+      "id": "rate_shock_down",
+      "true_class": "DOWN",
+      "predicted": "DOWN",
+      "delta": -0.25,
+      "m0_crps": 4.1804,
+      "m3c_crps": 5.007
+    },
+    {
+      "id": "osfi_tightening",
+      "true_class": "DOWN",
+      "predicted": "DOWN",
+      "delta": -0.25,
+      "m0_crps": 9.9516,
+      "m3c_crps": 8.2579
+    },
+    {
+      "id": "benign",
+      "true_class": "NONE",
+      "predicted": "NONE",
+      "delta": 0.0,
+      "m0_crps": 3.7844,
+      "m3c_crps": 3.7844
+    },
+    {
+      "id": "family_squeeze",
+      "true_class": "UP",
+      "predicted": "DOWN",
+      "delta": -0.25,
+      "m0_crps": 14.6016,
+      "m3c_crps": 25.7759
+    },
+    {
+      "id": "competitor_rate_war",
+      "true_class": "UP",
+      "predicted": "UP",
+      "delta": 0.25,
+      "m0_crps": 14.574,
+      "m3c_crps": 10.0673
+    }
+  ],
+  "elapsed_s": 24.9
+}
