@@ -87,16 +87,21 @@ DATA_DIR = ROOT / "data" / "fred"
 
 
 @with_retry(_FETCH_RETRY)
-def _fetch_series(client: FredClient, sid: str) -> tuple[pd.DataFrame, dict[str, object]]:
+def _fetch_series(
+    client: FredClient, sid: str, vintage_asof: str | None = None
+) -> tuple[pd.DataFrame, dict[str, object]]:
     """Fetch one series' observations + metadata, retrying transport blips.
 
     ``FredClient`` wraps transport errors in :class:`FredUnavailableError`;
     the original error is re-raised from the ``__cause__`` chain so the
     retry classifier sees it (vault/credential problems and bad series ids
     have no transport cause, so they stay fatal).
+
+    If ``vintage_asof`` (YYYY-MM-DD) is given, fetches the vintage as known
+    on that date (PIT-safe). Otherwise latest vintage (NOT PIT-safe).
     """
     try:
-        df = client.observations(sid)
+        df = client.observations(sid, vintage_dates=vintage_asof)
         info = client.series_info(sid)
     except FredUnavailableError as exc:
         cause = exc.__cause__
@@ -106,7 +111,9 @@ def _fetch_series(client: FredClient, sid: str) -> tuple[pd.DataFrame, dict[str,
     return df, info
 
 
-def fetch_all(series_ids: list[str], refresh: bool) -> dict[str, dict[str, object]]:
+def fetch_all(
+    series_ids: list[str], refresh: bool, vintage_asof: str | None = None
+) -> dict[str, dict[str, object]]:
     """Download each series to parquet; return the manifest entries."""
     unknown = [s for s in series_ids if s not in SERIES]
     if unknown:
@@ -122,7 +129,7 @@ def fetch_all(series_ids: list[str], refresh: bool) -> dict[str, dict[str, objec
             info = client.series_info(sid)
         else:
             print(f"  fetch {sid} ...", flush=True)
-            df, info = _fetch_series(client, sid)
+            df, info = _fetch_series(client, sid, vintage_asof=vintage_asof)
             df.to_parquet(out, index=False)
             print(f"        {len(df)} rows, {df['date'].min()}..{df['date'].max()}")
         # Empty frames (bad window, no data) must not produce "nan" strings.
@@ -134,6 +141,7 @@ def fetch_all(series_ids: list[str], refresh: bool) -> dict[str, dict[str, objec
             "units": info.get("units"),
             "seasonal_adjustment": info.get("seasonal_adjustment"),
             "last_updated": info.get("last_updated"),
+            "vintage_asof": vintage_asof,  # None = latest vintage (not PIT-safe)
             "rows": int(len(df)),
             "start": None if df.empty else str(df["date"].min()),
             "end": None if df.empty else str(df["date"].max()),
@@ -142,7 +150,17 @@ def fetch_all(series_ids: list[str], refresh: bool) -> dict[str, dict[str, objec
         "fetched_at": datetime.now(UTC).isoformat(),
         "n_series": len(series_ids),
     }
-    (DATA_DIR / "fred_manifest.json").write_text(json.dumps(manifest, indent=2))
+    # Merge with existing manifest (don't lose metadata on partial fetches).
+    mpath = DATA_DIR / "fred_manifest.json"
+    if mpath.exists():
+        try:
+            existing = json.loads(mpath.read_text())
+            for k, v in existing.items():
+                if k not in manifest and k != "_meta":
+                    manifest[k] = v
+        except (json.JSONDecodeError, OSError):
+            pass
+    mpath.write_text(json.dumps(manifest, indent=2))
     return manifest
 
 
@@ -152,6 +170,12 @@ def main() -> int:
     parser.add_argument("--series", nargs="*", default=None, help="Subset of series ids")
     parser.add_argument("--refresh", action="store_true", help="Re-download cached files")
     parser.add_argument("--list", action="store_true", help="Print the curated list and exit")
+    parser.add_argument(
+        "--vintage-asof",
+        default=None,
+        help="YYYY-MM-DD: fetch vintage-correct data as known on this date "
+        "(PIT-safe; default latest vintage, NOT PIT-safe for revised series)",
+    )
     args = parser.parse_args()
 
     if args.list:
@@ -164,8 +188,12 @@ def main() -> int:
     if unknown:
         print(f"unknown series ids: {unknown}")
         return 1
+    if args.vintage_asof:
+        print(f"vintage mode: as known on {args.vintage_asof}")
+    else:
+        print("WARNING: latest-vintage download (not PIT-safe for revised series)")
     print(f"fetching {len(ids)} FRED series -> {DATA_DIR}")
-    fetch_all(ids, refresh=args.refresh)
+    fetch_all(ids, refresh=args.refresh, vintage_asof=args.vintage_asof)
     print("wrote fred_manifest.json")
     return 0
 

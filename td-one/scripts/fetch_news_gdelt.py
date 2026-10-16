@@ -72,6 +72,9 @@ def fetch_month(topic: str, year: int, month: int) -> list[dict]:
 
 def store(db_path: Path, articles: list[dict]) -> int:
     """Insert articles, skipping duplicates by URL. Returns new count."""
+    from datetime import date as _date
+
+    today = _date.today().isoformat()
     con = sqlite3.connect(db_path)
     n = 0
     try:
@@ -89,14 +92,18 @@ def store(db_path: Path, articles: list[dict]) -> int:
                 pub = f"{pub[:4]}-{pub[4:6]}-{pub[6:8]}"
             if not pub:
                 continue
+            # PIT: reject future-dated articles (GDELT can return them).
+            if pub > today:
+                continue
+            # GDELT uses "domain", not "source".
+            source = a.get("domain", "") or a.get("source", "")
             try:
-                con.execute(
+                cur = con.execute(
                     "INSERT OR IGNORE INTO articles (pub_date, title, url, source)"
                     " VALUES (?, ?, ?, ?)",
-                    (pub, a.get("title", "")[:500], url, a.get("source", "")),
+                    (pub, a.get("title", "")[:500], url, source),
                 )
-                if con.total_changes:
-                    n += 1
+                n += cur.rowcount
             except sqlite3.Error:
                 pass
         con.commit()

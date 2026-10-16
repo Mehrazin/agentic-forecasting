@@ -53,20 +53,29 @@ def _repo_fred_dir() -> Path:
 def load_fred_z(
     fred_id: str = DEFAULT_FRED_ID,
     data_dir: Path | str | None = None,
+    asof: date | None = None,
 ) -> dict[date, float]:
     """Load z-scored 3-month percent change of a FRED series.
 
     Weekly/daily series are resampled to month-end. The 3-month percent
-    change is z-scored over the full history.
+    change is z-scored.
+
+    PIT SAFETY: if ``asof`` is given, the z-score mean/std are computed
+    using only observations with date <= asof. Without ``asof``, stats use
+    the full history — which leaks future information into past forecasts.
+    Always pass the forecast origin as ``asof`` in evaluations.
 
     Args:
         fred_id: FRED series ID (parquet file stem).
         data_dir: Directory with ``<fred_id>.parquet``; defaults to the
             repo's ``data/fred/``.
+        asof: PIT cutoff date. Stats computed on date <= asof only.
+            If None, uses full history (LEAKY — for exploration only).
 
     Returns:
         Mapping month-end :class:`datetime.date` -> z-score. Months with
-        undefined change (leading NaNs) are omitted.
+        undefined change (leading NaNs) are omitted. When ``asof`` is
+        given, only months <= asof are returned.
 
     Raises:
         FileNotFoundError: If the parquet file does not exist.
@@ -85,6 +94,12 @@ def load_fred_z(
     monthly = df.set_index("date")["value"].resample("ME").last().dropna()
     if len(monthly) < 4:
         raise ValueError(f"{fred_id}: fewer than 4 monthly observations")
+    # PIT: restrict to asof BEFORE computing stats.
+    if asof is not None:
+        cutoff = pd.Timestamp(asof)
+        monthly = monthly[monthly.index <= cutoff]
+        if len(monthly) < 4:
+            raise ValueError(f"{fred_id}: fewer than 4 monthly observations at asof={asof}")
     mom3 = monthly.pct_change(3)
     std = float(mom3.std())
     if not np.isfinite(std) or std <= 0:

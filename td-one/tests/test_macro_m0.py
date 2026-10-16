@@ -152,3 +152,28 @@ def test_load_fred_z_synthetic(tmp_path) -> None:  # type: ignore[no-untyped-def
     assert min(z) == date(2021, 4, 30)
     with pytest.raises(FileNotFoundError):
         load_fred_z("NOPE", data_dir=tmp_path)
+
+
+def test_load_fred_z_asof_no_future_leak(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    """Regression (P0-1): asof must restrict normalization stats to date <= asof.
+
+    Without asof, z-scores use full-history mean/std (future leak).
+    With asof, a later structural break must not affect earlier z-scores.
+    """
+    # 16 months: 10 months of noisy growth, then 6 months of flat-at-high
+    # (structural break in variance, not just level).
+    rng = np.random.default_rng(0)
+    dates = pd.date_range("2021-01-01", periods=16, freq="ME")
+    values = list(100 + np.cumsum(rng.normal(1.0, 0.5, 10))) + [115.0] * 6
+    df = pd.DataFrame({"date": dates, "value": values})
+    df.to_parquet(tmp_path / "BREAK.parquet")
+
+    z_full = load_fred_z("BREAK", data_dir=tmp_path)
+    z_asof = load_fred_z("BREAK", data_dir=tmp_path, asof=date(2021, 10, 31))
+
+    # asof restricts the returned months.
+    assert max(z_asof) <= date(2021, 10, 31)
+    assert max(z_full) == date(2022, 4, 30)
+    # The pre-break z-scores differ: full-history stats are contaminated
+    # by the break, asof stats are not.
+    assert z_asof[date(2021, 6, 30)] != z_full[date(2021, 6, 30)]
