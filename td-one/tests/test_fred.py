@@ -6,6 +6,7 @@ All deterministic; no network.
 from __future__ import annotations
 
 from datetime import date
+import os
 from pathlib import Path
 
 import pandas as pd
@@ -59,9 +60,26 @@ def test_get_series_rejects_bad_window() -> None:
         get_series("DGS5", date(2024, 1, 1), date(2026, 6, 1))
 
 
-def test_get_series_live_not_implemented() -> None:
-    with pytest.raises(NotImplementedError, match="FRED_API_KEY"):
-        get_series_live("DGS5", date(2021, 1, 1), date(2021, 6, 1))
+def test_live_client_unavailable_credential() -> None:
+    """A bogus vault credential name raises FredUnavailableError, never leaks."""
+    from td_one.fred.live import FredClient, FredUnavailableError
+
+    client = FredClient(credential="custom.fred-does-not-exist")
+    with pytest.raises(FredUnavailableError, match="unavailable"):
+        client.observations("DGS5", start=date(2024, 1, 1), end=date(2024, 1, 10))
+
+
+@pytest.mark.skipif(
+    os.environ.get("TD_ONE_LIVE_FRED") != "1",
+    reason="live FRED test: set TD_ONE_LIVE_FRED=1 to run (needs network + vault key)",
+)
+def test_get_series_live_roundtrip() -> None:
+    """Live fetch returns a date-bounded float series."""
+    s = get_series_live("DGS5", date(2024, 1, 1), date(2024, 1, 31))
+    assert len(s) > 0
+    assert s.index.min().date() >= date(2024, 1, 1)
+    assert s.index.max().date() <= date(2024, 1, 31)
+    assert s.dtype == float
 
 
 def test_all_supported_series_load() -> None:

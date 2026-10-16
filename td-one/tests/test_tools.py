@@ -248,3 +248,52 @@ def test_fred_cache_default_root_resolves_to_repo_data() -> None:
     import td_one.fred.cache as cache_mod
 
     assert _repo_td_one() / "data" / "fred_cache" == cache_mod.DEFAULT_CACHE_ROOT
+
+
+def test_real_models_in_supported_models() -> None:
+    from td_one.tools.forecasting import SUPPORTED_MODELS
+
+    assert "chronos2" in SUPPORTED_MODELS
+    assert "timesfm25" in SUPPORTED_MODELS
+
+
+def test_unload_real_models_empty_cache_ok() -> None:
+    from td_one.tools import forecasting as fm
+
+    fm.unload_real_models()  # must not raise when nothing is loaded
+    assert fm._real_wrappers == {}
+
+
+def test_real_weights_dir_resolves_from_manifest() -> None:
+    """Positive path: MANIFEST.json exists locally, weights dirs on disk."""
+    from pathlib import Path
+
+    from td_one.tools.forecasting import _real_weights_dir
+
+    for name in ("chronos2", "timesfm25"):
+        wdir = _real_weights_dir(name)
+        assert Path(wdir).is_dir(), wdir
+
+
+def test_real_forecast_enforces_monotone_quantiles() -> None:
+    """Regression: neural forecasters emit quantile crossing; the tool sorts."""
+    import numpy as np
+
+    from td_one.tools import forecasting as fm
+
+    class CrossingWrapper:
+        def forecast_quantiles(self, series, horizon=1):
+            levels = np.array([0.1, 0.5, 0.9])
+            # Deliberately crossed: q50 < q10
+            return levels, np.array([[0.30], [0.10], [0.20]])
+
+        def unload(self):
+            pass
+
+    fm._real_wrappers["chronos2"] = CrossingWrapper()
+    try:
+        out = fm._real_forecast("chronos2", np.full(12, 0.12))
+    finally:
+        fm._real_wrappers.clear()
+    vals = [out[0.1], out[0.5], out[0.9]]
+    assert vals == sorted(vals), vals
