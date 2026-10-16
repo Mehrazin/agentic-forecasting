@@ -1,0 +1,47 @@
+{
+  "experiment": "exp3_m2",
+  "date": "2025-06-30",
+  "mode": "mock",
+  "forecast_model": "timesfm_mock",
+  "panels": [
+    {
+      "segment_id": "seg-0",
+      "n_test": 17,
+      "actual": 11.0,
+      "crps": 0.7586000000000002,
+      "mae": 2.0,
+      "coverage": 1.0,
+      "m2_crps": 1.1133074374364758,
+      "m2_mae": 1.2777777777777768,
+      "m2_coverage": 0.0,
+      "m2_steps": 4,
+      "evidence_cards": 5
+    },
+    {
+      "segment_id": "seg-1",
+      "n_test": 17,
+      "actual": 10.0,
+      "crps": 1.3348999999999998,
+      "mae": 2.0,
+      "coverage": 1.0,
+      "m2_crps": 2.8542684374762195,
+      "m2_mae": 3.0,
+      "m2_coverage": 0.0,
+      "m2_steps": 4,
+      "evidence_cards": 5
+    },
+    {
+      "segment_id": "seg-2",
+      "n_test": 17,
+      "actual": 8.0,
+      "crps": 1.3990999999999998,
+      "mae": 2.0,
+      "coverage": 1.0,
+      "m2_crps": 1.8342333113268723,
+      "m2_mae": 2.0,
+      "m2_coverage": 0.0,
+      "m2_steps": 4,
+      "evidence_cards": 5
+    }
+  ]
+}

@@ -139,3 +139,17 @@ def test_deterministic_with_seed() -> None:
     assert len(r1) == len(r2)
     assert r1[0].customer_id == r2[0].customer_id
     assert r1[0].mortgage_balance_cad == r2[0].mortgage_balance_cad
+
+
+def test_maturities_spread_across_calendar() -> None:
+    """Check maturities spread across calendar months.
+
+    Regression: originations were hardcoded to June, collapsing all
+    maturities into ~5 distinct months at 10k x 66 scale.
+    """
+    sim = MortgageSimulator(n_customers=2000, n_months=66, seed=123)
+    histories = sim.generate_history()
+    maturities = {(r.maturity_date.year, r.maturity_date.month) for r in histories}
+    assert len(maturities) >= 24, f"only {len(maturities)} distinct maturity months"
+    june_share = sum(1 for y, m in maturities if m == 6) / len(maturities)
+    assert june_share < 0.5, f"maturities still June-concentrated: {june_share:.2f}"

@@ -59,3 +59,9 @@ data/yfinance/
 
 # TD-One model weights (downloaded via td-one/scripts/bootstrap_models.py, never commit)
 td-one/models/weights/
+
+# TD-One generated data: segment panels + FRED file cache (built by scripts, never commit)
+td-one/data/segments/
+td-one/data/fred_cache/
+# TD-One scale-up pipeline outputs: PIT DuckDB + parquet interchange (built by scripts/scale_up.py)
+td-one/data/scale_up/

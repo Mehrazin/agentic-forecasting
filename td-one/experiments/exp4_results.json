@@ -1,0 +1,133 @@
+{
+  "experiment": "exp4_m3",
+  "date": "2025-06-30",
+  "mode": "mock",
+  "scenarios": [
+    {
+      "id": "rate_shock_up",
+      "description": "5y fixed rates jump 200bp; 2021 low-rate cohort faces payment shock",
+      "base_rate": 0.25,
+      "true_rate": 0.3778668414894607,
+      "actual_switches": 80,
+      "n_test": 200,
+      "delta": 0.5,
+      "adjusted_rate": 0.35466124439244334,
+      "m0_crps": 19.870400000000004,
+      "m3_crps": 9.3996,
+      "m0_mae": 33.0,
+      "m3_mae": 11.0,
+      "m0_coverage": 1.0,
+      "m3_coverage": 1.0
+    },
+    {
+      "id": "rate_shock_down",
+      "description": "BoC cuts 150bp; renewal offers improve, switching incentive falls",
+      "base_rate": 0.19230769230769232,
+      "true_rate": 0.12618886732512719,
+      "actual_switches": 30,
+      "n_test": 200,
+      "delta": -0.4,
+      "adjusted_rate": 0.1376336749329788,
+      "m0_crps": 4.180399999999999,
+      "m3_crps": 4.2971,
+      "m0_mae": 5.0,
+      "m3_mae": 6.0,
+      "m0_coverage": 1.0,
+      "m3_coverage": 1.0
+    },
+    {
+      "id": "osfi_tightening",
+      "description": "Stress-test exemption revoked; uninsured 720+ switchers must re-qualify",
+      "base_rate": 0.4642857142857143,
+      "true_rate": 0.37916336067451006,
+      "actual_switches": 82,
+      "n_test": 200,
+      "delta": -0.25,
+      "adjusted_rate": 0.40297105911829895,
+      "m0_crps": 9.951600000000001,
+      "m3_crps": 8.257900000000001,
+      "m0_mae": 10.0,
+      "m3_mae": 2.0,
+      "m0_coverage": 1.0,
+      "m3_coverage": 1.0
+    },
+    {
+      "id": "benign",
+      "description": "No material macro/policy change; baseline conditions hold",
+      "base_rate": 0.19230769230769232,
+      "true_rate": 0.19230769230769235,
+      "actual_switches": 32,
+      "n_test": 200,
+      "delta": 0.0,
+      "adjusted_rate": 0.19230769230769235,
+      "m0_crps": 3.784399999999998,
+      "m3_crps": 3.784399999999998,
+      "m0_mae": 3.0,
+      "m3_mae": 3.0,
+      "m0_coverage": 1.0,
+      "m3_coverage": 1.0
+    },
+    {
+      "id": "family_squeeze",
+      "description": "Child-benefit clawback raises pressure on low-income 3+ kid households",
+      "base_rate": 0.4642857142857143,
+      "true_rate": 0.5761282004898114,
+      "actual_switches": 117,
+      "n_test": 200,
+      "delta": 0.35,
+      "adjusted_rate": 0.5515410591687634,
+      "m0_crps": 14.6016,
+      "m3_crps": 7.652699999999999,
+      "m0_mae": 25.0,
+      "m3_mae": 6.0,
+      "m0_coverage": 1.0,
+      "m3_coverage": 1.0
+    },
+    {
+      "id": "competitor_rate_war",
+      "description": "Big-5 lenders discount switcher rates 75bp below incumbent renewals",
+      "base_rate": 0.2916666666666667,
+      "true_rate": 0.4533106198019857,
+      "actual_switches": 82,
+      "n_test": 200,
+      "delta": 0.6,
+      "adjusted_rate": 0.4286642173959332,
+      "m0_crps": 14.574,
+      "m3_crps": 8.9049,
+      "m0_mae": 26.0,
+      "m3_mae": 3.0,
+      "m0_coverage": 1.0,
+      "m3_coverage": 1.0
+    }
+  ],
+  "exp2_fixed_delta_reference": {
+    "deltas": [
+      -2.0,
+      -0.75,
+      -0.25,
+      0.0,
+      0.25,
+      0.75,
+      2.0
+    ],
+    "crps": [
+      8.93,
+      8.93,
+      7.07,
+      5.96,
+      5.63,
+      8.93,
+      8.93
+    ],
+    "coverage": [
+      0.22,
+      0.22,
+      0.39,
+      0.5,
+      0.54,
+      0.28,
+      0.28
+    ],
+    "note": "Hardcoded from exp2_results.json (M3 drift probe on toy series). Not directly comparable to exp4 CRPS (different count scale and DGP); kept as context: the fixed grid's best point was delta=+0.25."
+  }
+}

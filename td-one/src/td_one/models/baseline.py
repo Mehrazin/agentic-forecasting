@@ -119,3 +119,35 @@ class HistoricalBaseline:
             float(dist.ppf(0.50)),
             float(dist.ppf(0.90)),
         )
+
+    def predict_rate_quantiles(
+        self,
+        n_upcoming: int,
+        levels: np.ndarray,
+    ) -> dict[float, float]:
+        """Posterior predictive quantiles of the switching *rate*.
+
+        Analytical Beta-Binomial count quantiles divided by the upcoming
+        exposure, clipped to [0, 1]. Monotone in level by construction
+        (ppf is non-decreasing).
+
+        Args:
+            n_upcoming: Number of upcoming renewals (exposure, >= 1).
+            levels: Quantile levels in (0, 1).
+
+        Returns:
+            Mapping level -> rate quantile.
+
+        """
+        if not self._fitted:
+            raise RuntimeError("Must call fit() first")
+        if n_upcoming < 1:
+            raise ValueError("n_upcoming must be >= 1")
+        assert self._alpha is not None and self._beta is not None
+        lv = np.asarray(levels, dtype=float)
+        if bool((lv <= 0.0).any() or (lv >= 1.0).any()):
+            raise ValueError("levels must be in (0, 1)")
+        dist = stats.betabinom(n_upcoming, self._alpha, self._beta)
+        counts = dist.ppf(lv)
+        rates = np.clip(counts / n_upcoming, 0.0, 1.0)
+        return {float(level): float(r) for level, r in zip(lv, rates, strict=True)}

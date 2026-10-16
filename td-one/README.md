@@ -15,15 +15,20 @@ uv run --with pytest pytest tests/ -q
 - `src/td_one/` — main package
   - `data_gen/` — synthetic mortgage data simulator (history + structural outcome DGP)
   - `data_service/` — point-in-time DuckDB store (history + outcomes tables)
-  - `tools/` — agent tool interfaces (not yet implemented)
-  - `models/` — M0 baseline ✅, TSFM wrappers ✅, hybrid readout ✅ (math only)
-  - `agent/` — forecast-agent helpers (evidence prompt, bounded adjustment;
-    ReAct orchestration loop not yet implemented)
+  - `tools/` — agent tools: data_segment, evidence, forecasting ✅
+  - `models/` — M0 baseline ✅, TSFM wrappers ✅, hybrid readout ✅
+    (math; driven by the M3 agent in exp4)
+  - `agent/` — ReAct orchestration loop ✅ (`react.py`; mock-LLM driven),
+    forecast-agent helpers (evidence prompt, bounded adjustment)
   - `evaluation/` — metrics, leakage auditor (backtest runner not yet implemented)
 - `configs/` — YAML configs for DGP, segments, models, experiments
 - `experiments/` — exp1 (M0 vs M1 mocks), exp2 (M0 vs M1 real weights),
-  `REPRODUCIBILITY.md`, per-experiment reports + `*_results.json`
+  exp3 (M2 ReAct agent vs M0, mock LLM), exp4 (M3 hybrid agent vs M0, mock),
+  `evidence_corpus/` (frozen mock evidence), `REPRODUCIBILITY.md`,
+  per-experiment reports + `*_results.json`
 - `scripts/` — `bootstrap_models.py` (download + pin TSFM weights)
+- `docs/` — `CRITIC_SYNTHESIS.md` (2026-10-15 audit), `SCALE_UP_RUNBOOK.md`
+  (end-to-end pipeline: simulate → PIT → segments → backtest → experiments)
 - `models/` — `MANIFEST.json` (pinned revisions); `weights/` (gitignored)
 - `tests/` — TDD test suite
 

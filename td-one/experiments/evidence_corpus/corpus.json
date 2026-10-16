@@ -1,0 +1,86 @@
+[
+  {
+    "date": "2024-01-24",
+    "id": "boc-2024-01",
+    "source": "Bank of Canada rate decision (illustrative)",
+    "text": "The Bank of Canada held its overnight rate at 5.00%, noting that underlying inflation remains a concern. Fixed mortgage rates stayed near 5.5-6.0% for 5-year terms, keeping renewal payment shocks elevated for 2019-2021 originations.",
+    "title": "Bank of Canada holds policy rate at 5.00%"
+  },
+  {
+    "date": "2024-02-15",
+    "id": "osfi-2024-02",
+    "source": "OSFI B-20 guideline update (illustrative)",
+    "text": "OSFI confirmed the minimum qualifying rate framework remains in place. Borrowers renewing with a new lender must still qualify at the greater of the contract rate plus 2pp or 5.25%, which continues to suppress switching among uninsured borrowers with weaker credit.",
+    "title": "OSFI confirms B-20 stress test unchanged for renewals switching lenders"
+  },
+  {
+    "date": "2024-03-28",
+    "id": "bond-2024-03",
+    "source": "GoC bond market summary (illustrative)",
+    "text": "The 5-year Government of Canada bond yield, the benchmark for fixed mortgage pricing, eased to 3.6% from 4.2% in late 2023. Lenders began trimming 5-year fixed posted rates, narrowing the gap between incumbent renewal offers and switcher discounts.",
+    "title": "5-year GoC bond yield eases to 3.6%"
+  },
+  {
+    "date": "2024-06-05",
+    "id": "boc-2024-06",
+    "source": "Bank of Canada rate decision (illustrative)",
+    "text": "The Bank of Canada delivered its first cut of the cycle, lowering the overnight rate to 4.75% and signalling more easing if inflation continues to cool. Variable-rate mortgage holders saw immediate payment relief; discounting on variable terms intensified.",
+    "title": "Bank of Canada cuts policy rate to 4.75%"
+  },
+  {
+    "date": "2024-07-24",
+    "id": "boc-2024-07",
+    "source": "Bank of Canada rate decision (illustrative)",
+    "text": "A second consecutive 25bp cut brought the policy rate to 4.50%. Fixed-rate pricing barely moved, as bond markets had already priced the path, leaving the fixed-rate renewal shock largely intact for 2020-2021 low-rate cohorts.",
+    "title": "Bank of Canada cuts to 4.50%"
+  },
+  {
+    "date": "2024-09-12",
+    "id": "osfi-2024-09",
+    "source": "OSFI consultation paper (illustrative)",
+    "text": "OSFI opened consultation on exempting straight switches of uninsured mortgages from the B-20 stress test at renewal. Lenders expect the change, if adopted, to lift switcher volumes materially among high-credit uninsured borrowers facing payment shock.",
+    "title": "OSFI reviews renewal switching exemption for uninsured borrowers"
+  },
+  {
+    "date": "2024-10-23",
+    "id": "boc-2024-10",
+    "source": "Bank of Canada rate decision (illustrative)",
+    "text": "The Bank accelerated easing with a 50bp cut to 3.75%, citing a softening labour market. The 5-year bond yield fell toward 3.0%, and lenders passed through roughly 40bp of the move into 5-year fixed specials, widening the switcher discount window.",
+    "title": "Bank of Canada cuts to 3.75% in larger 50bp step"
+  },
+  {
+    "date": "2024-12-11",
+    "id": "boc-2024-12",
+    "source": "Bank of Canada rate decision (illustrative)",
+    "text": "A further 50bp cut brought the policy rate to 3.25%. Variable-rate discounts widened to prime minus 0.90% at some lenders, making variable terms competitive again for borrowers willing to take rate risk at renewal.",
+    "title": "Bank of Canada cuts to 3.25%"
+  },
+  {
+    "date": "2025-01-20",
+    "id": "osfi-2025-01",
+    "source": "OSFI final guideline (illustrative)",
+    "text": "OSFI finalized the rule: uninsured borrowers with strong repayment history may switch lenders at renewal without re-qualifying under the stress test. Analysts expect a one-time uplift in switching propensity among 720+ credit-score borrowers.",
+    "title": "OSFI finalizes stress-test exemption for straight switches"
+  },
+  {
+    "date": "2025-03-12",
+    "id": "boc-2025-03",
+    "source": "Bank of Canada rate decision (illustrative)",
+    "text": "The policy rate reached 2.75% after a sixth consecutive cut. With 5-year fixed rates near 4.2%, the payment shock for 2021 low-rate renewals moderated from ~35% to ~20%, but remains the dominant switching driver.",
+    "title": "Bank of Canada cuts to 2.75%"
+  },
+  {
+    "date": "2025-04-25",
+    "id": "bond-2025-04",
+    "source": "GoC bond market summary (illustrative)",
+    "text": "Trade-policy uncertainty pushed the 5-year bond yield back to 3.4%, and several lenders raised fixed rates by 15-25bp. The reversal narrowed the switcher discount just as the spring renewal wave peaked.",
+    "title": "5-year GoC bond yield climbs back to 3.4% on tariff worries"
+  },
+  {
+    "date": "2025-06-04",
+    "id": "boc-2025-06",
+    "source": "Bank of Canada rate decision (illustrative)",
+    "text": "The Bank held at 2.75% and signalled a pause to assess tariff pass-through to inflation. Lenders expect fixed rates to stay range-bound through the summer renewal season, keeping switching incentives stable.",
+    "title": "Bank of Canada holds at 2.75%, signals pause"
+  }
+]
