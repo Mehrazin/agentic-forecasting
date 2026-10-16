@@ -1,0 +1,792 @@
+{
+  "config": {
+    "n_customers": 10000,
+    "n_months": 66,
+    "seed": 3,
+    "models": [
+      "m0"
+    ],
+    "origins": [
+      "2026-04-30",
+      "2026-05-31",
+      "2026-06-30",
+      "2026-07-31",
+      "2026-08-31",
+      "2026-09-30"
+    ],
+    "skip_ingest": false
+  },
+  "timings_s": {
+    "simulate_s": 55.8,
+    "ingest_s": 14.6,
+    "segments_s": 4.8,
+    "backtest_s": 29.7
+  },
+  "total_runtime_s": 104.8,
+  "n_segments": 15,
+  "results": [
+    {
+      "segment": "payment_shock_q1",
+      "origin": "2026-04-30",
+      "crps": 7.193599999999999,
+      "mae": 10.352941176470587,
+      "coverage_80": 0.0,
+      "n_renewals": 50,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q2",
+      "origin": "2026-04-30",
+      "crps": 3.7601999999999998,
+      "mae": 6.5384615384615365,
+      "coverage_80": 1.0,
+      "n_renewals": 61,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q3",
+      "origin": "2026-04-30",
+      "crps": 4.2753,
+      "mae": 6.972972972972972,
+      "coverage_80": 1.0,
+      "n_renewals": 57,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q4",
+      "origin": "2026-04-30",
+      "crps": 2.9653,
+      "mae": 5.09090909090909,
+      "coverage_80": 1.0,
+      "n_renewals": 46,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q5",
+      "origin": "2026-04-30",
+      "crps": 3.0955000000000004,
+      "mae": 4.352941176470587,
+      "coverage_80": 1.0,
+      "n_renewals": 39,
+      "model": "m0"
+    },
+    {
+      "segment": "rate_type_fixed",
+      "origin": "2026-04-30",
+      "crps": 28.604799999999997,
+      "mae": 34.007936507936506,
+      "coverage_80": 0.0,
+      "n_renewals": 167,
+      "model": "m0"
+    },
+    {
+      "segment": "rate_type_variable",
+      "origin": "2026-04-30",
+      "crps": 3.5982999999999996,
+      "mae": 5.588235294117652,
+      "coverage_80": 1.0,
+      "n_renewals": 86,
+      "model": "m0"
+    },
+    {
+      "segment": "region_AB",
+      "origin": "2026-04-30",
+      "crps": 1.3933,
+      "mae": 1.0,
+      "coverage_80": 1.0,
+      "n_renewals": 39,
+      "model": "m0"
+    },
+    {
+      "segment": "region_BC",
+      "origin": "2026-04-30",
+      "crps": 4.702999999999999,
+      "mae": 7.09375,
+      "coverage_80": 0.0,
+      "n_renewals": 49,
+      "model": "m0"
+    },
+    {
+      "segment": "region_MB",
+      "origin": "2026-04-30",
+      "crps": 2.4795,
+      "mae": 4.277777777777777,
+      "coverage_80": 1.0,
+      "n_renewals": 25,
+      "model": "m0"
+    },
+    {
+      "segment": "region_ON",
+      "origin": "2026-04-30",
+      "crps": 5.6423,
+      "mae": 8.857142857142854,
+      "coverage_80": 1.0,
+      "n_renewals": 99,
+      "model": "m0"
+    },
+    {
+      "segment": "region_QC",
+      "origin": "2026-04-30",
+      "crps": 7.219000000000001,
+      "mae": 8.916666666666664,
+      "coverage_80": 0.0,
+      "n_renewals": 41,
+      "model": "m0"
+    },
+    {
+      "segment": "term_long",
+      "origin": "2026-04-30",
+      "crps": 1.8239,
+      "mae": 3.0,
+      "coverage_80": 1.0,
+      "n_renewals": 12,
+      "model": "m0"
+    },
+    {
+      "segment": "term_medium",
+      "origin": "2026-04-30",
+      "crps": 21.4788,
+      "mae": 27.70547945205479,
+      "coverage_80": 0.0,
+      "n_renewals": 241,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q1",
+      "origin": "2026-05-31",
+      "crps": 6.7822,
+      "mae": 9.46153846153846,
+      "coverage_80": 0.0,
+      "n_renewals": 54,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q2",
+      "origin": "2026-05-31",
+      "crps": 4.5100999999999996,
+      "mae": 7.136363636363637,
+      "coverage_80": 0.0,
+      "n_renewals": 46,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q3",
+      "origin": "2026-05-31",
+      "crps": 6.4805,
+      "mae": 8.8,
+      "coverage_80": 0.0,
+      "n_renewals": 43,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q4",
+      "origin": "2026-05-31",
+      "crps": 2.2186,
+      "mae": 3.10526315789474,
+      "coverage_80": 1.0,
+      "n_renewals": 53,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q5",
+      "origin": "2026-05-31",
+      "crps": 2.9597,
+      "mae": 4.837837837837835,
+      "coverage_80": 1.0,
+      "n_renewals": 44,
+      "model": "m0"
+    },
+    {
+      "segment": "rate_type_fixed",
+      "origin": "2026-05-31",
+      "crps": 29.5468,
+      "mae": 34.42857142857143,
+      "coverage_80": 0.0,
+      "n_renewals": 160,
+      "model": "m0"
+    },
+    {
+      "segment": "rate_type_variable",
+      "origin": "2026-05-31",
+      "crps": 1.5453000000000001,
+      "mae": 1.8965517241379288,
+      "coverage_80": 1.0,
+      "n_renewals": 80,
+      "model": "m0"
+    },
+    {
+      "segment": "region_AB",
+      "origin": "2026-05-31",
+      "crps": 3.0040999999999998,
+      "mae": 4.5,
+      "coverage_80": 1.0,
+      "n_renewals": 33,
+      "model": "m0"
+    },
+    {
+      "segment": "region_BC",
+      "origin": "2026-05-31",
+      "crps": 2.6662,
+      "mae": 4.714285714285715,
+      "coverage_80": 1.0,
+      "n_renewals": 40,
+      "model": "m0"
+    },
+    {
+      "segment": "region_MB",
+      "origin": "2026-05-31",
+      "crps": 2.5984999999999996,
+      "mae": 4.052631578947368,
+      "coverage_80": 1.0,
+      "n_renewals": 21,
+      "model": "m0"
+    },
+    {
+      "segment": "region_ON",
+      "origin": "2026-05-31",
+      "crps": 11.557500000000001,
+      "mae": 15.214285714285715,
+      "coverage_80": 0.0,
+      "n_renewals": 102,
+      "model": "m0"
+    },
+    {
+      "segment": "region_QC",
+      "origin": "2026-05-31",
+      "crps": 3.0397999999999996,
+      "mae": 4.466666666666665,
+      "coverage_80": 1.0,
+      "n_renewals": 44,
+      "model": "m0"
+    },
+    {
+      "segment": "term_long",
+      "origin": "2026-05-31",
+      "crps": 1.2581000000000002,
+      "mae": 1.333333333333334,
+      "coverage_80": 1.0,
+      "n_renewals": 23,
+      "model": "m0"
+    },
+    {
+      "segment": "term_medium",
+      "origin": "2026-05-31",
+      "crps": 23.067800000000002,
+      "mae": 29.223529411764716,
+      "coverage_80": 0.0,
+      "n_renewals": 217,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q1",
+      "origin": "2026-06-30",
+      "crps": 2.2694,
+      "mae": 2.953488372093023,
+      "coverage_80": 1.0,
+      "n_renewals": 47,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q2",
+      "origin": "2026-06-30",
+      "crps": 3.4762999999999997,
+      "mae": 6.086956521739133,
+      "coverage_80": 1.0,
+      "n_renewals": 48,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q3",
+      "origin": "2026-06-30",
+      "crps": 1.709,
+      "mae": 2.4444444444444464,
+      "coverage_80": 1.0,
+      "n_renewals": 44,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q4",
+      "origin": "2026-06-30",
+      "crps": 1.6911999999999994,
+      "mae": 2.9268292682926855,
+      "coverage_80": 1.0,
+      "n_renewals": 36,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q5",
+      "origin": "2026-06-30",
+      "crps": 3.7665999999999995,
+      "mae": 6.23076923076923,
+      "coverage_80": 1.0,
+      "n_renewals": 42,
+      "model": "m0"
+    },
+    {
+      "segment": "rate_type_fixed",
+      "origin": "2026-06-30",
+      "crps": 9.111,
+      "mae": 13.480000000000004,
+      "coverage_80": 0.0,
+      "n_renewals": 149,
+      "model": "m0"
+    },
+    {
+      "segment": "rate_type_variable",
+      "origin": "2026-06-30",
+      "crps": 1.5481000000000003,
+      "mae": 0.7999999999999972,
+      "coverage_80": 1.0,
+      "n_renewals": 68,
+      "model": "m0"
+    },
+    {
+      "segment": "region_AB",
+      "origin": "2026-06-30",
+      "crps": 1.7772999999999999,
+      "mae": 2.6060606060606055,
+      "coverage_80": 1.0,
+      "n_renewals": 26,
+      "model": "m0"
+    },
+    {
+      "segment": "region_BC",
+      "origin": "2026-06-30",
+      "crps": 2.5004999999999997,
+      "mae": 4.0,
+      "coverage_80": 1.0,
+      "n_renewals": 36,
+      "model": "m0"
+    },
+    {
+      "segment": "region_MB",
+      "origin": "2026-06-30",
+      "crps": 2.1706000000000003,
+      "mae": 3.4761904761904763,
+      "coverage_80": 1.0,
+      "n_renewals": 22,
+      "model": "m0"
+    },
+    {
+      "segment": "region_ON",
+      "origin": "2026-06-30",
+      "crps": 1.3930999999999996,
+      "mae": 0.2988505747126453,
+      "coverage_80": 1.0,
+      "n_renewals": 94,
+      "model": "m0"
+    },
+    {
+      "segment": "region_QC",
+      "origin": "2026-06-30",
+      "crps": 1.3126000000000002,
+      "mae": 2.5,
+      "coverage_80": 1.0,
+      "n_renewals": 39,
+      "model": "m0"
+    },
+    {
+      "segment": "term_long",
+      "origin": "2026-06-30",
+      "crps": 1.3692,
+      "mae": 2.2941176470588243,
+      "coverage_80": 1.0,
+      "n_renewals": 15,
+      "model": "m0"
+    },
+    {
+      "segment": "term_medium",
+      "origin": "2026-06-30",
+      "crps": 7.609499999999999,
+      "mae": 12.404255319148945,
+      "coverage_80": 1.0,
+      "n_renewals": 202,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q1",
+      "origin": "2026-07-31",
+      "crps": 2.5601000000000003,
+      "mae": 3.851063829787236,
+      "coverage_80": 1.0,
+      "n_renewals": 63,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q2",
+      "origin": "2026-07-31",
+      "crps": 1.9878999999999998,
+      "mae": 3.04081632653061,
+      "coverage_80": 1.0,
+      "n_renewals": 45,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q3",
+      "origin": "2026-07-31",
+      "crps": 2.1925,
+      "mae": 3.75,
+      "coverage_80": 1.0,
+      "n_renewals": 42,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q4",
+      "origin": "2026-07-31",
+      "crps": 1.5724999999999998,
+      "mae": 2.232558139534884,
+      "coverage_80": 1.0,
+      "n_renewals": 49,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q5",
+      "origin": "2026-07-31",
+      "crps": 3.4399,
+      "mae": 5.634146341463413,
+      "coverage_80": 0.0,
+      "n_renewals": 40,
+      "model": "m0"
+    },
+    {
+      "segment": "rate_type_fixed",
+      "origin": "2026-07-31",
+      "crps": 8.1567,
+      "mae": 12.038709677419348,
+      "coverage_80": 0.0,
+      "n_renewals": 168,
+      "model": "m0"
+    },
+    {
+      "segment": "rate_type_variable",
+      "origin": "2026-07-31",
+      "crps": 1.4822000000000002,
+      "mae": 0.40277777777777857,
+      "coverage_80": 1.0,
+      "n_renewals": 71,
+      "model": "m0"
+    },
+    {
+      "segment": "region_AB",
+      "origin": "2026-07-31",
+      "crps": 5.5642000000000005,
+      "mae": 7.828571428571429,
+      "coverage_80": 0.0,
+      "n_renewals": 39,
+      "model": "m0"
+    },
+    {
+      "segment": "region_BC",
+      "origin": "2026-07-31",
+      "crps": 2.2362999999999995,
+      "mae": 3.9069767441860463,
+      "coverage_80": 1.0,
+      "n_renewals": 60,
+      "model": "m0"
+    },
+    {
+      "segment": "region_MB",
+      "origin": "2026-07-31",
+      "crps": 1.4609,
+      "mae": 2.0,
+      "coverage_80": 1.0,
+      "n_renewals": 24,
+      "model": "m0"
+    },
+    {
+      "segment": "region_ON",
+      "origin": "2026-07-31",
+      "crps": 2.3184,
+      "mae": 2.826086956521742,
+      "coverage_80": 1.0,
+      "n_renewals": 87,
+      "model": "m0"
+    },
+    {
+      "segment": "region_QC",
+      "origin": "2026-07-31",
+      "crps": 0.8685999999999998,
+      "mae": 0.20588235294117752,
+      "coverage_80": 1.0,
+      "n_renewals": 29,
+      "model": "m0"
+    },
+    {
+      "segment": "term_long",
+      "origin": "2026-07-31",
+      "crps": 1.4672999999999998,
+      "mae": 2.0625,
+      "coverage_80": 1.0,
+      "n_renewals": 19,
+      "model": "m0"
+    },
+    {
+      "segment": "term_medium",
+      "origin": "2026-07-31",
+      "crps": 5.414,
+      "mae": 8.912621359223309,
+      "coverage_80": 1.0,
+      "n_renewals": 220,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q1",
+      "origin": "2026-08-31",
+      "crps": 1.3763,
+      "mae": 0.8999999999999986,
+      "coverage_80": 1.0,
+      "n_renewals": 55,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q2",
+      "origin": "2026-08-31",
+      "crps": 1.8799999999999994,
+      "mae": 3.23076923076923,
+      "coverage_80": 1.0,
+      "n_renewals": 45,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q3",
+      "origin": "2026-08-31",
+      "crps": 2.3194,
+      "mae": 3.632653061224488,
+      "coverage_80": 1.0,
+      "n_renewals": 36,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q4",
+      "origin": "2026-08-31",
+      "crps": 1.2721,
+      "mae": 2.0851063829787257,
+      "coverage_80": 1.0,
+      "n_renewals": 44,
+      "model": "m0"
+    },
+    {
+      "segment": "payment_shock_q5",
+      "origin": "2026-08-31",
+      "crps": 1.4962,
+      "mae": 0.046511627906973274,
+      "coverage_80": 1.0,
+      "n_renewals": 49,
+      "model": "m0"
+    },
+    {
+      "segment": "rate_type_fixed",
+      "origin": "2026-08-31",
+      "crps": 2.4007000000000005,
+      "mae": 3.58682634730539,
+      "coverage_80": 1.0,
+      "n_renewals": 168,
+      "model": "m0"
+    },
+    {
+      "segment": "rate_type_variable",
+      "origin": "2026-08-31",
+      "crps": 1.9331000000000005,
+      "mae": 1.8815789473684248,
+      "coverage_80": 1.0,
+      "n_renewals": 61,
+      "model": "m0"
+    },
+    {
+      "segment": "region_AB",
+      "origin": "2026-08-31",
+      "crps": 0.8774,
+      "mae": 0.9473684210526336,
+      "coverage_80": 1.0,
+      "n_renewals": 31,
+      "model": "m0"
+    },
+    {
+      "segment": "region_BC",
+      "origin": "2026-08-31",
+      "crps": 1.9971999999999999,
+      "mae": 3.4318181818181834,
+      "coverage_80": 1.0,
+      "n_renewals": 43,
+      "model": "m0"
+    },
+    {
+      "segment": "region_MB",
+      "origin": "2026-08-31",
+      "crps": 2.2314000000000003,
+      "mae": 3.75,
+      "coverage_80": 1.0,
+      "n_renewals": 21,
+      "model": "m0"
+    },
+    {
+      "segment": "region_ON",
+      "origin": "2026-08-31",
+      "crps": 1.4092000000000002,
+      "mae": 1.1428571428571388,
+      "coverage_80": 1.0,
+      "n_renewals": 105,
+      "model": "m0"
+    },
+    {
+      "segment": "region_QC",
+      "origin": "2026-08-31",
+      "crps": 0.8012999999999999,
+      "mae": 0.8974358974358978,
+      "coverage_80": 1.0,
+      "n_renewals": 29,
+      "model": "m0"
+    },
+    {
+      "segment": "term_long",
+      "origin": "2026-08-31",
+      "crps": 0.9794,
+      "mae": 0.5882352941176467,
+      "coverage_80": 1.0,
+      "n_renewals": 21,
+      "model": "m0"
+    },
+    {
+      "segment": "term_medium",
+      "origin": "2026-08-31",
+      "crps": 3.1816000000000004,
+      "mae": 0.724444444444444,
+      "coverage_80": 1.0,
+      "n_renewals": 208,
+      "model": "m0"
+    }
+  ],
+  "summary": [
+    {
+      "segment": "payment_shock_q1",
+      "model": "m0",
+      "crps": 4.036320000000001,
+      "mae": 5.503806367977861,
+      "coverage_80": 0.6,
+      "n_origins": 5,
+      "mean_n_renewals": 53.8
+    },
+    {
+      "segment": "payment_shock_q2",
+      "model": "m0",
+      "crps": 3.1228999999999996,
+      "mae": 5.206673450772829,
+      "coverage_80": 0.8,
+      "n_origins": 5,
+      "mean_n_renewals": 49.0
+    },
+    {
+      "segment": "payment_shock_q3",
+      "model": "m0",
+      "crps": 3.39534,
+      "mae": 5.120014095728381,
+      "coverage_80": 0.8,
+      "n_origins": 5,
+      "mean_n_renewals": 44.4
+    },
+    {
+      "segment": "payment_shock_q4",
+      "model": "m0",
+      "crps": 1.9439399999999996,
+      "mae": 3.088133207922025,
+      "coverage_80": 1.0,
+      "n_origins": 5,
+      "mean_n_renewals": 45.6
+    },
+    {
+      "segment": "payment_shock_q5",
+      "model": "m0",
+      "crps": 2.95158,
+      "mae": 4.220441242889608,
+      "coverage_80": 0.8,
+      "n_origins": 5,
+      "mean_n_renewals": 42.8
+    },
+    {
+      "segment": "rate_type_fixed",
+      "model": "m0",
+      "crps": 15.564000000000002,
+      "mae": 19.508408792246534,
+      "coverage_80": 0.2,
+      "n_origins": 5,
+      "mean_n_renewals": 162.4
+    },
+    {
+      "segment": "rate_type_variable",
+      "model": "m0",
+      "crps": 2.0214,
+      "mae": 2.113828748680356,
+      "coverage_80": 1.0,
+      "n_origins": 5,
+      "mean_n_renewals": 73.2
+    },
+    {
+      "segment": "region_AB",
+      "model": "m0",
+      "crps": 2.52326,
+      "mae": 3.376400091136934,
+      "coverage_80": 0.8,
+      "n_origins": 5,
+      "mean_n_renewals": 33.6
+    },
+    {
+      "segment": "region_BC",
+      "model": "m0",
+      "crps": 2.8206399999999996,
+      "mae": 4.629366128057989,
+      "coverage_80": 0.8,
+      "n_origins": 5,
+      "mean_n_renewals": 45.6
+    },
+    {
+      "segment": "region_MB",
+      "model": "m0",
+      "crps": 2.18818,
+      "mae": 3.5113199665831245,
+      "coverage_80": 1.0,
+      "n_origins": 5,
+      "mean_n_renewals": 22.6
+    },
+    {
+      "segment": "region_ON",
+      "model": "m0",
+      "crps": 4.4641,
+      "mae": 5.667844649104019,
+      "coverage_80": 0.8,
+      "n_origins": 5,
+      "mean_n_renewals": 97.4
+    },
+    {
+      "segment": "region_QC",
+      "model": "m0",
+      "crps": 2.64826,
+      "mae": 3.3973303167420807,
+      "coverage_80": 0.8,
+      "n_origins": 5,
+      "mean_n_renewals": 36.4
+    },
+    {
+      "segment": "term_long",
+      "model": "m0",
+      "crps": 1.37958,
+      "mae": 1.855637254901961,
+      "coverage_80": 1.0,
+      "n_origins": 5,
+      "mean_n_renewals": 18.0
+    },
+    {
+      "segment": "term_medium",
+      "model": "m0",
+      "crps": 12.15034,
+      "mae": 15.794065997327241,
+      "coverage_80": 0.6,
+      "n_origins": 5,
+      "mean_n_renewals": 217.6
+    }
+  ],
+  "notes": [
+    "Segment panels are PIT-masked per forecast origin (observed_asof): training months only count outcomes with outcome_observed_at <= origin; future months keep actuals as scoring targets (never forecaster inputs).",
+    "Models wired via td_one.tools.forecasting: m0",
+    "PIT ingest used the parquet fast path (native DuckDB bulk load); PITStore.executemany is ~40 rows/s and infeasible at 660k rows."
+  ]
+}
