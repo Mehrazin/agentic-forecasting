@@ -7,6 +7,18 @@ committed artifact in `experiments/`; commands to reproduce are in
 Primary metric: **CRPS** (proper score on count distributions).
 Secondary: MAE, 80% interval coverage.
 
+## Document map
+
+| Doc | What it is |
+|---|---|
+| `docs/METHODOLOGY.md` | CVPR-style methodology reference: problem, ladder, experiments, discussion |
+| `docs/RESULTS.md` (this) | All experiment numbers, ablations, artifact map |
+| `docs/LITERATURE_SURVEY.md` | 5-area literature survey + redesign recommendations (§6) — the evidence record |
+| `docs/REDESIGN.md` | Forward design decisions: principles, architecture, kill list |
+| `docs/REAL_DATA_SURVEY.md` | Real-dataset candidates (Freddie Mac, M4, FRED-MD, Monash) + pipeline sketch |
+| `docs/CRITIC_SYNTHESIS.md` | 2026-10-15/16 six-angle audits, retractions, deferred items |
+| `docs/SCALE_UP_RUNBOOK.md` | How to run the pipeline end to end |
+
 ---
 
 ## 1. Experiment results
@@ -184,8 +196,9 @@ rate's z-scored 3-month change shifts the switching logit each month
 **Finding:** the oracle cuts CRPS 32%; the simple estimated version
 captures **93% of the oracle gain**. When macro structure exists, macro
 awareness pays — and it doesn't need oracle knowledge. This justifies
-the FRED integration workstream (17 series currently unused by any
-model) and macro-evidence for the M3 agent on real data.
+the FRED integration workstream (19 series cached as of 2026-10-16;
+`macro_m0` in `src/td_one/models/macro_m0.py` now consumes them) and
+macro-evidence for the M3 agent on real data.
 
 ## 2c. M3 over-adjustment fixes — `experiments/exp6_m3plus.py` ✅ done
 
@@ -503,47 +516,6 @@ baseline hierarchy intact: conformal auto-M0 on standard DGP, classical
 MacroM0 on macro DGP. Results JSON:
 `experiments/exp13_tsfm_macro_results.json`.
 
-## 3. Planned experiments
-
-1. **Multi-seed scale-up** (seeds 1–4): the paired non-significance
-   must survive DGP resampling before any TSFM claim.
-2. **M2 tool ablation** (real LLM): ReAct with tools removed one at a
-   time (no evidence / no data_segment / forecasting-only) — which
-   tools carry the skill? Requires paid-tier Groq (free-tier budgets
-   can't afford it).
-3. **M2 step-budget ablation**: max_steps ∈ {2, 4, 6, 10}.
-4. **Calibration study**: the open problem — M0 undercovers (0.67),
-   Chronos-2 overcovers (0.91), only TimesFM is nominal. Conformal or
-   post-hoc recalibration per segment.
-5. **Real-data validation**: the simulator is ours; portfolio data is
-   the real test.
-6. **M3 "do nothing" prior**: the benign-scenario over-adjustment
-   (+0.30 vs 0) suggests the agent needs an explicit abstention
-   mechanism, not just a bound.
-7. **FRED-vintage PIT audit** (client support ✅ done; audit open): before
-   any model consumes FRED series, `FredClient.observations()` exposes
-   `vintage_dates` — observation-date cutoff is not vintage-correct for
-   revised series (see critic report). What remains is the actual audit:
-   release-lag metadata (`last_updated` is now captured in
-   `fred_manifest.json`) and release-aware join rules for the future
-   panel join.
-8. **LLM ensemble router** (REATS-style; see `docs/LITERATURE_SURVEY.md`
-   §6.3): LLM outputs weights over classical/TSFM forecasts with
-   rationale, never values — test vs inverse-CRPS weighting (exp5:
-   4.078). Best-supported agentic role in the literature.
-9. **LLM regime narrative → gate**: LLM emits structured regime
-   assessment (direction + confidence) that modulates the statistical
-   gate threshold, instead of numerical deltas.
-10. **ACI upgrade to conformal.py**: adaptive conformal inference
-    (one γ) vs static CQR on shock scenarios — handles regime drift.
-11. **DGP realism upgrade**: burnout state + 30-month seasoning ramp +
-    S-curve refinance incentive (industry prepayment canon; see
-    LITERATURE_SURVEY.md §5). Current DGP may be too easy for M0.
-12. **TSFM + exogenous FRED** ✅ done (§2j): macro-conditioned
-    Chronos-2/TimesFM-2.5 via the residual approach vs conformal
-    auto-M0 — mechanism works (10–18% vs plain TSFM, 3/3 seeds), but
-    beats the baseline only 1/3 seeds; classical macro_m0 still best.
-
 ## 2k. M4 Monthly real-data benchmark — `experiments/exp14_m4_real.py` ✅ done
 
 All model comparisons so far used synthetic DGPs; LITERATURE_SURVEY.md
@@ -592,7 +564,7 @@ artifact. On real data, pretrained TSFMs are genuinely stronger
 forecasters — for both levels and direction. The research question
 flips: not "can anything beat M0" but "how much does the TSFM edge
 cost, and where does classical still win (thin segments, macro
-structure, calibration)?" The simulator v2 DGP work (§2g/exp9) is now
+structure, calibration)?" The simulator v2 DGP work (§2l/exp9) is now
 validated as essential — our synthetic testbed must be hard enough
 that conclusions drawn on it survive contact with real data.
 
@@ -603,13 +575,75 @@ were min-max normalized per series (standard practice, documented in
 
 ---
 
+
+## 2l. Simulator v2 — richer DGP (`experiments/exp9_richdgp.py`) ✅ done
+
+Re-runs M0 on simulator v2 (`src/td_one/data_gen/simulator_v2.py`:
+renewal offers table, burnout, 30-month seasoning, arctan S-curve on
+offer-competition spread, richer heterogeneity, FRED macro by default).
+2000×66, 14 segments × 5 origins.
+
+| Model | Mean CRPS | Mean coverage_80 |
+|---|---|---|
+| m0_w6 | **0.848** | 0.914 |
+| m0_w3 | 0.986 | 0.900 |
+| conf_w3 | 0.990 | 0.900 |
+
+**Finding — ranking reversal.** On v1, m0_w3 beat m0_w6 decisively
+(3.196 vs 5.360, §B). On v2, **m0_w6 wins** (0.848 vs 0.986). The
+richer DGP changes conclusions: FRED macro + smoother incentives
+reward the longer window. This is the evidence behind the design rule
+that every model comparison must run on both DGPs — and it validates
+the literature survey's warning (§5) that v1 was too easy for M0.
+Full DGP description in `docs/METHODOLOGY.md` §4.1.
+
+## 3. Planned experiments (status 2026-10-16)
+
+1. **Multi-seed scale-up** (seeds 1–4) ✅ done (§2e): no TSFM beats
+   M0 significantly on any seed; M0's window is a seed-dependent
+   tuning parameter.
+2. **M2 tool ablation** (real LLM): ReAct with tools removed one at a
+   time (no evidence / no data_segment / forecasting-only) — which
+   tools carry the skill? ⏳ open — requires paid-tier Groq (free-tier
+   budgets can't afford it).
+3. **M2 step-budget ablation**: max_steps ∈ {2, 4, 6, 10}. ⏳ open —
+   same Groq budget constraint as #2.
+4. **Calibration study** ✅ done (exp5 §2d, exp10 §2g): conformal M0
+   is now the default baseline (`--conformal` on); ACI null on smooth
+   DGPs.
+5. **Real-data validation** ✅ partial (§2k): M4 Monthly done — TSFMs
+   beat classical ~20%. ⏳ Freddie Mac loan-level still open (needs
+   registration; see `docs/REAL_DATA_SURVEY.md`).
+6. **M3 "do nothing" prior** ✅ done (§2c): z-test regime gate edges
+   past M0 on held-out (7.60 vs 7.86).
+7. **FRED-vintage PIT audit** ⏳ open: `FredClient.observations()`
+   exposes `vintage_dates` ✅ done; what remains is the actual audit:
+   release-lag metadata (`last_updated` is now captured in
+   `fred_manifest.json`) and release-aware join rules for the future
+   panel join.
+8. **LLM ensemble router** (REATS-style) ✅ done (§2i): **clean
+   negative** — real Groq 2.60 vs inverse-CRPS 2.32.
+9. **LLM regime narrative → gate** ✅ done (§2h): **qualified
+   positive** — M4a 3.59 vs M0 4.82 with real Groq; fragile, needs
+   calibration work.
+10. **ACI upgrade to conformal.py** ✅ done (§2g): null vs static CQR
+    on smooth DGPs — needs sharper regimes.
+11. **DGP realism upgrade** ✅ done (§2l, exp9, simulator v2): burnout +
+    30-month seasoning + S-curve + offers + FRED macro; window ranking
+    reverses on v2 (m0_w6 beats m0_w3).
+12. **TSFM + exogenous FRED** ✅ done (§2j): macro-conditioned
+    Chronos-2/TimesFM-2.5 via the residual approach vs conformal
+    auto-M0 — mechanism works (10–18% vs plain TSFM, 3/3 seeds), but
+    beats the baseline only 1/3 seeds; classical macro_m0 still best.
 ## 4. Artifact map
 
 | Artifact | Content |
 |---|---|
 | `experiments/exp{1,2,3,4}_report.md` | Per-experiment reports |
 | `experiments/exp{2,3,4}_results.json` | Raw results |
-| `experiments/exp{13,14}_m4*_results.json` | TSFM+FRED rematch + M4 real-data benchmark |
+| `experiments/exp13_tsfm_macro_results.json` | TSFM+FRED rematch results |
+| `experiments/exp14_m4_results.json` | M4 real-data benchmark results |
+| `experiments/exp9_results.json` + `exp10_results.json` | Simulator-v2 + classical-track results |
 | `experiments/scale_up_report*.md` + `scale_up_results*.json` | Scale-up (mock, real-chronos2, real-timesfm25) |
 | `experiments/abl_m0_window_results.json` | Ablation B |
 | `experiments/abl_m3_bound_results.json` | Ablation A |

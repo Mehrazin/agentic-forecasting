@@ -194,6 +194,10 @@ fabricated. All P0s and justified P1s below are fixed in this round.
 
 ## Deferred to a later pass (P2/P3)
 
+*Status 2026-10-16: "Multi-seed scale-up; calibration study; real-data
+validation" below are now DONE — see `RESULTS.md` §2e (multi-seed),
+§2d/§2g (calibration → conformal default), §2k (M4 real-data). The
+remaining items are still open.*
 - Crossing-frequency instrumentation for the monotone rearrangement.
 - FRED `load_series(sid, asof)` helper making the PIT cutoff structural
   (currently a documented convention on full-history parquet).

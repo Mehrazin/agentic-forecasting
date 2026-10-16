@@ -118,9 +118,10 @@ monthly `(n_renewals, n_switches)` series.
 
 **Macro evidence.** Two sources: (1) a **frozen 12-entry illustrative
 corpus** (`experiments/evidence_corpus/corpus.json`) with BoC-style
-announcements, date-guarded at the run date; (2) **live FRED** — 17
+announcements, date-guarded at the run date; (2) **live FRED** — 19
 curated series (policy rates, Canada 3M/10Y, US 5Y/10Y, CPI, unemployment,
-house prices, CAD/USD, credit spreads) bulk-downloaded to parquet and
+house prices, CAD/USD, credit spreads, WTI crude, Canada household
+debt-to-GDP) bulk-downloaded to parquet and
 PIT-filtered at use time.
 
 ```mermaid
@@ -130,7 +131,7 @@ flowchart LR
     SEG --> M0["M0 baseline"]
     SEG --> M1["M1 TSFMs"]
     SEG --> AG["M2 ReAct agent"]
-    FRED[("FRED macro<br/>17 series")] --> AG
+    FRED[("FRED macro<br/>19 series")] --> AG
     CORP[("Frozen corpus<br/>12 docs")] --> AG
     M0 --> HYB["M3 hybrid<br/>(bounded Δ)"]
     AG --> HYB

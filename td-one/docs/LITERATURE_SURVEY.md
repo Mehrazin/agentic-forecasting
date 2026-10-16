@@ -71,7 +71,10 @@ forecasting":
 1. **TSFMs** (Chronos-2, TimesFM-2.5, Moirai, TimeGPT): transformers
    *trained on time-series data*. Legitimate, often strong — but our
    multi-seed results show they do not significantly beat a tuned
-   classical baseline on our DGP. An independent retail benchmark found
+   classical baseline on our synthetic DGP. **Caveat (exp14): on 2,000
+   real M4 Monthly series both TSFMs beat classical ~20% CRPS — the
+   synthetic "M0 beats everything" was a DGP artifact.**
+   An independent retail benchmark found
    Chronos-2 winning while warning that "single-window rankings can be
    misleading (overfitting to a validation set is a real thing)."
 2. **Raw-LLM number prompting** (LLMTime-style, our M2/M3's Groq calls):
@@ -283,7 +286,7 @@ win and naive ones fail.
    value. Keep 5+ seeds for every model comparison; report the M0
    envelope, not a point M0.
 3. **FRED macro integration.** Exp8 (§5-aligned: rate incentive is the
-   industry's #1 driver) justifies this workstream. The 17 cached
+   industry's #1 driver) justifies this workstream. The 19 cached
    series should feed models, not sit unused.
 4. **Regime gate on any adjustment path.** The one M3 idea both our
    held-out test and 70 years of judgmental-forecasting literature
@@ -304,24 +307,40 @@ win and naive ones fail.
 
 ### 6.3 Try (ordered by expected value)
 
-1. **LLM as ensemble router (REATS-style).** The LLM outputs
+*Status 2026-10-16: all five tried. Pointers to results — the survey
+text below is preserved as the evidence record.*
+
+1. **LLM as ensemble router (REATS-style).** ✅ done (exp12,
+   `RESULTS.md` §2i) — **clean negative**: real Groq 2.60 vs
+   inverse-CRPS 2.32. The survey's top-ranked role fails here.
+   The LLM outputs
    *weights over classical/TSFM forecasts* with natural-language
    rationale, never values. This is the best-supported agentic role
    in the literature and directly testable: does LLM weighting beat
    inverse-CRPS weighting (§exp5: 4.078)?
-2. **LLM regime narrative → gate.** Instead of deltas, the LLM emits
+2. **LLM regime narrative → gate.** ✅ done (exp11, `RESULTS.md`
+   §2h) — **qualified positive**: M4a 3.59 vs M0 4.82 with real Groq;
+   fragile, calibration is the load-bearing assumption.
+   Instead of deltas, the LLM emits
    a structured regime assessment (direction + confidence) that
    *modulates the statistical gate threshold*. Keeps the LLM in the
    role the literature supports (information synthesis) while the
    numbers stay classical.
-3. **ACI upgrade to conformal.py.** One γ parameter; handles the
+3. **ACI upgrade to conformal.py.** ✅ done (exp10, `RESULTS.md`
+   §2g) — **null** vs static CQR on smooth DGPs; needs sharper
+   regimes. One γ parameter; handles the
    regime drift our DGP's shocks create. Compare against static CQR
    on the shock scenarios.
-4. **DGP realism upgrade (burnout + seasoning + S-curve).** Makes the
+4. **DGP realism upgrade (burnout + seasoning + S-curve).** ✅ done
+   (simulator v2, exp9) — window ranking reverses on v2 (m0_w6 beats
+   m0_w3). Makes the
    simulator a harder test that rewards macro-aware models — the
    current DGP may be *too easy* for M0, which flatters classical
    methods.
-5. **TSFM + exogenous FRED.** Chronos-2/TimesFM-2.5 support covariates
+5. **TSFM + exogenous FRED.** ✅ done (exp13, `RESULTS.md` §2j) —
+   mechanism works (+13–18% vs plain TSFM, 3/3 seeds) but beats the
+   conformal baseline only 1/3 seeds; classical macro_m0 still best.
+   Chronos-2/TimesFM-2.5 support covariates
    in some configurations; test whether macro-conditioned TSFMs beat
    the conformal baseline. This is the fair rematch the TSFMs deserve.
 

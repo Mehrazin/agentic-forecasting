@@ -14,7 +14,7 @@ evidence for each decision.
 
 | Finding | Source |
 |---|---|
-| Tuned classical (M0 w3, conformalized) beats real Chronos-2 / TimesFM-2.5; neither TSFM significant on any of 5 seeds | exp5, multi-seed |
+| Tuned classical (M0 w3, conformalized) beats real Chronos-2 / TimesFM-2.5; neither TSFM significant on any of 5 seeds — **on synthetic DGPs**. On real M4 Monthly data both TSFMs beat classical ~20% CRPS | exp5, multi-seed, exp14 (§2k) |
 | ReAct LLM agent's interventions are net-negative with a real backend (M2 5.40/4.35 vs M0 0.76/1.40) | honest exp3 |
 | LLM numerical deltas over-adjust; regime gate (z-test "do nothing" prior) beats M0 on held-out | exp6 |
 | 70 years of judgmental-adjustment literature: routine expert adjustment *increases* errors; adjust only on strong evidence | LITERATURE_SURVEY §3 |
@@ -22,6 +22,10 @@ evidence for each decision.
 | Raw-LLM forecasting fragile by theory (linear attention ≤ linear models on AR(p); CoT collapses to mean) | LITERATURE_SURVEY §1.2 |
 | Macro structure, when present, is worth 32% CRPS; OLS-estimated version captures 93% | exp8 |
 | Current DGP likely too easy for M0 — missing burnout, 30-month seasoning, S-curve refinance incentive | LITERATURE_SURVEY §5 |
+| Real M4 data flips the TSFM story: both real TSFMs beat classical ~20% CRPS; "M0 beats everything" was a synthetic-DGP artifact | exp14 (§2k) |
+
+*Evidence record: `docs/LITERATURE_SURVEY.md` §6 (recommendations with
+full rationale). This document keeps only the decisions.*
 
 ---
 
@@ -56,25 +60,33 @@ Corpus ──┘         │                      │
 - **Baseline:** conformalized M0 with tuned window (the default M0).
 - **Classical upgrades:** macro-aware M0 (FRED features), ACI, hierarchical
   on thin segments, TSFM + exogenous FRED rematch.
-- **Agentic roles (ranked):** (1) ensemble router — LLM weights over
-  classical/TSFM forecasts; (2) regime narrative → gate threshold;
-  (3) critic/auditor flags. Never forecaster.
+- **Agentic roles (ranked by our tests, not the literature's):**
+  (1) regime narrative → gate — qualified positive, first agentic win
+  with real components (exp11: M4a 3.59 vs M0 4.82), but fragile;
+  (2) critic/auditor flags — untested, still candidate;
+  (3) ensemble router — **deprioritized**: clean negative vs
+  inverse-CRPS (exp12: 2.60 vs 2.32), inverting the survey's ranking.
+  Never forecaster.
 - **DGP:** simulator v2 with burnout, seasoning, S-curve, offers,
   richer heterogeneity, baked-in FRED macro — a harder test that
   rewards macro-aware models.
 
 ---
 
-## 4. Workstreams (active)
+## 4. Workstreams (all landed 2026-10-16)
 
-| # | Track | Owner | Status |
-|---|---|---|---|
-| 1 | Literature survey | done | `docs/LITERATURE_SURVEY.md` ✅ |
-| 2 | Simulator v2 (offers, burnout, seasoning, S-curve, FRED) | agent | running |
-| 3 | Classical (conformal default, window tuning, macro_m0, ACI, thin-seg hier) | agent | running |
-| 4 | Agentic redesign (router > regime narrative > critic; LLM never touches numbers) | agent | running |
+| # | Track | Status |
+|---|---|---|
+| 1 | Literature survey | ✅ `docs/LITERATURE_SURVEY.md` |
+| 2 | Simulator v2 (offers, burnout, seasoning, S-curve, FRED) | ✅ `src/td_one/data_gen/simulator_v2.py`, exp9 |
+| 3 | Classical (conformal default, window tuning, macro_m0, ACI, thin-seg hier) | ✅ exp10, `scripts/scale_up.py` |
+| 4 | Agentic redesign (regime-reader ✅ qualified positive; ensemble router ❌ clean negative) | ✅ exp11, exp12 |
+| 5 | TSFM+FRED rematch | ✅ exp13 — mechanism works, headline a draw |
+| 6 | Real-data benchmark (M4) | ✅ exp14 — synthetic conclusions break on real data |
 
-Planned experiments 8–12 in `docs/RESULTS.md` map to §6.3 of the survey.
+Open next: Freddie Mac loan-level (needs registration — see
+`docs/REAL_DATA_SURVEY.md`); LLM + news/data-store hookup
+(`docs/REAL_DATA_SURVEY.md` §"Note on the LLM-context direction").
 
 ---
 
@@ -86,3 +98,8 @@ Planned experiments 8–12 in `docs/RESULTS.md` map to §6.3 of the survey.
 - LLM zero-shot number forecasting as a product direction.
 - Bigger LLM as the fix (120B already; size ≠ forecasting skill).
 - Single-seed model claims.
+
+*Note (2026-10-16): exp14's real-data TSFM win does not revive any
+killed item — it concerns TSFMs vs classical, not LLM roles. It does
+reinforce the last item: exp14 is itself single-seed, so the ~20%
+needs multi-seed confirmation before becoming a claim.*

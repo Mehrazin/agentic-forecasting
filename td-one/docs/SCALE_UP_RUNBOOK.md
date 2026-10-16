@@ -87,6 +87,12 @@ cd td-one && uv run python scripts/scale_up.py --n-customers 10000 --n-months 66
 | exp2 — M0 vs M1 (real weights) | ✅ | `experiments/exp2_real_weights.py` | 3 scenarios × 5 seeds; `TD_ONE_MOCK=1` for CI |
 | exp3 — M2 ReAct (mock + real Groq) | ✅ | `experiments/exp3_m2.py` | Mock: scripted ReAct traces against real tools (plumbing validation). Real: `TD_ONE_REAL_LLM=1`, budget 20 calls; 2/3 traces finalized, first real-LLM win |
 | exp4 — M3 hybrid driver | ✅ | `experiments/exp4_m3.py` | 6 macro scenarios, bounded Δ; real-Groq exercised (`TD_ONE_REAL_LLM=1`, budget 10) — 3/6 beat M0 |
+| exp9 — richer DGP (simulator v2) | ✅ | `experiments/exp9_richdgp.py` | 2000×66 on v2 (offers, burnout, seasoning, S-curve); window ranking reverses (m0_w6 wins) |
+| exp10 — classical track | ✅ | `experiments/exp10_classical.py` | conformal default, ACI, macro_m0, hierarchical niche |
+| exp11 — M4 regime-reader | ✅ | `experiments/exp11_agent_v2.py` | Real Groq, budget 6; qualified positive |
+| exp12 — M5 ensemble router | ✅ | `experiments/exp12_router.py` | Real Groq, budget 4; clean negative vs inverse-CRPS |
+| exp13 — TSFM+FRED rematch | ✅ | `experiments/exp13_tsfm_macro.py` | Macro-conditioned TSFs, 2 DGPs × 3 seeds |
+| exp14 — M4 real-data benchmark | ✅ | `experiments/exp14_m4_real.py` | 2000 M4 Monthly series, real weights; TSFMs beat classical ~20% |
 | scale-up — full 10k×66 | ✅ | `scripts/scale_up.py` | Segment backtest; writes `experiments/scale_up_results.json` + `scale_up_report.md` |
 
 **TSFM runtime (measured, 2-vCPU VM, real weights, 45 origins):** M0 ~0.1s;
@@ -132,4 +138,4 @@ expect 429s; do not hammer. Budget ~1–2s per call plus retry delays.
   TimesFM 764.7s (~13 min, measured; run per-model with `--tag` on
   RAM-constrained VMs)
 - exp2 mock: seconds
-- Test suite: 157+ passed (3 skipped = gated live-weight/network tests)
+- Test suite: 316 collected (measured 2026-10-16; 3 skipped = gated live-weight/network tests)
