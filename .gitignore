@@ -67,3 +67,7 @@ td-one/data/fred_cache/
 td-one/data/scale_up/
 # TD-One FRED bulk downloads (re-fetch with scripts/fetch_fred.py)
 td-one/data/fred/
+# TD-One Freddie Mac loan-level data (cannot be redistributed per data use agreement)
+td-one/data/freddie/
+# TD-One news DB (rebuilt from GDELT via scripts/fetch_news_gdelt.py)
+td-one/data/news/

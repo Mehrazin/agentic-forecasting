@@ -2,6 +2,62 @@
 
 Mermaid diagrams for the project. They render on GitHub.
 
+## Pipeline DAG (data → forecast)
+
+```mermaid
+flowchart LR
+    subgraph INGEST["Ingest (PIT-safe)"]
+        FM["Freddie Mac<br/>loan-level"]
+        FR["FRED<br/>19 series"]
+        NW["News DB<br/>2026, FTS5"]
+        SN["Simulator v1/v2<br/>synthetic"]
+    end
+
+    subgraph PIT["PIT store (DuckDB)"]
+        DUCK["asof joins<br/>no future leakage"]
+    end
+
+    subgraph FEAT["Features"]
+        COH["Cohort panel<br/>vintage × FICO × rate"]
+        MAC["Macro features<br/>z-scored changes"]
+        CTX["News context<br/>before=cutoff"]
+    end
+
+    subgraph MODELS["Model ladder"]
+        M0["M0 / conformal M0"]
+        MM["MacroM0"]
+        T2["Chronos-2 / TimesFM-2.5"]
+    end
+
+    subgraph AGENT["Agentic (LLM: no numbers)"]
+        RG["Regime reader"]
+        GT["Statistical gate"]
+    end
+
+    subgraph OUT["Output"]
+        EN["Ensemble<br/>(inverse-CRPS)"]
+        FC["Probabilistic forecast<br/>CRPS / Brier / coverage"]
+    end
+
+    FM --> DUCK
+    FR --> DUCK
+    SN --> DUCK
+    DUCK --> COH
+    FR --> MAC
+    NW --> CTX
+    COH --> M0
+    COH --> MM
+    MAC --> MM
+    COH --> T2
+    CTX --> RG
+    RG --> GT
+    GT -.->|"intervene / abstain"| EN
+    M0 --> EN
+    MM --> EN
+    T2 --> EN
+    EN --> FC
+```
+
 ## System architecture (from REDESIGN.md)
 
 ```mermaid

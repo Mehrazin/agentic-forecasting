@@ -23,6 +23,25 @@ Secondary: MAE, 80% interval coverage.
 
 ## 1. Experiment results
 
+### Experiment registry
+
+| # | Codename | File | One-line verdict |
+|---|---|---|---|
+| exp1 | `pipeline_validation` | `exp1_pipeline.py` | Plumbing passes (mock) |
+| exp2 | `tsfm_vs_m0_synthetic` | `exp2_tsfm.py` | M0 beats TSFMs on synthetic, n.s. (5 seeds) |
+| exp3 | `react_agent` | `exp3_react.py` | M2 honest negative (real backend) |
+| exp4 | `hybrid_deltas` | `exp4_hybrid.py` | M3 over-adjusts; direction right, magnitude wrong |
+| exp5 | `conformal_baselines` | `exp5_models.py` | Conformal fixes coverage; nothing beats tuned M0 |
+| exp6 | `m3_gate` | `exp6_m3plus.py` | Statistical gate beats raw M3 |
+| exp8 | `macro_overlay` | `exp8_macro.py` | 93% of oracle — **wrong sign, superseded by exp15** |
+| exp9 | `simulator_v2` | `exp9_simv2.py` | Window ranking reverses (DGP-sensitive) |
+| exp10 | `classical_scaleup` | `exp10_classical.py` | Conformal M0 default; hierarchical helps thin |
+| exp11 | `regime_reader` | `exp11_agent_v2.py` | Qualified positive (real Groq, 3.59 vs 4.82) |
+| exp12 | `ensemble_router` | `exp12_router.py` | Clean negative (killed) |
+| exp13 | `tsfm_macro` | `exp13_tsfm_macro.py` | Macro conditioning: draw |
+| exp14 | `m4_real` | `exp14_m4_real.py` | TSFMs win ~20% on real M4 data |
+| exp15 | `macro_corrected` | `exp15_macro_corrected.py` | Corrected-sign macro rerun (running) |
+
 ### exp1 — pipeline validation (mock)
 
 500×24 synthetic, M0 vs mock M1. Plumbing only; mocks are interface
