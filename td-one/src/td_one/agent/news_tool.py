@@ -1,8 +1,10 @@
 """News search tool for TD-One agents (PIT-safe by construction).
 
-Wraps :class:`td_one.news.NewsStore` (local GDELT SQLite) and
-:class:`td_one.news.perplexity.PerplexityClient` (Agent API) behind one
-agent-facing interface. The temporal guard is enforced at THREE levels:
+Wraps :class:`td_one.news.NewsStore` (local GDELT SQLite),
+:class:`td_one.news.perplexity.PerplexityClient` (Agent API), and
+:class:`td_one.news.rag.RAGTool` (offline-first BM25 → Groq rerank →
+abstention) behind one agent-facing interface. The temporal guard is
+enforced at THREE levels:
 
 1. ``before`` is mandatory — there is no default, so a caller cannot
    accidentally omit the cutoff and see the whole corpus.
@@ -27,8 +29,10 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from td_one.agent.groq_client import GroqChatClient
     from td_one.news import Article, NewsStore
     from td_one.news.perplexity import PerplexityArticle, PerplexityClient
+    from td_one.news.rag import RAGTool, RankedArticle
 
 logger = logging.getLogger(__name__)
 
@@ -56,12 +60,20 @@ class NewsSearchTool:
     Parameters
     ----------
     backend:
-        "local" (NewsStore over the GDELT SQLite DB) or "perplexity"
-        (Perplexity Agent API via the vault surrogate). Defaults to "local".
+        "local" (NewsStore over the GDELT SQLite DB), "perplexity"
+        (Perplexity Agent API via the vault surrogate), or "rag"
+        (offline-first RAG: BM25 → Groq rerank → abstention).
+        Defaults to "local".
     db_path:
-        Passed through to NewsStore when backend="local".
+        Passed through to NewsStore / RAGTool when backend is
+        "local" or "rag".
     max_searches:
         Per-run search budget. Defaults to :data:`MAX_SEARCHES_PER_RUN`.
+    groq:
+        GroqChatClient for the "rag" backend's rerank stage. If None,
+        the RAG backend runs BM25-only (no LLM calls).
+    abstain_threshold:
+        RAG abstention threshold (0..1). Only used with backend="rag".
 
     """
 
@@ -70,9 +82,11 @@ class NewsSearchTool:
         backend: str = "local",
         db_path: Path | None = None,
         max_searches: int = MAX_SEARCHES_PER_RUN,
+        groq: GroqChatClient | None = None,
+        abstain_threshold: float = 0.4,
     ) -> None:
-        if backend not in ("local", "perplexity"):
-            raise ValueError(f"backend must be 'local' or 'perplexity', got {backend!r}")
+        if backend not in ("local", "perplexity", "rag"):
+            raise ValueError(f"backend must be 'local', 'perplexity' or 'rag', got {backend!r}")
         if max_searches < 1:
             raise ValueError("max_searches must be >= 1")
         self.backend_name = backend
@@ -81,7 +95,15 @@ class NewsSearchTool:
         if backend == "local":
             from td_one.news import NewsStore
 
-            self._backend: NewsStore | PerplexityClient = NewsStore(db_path=db_path)
+            self._backend: NewsStore | PerplexityClient | RAGTool = NewsStore(db_path=db_path)
+        elif backend == "rag":
+            from td_one.news.rag import RAGTool
+
+            self._backend = RAGTool(
+                db_path=db_path,
+                groq=groq,
+                abstain_threshold=abstain_threshold,
+            )
         else:
             from td_one.news.perplexity import PerplexityClient
 
@@ -176,9 +198,27 @@ class NewsSearchTool:
             )
 
         self._searches_used += 1
-        raw: list[Article] | list[PerplexityArticle] = self._backend.search(
-            query.strip(), cutoff, limit
-        )
+        raw: list[Article] | list[PerplexityArticle] | list[RankedArticle]
+        if self.backend_name == "rag":
+            # RAGTool returns RAGResult; an abstention surfaces as an
+            # empty list (the agent's "insufficient evidence" path).
+            from td_one.news.rag import RAGTool
+
+            assert isinstance(self._backend, RAGTool)
+            rag_result = self._backend.search(query.strip(), cutoff, limit)
+            raw = rag_result.articles
+            if rag_result.abstained:
+                logger.info(
+                    "news_tool: RAG abstained (backend=rag, query=%r) — "
+                    "returning empty (insufficient evidence)",
+                    query.strip()[:120],
+                )
+        else:
+            from typing import cast
+
+
+            backend = cast("NewsStore | PerplexityClient", self._backend)
+            raw = backend.search(query.strip(), cutoff, limit)
 
         results: list[ArticleDict] = []
         for a in raw:
