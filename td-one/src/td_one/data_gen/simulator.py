@@ -185,6 +185,10 @@ class MortgageSimulator:
         df["term_months"] = rng.choice(terms, size=n, p=term_p)
         # Maturity spread across the maturity month
         df["maturity_day"] = rng.integers(1, 29, size=n)
+        # Originations happen year-round (realistic renewal calendar);
+        # previously hardcoded to June, which collapsed all maturities
+        # into a handful of months.
+        df["origination_month"] = rng.integers(1, 13, size=n)
         # Insured flag (OSFI shock): 70% insured
         df["insured_flag"] = rng.random(size=n) < 0.7
         df["credit_score_band"] = rng.choice(
@@ -245,15 +249,14 @@ class MortgageSimulator:
             payment = canadian_monthly_payment(balance, rate, amort_months)
 
             orig_year = int(cust["origination_year"])
+            orig_month = int(cust["origination_month"])
             term_months = int(cust["term_months"])
-            # Maturity: term from origination, day spread within month
-            mat_year = orig_year + term_months // 12
-            mat_month = 6 + (term_months % 12)
-            if mat_month > 12:
-                mat_year += 1
-                mat_month -= 12
+            # Maturity: term months after origination (calendar-correct).
+            total = (orig_month - 1) + term_months
+            mat_year = orig_year + total // 12
+            mat_month = total % 12 + 1
             maturity = date(mat_year, mat_month, min(int(cust["maturity_day"]), 28))
-            orig_date = date(orig_year, 6, 15)
+            orig_date = date(orig_year, orig_month, 15)
 
             # Persistent per-customer state
             delinquent = False
