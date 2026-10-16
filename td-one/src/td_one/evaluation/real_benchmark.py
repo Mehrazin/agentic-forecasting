@@ -291,6 +291,12 @@ def conformal_naive_quantiles(
     nonconformity scores (CQR-style, mirroring ConformalM0).
     Returns shape (len(levels), horizon).
 
+    Methodological note: nonconformity scores pool 1- to H-step errors
+    into a single qhat applied uniformly across horizons. Step-1 intervals
+    are therefore likely over-widened relative to a per-horizon calibration.
+    Empirically the pooled coverage hits nominal (0.800 on M4), but
+    per-horizon calibration would be sharper.
+
     Args:
         history: 1-D training history (no NaN), length > cal_months + 14.
         levels: Quantile levels.

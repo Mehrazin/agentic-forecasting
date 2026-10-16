@@ -209,3 +209,42 @@ def test_finite_sample_quantile_edges() -> None:
     assert finite_sample_quantile(s, 0.8) == pytest.approx(4.0)
     with pytest.raises(ValueError, match="no scores"):
         finite_sample_quantile(np.array([]), 0.8)
+
+
+def test_fair_grid_restricts_to_native_levels() -> None:
+    """Regression: TimesFM's 0.10-0.90 levels must not be flat-extrapolated.
+
+    Onto the 0.05-0.95 COMMON_GRID (P1 tail truncation).
+    """
+    from td_one.models.tsfm import TIMESFM_LEVELS
+
+    lo, hi = float(TIMESFM_LEVELS.min()), float(TIMESFM_LEVELS.max())
+    fair = np.array([g for g in COMMON_GRID if lo <= g <= hi])
+    # No grid point outside TimesFM's native range.
+    assert fair.min() >= 0.10 - 1e-9
+    assert fair.max() <= 0.90 + 1e-9
+    # Still a useful grid (17 of 19 points).
+    assert len(fair) == 17
+    # Interpolation on the fair grid is pure interpolation, never extrapolation.
+    vals = np.linspace(10.0, 90.0, 9)  # fake quantile values at 0.1..0.9
+    qv = interp_quantiles_to_grid(TIMESFM_LEVELS, vals, grid=fair)
+    assert qv.shape == (17,)
+    # Endpoints match exactly (no flat extrapolation).
+    assert qv[0] == pytest.approx(10.0)
+    assert qv[-1] == pytest.approx(90.0)
+
+
+def test_no_flat_extrapolation_on_common_grid() -> None:
+    """Direct check on interp behavior.
+
+    Interp onto COMMON_GRID from 0.1-0.9 levels flat-extrapolates at
+    0.05/0.95 — callers must use the fair-grid restriction instead.
+    """
+    from td_one.models.tsfm import TIMESFM_LEVELS
+
+    vals = np.linspace(10.0, 90.0, 9)
+    qv = interp_quantiles_to_grid(TIMESFM_LEVELS, vals)  # default COMMON_GRID
+    # np.interp flat-extrapolates: document that this happens so callers
+    # know to use the fair-grid restriction instead.
+    assert qv[0] == pytest.approx(10.0)  # flat from q10
+    assert qv[-1] == pytest.approx(90.0)  # flat from q90

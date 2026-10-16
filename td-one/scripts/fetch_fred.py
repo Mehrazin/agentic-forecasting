@@ -72,9 +72,15 @@ SERIES: dict[str, tuple[str, str]] = {
     "CANPERMITMISMEI": ("housing", "Canada building permits (supply pipeline)"),
     # --- FX: CAD weakness constrains BoC easing ---
     "DEXCAUS": ("fx", "CAD per USD (policy-divergence gauge)"),
+    # --- Energy: petro-currency channel feeds mortgage-rate shocks ---
+    "DCOILWTICO": ("energy", "WTI crude spot (oil-fuelled bond selloff channel)"),
     # --- Credit stress: risk appetite for switching/refi ---
     "BAMLH0A0HYM2": ("credit", "US HY option-adjusted spread (risk appetite)"),
     "DRALACBN": ("credit", "US mortgage delinquency rate (stress coincident)"),
+    "HDTGPDCAQ163N": ("credit", "Canada household debt-to-GDP (leverage backdrop, ~2Q lag)"),
+    # NOTE: HDTGPDCAQ163N has ~2 quarters publication lag. Any consumer joining
+    # on calendar date MUST lag-shift by 2Q or use vintage dates, else look-ahead
+    # bias. See FredClient vintage_dates / the PIT discipline in docs.
 }
 
 DATA_DIR = ROOT / "data" / "fred"

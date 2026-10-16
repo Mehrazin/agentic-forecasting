@@ -8,8 +8,10 @@ Framing B (binary direction): is y[t+6] > y[t]? m0_binary,
     conf_m0_binary, chronos2_dir. Scored with Brier + binary CRPS.
 
 Data: M4 Monthly, Finance + Macro categories, stratified sample
-(seed 0). Framing A uses 2000 series; framing B uses a 1000-series
-stratified subsample (seed 1) for the Chronos-2 direction forecasts.
+(seed 0). Framing A uses 2000 series (proportional to category sizes);
+framing B uses a 1000-series balanced subsample (500 Finance + 500 Macro,
+seed 1) — categories weighted equally in the aggregate Brier, not by
+population.
 
 TSFM batching: the wrappers are per-series, so this script loads each
 model once via the wrapper, then batches through the underlying
@@ -147,7 +149,9 @@ def _batch_chronos_quantiles(
             vals = np.asarray(item)
             if vals.ndim == 3:
                 vals = vals[0]  # drop variate dim -> (21, H)
-            vals = np.clip(vals, 0.0, 1.0)
+            # No clipping: TSFM outputs in normalized space may legitimately
+            # exceed [0, 1] (forecasting new highs/lows beyond context range).
+            # Clipping would truncate trends to historical [min, max].
             results.append((CHRONOS2_LEVELS.copy(), vals))
         del tensors, out
     return results
@@ -169,7 +173,8 @@ def _batch_timesfm_quantiles(
         assert q_arr.shape[0] == len(batch), f"batch {i}: {q_arr.shape[0]} vs {len(batch)}"
         for b in range(q_arr.shape[0]):
             # (H, 10) -> drop point col -> (9, H)
-            vals = np.clip(q_arr[b][:, 1:].T, 0.0, 1.0)
+            # No clipping: see _batch_chronos_quantiles for rationale.
+            vals = q_arr[b][:, 1:].T
             results.append((TIMESFM_LEVELS.copy(), vals))
         del q, q_arr
     gc.collect()
@@ -180,6 +185,12 @@ def run_framing_a(series: list[dict], tsfm_name: str | None) -> dict[str, dict[s
     """Run framing A for classical models (+ one TSFM if named).
 
     Returns {model: {"crps": mean, "coverage": mean, "n": count}}.
+
+    Note: TSFM CRPS is computed on the intersection of COMMON_GRID with the
+    model's native quantile levels. TimesFM-2.5 only outputs 0.10-0.90, so
+    its grid is restricted to [0.10, 0.90] to avoid flat extrapolation
+    (np.interp would copy q10/q90 to the 0.05/0.95 grid points, artificially
+    truncating the tails). Classical and Chronos-2 use the full grid.
     """
     crps: dict[str, list[float]] = {"naive": [], "snaive": [], "conf_naive": []}
     cov: dict[str, list[float]] = {"naive": [], "snaive": [], "conf_naive": []}
@@ -230,11 +241,18 @@ def run_framing_a(series: list[dict], tsfm_name: str | None) -> dict[str, dict[s
         wrapper.unload()
         del wrapper
         gc.collect()
+        # Restrict to the intersection of COMMON_GRID and the model's native
+        # levels to avoid flat extrapolation (see docstring). All series in
+        # a batch share the same levels array.
+        _lv0 = np.asarray(results[0][0], dtype=float)
+        fair_grid = np.array([g for g in COMMON_GRID if _lv0.min() <= g <= _lv0.max()])
         for (levels, vals), (lo, hi), actual in zip(results, scales, actuals, strict=True):
-            qv = interp_quantiles_to_grid(levels, denormalize_quantiles(vals, lo, hi))
-            crps[tsfm_name].append(crps_from_quantiles(COMMON_GRID, qv, actual))
-            i10 = int(np.argmin(np.abs(COMMON_GRID - 0.1)))
-            i90 = int(np.argmin(np.abs(COMMON_GRID - 0.9)))
+            qv = interp_quantiles_to_grid(
+                levels, denormalize_quantiles(vals, lo, hi), grid=fair_grid
+            )
+            crps[tsfm_name].append(crps_from_quantiles(fair_grid, qv, actual))
+            i10 = int(np.argmin(np.abs(fair_grid - 0.1)))
+            i90 = int(np.argmin(np.abs(fair_grid - 0.9)))
             cov[tsfm_name].append(interval_coverage(qv[i10], qv[i90], actual))
         del contexts, results
         gc.collect()
@@ -318,7 +336,8 @@ def run_framing_b_chronos(series: list[dict]) -> dict[str, list[float]]:
             vals = np.asarray(item)
             if vals.ndim == 3:
                 vals = vals[0]  # drop variate dim -> (21, H)
-            vals = denormalize_quantiles(np.clip(vals, 0.0, 1.0), lo, hi)
+            # No clipping: see _batch_chronos_quantiles for rationale.
+            vals = denormalize_quantiles(vals, lo, hi)
             q_h6 = interp_quantiles_to_grid(CHRONOS2_LEVELS, vals[:, HORIZON - 1])
             probs.append(prob_up_from_quantiles(COMMON_GRID, q_h6, current))
             targets.append(y)
