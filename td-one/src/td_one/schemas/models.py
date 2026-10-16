@@ -49,9 +49,7 @@ class MortgageHistoryRecord(BaseModel):
     has_savings: bool
     has_credit_card: bool
     has_investments: bool
-    credit_score_band: Literal[
-        "below_600", "600_659", "660_719", "720_plus", "unknown"
-    ]
+    credit_score_band: Literal["below_600", "600_659", "660_719", "720_plus", "unknown"]
     credit_score_asof: date
     missed_payment_count_12m: int = Field(ge=0, le=12)
     max_days_past_due_12m: int = Field(ge=0, le=365)
@@ -59,17 +57,15 @@ class MortgageHistoryRecord(BaseModel):
     campaign_member_90d: bool
     marketing_channel_last: str
     # --- 9 optional fields (Excel spec; load-bearing for attrition) ---
-    employment_status: Literal[
-        "employed", "self_employed", "retired", "unemployed", "unknown"
-    ] = "unknown"
+    employment_status: Literal["employed", "self_employed", "retired", "unemployed", "unknown"] = (
+        "unknown"
+    )
     adjusted_family_net_income_cad: float | None = Field(default=None, ge=0)
     government_benefit_income_monthly_cad: float | None = Field(default=None, ge=0)
     property_value_cad: float | None = Field(default=None, gt=0)
     property_value_asof: date | None = None
     insured_flag: bool | None = None  # OSFI stress-test exemption driver
-    occupancy_type: Literal[
-        "owner_occupied", "rental", "second_home", "unknown"
-    ] = "unknown"
+    occupancy_type: Literal["owner_occupied", "rental", "second_home", "unknown"] = "unknown"
     other_debt_payment_monthly_cad: float | None = Field(default=None, ge=0)
     credit_utilization_pct: float | None = Field(default=None, ge=0, le=100)
 
@@ -110,12 +106,10 @@ class RenewalOutcomeRecord(BaseModel):
         resolved = self.outcome not in ("pending", "unknown")
         if resolved and self.switched_lender_flag is None:
             raise ValueError(
-                f"outcome={self.outcome!r} is resolved but "
-                "switched_lender_flag is None"
+                f"outcome={self.outcome!r} is resolved but switched_lender_flag is None"
             )
         if not resolved and self.switched_lender_flag is not None:
             raise ValueError(
-                f"outcome={self.outcome!r} is unresolved but "
-                "switched_lender_flag is not None"
+                f"outcome={self.outcome!r} is unresolved but switched_lender_flag is not None"
             )
         return self

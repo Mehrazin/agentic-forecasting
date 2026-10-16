@@ -109,6 +109,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "scale_up_results_real.json). Lets per-model runs coexist.",
     )
     p.add_argument(
+        "--m0-window",
+        type=int,
+        default=6,
+        help="Trailing window (months) for the M0 baseline (default: 6).",
+    )
+    p.add_argument(
         "--skip-ingest",
         action="store_true",
         help="Skip the PIT store ingest step.",
@@ -145,8 +151,28 @@ def _m0_rate_forecast(train: pd.DataFrame, origin: date, seed: int = 0) -> dict[
     return {float(level): float(value) for level, value in zip(M0_LEVELS, q, strict=True)}
 
 
+def _m0_window_forecast(train: pd.DataFrame, origin: date, window: int) -> dict[float, float]:
+    """M0 as a ``forecast_fn`` with a parametrized trailing window.
+
+    Mirrors the ``forecast("m0", ...)`` path in
+    ``td_one.tools.forecasting`` exactly (``_panel_rates`` filtering,
+    ``TIMESFM_LEVELS`` grid, ``n_upcoming`` from the trailing window
+    mean), except the trailing window is parametrized. At window=6 the
+    output is identical to the tools path (verified: CRPS 5.360,
+    coverage 0.671 on seed 0).
+    """
+    from td_one.models.tsfm import TIMESFM_LEVELS
+    from td_one.tools.forecasting import _panel_rates
+
+    n, a = _panel_rates(train, origin)
+    model = HistoricalBaseline(trailing_window=window)
+    model.fit(n, a)
+    n_upcoming = max(1, int(round(float(n[-window:].mean()))))
+    return model.predict_rate_quantiles(n_upcoming, np.asarray(TIMESFM_LEVELS, dtype=float))
+
+
 def _load_forecast_fns(
-    model_names: list[str], seed: int
+    model_names: list[str], seed: int, m0_window: int = 6
 ) -> tuple[dict[str, ForecastFn], list[str]]:
     """Wire model names to ``forecast_fn`` callables.
 
@@ -154,6 +180,13 @@ def _load_forecast_fns(
     so the pipeline degrades gracefully while the tools package is empty.
     Each model is wired as ``functools.partial(forecast, name)``, matching
     the runner's ``(train_panel, origin) -> {level: rate}`` contract.
+
+    Args:
+        model_names: Model names to wire.
+        seed: Base RNG seed (used by the local m0 fallback only).
+        m0_window: Trailing window for M0. The tools path hardcodes 6;
+            a non-default window uses the local parametrized mirror
+            (identical output at window=6).
 
     Returns:
         (forecast functions, names wired via td_one.tools.forecasting).
@@ -172,10 +205,14 @@ def _load_forecast_fns(
     fns: dict[str, ForecastFn] = {}
     via_tools: list[str] = []
     for name in model_names:
-        if tools_mod is not None and name in supported:
+        if tools_mod is not None and name in supported and not (name == "m0" and m0_window != 6):
             fns[name] = partial(tools_mod.forecast, name)
             via_tools.append(name)
             print(f"[models] wired {name!r} via td_one.tools.forecasting")
+        elif name == "m0" and m0_window != 6:
+            # Parametrized trailing window (mirrors the tools m0 path).
+            fns[name] = partial(_m0_window_forecast, window=m0_window)
+            print(f"[models] wired 'm0' via local windowed forecast (window={m0_window})")
         elif name == "m0":
             # Local fallback while td_one.tools.forecasting is unavailable.
             fns[name] = partial(_m0_rate_forecast, seed=seed)
@@ -329,7 +366,7 @@ def main(argv: list[str] | None = None) -> int:
 
         # ---- 4. Backtest per model ----
         print(f"[4/5] Backtesting models={model_names} ...", flush=True)
-        fns, via_tools = _load_forecast_fns(model_names, args.seed)
+        fns, via_tools = _load_forecast_fns(model_names, args.seed, args.m0_window)
         all_results: list[pd.DataFrame] = []
         t0 = time.time()
         for name in model_names:

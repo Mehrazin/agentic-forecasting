@@ -140,8 +140,7 @@ class ForecastAgent:
             return 0.0
 
         evidence_str = "\n".join(
-            f"- {e.get('fact', '')} ({e.get('directional_impact', 'neutral')})"
-            for e in evidence
+            f"- {e.get('fact', '')} ({e.get('directional_impact', 'neutral')})" for e in evidence
         )
         prompt = (
             f"Segment {segment_id} has base switching rate {base_rate:.3f}.\n"

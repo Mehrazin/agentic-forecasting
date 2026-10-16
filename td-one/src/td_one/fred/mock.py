@@ -131,5 +131,3 @@ def get_series(series_id: str, start: date, end: date) -> pd.Series:
         )
     fixture = _FIXTURES[series_id]
     return fixture.loc[pd.Timestamp(lo) : pd.Timestamp(hi)].copy()
-
-

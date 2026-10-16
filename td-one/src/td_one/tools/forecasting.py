@@ -134,6 +134,35 @@ def _real_weights_dir(model_name: str) -> str:
     return str(wdir)
 
 
+#: Quantile-crossing diagnostics for the monotone rearrangement in
+#: `_real_forecast`. Per model: forecasts seen, forecasts where the raw
+#: wrapper output had any crossing, and the total number of pairwise
+#: inversions repaired. Crossing is itself a tail-calibration signal, so
+#: reports should disclose these counts rather than silently repairing.
+_crossing_stats: dict[str, dict[str, int]] = {}
+
+
+def crossing_stats() -> dict[str, dict[str, int]]:
+    """Snapshot of quantile-crossing diagnostics (per real model)."""
+    return {m: dict(s) for m, s in _crossing_stats.items()}
+
+
+def reset_crossing_stats() -> None:
+    """Clear quantile-crossing diagnostics (e.g. between experiments)."""
+    _crossing_stats.clear()
+
+
+def _count_inversions(vals: np.ndarray) -> int:
+    """Count pairwise inversions (i<j but vals[i] > vals[j])."""
+    # O(n^2); n <= 21 levels, trivial cost.
+    inv = 0
+    for i in range(len(vals)):
+        for j in range(i + 1, len(vals)):
+            if vals[i] > vals[j]:
+                inv += 1
+    return inv
+
+
 def _real_forecast(model_name: str, rates: np.ndarray) -> dict[float, float]:
     """Zero-shot TSFM forecast of the next-month switching rate.
 
@@ -156,7 +185,14 @@ def _real_forecast(model_name: str, rates: np.ndarray) -> dict[float, float]:
         _real_wrappers[model_name] = cls(use_mock=False, weights_dir=wdir)
     wrapper = _real_wrappers[model_name]
     levels, values = wrapper.forecast_quantiles(rates, horizon=1)
-    vals = np.sort(np.asarray(values[:, 0], dtype=float))
+    raw = np.asarray(values[:, 0], dtype=float)
+    inv = _count_inversions(raw)
+    stat = _crossing_stats.setdefault(model_name, {"forecasts": 0, "crossed": 0, "inversions": 0})
+    stat["forecasts"] += 1
+    if inv:
+        stat["crossed"] += 1
+        stat["inversions"] += inv
+    vals = np.sort(raw)
     lvls = np.asarray(levels, dtype=float)
     order = np.argsort(lvls, kind="stable")
     return {float(lvls[i]): float(vals[j]) for j, i in enumerate(order)}

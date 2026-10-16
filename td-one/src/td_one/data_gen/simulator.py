@@ -36,6 +36,14 @@ from td_one.data_gen.amortization import (
 )
 from td_one.schemas import MortgageHistoryRecord, RenewalOutcomeRecord
 
+
+def _month_end(year: int, month: int) -> date:
+    """Last calendar day of the given month."""
+    if month == 12:
+        return date(year, 12, 31)
+    return date.fromordinal(date(year, month + 1, 1).toordinal() - 1)
+
+
 # --- DGP parameters (documented, tunable) ---
 
 #: Variable-rate share (Canada ~30%).
@@ -163,9 +171,7 @@ class MortgageSimulator:
             p=[0.72, 0.12, 0.10, 0.06],
         )
         # Rate type: ~30% variable
-        df["rate_type"] = np.where(
-            rng.random(size=n) < VARIABLE_SHARE, "variable", "fixed"
-        )
+        df["rate_type"] = np.where(rng.random(size=n) < VARIABLE_SHARE, "variable", "fixed")
         # Fixed rates: 2021 originations get <=3.0% (rate-shock cohort)
         is_low = df["origination_year"] == 2021
         fixed_rate = np.where(
@@ -202,9 +208,7 @@ class MortgageSimulator:
         )
         # Credit utilization correlated with income (lower income → higher util)
         income_z = (np.log(df["household_income_cad"]) - 11.45) / 0.55
-        df["credit_utilization_pct"] = np.clip(
-            35 - 10 * income_z + rng.normal(0, 8, size=n), 1, 95
-        )
+        df["credit_utilization_pct"] = np.clip(35 - 10 * income_z + rng.normal(0, 8, size=n), 1, 95)
         df["other_debt_payment_monthly_cad"] = np.clip(
             rng.lognormal(mean=5.5, sigma=0.8, size=n), 0, 3000
         )
@@ -281,11 +285,7 @@ class MortgageSimulator:
                 # Autocorrelated deposits, drained by payment shock
                 payment_ratio = payment / (float(cust["household_income_cad"]) / 12)
                 shock_drag = -500 * max(0.0, payment_ratio - 0.32)
-                deposit_change = (
-                    DEPOSIT_RHO * deposit_change
-                    + rng.normal(0, 300)
-                    + shock_drag
-                )
+                deposit_change = DEPOSIT_RHO * deposit_change + rng.normal(0, 300) + shock_drag
                 deposits = max(0.0, deposits + deposit_change)
 
                 # New episode at maturity (renewal repricing for fixed)
@@ -296,9 +296,7 @@ class MortgageSimulator:
                     if not is_variable:
                         # Renew into prevailing rates (~5% in 2026)
                         rate = float(rng.uniform(4.5, 5.5))
-                        payment = canadian_monthly_payment(
-                            balance, rate, amort_months
-                        )
+                        payment = canadian_monthly_payment(balance, rate, amort_months)
 
                 borrower_income = float(cust["household_income_cad"]) * 0.6
                 prop_value = float(cust["property_value_cad"])
@@ -325,9 +323,7 @@ class MortgageSimulator:
                     mortgage_balance_cad=round(balance, 2),
                     mortgage_rate_pct=round(rate, 3),
                     rate_type=str(cust["rate_type"]),  # type: ignore[arg-type]
-                    payment_structure=(
-                        "adjustable_payment" if is_variable else "fixed_payment"
-                    ),
+                    payment_structure=("adjustable_payment" if is_variable else "fixed_payment"),
                     remaining_amortization_months=amort_months,
                     mortgage_payment_monthly_cad=round(payment, 2),
                     td_liquid_deposits_cad=round(deposits, 2),
@@ -358,9 +354,7 @@ class MortgageSimulator:
                     other_debt_payment_monthly_cad=round(
                         float(cust["other_debt_payment_monthly_cad"]), 2
                     ),
-                    credit_utilization_pct=round(
-                        float(cust["credit_utilization_pct"]), 1
-                    ),
+                    credit_utilization_pct=round(float(cust["credit_utilization_pct"]), 1),
                 )
                 records.append(rec)
 
@@ -369,6 +363,7 @@ class MortgageSimulator:
     def generate_outcomes(
         self,
         history: list[MortgageHistoryRecord] | None = None,
+        macro_shifts: dict[date, float] | None = None,
     ) -> list[RenewalOutcomeRecord]:
         """Generate renewal outcomes from the structural switching DGP.
 
@@ -376,12 +371,21 @@ class MortgageSimulator:
         draws a switching outcome from:
             logit(p) = β0 + β1·payment_shock + β2·rate_spread
                      + β3·family_squeeze + β4·osfi_exempt + ε_cohort
+                     + macro_shifts[maturity_month]  (if provided)
+
+        The optional ``macro_shifts`` maps month-end dates to logit shifts,
+        e.g. driven by historical FRED macro series. This lets experiments
+        test whether macro-aware models beat macro-blind ones when the DGP
+        genuinely contains macro structure (the default DGP does not).
 
         Outcomes carry an observation lag (outcome_observed_at = event + 2mo)
         for PIT masking.
 
         Args:
             history: Pre-generated history (regenerated if None).
+            macro_shifts: Optional mapping of month dates to logit shifts
+                (e.g. FRED-driven macro overlay). Missing months default
+                to 0.0.
 
         Returns:
             List of validated RenewalOutcomeRecord.
@@ -425,9 +429,7 @@ class MortgageSimulator:
                 )
             # Covariates at maturity (from last snapshot)
             income_mo = rec.household_income_cad / 12
-            payment_shock = max(
-                0.0, rec.mortgage_payment_monthly_cad / max(income_mo, 1.0) - 0.32
-            )
+            payment_shock = max(0.0, rec.mortgage_payment_monthly_cad / max(income_mo, 1.0) - 0.32)
             rate_spread = max(0.0, 5.0 - orig.mortgage_rate_pct)  # vs ORIGINATION rate
             family_squeeze = 1.0 if cohort == "family_squeeze" else 0.0
             osfi_exempt = 1.0 if cohort == "osfi_exempt" else 0.0
@@ -441,6 +443,15 @@ class MortgageSimulator:
                 + BETA_OSFI_EXEMPT * osfi_exempt
                 + cohort_effects[cohort]
             )
+            if macro_shifts:
+                # Month-end key for the maturity month.
+                mkey = date(rec.maturity_date.year, rec.maturity_date.month, 1)
+                # Accept both first-of-month and month-end keys.
+                shift = macro_shifts.get(mkey)
+                if shift is None:
+                    eom = _month_end(rec.maturity_date.year, rec.maturity_date.month)
+                    shift = macro_shifts.get(eom, 0.0)
+                logit_p += float(shift)
             p_switch = float(1 / (1 + np.exp(-logit_p)))
             switched = bool(rng.random() < p_switch)
             # Event at maturity; observed after settlement lag
