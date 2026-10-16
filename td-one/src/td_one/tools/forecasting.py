@@ -14,6 +14,12 @@
   ``[0.1, ..., 0.9]``). Mocks are interface-only: they center on the last
   observed rate with probit-spaced spreads and are NOT statistical
   surrogates of the real models.
+- ``"chronos2"`` / ``"timesfm25"``: the real zero-shot TSFM forecasters
+  (``td_one.models.tsfm``) applied to the panel's historical switching
+  rates. Weights resolve from ``models/MANIFEST.json`` (written by
+  ``scripts/bootstrap_models.py``); missing weights raise instead of
+  downloading. Wrapper instances are cached per process; call
+  :func:`unload_real_models` to free them between runs.
 
 Returns a one-step-ahead forecast: ``{level: rate_quantile}``.
 """
@@ -30,7 +36,7 @@ from td_one.models.baseline import HistoricalBaseline
 from td_one.models.tsfm import CHRONOS2_LEVELS, TIMESFM_LEVELS
 
 #: Forecasters available to the agent.
-SUPPORTED_MODELS = ("m0", "chronos2_mock", "timesfm_mock")
+SUPPORTED_MODELS = ("m0", "chronos2_mock", "timesfm_mock", "chronos2", "timesfm25")
 
 #: Fixed seeds so mock forecasts are deterministic across runs.
 _MOCK_SEEDS = {"chronos2_mock": 20261015, "timesfm_mock": 20261016}
@@ -78,6 +84,75 @@ def _mock_quantiles(model_name: str, last_rate: float) -> dict[float, float]:
     return {float(level): float(value) for level, value in zip(levels, values, strict=True)}
 
 
+#: Cache of real TSFM wrapper instances (one process-wide load each).
+_real_wrappers: dict[str, object] = {}
+
+#: Manifest key per real model name.
+_REAL_MANIFEST_KEYS = {"chronos2": "chronos2", "timesfm25": "timesfm25"}
+
+
+def _real_weights_dir(model_name: str) -> str:
+    """Resolve the local weights dir from models/MANIFEST.json (fail fast)."""
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[3]
+    manifest_path = root / "models" / "MANIFEST.json"
+    if not manifest_path.is_file():
+        raise RuntimeError(
+            f"real model {model_name!r} needs weights: {manifest_path} missing; "
+            "run scripts/bootstrap_models.py first"
+        )
+    import json
+
+    manifest = json.loads(manifest_path.read_text())
+    key = _REAL_MANIFEST_KEYS[model_name]
+    try:
+        local_path = manifest["models"][key]["local_path"]
+    except KeyError as exc:
+        raise RuntimeError(f"manifest has no entry for {key!r}") from exc
+    wdir = root / local_path
+    if not wdir.is_dir():
+        raise RuntimeError(f"weights dir missing for {model_name!r}: {wdir}")
+    return str(wdir)
+
+
+def _real_forecast(model_name: str, rates: np.ndarray) -> dict[float, float]:
+    """Zero-shot TSFM forecast of the next-month switching rate.
+
+    Args:
+        model_name: "chronos2" or "timesfm25".
+        rates: Historical monthly switching rates in [0, 1].
+
+    Returns:
+        Mapping quantile level -> forecast rate, one step ahead, on the
+        model's native grid. Values are sorted ascending to enforce
+        monotone quantiles — neural forecasters can emit quantile
+        crossing, which the backtest validator (correctly) rejects.
+
+    """
+    if model_name not in _real_wrappers:
+        from td_one.models.tsfm import Chronos2Wrapper, TimesFMWrapper
+
+        wdir = _real_weights_dir(model_name)
+        cls = Chronos2Wrapper if model_name == "chronos2" else TimesFMWrapper
+        _real_wrappers[model_name] = cls(use_mock=False, weights_dir=wdir)
+    wrapper = _real_wrappers[model_name]
+    levels, values = wrapper.forecast_quantiles(rates, horizon=1)  # type: ignore[union-attr]
+    vals = np.sort(np.asarray(values[:, 0], dtype=float))
+    lvls = np.asarray(levels, dtype=float)
+    order = np.argsort(lvls, kind="stable")
+    return {float(lvls[i]): float(vals[j]) for j, i in enumerate(order)}
+
+
+def unload_real_models() -> None:
+    """Unload cached real TSFM wrappers (free RAM between runs)."""
+    for wrapper in _real_wrappers.values():
+        unload = getattr(wrapper, "unload", None)
+        if callable(unload):
+            unload()
+    _real_wrappers.clear()
+
+
 def forecast(model_name: str, panel: pd.DataFrame, run_date: date) -> dict[float, float]:
     """One-step-ahead switching-rate quantile forecast for a segment panel.
 
@@ -104,4 +179,6 @@ def forecast(model_name: str, panel: pd.DataFrame, run_date: date) -> dict[float
         baseline.fit(n, a)
         n_upcoming = max(1, int(round(float(n[-baseline.trailing_window :].mean()))))
         return baseline.predict_rate_quantiles(n_upcoming, np.asarray(TIMESFM_LEVELS, dtype=float))
+    if model_name in ("chronos2", "timesfm25"):
+        return _real_forecast(model_name, rates)
     return _mock_quantiles(model_name, float(rates[-1]))
