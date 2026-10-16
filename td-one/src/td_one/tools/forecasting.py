@@ -27,11 +27,13 @@ Returns a one-step-ahead forecast: ``{level: rate_quantile}``.
 from __future__ import annotations
 
 from datetime import UTC, date, datetime
+from typing import Protocol
 
 import numpy as np
 import pandas as pd
 from scipy import stats
 
+from td_one._paths import _repo_root
 from td_one.models.baseline import HistoricalBaseline
 from td_one.models.tsfm import CHRONOS2_LEVELS, TIMESFM_LEVELS
 
@@ -63,10 +65,13 @@ def _panel_rates(panel: pd.DataFrame, run_date: date) -> tuple[np.ndarray, np.nd
     p = p[p["n_renewals"] > 0]
     if p.empty:
         raise ValueError("panel has no visible rows with n_renewals > 0")
-    return (
-        p["n_renewals"].to_numpy(dtype=float),
-        p["n_switches"].to_numpy(dtype=float),
-    )
+    n = p["n_renewals"].to_numpy(dtype=float)
+    a = p["n_switches"].to_numpy(dtype=float)
+    # NaN switch counts would silently produce NaN rates (and NaN model
+    # input); fail loudly at the panel boundary instead.
+    if bool(np.isnan(n).any() or np.isnan(a).any()):
+        raise ValueError("panel contains NaN in n_renewals/n_switches")
+    return n, a
 
 
 def _mock_quantiles(model_name: str, last_rate: float) -> dict[float, float]:
@@ -84,18 +89,32 @@ def _mock_quantiles(model_name: str, last_rate: float) -> dict[float, float]:
     return {float(level): float(value) for level, value in zip(levels, values, strict=True)}
 
 
-#: Cache of real TSFM wrapper instances (one process-wide load each).
-_real_wrappers: dict[str, object] = {}
+class _TSFMWrapper(Protocol):
+    """Structural type for the real TSFM wrappers (mypy-strict).
 
-#: Manifest key per real model name.
-_REAL_MANIFEST_KEYS = {"chronos2": "chronos2", "timesfm25": "timesfm25"}
+    ``Chronos2Wrapper`` and ``TimesFMWrapper`` both satisfy this; the
+    cache below is typed against the protocol instead of ``object`` so
+    attribute access type-checks without ignores.
+    """
+
+    def forecast_quantiles(
+        self, series: np.ndarray, horizon: int | None = ...
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """Forecast quantiles; see td_one.models.tsfm for the contract."""
+        ...
+
+    def unload(self) -> None:
+        """Free model weights."""
+        ...
+
+
+#: Cache of real TSFM wrapper instances (one process-wide load each).
+_real_wrappers: dict[str, _TSFMWrapper] = {}
 
 
 def _real_weights_dir(model_name: str) -> str:
     """Resolve the local weights dir from models/MANIFEST.json (fail fast)."""
-    from pathlib import Path
-
-    root = Path(__file__).resolve().parents[3]
+    root = _repo_root()
     manifest_path = root / "models" / "MANIFEST.json"
     if not manifest_path.is_file():
         raise RuntimeError(
@@ -105,11 +124,10 @@ def _real_weights_dir(model_name: str) -> str:
     import json
 
     manifest = json.loads(manifest_path.read_text())
-    key = _REAL_MANIFEST_KEYS[model_name]
     try:
-        local_path = manifest["models"][key]["local_path"]
+        local_path = manifest["models"][model_name]["local_path"]
     except KeyError as exc:
-        raise RuntimeError(f"manifest has no entry for {key!r}") from exc
+        raise RuntimeError(f"manifest has no entry for {model_name!r}") from exc
     wdir = root / local_path
     if not wdir.is_dir():
         raise RuntimeError(f"weights dir missing for {model_name!r}: {wdir}")
@@ -137,7 +155,7 @@ def _real_forecast(model_name: str, rates: np.ndarray) -> dict[float, float]:
         cls = Chronos2Wrapper if model_name == "chronos2" else TimesFMWrapper
         _real_wrappers[model_name] = cls(use_mock=False, weights_dir=wdir)
     wrapper = _real_wrappers[model_name]
-    levels, values = wrapper.forecast_quantiles(rates, horizon=1)  # type: ignore[union-attr]
+    levels, values = wrapper.forecast_quantiles(rates, horizon=1)
     vals = np.sort(np.asarray(values[:, 0], dtype=float))
     lvls = np.asarray(levels, dtype=float)
     order = np.argsort(lvls, kind="stable")
@@ -147,9 +165,7 @@ def _real_forecast(model_name: str, rates: np.ndarray) -> dict[float, float]:
 def unload_real_models() -> None:
     """Unload cached real TSFM wrappers (free RAM between runs)."""
     for wrapper in _real_wrappers.values():
-        unload = getattr(wrapper, "unload", None)
-        if callable(unload):
-            unload()
+        wrapper.unload()
     _real_wrappers.clear()
 
 
@@ -157,7 +173,9 @@ def forecast(model_name: str, panel: pd.DataFrame, run_date: date) -> dict[float
     """One-step-ahead switching-rate quantile forecast for a segment panel.
 
     Args:
-        model_name: One of "m0", "chronos2_mock", "timesfm_mock".
+        model_name: One of SUPPORTED_MODELS — "m0", "chronos2_mock",
+            "timesfm_mock" (interface-only mocks) and the real-weight
+            "chronos2" / "timesfm25".
         panel: DataFrame with columns month, n_renewals, n_switches.
         run_date: Point-in-time cutoff (inclusive); only month <= run_date
             rows are used.

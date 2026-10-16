@@ -202,6 +202,23 @@ def test_forecast_m0_drops_zero_exposure_months() -> None:
     _assert_valid_forecast(out, [round(0.1 * i, 1) for i in range(1, 10)])
 
 
+def test_forecast_rejects_nan_switch_counts() -> None:
+    """NaN n_switches raises instead of producing NaN rates.
+
+    Regression: a NaN switch count flowed through _panel_rates into
+    rates = a / n, then into the real TSFM wrappers (which used to accept
+    NaN silently) and np.sort parked the NaN forecast on the top quantile.
+    """
+    from td_one.tools.forecasting import _panel_rates
+
+    panel = _panel(months=12)
+    panel.loc[4, "n_switches"] = float("nan")
+    with pytest.raises(ValueError, match="NaN"):
+        _panel_rates(panel, date(2025, 6, 1))
+    with pytest.raises(ValueError, match="NaN"):
+        forecast("m0", panel, date(2025, 6, 1))
+
+
 def _repo_td_one() -> Path:
     """Return the td-one/ directory (one level above this test file)."""
     return Path(__file__).resolve().parents[1]
@@ -264,6 +281,26 @@ def test_unload_real_models_empty_cache_ok() -> None:
     assert fm._real_wrappers == {}
 
 
+def _real_weights_available() -> bool:
+    """Return True when both models' weight dirs resolve (bootstrap ran).
+
+    Weights are gitignored (1.3GB download); without them the test below
+    would go red on a fresh clone.
+    """
+    from td_one.tools.forecasting import _real_weights_dir
+
+    try:
+        for name in ("chronos2", "timesfm25"):
+            _real_weights_dir(name)
+    except RuntimeError:
+        return False
+    return True
+
+
+@pytest.mark.skipif(
+    not _real_weights_available(),
+    reason="needs bootstrapped model weights (scripts/bootstrap_models.py)",
+)
 def test_real_weights_dir_resolves_from_manifest() -> None:
     """Positive path: MANIFEST.json exists locally, weights dirs on disk."""
     from pathlib import Path
@@ -276,7 +313,11 @@ def test_real_weights_dir_resolves_from_manifest() -> None:
 
 
 def test_real_forecast_enforces_monotone_quantiles() -> None:
-    """Regression: neural forecasters emit quantile crossing; the tool sorts."""
+    """Regression: neural forecasters emit quantile crossing; the tool sorts.
+
+    Pins the exact level->value pairing (smallest value -> smallest level),
+    not just monotonicity: a constant or mispaired mapping must fail.
+    """
     import numpy as np
 
     from td_one.tools import forecasting as fm
@@ -295,5 +336,4 @@ def test_real_forecast_enforces_monotone_quantiles() -> None:
         out = fm._real_forecast("chronos2", np.full(12, 0.12))
     finally:
         fm._real_wrappers.clear()
-    vals = [out[0.1], out[0.5], out[0.9]]
-    assert vals == sorted(vals), vals
+    assert out == {0.1: 0.10, 0.5: 0.20, 0.9: 0.30}, out

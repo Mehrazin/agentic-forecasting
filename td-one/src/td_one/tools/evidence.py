@@ -15,13 +15,12 @@ from __future__ import annotations
 import json
 import re
 from datetime import date
-from pathlib import Path
 from typing import Any
 
+from td_one._paths import _repo_root
+
 #: Corpus written by the evidence-corpus build step (frozen at experiment time).
-CORPUS_PATH = (
-    Path(__file__).resolve().parents[3] / "experiments" / "evidence_corpus" / "corpus.json"
-)
+CORPUS_PATH = _repo_root() / "experiments" / "evidence_corpus" / "corpus.json"
 
 _TOKEN_RE = re.compile(r"[a-z0-9]+")
 

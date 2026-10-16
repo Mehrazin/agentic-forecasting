@@ -33,6 +33,23 @@ _BROWSER_UA = (
     "(KHTML, like Gecko) Chrome/120.0 Safari/537.36"
 )
 
+#: Location of the vault-surrogate helper (Muse VM connector layout).
+#: Hoisted here (once, de-duplicated) instead of on every request so the
+#: import below never accumulates duplicate sys.path entries.
+_CONNECTOR_BIN = "/opt/muse/skills/custom-connector-setup/bin"
+if _CONNECTOR_BIN not in sys.path:
+    sys.path.insert(0, _CONNECTOR_BIN)
+
+
+class GroqEmptyContentError(RuntimeError):
+    """The model returned no usable content.
+
+    Known transient failure mode of gpt-oss (reasoning tax vs the
+    ``max_tokens`` cap). Classified transient in ``td_one.agent.retry`` so
+    empty replies are retried instead of burning a ReAct step.
+    """
+
+
 #: Patient retry for the Groq free tier (mirrors AI2's _VAULT_RETRY).
 _GROQ_RETRY = RetryConfig(
     max_attempts=6,
@@ -46,6 +63,17 @@ _GROQ_RETRY = RetryConfig(
 _throttle_lock = threading.Lock()
 _throttle_last: list[float] = [0.0]
 _MIN_INTERVAL_S = 2.5
+
+
+def _retry_after_s(exc: urllib.error.HTTPError) -> float | None:
+    """Parse Retry-After seconds from an HTTPError's headers, if present."""
+    raw = exc.headers.get("Retry-After")
+    if raw is None:
+        return None
+    try:
+        return max(0.0, float(raw))
+    except (TypeError, ValueError):
+        return None
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -105,7 +133,14 @@ class GroqChatClient:
         json_mode: bool = False,
         timeout_s: float = 120.0,
     ) -> str:
-        """Send one chat completion; return the assistant's text content."""
+        """Send one chat completion; return the assistant's text content.
+
+        Wall-clock note: the budget bounds Groq *spend*, not time. One
+        logical call may attempt up to 6 HTTP tries with backoff (5 x up
+        to 120s on repeated 429s is ~10 minutes of sleeping alone, plus
+        per-attempt timeouts), so a 20-call run can theoretically run for
+        hours under sustained rate limiting.
+        """
         if self.calls >= self.call_budget:
             raise RuntimeError(f"Groq call budget ({self.call_budget}) exhausted")
         self.calls += 1
@@ -136,7 +171,6 @@ class GroqChatClient:
             body["response_format"] = {"type": "json_object"}
         raw = json.dumps(body).encode()
 
-        sys.path.insert(0, "/opt/muse/skills/custom-connector-setup/bin")
         from dynamic_credentials import (  # type: ignore[import-not-found]
             add_surrogate_to_request,
             read_json_response,
@@ -153,16 +187,21 @@ class GroqChatClient:
         except urllib.error.HTTPError as exc:
             # Preserve the status for the retry wrapper (_is_rate_limited
             # checks status_code); include Groq's body for 4xx diagnostics.
+            # Carry Retry-After through as an attribute so _retry_after_s
+            # honors the server's requested delay instead of only the floor.
             detail = ""
             with contextlib.suppress(Exception):
                 detail = exc.read().decode()[:500]
             err = RuntimeError(f"Groq request failed: HTTP Error {exc.code}: {detail}")
             err.status_code = exc.code  # type: ignore[attr-defined]
+            retry_after = _retry_after_s(exc)
+            if retry_after is not None:
+                err.retry_after = retry_after  # type: ignore[attr-defined]
             raise err from exc
         choices = data.get("choices", [])
         if not choices:
             raise RuntimeError("Groq returned no choices")
         content = choices[0]["message"]["content"]
         if not content:
-            raise RuntimeError("Groq returned empty content")
+            raise GroqEmptyContentError("Groq returned empty content")
         return str(content)

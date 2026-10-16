@@ -5,8 +5,8 @@ All deterministic; no network.
 
 from __future__ import annotations
 
-from datetime import date
 import os
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
@@ -67,6 +67,53 @@ def test_live_client_unavailable_credential() -> None:
     client = FredClient(credential="custom.fred-does-not-exist")
     with pytest.raises(FredUnavailableError, match="unavailable"):
         client.observations("DGS5", start=date(2024, 1, 1), end=date(2024, 1, 10))
+
+
+def test_observations_rejects_inverted_window() -> None:
+    """Start > end raises ValueError before any network call."""
+    from td_one.fred.live import FredClient
+
+    client = FredClient(credential="custom.fred-does-not-exist")
+    with pytest.raises(ValueError, match="start.*after end"):
+        client.observations("DGS5", start=date(2024, 2, 1), end=date(2024, 1, 1))
+
+
+def test_observations_raises_on_fred_error_payload(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A FRED {"error_code": ...} payload raises loudly (never silent empty).
+
+    Regression: a bad series id returned an error payload with no
+    "observations" key, which became an empty DataFrame and then an empty
+    Series — silently. The raised message must not contain key material
+    (the surrogate never puts the key in-process).
+    """
+    from td_one.fred.live import FredClient, FredUnavailableError
+
+    def fake_get(self, path, params):
+        return {"error_code": 400, "error_message": "Bad Request - invalid series_id"}
+
+    monkeypatch.setattr(FredClient, "_get", fake_get)
+    client = FredClient(credential="custom.fred")
+    with pytest.raises(FredUnavailableError, match="invalid series_id") as exc_info:
+        client.observations("NOPE")
+    assert "api_key" not in str(exc_info.value)
+
+
+def test_observations_forwards_vintage_dates(monkeypatch: pytest.MonkeyPatch) -> None:
+    """vintage_dates reaches the FRED query params (true as-of pulls)."""
+    from td_one.fred.live import FredClient
+
+    captured: dict[str, str] = {}
+
+    def fake_get(self, path, params):
+        captured.update(params)
+        return {"observations": []}
+
+    monkeypatch.setattr(FredClient, "_get", fake_get)
+    FredClient(credential="custom.fred").observations("DGS5", vintage_dates="2024-01-15")
+    assert captured["vintage_dates"] == "2024-01-15"
+    assert "observation_start" not in captured  # only what was asked
 
 
 @pytest.mark.skipif(

@@ -28,8 +28,29 @@ import numpy as np
 
 # Native quantile grids (from model configs; do not guess)
 CHRONOS2_LEVELS = np.array(
-    [0.01, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50,
-     0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 0.99]
+    [
+        0.01,
+        0.05,
+        0.10,
+        0.15,
+        0.20,
+        0.25,
+        0.30,
+        0.35,
+        0.40,
+        0.45,
+        0.50,
+        0.55,
+        0.60,
+        0.65,
+        0.70,
+        0.75,
+        0.80,
+        0.85,
+        0.90,
+        0.95,
+        0.99,
+    ]
 )
 TIMESFM_LEVELS = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
@@ -39,10 +60,13 @@ def _validate_rates(series: np.ndarray) -> np.ndarray:
     arr = np.asarray(series, dtype=float)
     if arr.size == 0:
         raise ValueError("series must be non-empty")
+    # NaN comparisons are all False, so the range check below would pass
+    # NaN silently — reject explicitly before it reaches a model.
+    if bool(np.isnan(arr).any()):
+        raise ValueError("series must not contain NaN")
     if bool((arr < 0.0).any() or (arr > 1.0).any()):
         raise ValueError(
-            f"series must be rates in [0, 1]; got range "
-            f"[{arr.min():.3f}, {arr.max():.3f}]"
+            f"series must be rates in [0, 1]; got range [{arr.min():.3f}, {arr.max():.3f}]"
         )
     return arr
 
@@ -81,8 +105,7 @@ class Chronos2Wrapper:
             from chronos import Chronos2Pipeline
         except ImportError as e:
             raise RuntimeError(
-                "chronos-forecasting not installed. "
-                "Run: uv pip install chronos-forecasting"
+                "chronos-forecasting not installed. Run: uv pip install chronos-forecasting"
             ) from e
 
         pretrained = self.weights_dir or self.model_id
@@ -199,9 +222,7 @@ class TimesFMWrapper:
             from timesfm.configs import ForecastConfig
             from timesfm.timesfm_2p5.timesfm_2p5_torch import TimesFM_2p5_200M_torch
         except ImportError as e:
-            raise RuntimeError(
-                "timesfm>=3 not installed. Run: uv pip install timesfm"
-            ) from e
+            raise RuntimeError("timesfm>=3 not installed. Run: uv pip install timesfm") from e
 
         repo = self.weights_dir or self.model_id
         # from_pretrained accepts a local dir (uses model.safetensors inside)
@@ -254,9 +275,7 @@ class TimesFMWrapper:
         return self._parse_timesfm_result(point, q, h)
 
     @staticmethod
-    def _parse_timesfm_result(
-        point: object, q: object, h: int
-    ) -> tuple[np.ndarray, np.ndarray]:
+    def _parse_timesfm_result(point: object, q: object, h: int) -> tuple[np.ndarray, np.ndarray]:
         """Parse timesfm forecast output into (levels, values).
 
         The compiled model returns 10 columns: column 0 is the point

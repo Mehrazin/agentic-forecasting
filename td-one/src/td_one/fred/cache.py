@@ -11,8 +11,10 @@ from pathlib import Path
 
 import pandas as pd
 
+from td_one._paths import _repo_root
+
 #: Default cache root (gitignored).
-DEFAULT_CACHE_ROOT = Path(__file__).resolve().parents[3] / "data" / "fred_cache"
+DEFAULT_CACHE_ROOT = _repo_root() / "data" / "fred_cache"
 
 _KEY_RE = re.compile(r"^[A-Za-z0-9_.\-]+$")
 

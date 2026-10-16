@@ -17,12 +17,13 @@ discovery is a separate step).
 from __future__ import annotations
 
 from datetime import UTC, date, datetime
-from pathlib import Path
 
 import pandas as pd
 
+from td_one._paths import _repo_root
+
 #: Directory holding per-segment panel parquet files.
-SEGMENTS_DIR = Path(__file__).resolve().parents[3] / "data" / "segments"
+SEGMENTS_DIR = _repo_root() / "data" / "segments"
 
 PANEL_COLUMNS = ("month", "n_renewals", "n_switches")
 

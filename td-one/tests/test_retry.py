@@ -13,6 +13,7 @@ from td_one.agent.retry import (
     _backoff_delay,
     _is_rate_limited,
     _is_transient,
+    _retry_after_s,
     with_retry,
 )
 
@@ -118,3 +119,46 @@ def test_exhaustion_reraises_last(monkeypatch: pytest.MonkeyPatch) -> None:
     with pytest.raises(ServerError, match="fail 3"):
         always_fails()
     assert calls["n"] == 3
+
+
+def test_urlerror_is_transient() -> None:
+    """Urllib raises URLError (not ConnectionError) for DNS/connect failures."""
+    import urllib.error
+
+    cfg = RetryConfig()
+    assert _is_transient(urllib.error.URLError("dns failure"), cfg)
+    assert "URLError" in cfg.transient_names
+
+
+def test_empty_content_error_is_transient() -> None:
+    """GroqEmptyContentError retries (known transient for gpt-oss)."""
+    from td_one.agent.groq_client import GroqEmptyContentError
+
+    assert _is_transient(GroqEmptyContentError("empty"), RetryConfig())
+
+
+def test_retry_after_s_reads_attribute() -> None:
+    """_retry_after_s honors a retry_after attribute carried on the error."""
+    err = RuntimeError("429")
+    err.retry_after = 42.0  # carried by clients (e.g. groq_client)
+    assert _retry_after_s(err) == 42.0
+
+
+def test_retry_after_attribute_drives_backoff(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A carried Retry-After sets the delay (not just the floor)."""
+    delays: list[float] = []
+    monkeypatch.setattr("td_one.agent.retry.time.sleep", delays.append)
+    calls = {"n": 0}
+
+    @with_retry(RetryConfig(max_attempts=2, jitter_ratio=0.0, min_rate_limit_delay_s=5.0))
+    def limited() -> str:
+        calls["n"] += 1
+        err = RateLimitError()
+        err.status_code = 429
+        err.retry_after = 30.0
+        raise err
+
+    with pytest.raises(RateLimitError):
+        limited()
+    assert calls["n"] == 2
+    assert delays == [30.0]  # honored exactly (jitter off), not the 5s floor

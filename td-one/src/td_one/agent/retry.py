@@ -24,11 +24,14 @@ Usage::
 from __future__ import annotations
 
 import functools
+import logging
 import random
 import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import TypeVar
+
+logger = logging.getLogger(__name__)
 
 T = TypeVar("T")
 
@@ -50,11 +53,18 @@ class RetryConfig:
                 "Timeout",
                 "TimeoutError",
                 "ConnectionError",
+                # urllib raises URLError (not ConnectionError) for
+                # DNS/connect failures; without this a network blip fails
+                # the step immediately.
+                "URLError",
                 "ServiceUnavailable",
                 "InternalServerError",
                 "RateLimitError",
                 "APISConnectionError",
                 "APITimeoutError",
+                # td_one.agent.groq_client.GroqEmptyContentError: the model
+                # returned no usable content (known transient for gpt-oss).
+                "GroqEmptyContentError",
             }
         )
     )
@@ -139,8 +149,22 @@ def with_retry(
                     if not _is_transient(exc, cfg):
                         raise
                     if attempt == cfg.max_attempts - 1:
+                        logger.debug(
+                            "retry %s: exhausted after %d attempts (%r)",
+                            getattr(fn, "__name__", "call"),
+                            cfg.max_attempts,
+                            exc,
+                        )
                         raise
                     delay = _backoff_delay(attempt, exc, cfg)
+                    logger.debug(
+                        "retry %s: attempt %d/%d failed (%r); sleeping %.1fs before next attempt",
+                        getattr(fn, "__name__", "call"),
+                        attempt + 1,
+                        cfg.max_attempts,
+                        exc,
+                        delay,
+                    )
                     time.sleep(max(0.0, delay))
             assert last is not None  # unreachable; keeps mypy honest
             raise last

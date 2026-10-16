@@ -72,6 +72,21 @@ def test_input_validation_rejects_out_of_range() -> None:
         w.forecast_quantiles(np.array([]), horizon=6)
 
 
+def test_input_validation_rejects_nan() -> None:
+    """NaN rates raise loudly (NaN comparisons would pass the range check).
+
+    Regression: _validate_rates(np.array([0.1, np.nan, 0.2])) used to
+    return without raising; the NaN then flowed into the real Chronos-2 /
+    TimesFM context and np.sort parked it on the highest quantile.
+    """
+    w = Chronos2Wrapper(use_mock=True)
+    with pytest.raises(ValueError, match="NaN"):
+        w.forecast_quantiles(np.array([0.1, np.nan, 0.2]), horizon=6)
+    w2 = TimesFMWrapper(use_mock=True)
+    with pytest.raises(ValueError, match="NaN"):
+        w2.forecast_quantiles(np.array([np.nan]), horizon=6)
+
+
 def test_unload_safe_when_never_loaded() -> None:
     """unload() must not raise when nothing was loaded."""
     Chronos2Wrapper(use_mock=True).unload()
@@ -197,8 +212,7 @@ try:
     import torch  # noqa: F401
 
     _REAL_OK = (
-        Path("models/weights/chronos2").exists()
-        and Path("models/weights/timesfm25").exists()
+        Path("models/weights/chronos2").exists() and Path("models/weights/timesfm25").exists()
     )
 except ImportError:
     _REAL_OK = False
