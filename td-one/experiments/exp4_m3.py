@@ -20,8 +20,6 @@ import json
 import logging
 import os
 import sys
-import time
-import urllib.request
 from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import TypedDict
@@ -34,6 +32,7 @@ from scipy.special import logit
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from td_one.agent.controller import EvidenceCard, ForecastAgent  # noqa: E402
+from td_one.agent.groq_client import GroqChatClient  # noqa: E402
 from td_one.evaluation.metrics import (  # noqa: E402
     crps_counts,
     interval_coverage,
@@ -187,8 +186,10 @@ def _load_evidence() -> list[EvidenceCard]:
     """Load frozen corpus entries dated before RUN_DATE as evidence cards."""
     corpus_path = Path(__file__).resolve().parent / "evidence_corpus" / "corpus.json"
     data = json.loads(corpus_path.read_text())
+    # Corpus is a top-level list; tolerate the legacy {"entries": [...]} shape.
+    entries = data["entries"] if isinstance(data, dict) else data
     cards: list[EvidenceCard] = []
-    for entry in data["entries"]:
+    for entry in entries:
         if entry["date"] >= RUN_DATE.isoformat():
             continue  # PIT guard: no future evidence
         cards.append(
@@ -202,96 +203,15 @@ def _load_evidence() -> list[EvidenceCard]:
     return cards
 
 
-class _GroqChatClient:
-    """Minimal Groq chat client via the vault surrogate (key never in process).
-
-    Implements the ``LLMProvider`` protocol from td_one.agent.controller.
-    """
-
-    def __init__(self, model: str = _GROQ_MODEL) -> None:
-        self.model = model
-        self.calls = 0
-
-    def complete(
-        self,
-        prompt: str,
-        system: str | None = None,
-        json_mode: bool = False,
-        timeout_s: float = 60.0,
-    ) -> str:
-        if self.calls >= _LLM_CALL_BUDGET:
-            raise RuntimeError(f"LLM call budget ({_LLM_CALL_BUDGET}) exhausted")
-        self.calls += 1
-        body = json.dumps(
-            {
-                "model": self.model,
-                "messages": [
-                    {
-                        "role": "system",
-                        "content": system or "You are a mortgage risk analyst.",
-                    },
-                    {"role": "user", "content": prompt},
-                ],
-                "max_tokens": 4000,
-            }
-        ).encode()
-        backoff = 2.0
-        for attempt in range(4):
-            try:
-                return self._post(body, timeout_s)
-            except _RateLimitedError as e:
-                if attempt == 3:
-                    raise
-                wait = e.retry_after or backoff
-                logger.warning("Groq 429, backing off %.1fs", wait)
-                time.sleep(wait)
-                backoff *= 2
-        raise RuntimeError("unreachable")
-
-    def _post(self, body: bytes, timeout_s: float) -> str:
-        sys.path.insert(0, "/opt/muse/skills/custom-connector-setup/bin")
-        from dynamic_credentials import (  # type: ignore[import-not-found]
-            add_surrogate_to_request,
-            read_json_response,
-        )
-
-        req = urllib.request.Request("https://api.groq.com/openai/v1/chat/completions", data=body)
-        req.add_header("Content-Type", "application/json")
-        req.add_header(
-            "User-Agent",
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/120.0 Safari/537.36",
-        )
-        add_surrogate_to_request(req, "custom.groq", allowed_hosts=["api.groq.com"])
-        try:
-            with urllib.request.urlopen(req, timeout=timeout_s) as resp:
-                data = read_json_response(resp)
-        except urllib.error.HTTPError as e:
-            if e.code == 429:
-                retry_after = e.headers.get("Retry-After")
-                raise _RateLimitedError(float(retry_after) if retry_after else None) from e
-            raise
-        choices = data.get("choices", [])
-        if not choices:
-            raise RuntimeError("Groq returned no choices")
-        return str(choices[0]["message"]["content"])
-
-
-class _RateLimitedError(Exception):
-    def __init__(self, retry_after: float | None) -> None:
-        super().__init__("rate limited")
-        self.retry_after = retry_after
-
-
 def _real_delta_fn() -> object:
     """Build a delta function driven by the real Groq agent (mock fallback: None)."""
     try:
-        client = _GroqChatClient()
-    except Exception as e:  # noqa: BLE001 - surrogate unavailable -> caller decides
+        client = GroqChatClient(model=_GROQ_MODEL, call_budget=_LLM_CALL_BUDGET)
+        agent = ForecastAgent(client)  # type: ignore[arg-type]
+        evidence = _load_evidence()
+    except Exception as e:  # noqa: BLE001 - surrogate/evidence unavailable -> caller decides
         logger.warning("real LLM unavailable: %s", e)
         return None
-    agent = ForecastAgent(client)  # type: ignore[arg-type]
-    evidence = _load_evidence()
 
     def delta_fn(scenario: dict[str, object], base_rate: float) -> float:
         delta = agent.estimate_adjustment(

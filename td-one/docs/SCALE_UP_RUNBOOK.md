@@ -111,9 +111,10 @@ exponential backoff. Budget ~1–2s per call plus retry delays.
 |---|---|
 | HF download fails with `Invalid port` | Sanitize proxy vars: `export no_proxy="localhost,127.0.0.1" NO_PROXY="localhost,127.0.0.1"` (bracketed IPv6 entries break `huggingface_hub`) |
 | HF offline / rate-limited bootstrap | `scripts/bootstrap_models.py` resolves SHAs explicitly and fails closed with a not-reproducible status instead of silently using `main`; retry when network returns |
-| OOM during TSFM inference | Models already load one-at-a-time with explicit unload; on smaller VMs use `TD_ONE_MOCK=1` |
+| OOM during TSFM inference | Models already load one-at-a-time with explicit unload; on smaller VMs use `TD_ONE_MOCK=1`. For full scale-ups, run one model per invocation with `--tag` (e.g. `--models chronos2 --tag real-chronos2`) so only one weight set is ever resident |
+| `forecast quantiles must be non-decreasing` | Real TSFMs can emit quantile crossing; `tools/forecasting._real_forecast` sorts values ascending to enforce monotonicity (regression-tested) |
 | `models/weights/` missing | Re-run the bootstrap; the experiment scripts fail fast if `MANIFEST.json` is absent |
-| Groq 429 (rate limit) | Wait and retry; the controller backs off 3× automatically. Do not hammer — the free tier resets on a window |
+| Groq 429 (rate limit) | `td_one/agent/groq_client.py` retries with AI2's patient free-tier policy (6 attempts, 60s floor on 429, 2.5s process-wide throttle). Do not hammer — the free tier resets on a window |
 | `timesfm` import error | `uv run --with timesfm` and `timesfm>=3.0` (2.x `TimesFm` class no longer exists) |
 | Long TimesFM runs | Expected (~16 min / 45 origins); use mock mode for iteration, real weights only for final runs |
 
@@ -121,5 +122,7 @@ exponential backoff. Budget ~1–2s per call plus retry delays.
 
 - Simulator 10k×66: ~1 min (measured at 1k×66: 5.4s)
 - exp2 v2 real weights: ~17 min total (TimesFM dominates)
+- Real-weight scale-up (10k×66, 15 seg × 5–6 origins): Chronos-2 ~144s;
+  TimesFM ~35 min (run per-model with `--tag` on RAM-constrained VMs)
 - exp2 mock: seconds
 - Test suite: 73 passed, 2 skipped (2 skipped = gated real-weight tests)

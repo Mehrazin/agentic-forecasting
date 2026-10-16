@@ -13,7 +13,7 @@ spec, retained for reference) for all solo execution.
 | Team | 5 people, 5 workstreams | Solo | Vandad solo |
 | Scope | M0-M4 + stretch (ADAS/ALMA) | M0-M3 (MVP1) | M4 needs multi-persona + meta-search; defer |
 | LLM | Not specified | Groq `openai/gpt-oss-120b` | Available, tested, works |
-| FRED | Live API | Mocked file cache | Vandad: "mock it for development" |
+| FRED | Live API | Live via vault (`custom.fred`) + mock fixtures for tests | Key shared 2026-10-15; `scripts/fetch_fred.py` caches 17 series |
 | Evidence | Google ADK + Perplexity | Frozen corpus only | No API keys; date-guarded local docs |
 | Timeline | Build Days 1-5 | Flexible, TDD-driven | Solo pace |
 
@@ -70,7 +70,7 @@ Ladder status: M0 ✅ done, M1 ✅ done, M2 ❌ planned, M3 ❌ planned
 
 - M4 (silicon crowd, ALMA memory): needs more time
 - Live evidence retrieval: no API keys
-- Real FRED: mocked
+- Real FRED: live since 2026-10-15 (Vandad shared key); mock fixtures remain the test default
 
 ## Deviations from the TSFM survey (recorded 2026-10-15)
 

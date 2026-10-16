@@ -1,7 +1,7 @@
 # Experiment 4 Report: M3 Hybrid (Agent-Adjusted M0) vs M0
 
-**Date:** 2026-10-15 (run_date: 2025-06-30).
- **Mode:** mock.
+**Date:** 2026-10-16 (run_date: 2025-06-30).
+ **Mode:** real.
 
 M3 = M0 (trailing-6 Jeffreys Beta-Binomial) + bounded log-odds
 adjustment Δ ∈ [-0.75, +0.75] applied via HybridReadout. The agent
@@ -10,14 +10,14 @@ proposes Δ per macro scenario; in mock mode the deltas are scripted
 
 | Scenario | Δ | M0 CRPS | M3 CRPS | M0 cov | M3 cov |
 |---|---|---|---|---|---|
-| rate_shock_up | +0.50 | 19.87 | 9.40 | 1.00 | 1.00 |
-| rate_shock_down | -0.40 | 4.18 | 4.30 | 1.00 | 1.00 |
-| osfi_tightening | -0.25 | 9.95 | 8.26 | 1.00 | 1.00 |
-| benign | +0.00 | 3.78 | 3.78 | 1.00 | 1.00 |
-| family_squeeze | +0.35 | 14.60 | 7.65 | 1.00 | 1.00 |
-| competitor_rate_war | +0.60 | 14.57 | 8.90 | 1.00 | 1.00 |
+| rate_shock_up | +0.18 | 19.87 | 16.33 | 1.00 | 1.00 |
+| rate_shock_down | -0.25 | 4.18 | 5.01 | 1.00 | 1.00 |
+| osfi_tightening | +0.30 | 9.95 | 15.22 | 1.00 | 1.00 |
+| benign | +0.30 | 3.78 | 7.42 | 1.00 | 1.00 |
+| family_squeeze | +0.20 | 14.60 | 7.96 | 1.00 | 1.00 |
+| competitor_rate_war | +0.28 | 14.57 | 10.65 | 1.00 | 1.00 |
 
-M3 beats M0 on CRPS in 4/6 scenarios.
+M3 beats M0 on CRPS in 3/6 scenarios.
 
 ## Caveats
 

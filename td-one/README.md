@@ -16,17 +16,25 @@ uv run --with pytest pytest tests/ -q
   - `data_gen/` — synthetic mortgage data simulator (history + structural outcome DGP)
   - `data_service/` — point-in-time DuckDB store (history + outcomes tables)
   - `tools/` — agent tools: data_segment, evidence, forecasting ✅
+    (`forecasting` supports `m0`, `chronos2`/`timesfm25` on real weights,
+    plus `*_mock` interface-only variants; real outputs are sorted to
+    enforce monotone quantiles)
   - `models/` — M0 baseline ✅, TSFM wrappers ✅, hybrid readout ✅
     (math; driven by the M3 agent in exp4)
-  - `agent/` — ReAct orchestration loop ✅ (`react.py`; mock-LLM driven),
-    forecast-agent helpers (evidence prompt, bounded adjustment)
+  - `agent/` — ReAct orchestration loop ✅ (`react.py`), forecast-agent
+    helpers (evidence prompt, bounded adjustment), Groq chat client ✅
+    (`groq_client.py`; vault surrogate, call budgets), AI2-grade retry ✅
+    (`retry.py`; RetryConfig + with_retry, patient free-tier policy)
   - `evaluation/` — metrics, leakage auditor (backtest runner not yet implemented)
 - `configs/` — YAML configs for DGP, segments, models, experiments
 - `experiments/` — exp1 (M0 vs M1 mocks), exp2 (M0 vs M1 real weights),
-  exp3 (M2 ReAct agent vs M0, mock LLM), exp4 (M3 hybrid agent vs M0, mock),
+  exp3 (M2 ReAct agent vs M0; mock + real-Groq modes),
+  exp4 (M3 hybrid agent vs M0; mock + real-Groq modes),
   `evidence_corpus/` (frozen mock evidence), `REPRODUCIBILITY.md`,
   per-experiment reports + `*_results.json`
-- `scripts/` — `bootstrap_models.py` (download + pin TSFM weights)
+- `scripts/` — `bootstrap_models.py` (download + pin TSFM weights),
+  `fetch_fred.py` (17 curated FRED series → `data/fred/*.parquet`),
+  `scale_up.py` (end-to-end pipeline; `--tag` for per-model outputs)
 - `docs/` — `CRITIC_SYNTHESIS.md` (2026-10-15 audit), `SCALE_UP_RUNBOOK.md`
   (end-to-end pipeline: simulate → PIT → segments → backtest → experiments)
 - `models/` — `MANIFEST.json` (pinned revisions); `weights/` (gitignored)
@@ -46,6 +54,8 @@ See `experiments/REPRODUCIBILITY.md` for the full reproduction steps.
 ## Key design decisions
 
 - **LLM**: Groq `openai/gpt-oss-120b` (via vault surrogate, never in code)
-- **FRED**: Mocked for development (no live key needed yet; file-cache location TBD)
+- **FRED**: Live via vault connector (`custom.fred`); `fred/live.py`
+  (`FredClient`, `get_series_live`); mock fixtures remain the test default;
+  bulk cache in `data/fred/` via `scripts/fetch_fred.py`
 - **TSFMs**: Chronos-2 / TimesFM-2.5 (CPU-compatible, per survey)
 - **Point-in-time**: All queries enforce `record_asof <= run_date`; leakage auditor verifies 0%

@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import sys
 from collections.abc import Callable
 from datetime import UTC, date, datetime
@@ -35,7 +36,8 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from td_one.agent.react import MockLLMClient, ReActAgent  # noqa: E402
+from td_one.agent.groq_client import GROQ_MODEL_DEFAULT, GroqChatClient  # noqa: E402
+from td_one.agent.react import MockLLMClient, ReActAgent
 from td_one.evaluation.metrics import (  # noqa: E402
     crps_counts,
     interval_coverage,
@@ -48,10 +50,12 @@ logger = logging.getLogger(__name__)
 
 #: Latest panel month = experiment PIT cutoff.
 RUN_DATE = date(2025, 6, 30)
+#: Groq call budget for one real-mode exp3 run (3 panels x 6 steps).
 #: Pilot segments.
 N_SEGMENTS = 3
 #: Mock-mode forecasting backend (interface-only mock on the real grid).
 MOCK_MODEL = "timesfm_mock"
+_REAL_LLM_CALL_BUDGET = 20
 
 #: Injected tool callable: args dict -> observation string.
 ToolFn = Callable[[dict[str, object]], str]
@@ -243,8 +247,13 @@ def run_m2_agent(
     panels: list[dict[str, object]],
     tools: dict[str, ToolFn],
     seed: int = 42,
+    use_real_llm: bool = False,
 ) -> list[dict[str, object]]:
-    """Drive the scripted ReAct agent per panel; evaluate vs the holdout batch."""
+    """Drive the ReAct agent per panel; evaluate vs the holdout batch.
+
+    Mock mode uses the scripted finalizer (plumbing validation); real mode
+    drives the loop with Groq (``TD_ONE_REAL_LLM=1``).
+    """
     rows: list[dict[str, object]] = []
     rng = np.random.default_rng(seed)
     for panel in panels:
@@ -268,8 +277,13 @@ def run_m2_agent(
             return out
 
         agent_tools = {**tools, "forecasting": recording_forecast}
-        llm = _ScriptedFinalizer(holder, sid, agent_run_date.isoformat())
-        agent = ReActAgent(llm, agent_tools, max_steps=6)
+        if use_real_llm:
+            llm: object = GroqChatClient(
+                model=GROQ_MODEL_DEFAULT, call_budget=_REAL_LLM_CALL_BUDGET
+            )
+        else:
+            llm = _ScriptedFinalizer(holder, sid, agent_run_date.isoformat())
+        agent = ReActAgent(llm, agent_tools, max_steps=6)  # type: ignore[arg-type]
         result = agent.run(f"Forecast switching for segment {sid}", agent_run_date)
 
         forecast = result["forecast"] or {}
@@ -325,6 +339,7 @@ def run_exp3(
     panels: list[dict[str, object]] | None = None,
     tools: dict[str, ToolFn] | None = None,
     seed: int = 42,
+    use_real_llm: bool = False,
 ) -> Path:
     """Run the M2 experiment and write results JSON + report."""
     out_path = Path(out_dir)
@@ -336,7 +351,7 @@ def run_exp3(
         tools = wire_tools()
 
     m0_rows = evaluate_m0(panels, seed=seed)
-    m2_rows = run_m2_agent(panels, tools, seed=seed)
+    m2_rows = run_m2_agent(panels, tools, seed=seed, use_real_llm=use_real_llm)
 
     combined: list[dict[str, object]] = []
     for m0r, m2r in zip(m0_rows, m2_rows, strict=True):
@@ -345,7 +360,7 @@ def run_exp3(
     results = {
         "experiment": "exp3_m2",
         "date": RUN_DATE.isoformat(),
-        "mode": "mock",
+        "mode": "real" if use_real_llm else "mock",
         "forecast_model": MOCK_MODEL,
         "panels": combined,
     }
@@ -359,7 +374,7 @@ def run_exp3(
         "# Experiment 3 Report: M2 (ReAct LLM Agent) vs M0",
         "",
         f"**Date:** {datetime.now(UTC).date().isoformat()} (run_date: {RUN_DATE.isoformat()}).",
-        " **Mode:** mock (scripted LLM).",
+        f" **Mode:** {'real (Groq)' if use_real_llm else 'mock (scripted LLM)'}.",
         f"Forecast backend: {MOCK_MODEL} (interface-only mock on the real grid).",
         "",
         "The scripted ReAct agent runs the 3-tool trace",
@@ -384,9 +399,9 @@ def run_exp3(
         "",
         "## Caveats",
         "",
-        "- Mock mode: the LLM is scripted, so this validates the ReAct",
-        "  orchestration plumbing (tool dispatch, trace, finalize parsing),",
-        "  not LLM forecasting skill. A real-LLM run is the follow-up.",
+        "- Mock mode validates the ReAct orchestration plumbing (tool",
+        "  dispatch, trace, finalize parsing); real mode measures the LLM's",
+        "  forecasting skill on top of the same tools.",
         "- M2 CRPS uses a normal approximation from the tool's 80% interval;",
         "  rough calibration check only.",
         "- Pilot panels are small synthetic batches; the scale-up pipeline",
@@ -401,8 +416,12 @@ def run_exp3(
 
 def main() -> int:
     """CLI entrypoint."""
-    print("exp3: mock mode (scripted LLM). Wiring td_one.tools ...")
-    out = run_exp3(Path(__file__).resolve().parent, seed=42)
+    use_real = os.environ.get("TD_ONE_REAL_LLM") == "1"
+    if use_real:
+        print("exp3: real-LLM mode (Groq, <=20 calls, backoff on 429)")
+    else:
+        print("exp3: mock mode (scripted LLM). Wiring td_one.tools ...")
+    out = run_exp3(Path(__file__).resolve().parent, seed=42, use_real_llm=use_real)
     print(f"wrote {out}")
     return 0
 
