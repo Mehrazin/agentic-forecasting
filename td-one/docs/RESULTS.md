@@ -544,6 +544,63 @@ MacroM0 on macro DGP. Results JSON:
     auto-M0 — mechanism works (10–18% vs plain TSFM, 3/3 seeds), but
     beats the baseline only 1/3 seeds; classical macro_m0 still best.
 
+## 2k. M4 Monthly real-data benchmark — `experiments/exp14_m4_real.py` ✅ done
+
+All model comparisons so far used synthetic DGPs; LITERATURE_SURVEY.md
+§5 warns our DGP may be too easy for M0. This is the first real-data
+test: M4 Monthly (Finance + Macro, n=2000 stratified, seed 0; series
+from github.com/Mcompetitions/M4-methods, no registration).
+
+**Framing A — continuous level forecasting (H=6, quantile CRPS, n=2000):**
+
+| Model | Mean CRPS | 80% coverage |
+|---|---|---|
+| naive | 445.40 | 0.740 |
+| snaive | 542.10 | 0.692 |
+| conf_naive | 447.37 | **0.800** |
+| chronos2 (real) | **350.85** | 0.662 |
+| timesfm25 (real) | 356.35 | 0.689 |
+
+**Framing B — binary direction, is y[t+6] > y[t]? (n=24000 origins):**
+
+| Model | Brier (= binary CRPS) |
+|---|---|
+| m0_binary (Beta-Binomial, w=12) | 0.2604 |
+| conf_m0_binary (conformal shrinkage) | 0.2582 |
+| chronos2_dir (P(up) from quantiles) | **0.2519** |
+
+**Findings:**
+1. **Our synthetic conclusion does NOT generalize.** On real M4 data,
+   both real TSFMs beat the classical baselines by ~20% CRPS
+   (350.85/356.35 vs 445.40). The synthetic DGPs were too kind to
+   M0 — real series have the complex seasonal/trend structure where
+   pretrained TSFMs earn their keep.
+2. **Conformal calibration transfers perfectly.** conf_naive hits
+   exactly 0.800 coverage on real data (naive: 0.740). The CQR
+   machinery is not a synthetic artifact.
+3. **But TSFM coverage flips.** Chronos-2 *over*covered on synthetic
+   (0.90–1.00); on M4 it *under*covers (0.662). TimesFM-2.5 stays
+   closest to nominal among TSFMs (0.689) — consistent with synthetic.
+4. **M0's binary dominance also breaks.** chronos2_dir beats m0_binary
+   0.2519 vs 0.2604 (~3%). Conformal shrinkage helps M0 slightly
+   (0.2582) but not enough to close the gap.
+5. **snaive is the worst model tested** (542.10) — M4 monthly series
+   are less seasonal-persistent than the name suggests.
+
+**Takeaway:** the "M0 beats everything" story was a synthetic-DGP
+artifact. On real data, pretrained TSFMs are genuinely stronger
+forecasters — for both levels and direction. The research question
+flips: not "can anything beat M0" but "how much does the TSFM edge
+cost, and where does classical still win (thin segments, macro
+structure, calibration)?" The simulator v2 DGP work (§2g/exp9) is now
+validated as essential — our synthetic testbed must be hard enough
+that conclusions drawn on it survive contact with real data.
+
+**Caveats:** single seed-0 sample; CRPS is scale-dependent (M4 series
+vary widely in level — relative gaps are what matter); TSFM inputs
+were min-max normalized per series (standard practice, documented in
+`evaluation/real_benchmark.py`); no significance testing yet.
+
 ---
 
 ## 4. Artifact map
@@ -552,6 +609,7 @@ MacroM0 on macro DGP. Results JSON:
 |---|---|
 | `experiments/exp{1,2,3,4}_report.md` | Per-experiment reports |
 | `experiments/exp{2,3,4}_results.json` | Raw results |
+| `experiments/exp{13,14}_m4*_results.json` | TSFM+FRED rematch + M4 real-data benchmark |
 | `experiments/scale_up_report*.md` + `scale_up_results*.json` | Scale-up (mock, real-chronos2, real-timesfm25) |
 | `experiments/abl_m0_window_results.json` | Ablation B |
 | `experiments/abl_m3_bound_results.json` | Ablation A |

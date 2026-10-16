@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "date": "2026-10-16",
+    "run_at_utc": "2026-10-16T07:33:20.199963+00:00",
+    "n_a": 2000,
+    "horizon": 6,
+    "seed": 0,
+    "framing_a_models": [
+      "naive",
+      "snaive",
+      "conf_naive",
+      "chronos2",
+      "timesfm25"
+    ],
+    "n_b": 1000,
+    "n_b_origins": 24000,
+    "elapsed_s": 3193.9
+  },
+  "framing_a": {
+    "naive": {
+      "crps": 445.3952605758385,
+      "coverage": 0.7401666666666666,
+      "n": 2000
+    },
+    "snaive": {
+      "crps": 542.0992177327929,
+      "coverage": 0.69175,
+      "n": 2000
+    },
+    "conf_naive": {
+      "crps": 447.37072439500315,
+      "coverage": 0.80025,
+      "n": 2000
+    },
+    "chronos2": {
+      "crps": 350.85218652594347,
+      "coverage": 0.66175,
+      "n": 2000
+    },
+    "timesfm25": {
+      "crps": 356.3519702830931,
+      "coverage": 0.6888333333333333,
+      "n": 2000
+    }
+  },
+  "framing_b": {
+    "m0_binary": {
+      "brier": 0.26044329388560156,
+      "crps": 0.26044329388560156,
+      "n_origins": 24000
+    },
+    "conf_m0_binary": {
+      "brier": 0.25819696471619547,
+      "crps": 0.25819696471619547,
+      "n_origins": 24000
+    },
+    "chronos2_dir": {
+      "brier": 0.2519227495889192,
+      "crps": 0.2519227495889192,
+      "n_origins": 24000
+    }
+  }
+}
