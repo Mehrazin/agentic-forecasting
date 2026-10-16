@@ -33,7 +33,14 @@ from td_one.models.shrinkage import regime_z_stat
 #: Data-calibrated deltas per predicted class. Magnitudes come from the
 #: exp2 fixed-grid probe's best point (+0.25), symmetric for DOWN, not
 #: from any LLM judgment. NONE -> hard zero (the "do nothing" prior).
-CLASS_DELTAS: dict[str, float] = {"UP": 0.25, "DOWN": -0.25, "NONE": 0.0}
+#: ABSTAIN -> hard zero (mechanism unclear; never indexed in practice
+#: because should_intervene blocks it, but defined for completeness).
+CLASS_DELTAS: dict[str, float] = {
+    "UP": 0.25,
+    "DOWN": -0.25,
+    "NONE": 0.0,
+    "ABSTAIN": 0.0,
+}
 
 
 class M4Forecast(TypedDict):
@@ -61,8 +68,9 @@ def should_intervene(
     """Decide whether a regime reading justifies intervening on M0.
 
     Intervention requires the LLM to be confident *and* (optionally)
-    the panel to corroborate a shift. ``NONE`` readings never
-    intervene — they are explicit "do nothing" signals.
+    the panel to corroborate a shift. ``NONE`` and ``ABSTAIN`` readings
+    never intervene — they are explicit "do nothing" signals (NONE =
+    confident no-change, ABSTAIN = mechanism unclear).
 
     Args:
         reading: The LLM's regime reading.
@@ -76,7 +84,7 @@ def should_intervene(
         True if the forecast should be adjusted, else False.
 
     """
-    if reading.regime == "NONE":
+    if reading.regime in ("NONE", "ABSTAIN"):
         return False
     if reading.confidence < confidence_threshold:
         return False

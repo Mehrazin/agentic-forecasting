@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
-"""Backfill the 2026 news DB from Perplexity sonar (quality path).
+"""Backfill the 2026 news DB from Perplexity Agent API (quality path).
 
-Requires PERPLEXITY_API_KEY. Writes into the SAME SQLite DB as the GDELT
-backfill (scripts/fetch_news_gdelt.py), so the two sources compose: GDELT
-for breadth, Perplexity for depth. Dedupe is by URL.
+Uses the vault surrogate credential (custom.perplexity) — the key never
+touches this process. Writes into the SAME SQLite DB as the GDELT backfill
+(scripts/fetch_news_gdelt.py); dedupe is by URL.
 
 Usage:
-    export PERPLEXITY_API_KEY=pplx-...
     uv run python scripts/fetch_news_perplexity.py [--months 1 2 3]
 """
 
 from __future__ import annotations
 
 import argparse
-import calendar
 import sqlite3
 import sys
 import time
@@ -27,7 +25,7 @@ TOPICS = [
     "Canada mortgage rates",
     "Bank of Canada interest rate decision",
     "Canada housing market",
-    "Canada bond yields",
+    "Canada government bond yields",
     "Canada inflation",
 ]
 
@@ -44,17 +42,13 @@ def store(db_path: Path, articles: list) -> int:
     n = 0
     try:
         for a in articles:
-            if not a.url:
-                continue
             try:
-                con.execute(
+                cur = con.execute(
                     "INSERT OR IGNORE INTO articles (pub_date, title, url, source)"
                     " VALUES (?, ?, ?, ?)",
                     (a.pub_date, a.title, a.url, "perplexity"),
                 )
-                # Snippets go in a side table if we ever add one; for now
-                # the title+FTS index is the retrieval surface.
-                n += con.total_changes > 0
+                n += cur.rowcount
             except sqlite3.Error:
                 pass
         con.commit()
@@ -68,7 +62,7 @@ def main() -> None:
     ap.add_argument("--months", nargs="*", type=int, default=list(range(1, 11)))
     ap.add_argument("--db", default="data/news/news_2026.db")
     ap.add_argument("--year", type=int, default=2026)
-    ap.add_argument("--model", default="sonar")
+    ap.add_argument("--preset", default="fast")
     args = ap.parse_args()
 
     db_path = Path(args.db)
@@ -76,25 +70,24 @@ def main() -> None:
         db_path = Path(__file__).resolve().parents[1] / db_path
     init_db(db_path)
 
-    client = PerplexityClient(model=args.model)
+    client = PerplexityClient(preset=args.preset)
     total = 0
     for month in args.months:
         cutoff = month_cutoff(args.year, month)
+        want_prefix = f"{args.year}-{month:02d}"
         for topic in TOPICS:
-            print(f"Perplexity: {topic} before {cutoff}...", flush=True)
+            print(f"Perplexity [{args.preset}]: {topic} before {cutoff}...", flush=True)
             try:
                 arts = client.search(topic, before=cutoff, limit=10)
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:  # noqa: BLE001 — keep going on transient errors
                 print(f"  !! error: {e}")
                 arts = []
-            # Keep only articles actually from this month (defensive;
-            # the client already enforces < cutoff).
-            prefix = f"{args.year}-{month:02d}"
-            arts = [a for a in arts if a.pub_date.startswith(prefix)]
+            # Keep only articles actually from this month.
+            arts = [a for a in arts if a.pub_date.startswith(want_prefix)]
             n = store(db_path, arts)
             total += n
-            print(f"  {len(arts)} articles, {n} new (total: {total})", flush=True)
-            time.sleep(2)
+            print(f"  {len(arts)} in-month, {n} new (total new: {total})", flush=True)
+            time.sleep(3)
     print(f"Done. {total} new articles in {db_path}")
 
 
