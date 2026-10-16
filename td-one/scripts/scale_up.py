@@ -103,6 +103,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Comma-separated model names (default: m0; only m0 is wired).",
     )
     p.add_argument(
+        "--tag",
+        default="",
+        help="Tag inserted into output filenames (e.g. --tag real -> "
+        "scale_up_results_real.json). Lets per-model runs coexist.",
+    )
+    p.add_argument(
         "--skip-ingest",
         action="store_true",
         help="Skip the PIT store ingest step.",
@@ -343,6 +349,13 @@ def main(argv: list[str] | None = None) -> int:
                 r = run_backtest(panels, fns[name], [origin], seed=args.seed)
                 r["model"] = name
                 all_results.append(r)
+            # Free real-TSFM weights before the next model (RAM).
+            try:
+                from td_one.tools.forecasting import unload_real_models
+
+                unload_real_models()
+            except ImportError:
+                pass
             print(f"      {name}: done", flush=True)
         timings["backtest_s"] = round(time.time() - t0, 1)
         if not all_results:
@@ -358,8 +371,9 @@ def main(argv: list[str] | None = None) -> int:
         summary = _summarize(results)
         exp_dir = ROOT / "experiments"
         exp_dir.mkdir(parents=True, exist_ok=True)
-        results_json = exp_dir / "scale_up_results.json"
-        report_md = exp_dir / "scale_up_report.md"
+        suffix = f"_{args.tag}" if args.tag else ""
+        results_json = exp_dir / f"scale_up_results{suffix}.json"
+        report_md = exp_dir / f"scale_up_report{suffix}.md"
         payload = {
             "config": {
                 "n_customers": args.n_customers,
