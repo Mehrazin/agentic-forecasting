@@ -312,6 +312,20 @@ for the backend, and the LLM's "reasoning" is net-negative here.
    release-lag metadata (`last_updated` is now captured in
    `fred_manifest.json`) and release-aware join rules for the future
    panel join.
+8. **LLM ensemble router** (REATS-style; see `docs/LITERATURE_SURVEY.md`
+   §6.3): LLM outputs weights over classical/TSFM forecasts with
+   rationale, never values — test vs inverse-CRPS weighting (exp5:
+   4.078). Best-supported agentic role in the literature.
+9. **LLM regime narrative → gate**: LLM emits structured regime
+   assessment (direction + confidence) that modulates the statistical
+   gate threshold, instead of numerical deltas.
+10. **ACI upgrade to conformal.py**: adaptive conformal inference
+    (one γ) vs static CQR on shock scenarios — handles regime drift.
+11. **DGP realism upgrade**: burnout state + 30-month seasoning ramp +
+    S-curve refinance incentive (industry prepayment canon; see
+    LITERATURE_SURVEY.md §5). Current DGP may be too easy for M0.
+12. **TSFM + exogenous FRED**: macro-conditioned Chronos-2/TimesFM-2.5
+    vs conformal baseline — the fair rematch TSFMs deserve.
 
 ---
 
