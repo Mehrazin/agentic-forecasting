@@ -1,0 +1,114 @@
+{
+  "experiment": "exp12_router",
+  "config": {
+    "seed": 42,
+    "n_test": 200,
+    "models": [
+      "m0_w3",
+      "conf_w6",
+      "chronos2",
+      "timesfm25"
+    ]
+  },
+  "mock": {
+    "summary": {
+      "equal": {
+        "mean_crps": 3.779,
+        "std_crps": 3.592
+      },
+      "inv_crps": {
+        "mean_crps": 3.713,
+        "std_crps": 3.531
+      },
+      "mock_p0": {
+        "mean_crps": 3.713,
+        "std_crps": 3.531
+      },
+      "mock_p50": {
+        "mean_crps": 3.846,
+        "std_crps": 3.543
+      },
+      "mock_p100": {
+        "mean_crps": 3.663,
+        "std_crps": 3.612
+      }
+    },
+    "per_model_mean_crps": {
+      "m0_w3": 5.097,
+      "conf_w6": 4.345,
+      "chronos2": 3.733,
+      "timesfm25": 3.328
+    }
+  },
+  "real": {
+    "per_scenario": [
+      {
+        "scenario": "s_stable_1",
+        "type": "stable",
+        "llm_ok": true,
+        "llm_weights": {
+          "m0_w3": 0.6,
+          "conf_w6": 0.0,
+          "chronos2": 0.3,
+          "timesfm25": 0.1
+        },
+        "rationale": "m0_w3 excels in stable regimes with sharp intervals, matching the current steady market; chronos2 offers solid point accuracy, while timesfm25 adds a modest safety net, and conf_w6 is unnecessary in low\u2011volatility conditions.",
+        "eq_crps": 2.507,
+        "inv_crps": 2.884,
+        "llm_crps": 1.784
+      },
+      {
+        "scenario": "s_shift_up_1",
+        "type": "shift",
+        "llm_ok": true,
+        "llm_weights": {
+          "m0_w3": 0.1,
+          "conf_w6": 0.35,
+          "chronos2": 0.2,
+          "timesfm25": 0.35
+        },
+        "rationale": "conf_w6 and timesfm25 match the volatile, regime\u2011shift scenario, while chronos2 adds solid point accuracy; m0_w3 is down\u2011weighted because it adap to shifts slowly.",
+        "eq_crps": 4.017,
+        "inv_crps": 2.887,
+        "llm_crps": 4.183
+      },
+      {
+        "scenario": "s_shift_dn_1",
+        "type": "shift",
+        "llm_ok": true,
+        "llm_weights": {
+          "m0_w3": 0.05,
+          "conf_w6": 0.25,
+          "chronos2": 0.3,
+          "timesfm25": 0.4
+        },
+        "rationale": "Timesfm25\u2019s strong adaptation to regime shifts and good calibration make it primary, conf_w6 adds robustness to volatility, chronos2 supplies the best point accuracy, and m0_w3 is kept minimal due to its slow response to sudden changes.",
+        "eq_crps": 1.14,
+        "inv_crps": 1.31,
+        "llm_crps": 1.308
+      },
+      {
+        "scenario": "s_vol_1",
+        "type": "volatile",
+        "llm_ok": true,
+        "llm_weights": {
+          "m0_w3": 0.1,
+          "conf_w6": 0.25,
+          "chronos2": 0.35,
+          "timesfm25": 0.3
+        },
+        "rationale": "High uncertainty favors wide\u2011interval models; chronos2 and timesfm25 have strong recent CRPS and good coverage, while conf_w6 adds robustness to volatility, and a small share remains for the stable\u2011regime baseline m0_w3.",
+        "eq_crps": 2.665,
+        "inv_crps": 2.207,
+        "llm_crps": 3.107
+      }
+    ],
+    "means": {
+      "eq_crps": 2.582,
+      "inv_crps": 2.322,
+      "llm_crps": 2.595
+    },
+    "groq_calls": 4
+  },
+  "elapsed_s": 9.3
+}

@@ -288,6 +288,100 @@ The agent's interventions hurt more than they help: it overrides a decent
 Chronos-2 forecast with worse judgment. Orchestration does not compensate
 for the backend, and the LLM's "reasoning" is net-negative here.
 
+## 2h. M4 regime-reader agent — `experiments/exp11_agent_v2.py` ✅ done
+
+Redesigns the agent's role after the honest-M2 negative: the LLM is a
+**noisy sensor, never a forecaster**. It outputs only (regime class,
+confidence, reason) — no numbers. Classical code decides whether to
+intervene: the reading must clear a confidence threshold (abstention),
+and optionally the panel's z-test must corroborate (two sensors).
+Intervention applies the data-calibrated class delta (±0.25), never an
+LLM number.
+
+Mock sweep (6 scenarios, 20 reps; calibrated = confidence correlates
+with correctness):
+
+| Variant (acc 0.67) | Mean CRPS | Intervention rate |
+|---|---|---|
+| M0 | 4.823 | — |
+| M4a calibrated (LLM sensor only) | **3.271** ± 0.779 | 46% |
+| M4b calibrated (+ panel gate) | 3.341 ± 0.762 | 31% |
+| M4a miscalibrated | 4.355 ± 0.844 | 29% |
+
+**Calibration matters more than accuracy**: at 50% accuracy, a
+calibrated reader (3.65) crushes M0; a miscalibrated reader at 83%
+(4.08) barely beats it. The abstention mechanism is what makes it work.
+
+Real-Groq validation (6 calls, one per scenario):
+
+| Scenario | Reading | M0 | M4a | M4b |
+|---|---|---|---|---|
+| rate_shock_up | UP@0.85 ✅ | 4.88 | 1.68 | 1.68 |
+| rate_shock_down | DOWN@0.85 ✅ | 3.84 | 1.26 | 3.84 |
+| osfi_tightening | DOWN@0.85 ✅ | 1.10 | 1.97 | 1.10 |
+| benign | NONE@0.90 ✅ | 0.84 | 0.84 | 0.84 |
+| family_squeeze | DOWN@0.70 ❌ (true UP) | 4.84 | 9.56 | 9.56 |
+| competitor_rate_war | UP@0.85 ✅ | 13.44 | 6.21 | 6.21 |
+| **Mean** | 5/6 = 83% | **4.823** | **3.587** | **3.871** |
+
+**Qualified positive.** M4a beats M0 (3.59 vs 4.82) with real Groq —
+the first agentic variant to do so. But it is fragile: the single
+confident error (family_squeeze, wrong at 0.70) was catastrophic
+(9.56 vs 4.84), nearly wiping out the gains. The LLM's confidence was
+*not* well-calibrated — wrong at 0.70, right at 0.85. A threshold of
+0.75 would have abstained on the error. The panel gate (M4b) hurt more
+than it helped here: it blocked the good rate_shock_down intervention.
+
+**Takeaway:** the redesigned role works *when the LLM is calibrated*,
+and the constraint held — the LLM never touched a number. But
+confidence calibration is the load-bearing assumption, and 6 scenarios
+is thin. Next: calibrate the confidence threshold on more scenarios,
+or learn it.
+
+## 2i. M5 ensemble router (REATS-style) — `experiments/exp12_router.py` ✅ done
+
+Tests the literature survey's top-ranked agentic role (§2, §6.3): the
+LLM outputs *weights over 4 forecast models* (m0_w3, conf_w6, chronos2,
+timesfm25) with rationale, never values. Direct test: does LLM weighting
+beat inverse-CRPS (exp5: 4.078)?
+
+12 synthetic scenarios (4 stable / 4 shift / 4 volatile) with model
+forecasts as Beta lattices matching our empirical findings (m0_w3 sharp;
+conf wide; chronos2 wide+biased; timesfm25 calibrated).
+
+Mock (insight_prob sweep):
+
+| Scheme | Mean CRPS |
+|---|---|
+| equal | 3.779 ± 3.592 |
+| inverse-CRPS | **3.713** ± 3.531 |
+| mock (0% insight) | 3.713 (= inv-CRPS) |
+| mock (50% insight) | 3.846 |
+| mock (100% insight) | 3.663 |
+
+Real Groq (4 scenarios, 4 calls):
+
+| Scenario | Equal | Inv-CRPS | LLM router | LLM weights |
+|---|---|---|---|---|
+| stable | 2.51 | 2.88 | **1.78** | m0_w3 0.60 ✅ |
+| shift_up | 4.02 | **2.89** | 4.18 | spread ❌ |
+| shift_dn | 1.14 | 1.31 | 1.31 | — |
+| volatile | 2.67 | **2.21** | 3.11 | chronos2 0.35 ❌ |
+| **Mean** | 2.582 | **2.322** | 2.595 | |
+
+**Clean negative.** The LLM router loses to inverse-CRPS (2.60 vs 2.32).
+It handles the easy case (stable → m0_w3) but misapplies heuristics
+elsewhere: in the volatile scenario it reasoned "volatile → wide
+intervals → chronos2" — but chronos2 is wide *and biased*, while conf_w6
+is wide and unbiased. The qualitative signal confounded it.
+
+**Takeaway:** inverse-CRPS is a brutally strong baseline because trailing
+performance is informative. The LLM needs insight *beyond* trailing
+CRPS to win, and in this test it didn't have it. The literature's
+top-ranked role fails here — possibly because our synthetic models are
+too clean (real model failures are messier and more describable), or
+because routing just doesn't beat good statistical weighting.
+
 ## 3. Planned experiments
 
 1. **Multi-seed scale-up** (seeds 1–4): the paired non-significance

@@ -1,0 +1,228 @@
+{
+  "experiment": "exp11_agent_v2",
+  "config": {
+    "seed": 42,
+    "n_test": 200,
+    "class_deltas": {
+      "UP": 0.25,
+      "DOWN": -0.25,
+      "NONE": 0.0
+    },
+    "confidence_threshold": 0.7,
+    "z_threshold": 1.25
+  },
+  "mock": {
+    "m0_mean_crps": 4.823,
+    "mock_sweep": [
+      {
+        "variant": "m4a_acc0.5_cal1",
+        "accuracy": 0.5,
+        "calibrated": true,
+        "panel_gate": false,
+        "mean_crps": 3.651,
+        "std_crps": 0.77,
+        "intervention_rate": 0.325
+      },
+      {
+        "variant": "m4b_acc0.5_cal1",
+        "accuracy": 0.5,
+        "calibrated": true,
+        "panel_gate": true,
+        "mean_crps": 3.729,
+        "std_crps": 0.777,
+        "intervention_rate": 0.217
+      },
+      {
+        "variant": "m4a_acc0.5_cal0",
+        "accuracy": 0.5,
+        "calibrated": false,
+        "panel_gate": false,
+        "mean_crps": 4.561,
+        "std_crps": 1.001,
+        "intervention_rate": 0.258
+      },
+      {
+        "variant": "m4b_acc0.5_cal0",
+        "accuracy": 0.5,
+        "calibrated": false,
+        "panel_gate": true,
+        "mean_crps": 4.397,
+        "std_crps": 0.844,
+        "intervention_rate": 0.117
+      },
+      {
+        "variant": "m4a_acc0.67_cal1",
+        "accuracy": 0.67,
+        "calibrated": true,
+        "panel_gate": false,
+        "mean_crps": 3.271,
+        "std_crps": 0.779,
+        "intervention_rate": 0.458
+      },
+      {
+        "variant": "m4b_acc0.67_cal1",
+        "accuracy": 0.67,
+        "calibrated": true,
+        "panel_gate": true,
+        "mean_crps": 3.341,
+        "std_crps": 0.762,
+        "intervention_rate": 0.308
+      },
+      {
+        "variant": "m4a_acc0.67_cal0",
+        "accuracy": 0.67,
+        "calibrated": false,
+        "panel_gate": false,
+        "mean_crps": 4.355,
+        "std_crps": 0.844,
+        "intervention_rate": 0.292
+      },
+      {
+        "variant": "m4b_acc0.67_cal0",
+        "accuracy": 0.67,
+        "calibrated": false,
+        "panel_gate": true,
+        "mean_crps": 4.287,
+        "std_crps": 0.818,
+        "intervention_rate": 0.142
+      },
+      {
+        "variant": "m4a_acc0.83_cal1",
+        "accuracy": 0.83,
+        "calibrated": true,
+        "panel_gate": false,
+        "mean_crps": 2.851,
+        "std_crps": 0.545,
+        "intervention_rate": 0.583
+      },
+      {
+        "variant": "m4b_acc0.83_cal1",
+        "accuracy": 0.83,
+        "calibrated": true,
+        "panel_gate": true,
+        "mean_crps": 3.007,
+        "std_crps": 0.567,
+        "intervention_rate": 0.367
+      },
+      {
+        "variant": "m4a_acc0.83_cal0",
+        "accuracy": 0.83,
+        "calibrated": false,
+        "panel_gate": false,
+        "mean_crps": 4.078,
+        "std_crps": 0.81,
+        "intervention_rate": 0.292
+      },
+      {
+        "variant": "m4b_acc0.83_cal0",
+        "accuracy": 0.83,
+        "calibrated": false,
+        "panel_gate": true,
+        "mean_crps": 4.096,
+        "std_crps": 0.811,
+        "intervention_rate": 0.167
+      }
+    ]
+  },
+  "real": {
+    "per_scenario": [
+      {
+        "scenario": "rate_shock_up",
+        "true_shift": 0.6,
+        "llm_ok": true,
+        "reading": {
+          "regime": "UP",
+          "confidence": 0.85,
+          "reason": "Higher rates increase renewal payments, boosting borrowers\u2019 incentive to switch."
+        },
+        "m0_crps": 4.881,
+        "m4a_crps": 1.682,
+        "m4b_crps": 1.682,
+        "m4a_intervened": true,
+        "m4b_intervened": true
+      },
+      {
+        "scenario": "rate_shock_down",
+        "true_shift": -0.5,
+        "llm_ok": true,
+        "reading": {
+          "regime": "DOWN",
+          "confidence": 0.85,
+          "reason": "BoC rate cut improves renewal offers, lowering the incentive for borrowers to switch"
+        },
+        "m0_crps": 3.838,
+        "m4a_crps": 1.258,
+        "m4b_crps": 3.838,
+        "m4a_intervened": true,
+        "m4b_intervened": false
+      },
+      {
+        "scenario": "osfi_tightening",
+        "true_shift": -0.35,
+        "llm_ok": true,
+        "reading": {
+          "regime": "DOWN",
+          "confidence": 0.85,
+          "reason": "Revoking the stress\u2011test exemption forces high\u2011score borrowers to re\u2011qualify, adding a barrier that lowers switching incentives."
+        },
+        "m0_crps": 1.097,
+        "m4a_crps": 1.972,
+        "m4b_crps": 1.097,
+        "m4a_intervened": true,
+        "m4b_intervened": false
+      },
+      {
+        "scenario": "benign",
+        "true_shift": 0.0,
+        "llm_ok": true,
+        "reading": {
+          "regime": "NONE",
+          "confidence": 0.9,
+          "reason": "Baseline conditions unchanged, no material macro or policy shift affecting borrower switching"
+        },
+        "m0_crps": 0.836,
+        "m4a_crps": 0.836,
+        "m4b_crps": 0.836,
+        "m4a_intervened": false,
+        "m4b_intervened": false
+      },
+      {
+        "scenario": "family_squeeze",
+        "true_shift": 0.45,
+        "llm_ok": true,
+        "reading": {
+          "regime": "DOWN",
+          "confidence": 0.7,
+          "reason": "Increased financial pressure on low\u2011income families makes mortgage switching less affordable"
+        },
+        "m0_crps": 4.842,
+        "m4a_crps": 9.565,
+        "m4b_crps": 9.565,
+        "m4a_intervened": true,
+        "m4b_intervened": true
+      },
+      {
+        "scenario": "competitor_rate_war",
+        "true_shift": 0.7,
+        "llm_ok": true,
+        "reading": {
+          "regime": "UP",
+          "confidence": 0.85,
+          "reason": "Switchers receive significantly lower rates, incentivizing borrowers to switch"
+        },
+        "m0_crps": 13.442,
+        "m4a_crps": 6.21,
+        "m4b_crps": 6.21,
+        "m4a_intervened": true,
+        "m4b_intervened": true
+      }
+    ],
+    "means": {
+      "m0_crps": 4.823,
+      "m4a_crps": 3.587,
+      "m4b_crps": 3.871
+    },
+    "groq_calls": 6
+  },
+  "elapsed_s": 14.7
+}
