@@ -110,9 +110,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     p.add_argument(
         "--m0-window",
-        type=int,
-        default=6,
-        help="Trailing window (months) for the M0 baseline (default: 6).",
+        default="6",
+        help="Trailing window (months) for the M0 baseline: an integer "
+        "(default: 6) or 'auto' to select 3/6/12 by trailing-origin "
+        "CRPS validation per forecast.",
+    )
+    p.add_argument(
+        "--conformal",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Use the split-conformal M0 as the baseline (default: on). "
+        "Conformal M0 fixes M0's undercoverage (0.671 -> 0.914 on seed 0) "
+        "and is the published baseline. Use --no-conformal for plain M0.",
     )
     p.add_argument(
         "--skip-ingest",
@@ -123,6 +132,24 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     if args.n_customers <= 0 or args.n_months <= 0:
         p.error("--n-customers and --n-months must be positive")
     return args
+
+
+def _parse_m0_window(raw: str) -> int | str:
+    """Parse --m0-window: a positive int, or the string "auto".
+
+    Raises:
+        SystemExit: On invalid values.
+
+    """
+    if raw == "auto":
+        return "auto"
+    try:
+        w = int(raw)
+    except ValueError:
+        raise SystemExit(f"bad --m0-window {raw!r} (want a positive int or 'auto')") from None
+    if w < 1:
+        raise SystemExit(f"bad --m0-window {raw!r} (want a positive int or 'auto')")
+    return w
 
 
 def _parse_origins(raw: list[str] | None) -> list[date] | None:
@@ -171,8 +198,111 @@ def _m0_window_forecast(train: pd.DataFrame, origin: date, window: int) -> dict[
     return model.predict_rate_quantiles(n_upcoming, np.asarray(TIMESFM_LEVELS, dtype=float))
 
 
+def _m0_conformal_forecast(train: pd.DataFrame, origin: date, window: int) -> dict[float, float]:
+    """Conformal M0 as a ``forecast_fn`` (the published baseline).
+
+    Same wiring as :func:`_m0_window_forecast` but with
+    :class:`ConformalM0`'s split-conformal interval widening. Fixes M0's
+    chronic undercoverage (0.671 -> 0.914 on seed 0) and beats plain M0
+    on CRPS at window 6 (5.044 < 5.360).
+    """
+    from td_one.models.conformal import ConformalM0
+    from td_one.models.tsfm import TIMESFM_LEVELS
+    from td_one.tools.forecasting import _panel_rates
+
+    n, a = _panel_rates(train, origin)
+    model = ConformalM0(trailing_window=window)
+    model.fit(n, a)
+    n_upcoming = max(1, int(round(float(n[-window:].mean()))))
+    return model.predict_rate_quantiles(n_upcoming, np.asarray(TIMESFM_LEVELS, dtype=float))
+
+
+#: Candidate windows for --m0-window auto selection.
+_AUTO_WINDOWS = (3, 6, 12)
+#: Pseudo-origins used for trailing validation.
+_AUTO_VAL_ORIGINS = 4
+#: Minimum history months for auto-tuning; below this, fall back to 6.
+_AUTO_MIN_HISTORY = 12
+#: MC samples for the validation CRPS.
+_AUTO_MC_SAMPLES = 1000
+
+
+def _beta_binom_crps(alpha: float, beta: float, n: int, actual: int, seed: int = 0) -> float:
+    """Fast MC CRPS of a Beta-Binomial predictive vs an observed count.
+
+    CRPS(F, y) = E|X - y| - 0.5 * E|X - X'|, with the pairwise term via
+    the sorting trick (O(m log m)). Deterministic given the seed.
+    """
+    rng = np.random.default_rng(seed)
+    p = rng.beta(alpha, beta, size=_AUTO_MC_SAMPLES)
+    counts = rng.binomial(n, p)
+    diff1 = float(np.abs(counts - actual).mean())
+    s = np.sort(counts)
+    i = np.arange(_AUTO_MC_SAMPLES)
+    diff2 = 2.0 * float(np.sum((2 * i - _AUTO_MC_SAMPLES + 1) * s)) / (_AUTO_MC_SAMPLES**2)
+    return diff1 - 0.5 * diff2
+
+
+def _m0_auto_window_forecast(
+    train: pd.DataFrame, origin: date, conformal: bool = True
+) -> dict[float, float]:
+    """M0 with the trailing window selected by trailing-origin validation.
+
+    For each candidate window in (3, 6, 12), the last
+    ``_AUTO_VAL_ORIGINS`` months of the training panel are used as
+    pseudo-origins: fit on history before the pseudo-origin, score CRPS
+    against the pseudo-origin month's actual. The window with the best
+    mean validation CRPS forecasts the real origin. With too little
+    history, falls back to window 6. The selection uses only data
+    available at each pseudo-origin (no leakage).
+    """
+    from td_one.models.conformal import ConformalM0
+    from td_one.models.tsfm import TIMESFM_LEVELS
+    from td_one.tools.forecasting import _panel_rates
+
+    n, a = _panel_rates(train, origin)
+    n = np.asarray(n, dtype=float)
+    a = np.asarray(a, dtype=float)
+
+    selected = 6
+    if len(n) >= _AUTO_MIN_HISTORY:
+        best_score = float("inf")
+        for w in _AUTO_WINDOWS:
+            scores: list[float] = []
+            for v in range(1, _AUTO_VAL_ORIGINS + 1):
+                # Pseudo-origin v months before the panel end.
+                fit_n, fit_a = n[:-v], a[:-v]
+                val_n, val_a = n[-v], a[-v]
+                if len(fit_n) < w or val_n <= 0:
+                    continue
+                model = HistoricalBaseline(trailing_window=w)
+                model.fit(fit_n, fit_a)
+                assert model._alpha is not None and model._beta is not None
+                scores.append(
+                    _beta_binom_crps(model._alpha, model._beta, int(val_n), int(val_a), seed=v)
+                )
+            if scores:
+                mean_score = float(np.mean(scores))
+                if mean_score < best_score:
+                    best_score = mean_score
+                    selected = w
+
+    if conformal:
+        model_c = ConformalM0(trailing_window=selected)
+        model_c.fit(n, a)
+        n_upcoming = max(1, int(round(float(n[-selected:].mean()))))
+        return model_c.predict_rate_quantiles(n_upcoming, np.asarray(TIMESFM_LEVELS, dtype=float))
+    model = HistoricalBaseline(trailing_window=selected)
+    model.fit(n, a)
+    n_upcoming = max(1, int(round(float(n[-selected:].mean()))))
+    return model.predict_rate_quantiles(n_upcoming, np.asarray(TIMESFM_LEVELS, dtype=float))
+
+
 def _load_forecast_fns(
-    model_names: list[str], seed: int, m0_window: int = 6
+    model_names: list[str],
+    seed: int,
+    m0_window: int | str = 6,
+    conformal: bool = True,
 ) -> tuple[dict[str, ForecastFn], list[str]]:
     """Wire model names to ``forecast_fn`` callables.
 
@@ -184,9 +314,10 @@ def _load_forecast_fns(
     Args:
         model_names: Model names to wire.
         seed: Base RNG seed (used by the local m0 fallback only).
-        m0_window: Trailing window for M0. The tools path hardcodes 6;
-            a non-default window uses the local parametrized mirror
-            (identical output at window=6).
+        m0_window: Trailing window for M0: an int, or "auto" to select
+            3/6/12 by trailing-origin CRPS validation per forecast.
+        conformal: Use the split-conformal M0 as the baseline (default).
+            Fixes M0's undercoverage; the published baseline.
 
     Returns:
         (forecast functions, names wired via td_one.tools.forecasting).
@@ -202,17 +333,28 @@ def _load_forecast_fns(
         tools_mod = None
         supported = ()
 
+    auto = isinstance(m0_window, str) and m0_window == "auto"
+    window_int = 6 if auto else int(m0_window)
+
     fns: dict[str, ForecastFn] = {}
     via_tools: list[str] = []
     for name in model_names:
-        if tools_mod is not None and name in supported and not (name == "m0" and m0_window != 6):
+        if tools_mod is not None and name in supported and name != "m0":
             fns[name] = partial(tools_mod.forecast, name)
             via_tools.append(name)
             print(f"[models] wired {name!r} via td_one.tools.forecasting")
-        elif name == "m0" and m0_window != 6:
+        elif name == "m0" and auto:
+            # Window selected per forecast by trailing validation.
+            fns[name] = partial(_m0_auto_window_forecast, conformal=conformal)
+            print(f"[models] wired 'm0' via auto-window validation (conformal={conformal})")
+        elif name == "m0" and conformal:
+            # Published baseline: conformal M0 with the requested window.
+            fns[name] = partial(_m0_conformal_forecast, window=window_int)
+            print(f"[models] wired 'm0' via conformal M0 (window={window_int})")
+        elif name == "m0" and window_int != 6:
             # Parametrized trailing window (mirrors the tools m0 path).
-            fns[name] = partial(_m0_window_forecast, window=m0_window)
-            print(f"[models] wired 'm0' via local windowed forecast (window={m0_window})")
+            fns[name] = partial(_m0_window_forecast, window=window_int)
+            print(f"[models] wired 'm0' via local windowed forecast (window={window_int})")
         elif name == "m0":
             # Local fallback while td_one.tools.forecasting is unavailable.
             fns[name] = partial(_m0_rate_forecast, seed=seed)
@@ -366,7 +508,8 @@ def main(argv: list[str] | None = None) -> int:
 
         # ---- 4. Backtest per model ----
         print(f"[4/5] Backtesting models={model_names} ...", flush=True)
-        fns, via_tools = _load_forecast_fns(model_names, args.seed, args.m0_window)
+        m0_window = _parse_m0_window(args.m0_window)
+        fns, via_tools = _load_forecast_fns(model_names, args.seed, m0_window, args.conformal)
         all_results: list[pd.DataFrame] = []
         t0 = time.time()
         for name in model_names:
@@ -417,6 +560,8 @@ def main(argv: list[str] | None = None) -> int:
                 "n_months": args.n_months,
                 "seed": args.seed,
                 "models": model_names,
+                "m0_window": args.m0_window,
+                "conformal": args.conformal,
                 "origins": [o.isoformat() for o in origins],
                 "skip_ingest": args.skip_ingest,
             },
@@ -446,7 +591,8 @@ def main(argv: list[str] | None = None) -> int:
             "",
             f"**Date:** {datetime.now(UTC).date().isoformat()}. "
             f"**Config:** n_customers={args.n_customers}, n_months={args.n_months}, "
-            f"seed={args.seed}, models={','.join(model_names)}.",
+            f"seed={args.seed}, models={','.join(model_names)}, "
+            f"m0_window={args.m0_window}, conformal={args.conformal}.",
             f"**Origins:** {', '.join(o.isoformat() for o in origins)}.",
             f"**Runtime:** {payload['total_runtime_s']}s "
             f"(simulate {timings['simulate_s']}s, ingest {timings['ingest_s']}s, "
@@ -473,9 +619,13 @@ def main(argv: list[str] | None = None) -> int:
             " placeholder, NOT evidence about Chronos-2/TimesFM. The real"
             " M0-vs-M1 comparison is `experiments/exp2_report.md` (real"
             " weights, 3 pre-registered scenarios).",
-            "- **Coverage is below nominal for every model** (target 0.80)."
-            " M0 undercovers and the mocks undercover; interval calibration"
-            " remains open work at this sample size.",
+            "- **The published M0 is the conformal M0** (`--conformal`, default on)."
+            " Split-conformal widening fixes M0's chronic undercoverage"
+            " (0.671 -> 0.914 on seed 0); use `--no-conformal` for plain M0.",
+            "- **M0's trailing window is a tuning parameter** (`--m0-window`,"
+            " default 6, or 'auto' for per-forecast trailing validation)."
+            " Its direction is seed-dependent (w3 wins 3/4 seeds, w6 wins 1/4);"
+            " report the w3/w6 envelope or tune it, never a single window.",
             "- Segment panels are PIT-masked per origin (`observed_asof`):"
             " training months count only outcomes with `outcome_observed_at <="
             " origin`. Future months keep actuals purely as scoring targets.",

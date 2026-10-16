@@ -382,6 +382,59 @@ top-ranked role fails here — possibly because our synthetic models are
 too clean (real model failures are messier and more describable), or
 because routing just doesn't beat good statistical weighting.
 
+## 2g. Classical track — promoted baselines (`experiments/exp10_classical.py`) ✅ done
+
+2000×66, two DGPs. Models: m0_w6, m0_w3, conf_m0 (static CQR),
+aci_m0 (ACI γ=0.05), macro_m0 (FRED OLS), hier_thin vs m0_w6_thin
+(binomial-subsampled p=0.1 panels).
+
+**Standard DGP** (no macro structure — honest null for macro_m0):
+
+| Model | Mean CRPS | Mean MAE | Mean coverage_80 |
+|---|---|---|---|
+| m0_w3 | **1.024** | 1.381 | 0.971 |
+| m0_w6 | 1.401 | 1.913 | 0.886 |
+| conf_m0 | 1.423 | 1.913 | 0.957 |
+| aci_m0 | 1.423 | 1.913 | 0.957 |
+| macro_m0 | 1.472 | 1.983 | 0.829 |
+
+**Macro DGP** (FRED overlay, β=0.6):
+
+| Model | Mean CRPS | Mean MAE | Mean coverage_80 |
+|---|---|---|---|
+| m0_w3 | **1.491** | 1.920 | 0.843 |
+| macro_m0 | 1.627 | 2.121 | 0.786 |
+| conf_m0 | 2.231 | 3.120 | 0.914 |
+| aci_m0 | 2.231 | 3.120 | 0.914 |
+| m0_w6 | 2.305 | 3.120 | 0.786 |
+
+**Thin segments** (hierarchical niche):
+
+| DGP | hier_thin CRPS | m0_w6_thin CRPS |
+|---|---|---|
+| standard | **0.301** | 0.317 |
+| macro | **0.359** | 0.397 |
+
+**Findings:**
+1. **Honest null confirmed:** macro_m0 is *worse* than m0_w6 on the
+   standard DGP (1.472 vs 1.401). The FRED overlay adds noise when
+   there's no macro structure — as it should.
+2. **Macro recovery:** on the macro DGP, macro_m0 (1.627) captures 93%
+   of the oracle gain ((2.305−1.627)/(2.305−1.573)), matching exp8.
+   It beats every w6-based model, though m0_w3 (1.491) still wins
+   outright — recency dominates even with macro structure.
+3. **Hierarchical has a niche:** on thin (p=0.1 subsampled) segments,
+   hier beats m0_w6 by 5–10% on both DGPs. Partial pooling helps where
+   the prior can bind; on large segments it adds nothing (exp5).
+4. **ACI null:** aci_m0 is identical to static conf_m0 on both DGPs.
+   The macro shifts are smooth (not sharp breaks) and 4 calibration
+   months give ACI little room to adapt. The literature's drift case
+   needs sharper regimes to matter — or longer calibration.
+
+**Promoted to the pipeline:** `--conformal` (default on) makes conformal
+M0 the published baseline in `scripts/scale_up.py`; `--m0-window auto`
+selects 3/6/12 by trailing-origin CRPS validation per forecast.
+
 ## 3. Planned experiments
 
 1. **Multi-seed scale-up** (seeds 1–4): the paired non-significance

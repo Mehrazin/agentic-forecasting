@@ -1,0 +1,59 @@
+{
+  "experiment": "exp10_classical",
+  "config": {
+    "n_customers": 2000,
+    "n_months": 66,
+    "seed": 0,
+    "beta_macro": 0.6,
+    "thin_p": 0.1
+  },
+  "results": {
+    "standard_dgp": {
+      "m0_w6_crps": 1.401,
+      "m0_w6_mae": 1.913,
+      "m0_w6_cov": 0.886,
+      "m0_w3_crps": 1.024,
+      "m0_w3_mae": 1.381,
+      "m0_w3_cov": 0.971,
+      "conf_m0_crps": 1.423,
+      "conf_m0_mae": 1.913,
+      "conf_m0_cov": 0.957,
+      "aci_m0_crps": 1.423,
+      "aci_m0_mae": 1.913,
+      "aci_m0_cov": 0.957,
+      "macro_m0_crps": 1.472,
+      "macro_m0_mae": 1.983,
+      "macro_m0_cov": 0.829,
+      "hier_thin_crps": 0.301,
+      "hier_thin_mae": 0.518,
+      "hier_thin_cov": 1.0,
+      "m0_w6_thin_crps": 0.317,
+      "m0_w6_thin_mae": 0.563,
+      "m0_w6_thin_cov": 1.0
+    },
+    "macro_dgp": {
+      "m0_w6_crps": 2.305,
+      "m0_w6_mae": 3.12,
+      "m0_w6_cov": 0.786,
+      "m0_w3_crps": 1.491,
+      "m0_w3_mae": 1.92,
+      "m0_w3_cov": 0.843,
+      "conf_m0_crps": 2.231,
+      "conf_m0_mae": 3.12,
+      "conf_m0_cov": 0.914,
+      "aci_m0_crps": 2.231,
+      "aci_m0_mae": 3.12,
+      "aci_m0_cov": 0.914,
+      "macro_m0_crps": 1.627,
+      "macro_m0_mae": 2.121,
+      "macro_m0_cov": 0.786,
+      "hier_thin_crps": 0.359,
+      "hier_thin_mae": 0.548,
+      "hier_thin_cov": 0.986,
+      "m0_w6_thin_crps": 0.397,
+      "m0_w6_thin_mae": 0.59,
+      "m0_w6_thin_cov": 0.971
+    }
+  },
+  "elapsed_s": 52.1
+}

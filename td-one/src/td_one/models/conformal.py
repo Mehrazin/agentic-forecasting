@@ -73,12 +73,12 @@ class ConformalM0:
         self.qhat_, self.n_cal_ = self._calibrate(n, a)
         self._fitted = True
 
-    def _calibrate(self, n: np.ndarray, a: np.ndarray) -> tuple[float, int]:
-        """Rolling-origin calibration scores; returns (qhat, n_cal)."""
+    def _calibration_scores(self, n: np.ndarray, a: np.ndarray) -> list[float]:
+        """Rolling-origin nonconformity scores in chronological order."""
         n_cal = min(self.cal_months, n.size - 2)
-        if n_cal < _MIN_CAL_MONTHS:
-            return 0.0, 0
         scores: list[float] = []
+        if n_cal < _MIN_CAL_MONTHS:
+            return scores
         first_cal = n.size - n_cal
         for t in range(first_cal, n.size):
             if n[t] <= 0:
@@ -89,13 +89,22 @@ class ConformalM0:
             lo, hi = q10_c / n[t], q90_c / n[t]
             y = a[t] / n[t]
             scores.append(max(lo - y, y - hi, 0.0))
+        return scores
+
+    @staticmethod
+    def _finite_quantile(sorted_scores: np.ndarray, level: float) -> float:
+        """Finite-sample conformal quantile: ceil((m+1)*level)/m."""
+        m = len(sorted_scores)
+        k = int(np.ceil((m + 1) * level)) - 1
+        return float(sorted_scores[min(max(k, 0), m - 1)])
+
+    def _calibrate(self, n: np.ndarray, a: np.ndarray) -> tuple[float, int]:
+        """Rolling-origin calibration scores; returns (qhat, n_cal)."""
+        scores = self._calibration_scores(n, a)
         if len(scores) < _MIN_CAL_MONTHS:
             return 0.0, 0
-        # Finite-sample conformal quantile: ceil((m+1)(1-alpha))/m.
-        m = len(scores)
-        k = int(np.ceil((m + 1) * (1.0 - self.alpha))) - 1
-        qhat = float(np.sort(np.asarray(scores))[min(max(k, 0), m - 1)])
-        return qhat, m
+        qhat = self._finite_quantile(np.sort(np.asarray(scores)), 1.0 - self.alpha)
+        return qhat, len(scores)
 
     def predict_rate_quantiles(
         self,
@@ -144,3 +153,78 @@ class ConformalM0:
             widened = {float(k): float(v) for k, v in zip(lv, vals, strict=True)}
             return widened
         return lattice
+
+
+#: Bounds for the adaptive miscoverage level (keeps quantiles well-defined).
+_ACI_ALPHA_MIN = 0.01
+_ACI_ALPHA_MAX = 0.99
+
+
+class AdaptiveConformalM0(ConformalM0):
+    """Conformal M0 with Adaptive Conformal Inference (ACI).
+
+    Gibbs & Candès (NeurIPS 2021): the miscoverage level adapts online
+    through the calibration block via::
+
+        alpha_{t+1} = alpha_t + gamma * (alpha - err_t)
+
+    where ``err_t = 1`` if calibration month ``t`` miscovered. After
+    misses (regime drift) alpha drops and intervals widen; after hits
+    alpha rises and intervals narrow. One tuning parameter (gamma);
+    literature suggests small values (0.01-0.05).
+
+    The adaptive alpha is clipped to [0.01, 0.99] so the quantile level
+    stays well-defined under persistent drift.
+    """
+
+    def __init__(
+        self,
+        trailing_window: int = TRAILING_WINDOW,
+        cal_months: int = 4,
+        alpha: float = 0.2,
+        gamma: float = 0.05,
+    ) -> None:
+        """Initialize adaptive conformal baseline.
+
+        Args:
+            trailing_window: Months pooled by the underlying M0.
+            cal_months: Max calibration months (capped by history length).
+            alpha: Target miscoverage rate; the long-run aim.
+            gamma: ACI learning rate (> 0). Larger adapts faster but
+                noisier; 0.05 is a robust default.
+
+        """
+        super().__init__(trailing_window=trailing_window, cal_months=cal_months, alpha=alpha)
+        if not gamma > 0.0:
+            raise ValueError("gamma must be positive")
+        self.gamma = gamma
+        self.alpha_path_: list[float] = []
+
+    def _calibrate(self, n: np.ndarray, a: np.ndarray) -> tuple[float, int]:
+        """ACI calibration: adapt alpha sequentially, then quantize.
+
+        At step t the quantile uses only scores before t (strictly past),
+        matching the online ACI protocol. The first step warm-starts from
+        all scores.
+        """
+        scores = self._calibration_scores(n, a)
+        m = len(scores)
+        if m < _MIN_CAL_MONTHS:
+            self.alpha_path_ = []
+            return 0.0, 0
+        alpha_t = self.alpha
+        self.alpha_path_ = [alpha_t]
+        for t, s in enumerate(scores):  # chronological order
+            prev = scores if t == 0 else scores[:t]
+            ordered = np.sort(np.asarray(prev))
+            level = min(max(1.0 - alpha_t, _ACI_ALPHA_MIN), _ACI_ALPHA_MAX)
+            q_t = self._finite_quantile(ordered, level)
+            err = 1.0 if s > q_t else 0.0
+            alpha_t = min(
+                max(alpha_t + self.gamma * (self.alpha - err), _ACI_ALPHA_MIN),
+                _ACI_ALPHA_MAX,
+            )
+            self.alpha_path_.append(alpha_t)
+        final_level = min(max(1.0 - alpha_t, _ACI_ALPHA_MIN), _ACI_ALPHA_MAX)
+        qhat = self._finite_quantile(np.sort(np.asarray(scores)), final_level)
+        return qhat, m

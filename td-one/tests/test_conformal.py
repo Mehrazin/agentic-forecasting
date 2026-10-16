@@ -74,3 +74,71 @@ def test_unfitted_and_bad_inputs_rejected() -> None:
     a = np.array([10.0, 200.0])  # A > N
     with pytest.raises(ValueError):
         ConformalM0().fit(n, a)
+
+
+def _stable_history(seed: int = 0) -> tuple[np.ndarray, np.ndarray]:
+    # Constant rate: no regime shift, calibration should mostly cover.
+    rng = np.random.default_rng(seed)
+    n = np.full(14, 200.0)
+    a = rng.binomial(n.astype(int), 0.20).astype(float)
+    return n, a
+
+
+def _late_shift_history(seed: int = 0) -> tuple[np.ndarray, np.ndarray]:
+    # Shift in the last 6 months: inside the 8-month calibration window,
+    # so ACI sees the misses sequentially.
+    rng = np.random.default_rng(seed)
+    n = np.full(20, 200.0)
+    rates = np.concatenate([np.full(14, 0.10), np.full(6, 0.35)])
+    a = rng.binomial(n.astype(int), rates).astype(float)
+    return n, a
+
+
+def test_aci_adapts_down_after_misses() -> None:
+    # Regime shift inside the calibration window: recent months miss ->
+    # alpha should drop below the target, widening vs static CQR.
+    from td_one.models.conformal import AdaptiveConformalM0
+
+    n, a = _late_shift_history()
+    aci = AdaptiveConformalM0(trailing_window=6, cal_months=8, gamma=0.05)
+    aci.fit(n, a)
+    assert aci.n_cal_ > 0
+    assert len(aci.alpha_path_) == aci.n_cal_ + 1
+    # At least one miss should have pushed alpha below target.
+    assert min(aci.alpha_path_) < 0.2, aci.alpha_path_
+    # ACI interval must be at least as wide as static on this shift.
+    static = ConformalM0(trailing_window=6, cal_months=8)
+    static.fit(n, a)
+    assert aci.qhat_ >= static.qhat_ - 1e-12
+
+
+def test_aci_stays_near_target_on_stable_data() -> None:
+    from td_one.models.conformal import AdaptiveConformalM0
+
+    n, a = _stable_history()
+    aci = AdaptiveConformalM0(trailing_window=6, cal_months=4, gamma=0.05)
+    aci.fit(n, a)
+    # Stable: alpha should not collapse to the floor.
+    assert min(aci.alpha_path_) > 0.05, aci.alpha_path_
+    # And qhat should be finite and non-negative.
+    assert np.isfinite(aci.qhat_) and aci.qhat_ >= 0.0
+
+
+def test_aci_gamma_validation() -> None:
+    from td_one.models.conformal import AdaptiveConformalM0
+
+    with pytest.raises(ValueError, match="gamma"):
+        AdaptiveConformalM0(gamma=0.0)
+    with pytest.raises(ValueError, match="gamma"):
+        AdaptiveConformalM0(gamma=-0.1)
+
+
+def test_aci_falls_back_on_short_history() -> None:
+    from td_one.models.conformal import AdaptiveConformalM0
+
+    n = np.array([100.0, 120.0, 110.0])
+    a = np.array([10.0, 12.0, 11.0])
+    aci = AdaptiveConformalM0(trailing_window=6, cal_months=4, gamma=0.05)
+    aci.fit(n, a)
+    assert aci.qhat_ == 0.0
+    assert aci.alpha_path_ == []

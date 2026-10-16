@@ -72,7 +72,10 @@ entry point is `scripts/scale_up.py`:
 ```bash
 cd td-one && uv run python scripts/scale_up.py --n-customers 10000 --n-months 66 --models m0
 # smoke: --n-customers 500 --n-months 24 --models m0 --skip-ingest
-# M0 trailing window: --m0-window 3 (default 6; window=6 reproduces the published M0)
+# M0 trailing window: --m0-window 3 | 6 | 12 | auto (default 6;
+#   'auto' selects 3/6/12 by trailing-origin CRPS validation per forecast)
+# Conformal baseline: --conformal / --no-conformal (default: on).
+#   The published M0 is the conformal M0 (fixes undercoverage 0.671->0.914).
 # multi-seed: --seed 1 --tag seed1-m0w6
 ```
 
