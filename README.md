@@ -13,6 +13,7 @@ The repo has two layers. A small core library (`aieng.forecasting`) owns cutoff-
 | 2 | [Food price forecasting](implementations/food_price_forecasting/) | Multivariate Canadian food CPI in the style of Canada's Food Price Report (nine sub-indices, 12-month trajectory, avg/avg YoY) | Naive last-value, AutoARIMA; report-grounded LLM-Process (quantile grid and sampled trajectory) |
 | 3 | [Energy / oil](implementations/energy_oil_forecasting/) | Daily WTI crude under regime-breaking news (continuous trajectory, binary up-shock, scenario analysis) | Prophet, LLM-Process, news-grounded agent, code-executing agent, adaptive (curriculum-trained) agent |
 | 4 | [BoC rate decisions](implementations/boc_rate_decisions/) | Will the Bank of Canada cut, hold, or hike at its next meeting? (ordered categorical; binary cut-vs-not special case) | Climatological frequency, multinomial logistic, categorical LLM-Process, analyst agent; LLM-as-judge reasoning alignment |
+| 5 | [TD-One](td-one/) | Mortgage renewal attrition by segment — solo project, not under `implementations/` | M0 Jeffreys Beta-Binomial; M1 Chronos-2 / TimesFM-2.5 (real weights); M2 LLM ReAct (Groq); M3 hybrid agent |
 
 Also in this README: [Setup](#setup) · [Core concepts](#core-concepts) · [Repository layout](#repository-layout) · [Documentation](#documentation)
 
@@ -72,6 +73,7 @@ On Coder workspaces, bootcamp keys (`OPENAI_*`, `E2B_*`, `LANGFUSE_*`) live in y
 ```text
 aieng-forecasting/   # Installable library: import as aieng.forecasting
 implementations/     # Self-contained reference implementations + co-located specs
+td-one/              # Solo mortgage-attrition forecasting project (M0–M3 ladder)
 guides/              # Step-by-step strategy guides for common build-phase tasks
 scripts/             # Data-fetch scripts + E2B template builder
 tests/               # Onboarding integration tests (not run in CI)
