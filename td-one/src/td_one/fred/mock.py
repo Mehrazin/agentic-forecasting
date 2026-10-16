@@ -133,22 +133,3 @@ def get_series(series_id: str, start: date, end: date) -> pd.Series:
     return fixture.loc[pd.Timestamp(lo) : pd.Timestamp(hi)].copy()
 
 
-def get_series_live(
-    series_id: str,
-    start: date,
-    end: date,
-    api_key: str | None = None,
-) -> pd.Series:
-    """Live FRED access (not implemented).
-
-    Raises:
-        NotImplementedError: Always — live FRED requires ``FRED_API_KEY``
-            and is out of scope for development; use
-            :func:`get_series` (mock) or :class:`td_one.fred.cache.FileCache`.
-
-    """
-    raise NotImplementedError(
-        "Live FRED access is out of scope: it requires a FRED_API_KEY and "
-        "network access. Use td_one.fred.get_series (deterministic mock) or "
-        "td_one.fred.cache.FileCache for development and tests."
-    )
