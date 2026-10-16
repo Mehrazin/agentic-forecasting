@@ -22,8 +22,15 @@ spec, retained for reference) for all solo execution.
 - **Problem**: Forecast P(switch | renewal) for mortgage segments
 - **Data**: Synthetic 10k customers × 66 months (60 train + 6 OOT)
 - **PIT**: All queries enforce `record_asof <= run_date`; leakage auditor verifies 0%
-- **Tools**: data_segment, evidence, forecasting (same 3-tool design; not yet implemented)
-- **Models**: M0 ✅ → M1 ✅ (Chronos-2/TimesFM-2.5, real weights) → M2 ❌ (LLM) → M3 ❌ (hybrid agent)
+- **Tools**: data_segment, evidence, forecasting ✅ (implemented in
+  `td_one/tools/`; FRED mock + file cache in `td_one/fred/`)
+- **Models**: M0 ✅ → M1 ✅ (Chronos-2/TimesFM-2.5, real weights) → M2 ✅
+  (ReAct loop; mock-LLM rung, real Groq gated) → M3 ✅ (hybrid driver;
+  mock deltas, real-Groq path gated)
+
+Ladder status: M0 ✅ done, M1 ✅ done, M2 ✅ done (mock rung; real-LLM
+ablation open), M3 ✅ done (mock rung; agent-driven real-LLM ablation open).
+Hybrid math in `models/hybrid.py`; `experiments/exp4_m3.py` drives it.
 - **Readout**: Beta-Binomial for count coherence: A ~ BetaBinomial(N, α, β)
 
 Ladder status: M0 ✅ done, M1 ✅ done, M2 ❌ planned, M3 ❌ planned
@@ -32,19 +39,24 @@ Ladder status: M0 ✅ done, M1 ✅ done, M2 ❌ planned, M3 ❌ planned
 ## Build order (TDD)
 
 1. **Schemas** (from Excel): Pydantic models for mortgage history + renewal
-   outcomes ✅ (renewal offers + propensity scores: not yet modeled)
+   outcomes ✅, renewal offers ✅, propensity scores ✅
 2. **Synthetic DGP**: mortgage_simulator with planted shocks (rate, OSFI, family) ✅
    (structural outcome DGP + observation lag added in the 2026-10-15 audit)
 3. **PIT store**: DuckDB with `record_asof` filtering ✅ (history + outcomes tables)
 4. **M0 baseline**: Historical rate + Jeffreys Beta-Binomial ✅ (trailing-6)
 5. **TSFM wrappers**: Chronos-2, TimesFM-2.5 (per survey results) ✅ (real weights)
-6. **Hybrid readout**: TSFM + LLM log-odds adjustment (bounded ±0.75) ✅ (math only)
-7. **Agent controller**: ReAct loop with Groq ❌ (helpers only: evidence-prompt
-   builder + adjustment estimator; orchestration loop not yet implemented)
+6. **Hybrid readout**: TSFM + LLM log-odds adjustment (bounded ±0.75) ✅
+   (math + `experiments/exp4_m3.py` driver)
+7. **Agent controller**: ReAct loop with Groq ✅ (`agent/react.py`; mock LLM
+   default, real Groq behind `TD_ONE_REAL_LLM=1` with ≤10 calls/run and
+   429 backoff)
 8. **Evaluation**: Metrics (MAE/CRPS/Brier/coverage) ✅, leakage auditor ✅,
-   backtest runner ❌ (not yet implemented)
+   backtest runner ✅ (`td_one/backtest/runner.py`; segment panels
+   PIT-masked per origin via `observed_asof`)
 9. **Experiments**: exp1 (M0 vs M1 mocks) ✅, exp2 (M0 vs M1 real weights,
-   3-scenario redesign) ✅, exp3 (M2/M3 ablation) ❌ planned
+   3-scenario redesign) ✅, exp3 (M2 ReAct, mock LLM) ✅, exp4 (M3 hybrid
+   driver) ✅, scale-up (10k×66 segment backtest) ✅.
+   Full pipeline runbook: `docs/SCALE_UP_RUNBOOK.md`.
 
 ## Enterprise controls (from AI2)
 
