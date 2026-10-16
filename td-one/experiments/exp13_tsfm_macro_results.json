@@ -1,0 +1,247 @@
+{
+  "experiment": "exp13_tsfm_macro",
+  "config": {
+    "n_customers": 2000,
+    "n_months": 66,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "beta_macro": 0.6,
+    "fred_series": "MORTGAGE30US",
+    "baseline": "conf_m0_auto (conformal, window auto 3/6/12)",
+    "tsfm_conditioning": "residual (no native covariate support)"
+  },
+  "results": {
+    "standard/seed0": {
+      "chronos2": {
+        "mean_crps": 1.565,
+        "mean_mae": 2.129,
+        "mean_coverage_80": 1.0,
+        "n_segments": 14
+      },
+      "chronos2_macro": {
+        "mean_crps": 1.596,
+        "mean_mae": 2.105,
+        "mean_coverage_80": 0.986,
+        "n_segments": 14
+      },
+      "timesfm25": {
+        "mean_crps": 1.58,
+        "mean_mae": 2.177,
+        "mean_coverage_80": 0.957,
+        "n_segments": 14
+      },
+      "timesfm25_macro": {
+        "mean_crps": 1.628,
+        "mean_mae": 2.215,
+        "mean_coverage_80": 0.929,
+        "n_segments": 14
+      },
+      "conf_m0_auto": {
+        "mean_crps": 1.142,
+        "mean_mae": 1.52,
+        "mean_coverage_80": 0.986,
+        "n_segments": 14
+      },
+      "macro_m0": {
+        "mean_crps": 1.472,
+        "mean_mae": 1.983,
+        "mean_coverage_80": 0.829,
+        "n_segments": 14
+      }
+    },
+    "macro/seed0": {
+      "chronos2": {
+        "mean_crps": 2.033,
+        "mean_mae": 2.907,
+        "mean_coverage_80": 0.957,
+        "n_segments": 14
+      },
+      "chronos2_macro": {
+        "mean_crps": 1.77,
+        "mean_mae": 2.449,
+        "mean_coverage_80": 0.957,
+        "n_segments": 14
+      },
+      "timesfm25": {
+        "mean_crps": 2.126,
+        "mean_mae": 3.049,
+        "mean_coverage_80": 0.914,
+        "n_segments": 14
+      },
+      "timesfm25_macro": {
+        "mean_crps": 1.763,
+        "mean_mae": 2.384,
+        "mean_coverage_80": 0.957,
+        "n_segments": 14
+      },
+      "conf_m0_auto": {
+        "mean_crps": 1.77,
+        "mean_mae": 2.247,
+        "mean_coverage_80": 0.886,
+        "n_segments": 14
+      },
+      "macro_m0": {
+        "mean_crps": 1.627,
+        "mean_mae": 2.121,
+        "mean_coverage_80": 0.786,
+        "n_segments": 14
+      }
+    },
+    "standard/seed1": {
+      "chronos2": {
+        "mean_crps": 1.318,
+        "mean_mae": 1.608,
+        "mean_coverage_80": 1.0,
+        "n_segments": 14
+      },
+      "chronos2_macro": {
+        "mean_crps": 1.486,
+        "mean_mae": 1.818,
+        "mean_coverage_80": 0.986,
+        "n_segments": 14
+      },
+      "timesfm25": {
+        "mean_crps": 1.331,
+        "mean_mae": 1.673,
+        "mean_coverage_80": 1.0,
+        "n_segments": 14
+      },
+      "timesfm25_macro": {
+        "mean_crps": 1.461,
+        "mean_mae": 1.893,
+        "mean_coverage_80": 0.971,
+        "n_segments": 14
+      },
+      "conf_m0_auto": {
+        "mean_crps": 1.127,
+        "mean_mae": 1.551,
+        "mean_coverage_80": 0.971,
+        "n_segments": 14
+      },
+      "macro_m0": {
+        "mean_crps": 1.254,
+        "mean_mae": 1.612,
+        "mean_coverage_80": 0.9,
+        "n_segments": 14
+      }
+    },
+    "macro/seed1": {
+      "chronos2": {
+        "mean_crps": 1.653,
+        "mean_mae": 2.254,
+        "mean_coverage_80": 0.971,
+        "n_segments": 14
+      },
+      "chronos2_macro": {
+        "mean_crps": 1.483,
+        "mean_mae": 1.808,
+        "mean_coverage_80": 0.971,
+        "n_segments": 14
+      },
+      "timesfm25": {
+        "mean_crps": 1.733,
+        "mean_mae": 2.361,
+        "mean_coverage_80": 0.957,
+        "n_segments": 14
+      },
+      "timesfm25_macro": {
+        "mean_crps": 1.423,
+        "mean_mae": 1.847,
+        "mean_coverage_80": 0.986,
+        "n_segments": 14
+      },
+      "conf_m0_auto": {
+        "mean_crps": 1.278,
+        "mean_mae": 1.861,
+        "mean_coverage_80": 0.986,
+        "n_segments": 14
+      },
+      "macro_m0": {
+        "mean_crps": 1.207,
+        "mean_mae": 1.645,
+        "mean_coverage_80": 0.843,
+        "n_segments": 14
+      }
+    },
+    "standard/seed2": {
+      "chronos2": {
+        "mean_crps": 1.22,
+        "mean_mae": 1.703,
+        "mean_coverage_80": 0.986,
+        "n_segments": 14
+      },
+      "chronos2_macro": {
+        "mean_crps": 1.631,
+        "mean_mae": 2.491,
+        "mean_coverage_80": 0.929,
+        "n_segments": 14
+      },
+      "timesfm25": {
+        "mean_crps": 1.278,
+        "mean_mae": 1.825,
+        "mean_coverage_80": 0.971,
+        "n_segments": 14
+      },
+      "timesfm25_macro": {
+        "mean_crps": 1.729,
+        "mean_mae": 2.591,
+        "mean_coverage_80": 0.929,
+        "n_segments": 14
+      },
+      "conf_m0_auto": {
+        "mean_crps": 0.963,
+        "mean_mae": 1.466,
+        "mean_coverage_80": 1.0,
+        "n_segments": 14
+      },
+      "macro_m0": {
+        "mean_crps": 1.536,
+        "mean_mae": 2.247,
+        "mean_coverage_80": 0.814,
+        "n_segments": 14
+      }
+    },
+    "macro/seed2": {
+      "chronos2": {
+        "mean_crps": 1.52,
+        "mean_mae": 2.252,
+        "mean_coverage_80": 0.971,
+        "n_segments": 14
+      },
+      "chronos2_macro": {
+        "mean_crps": 1.274,
+        "mean_mae": 1.732,
+        "mean_coverage_80": 0.957,
+        "n_segments": 14
+      },
+      "timesfm25": {
+        "mean_crps": 1.538,
+        "mean_mae": 2.262,
+        "mean_coverage_80": 0.943,
+        "n_segments": 14
+      },
+      "timesfm25_macro": {
+        "mean_crps": 1.293,
+        "mean_mae": 1.767,
+        "mean_coverage_80": 0.929,
+        "n_segments": 14
+      },
+      "conf_m0_auto": {
+        "mean_crps": 1.32,
+        "mean_mae": 1.948,
+        "mean_coverage_80": 0.943,
+        "n_segments": 14
+      },
+      "macro_m0": {
+        "mean_crps": 1.318,
+        "mean_mae": 1.892,
+        "mean_coverage_80": 0.829,
+        "n_segments": 14
+      }
+    }
+  },
+  "elapsed_s": 8010.7
+}

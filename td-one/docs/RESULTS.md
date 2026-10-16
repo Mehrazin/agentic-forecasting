@@ -435,6 +435,74 @@ aci_m0 (ACI γ=0.05), macro_m0 (FRED OLS), hier_thin vs m0_w6_thin
 M0 the published baseline in `scripts/scale_up.py`; `--m0-window auto`
 selects 3/6/12 by trailing-origin CRPS validation per forecast.
 
+## 2j. TSFM + FRED rematch — the fair fight (`experiments/exp13_tsfm_macro.py`) ✅ done
+
+Real Chronos-2 / TimesFM-2.5 never beat M0 significantly on 5 seeds —
+but they were tested WITHOUT macro information, while exp8 showed
+macro structure is worth 32% CRPS when present (LITERATURE_SURVEY
+§6.3.5: "the fair rematch the TSFMs deserve").
+
+**Covariate path:** neither TSFM accepts exogenous covariates natively.
+Chronos-2's `predict` takes only `inputs`; the installed timesfm 3.x
+`forecast(horizon, inputs)` has no covariate path. So macro-conditioning
+uses the honest residual fallback in
+`src/td_one/models/tsfm_macro.py::MacroConditionedTSFM`: estimate β by
+OLS of trailing logit(rates) on the FRED z-series (MacroM0's estimator,
+reused by composition), forecast the TSFM on the macro-residualized
+series, re-add the shift per quantile via
+sigmoid(logit(q) + β̂·z_forecast). On DGPs without macro structure β̂≈0
+and this reduces exactly to the plain TSFM (regression-tested in
+`tests/test_tsfm_macro.py`).
+
+2000×66, seeds 0–2, two DGPs. Models: conf_m0_auto (conformal, window
+auto — the published baseline), macro_m0, plain chronos2/timesfm25
+(real weights), and their macro-conditioned versions.
+
+**Standard DGP** (honest null — macro should NOT help):
+
+| Seed | conf_m0_auto | macro_m0 | chronos2 | chronos2_macro | timesfm25 | timesfm25_macro |
+|---|---|---|---|---|---|---|
+| 0 | **1.142** | 1.472 | 1.565 | 1.596 | 1.580 | 1.628 |
+| 1 | **1.127** | 1.254 | 1.318 | 1.486 | 1.331 | 1.461 |
+| 2 | **0.963** | 1.536 | 1.220 | 1.631 | 1.278 | 1.729 |
+
+**Macro DGP** (FRED overlay, β=0.6):
+
+| Seed | conf_m0_auto | macro_m0 | chronos2 | chronos2_macro | timesfm25 | timesfm25_macro |
+|---|---|---|---|---|---|---|
+| 0 | 1.770 | **1.627** | 2.033 | 1.770 | 2.126 | 1.763 |
+| 1 | 1.278 | **1.207** | 1.653 | 1.483 | 1.733 | 1.423 |
+| 2 | 1.320 | 1.318 | 1.520 | **1.274** | 1.538 | 1.293 |
+
+**Findings:**
+1. **The mechanism works.** Macro-conditioning improves BOTH TSFMs on
+   the macro DGP on all 3 seeds: chronos2_macro beats plain chronos2 by
+   13%/10%/16%, timesfm25_macro by 17%/18%/16%. The residual approach is
+   a real, consistent win whenever macro structure exists.
+2. **The honest null is stronger than a null.** On the standard DGP,
+   macro-conditioning HURTS both TSFMs on all 3 seeds — β̂ is pure noise
+   there and the residualize/re-add round trip injects it. Conditioning
+   is not free; it should be gated on evidence of macro structure.
+3. **But the rematch headline is a draw.** The macro-conditioned TSFMs
+   beat the conformal auto-window baseline only 1/3 seeds (seed2:
+   1.274/1.293 vs 1.320), tie seed0, lose seed1. The TSFMs' residual
+   base forecast is still weaker than M0's Beta-Binomial core — macro
+   information closes the gap but doesn't reverse it.
+4. **Classical still owns the macro niche.** macro_m0 beats
+   conf_m0_auto on seeds 0–1 (1.627 vs 1.770; 1.207 vs 1.278) and ties
+   seed2 — simpler, faster, and the best macro play. (Caveat: macro_m0
+   is not conformalized; its 80% coverage is 0.79–0.84 vs 0.89–1.00
+   for conf_m0_auto.)
+5. **Chronos-2 still overcovers** (1.00 on standard DGP, all seeds);
+   TimesFM-2.5 stays closest to nominal among TSFMs.
+
+**Takeaway:** give TSFMs macro information and they get reliably
+better — but "better TSFM" is not "better than M0". The fair rematch
+confirms the mechanism (residual conditioning) while leaving the
+baseline hierarchy intact: conformal auto-M0 on standard DGP, classical
+MacroM0 on macro DGP. Results JSON:
+`experiments/exp13_tsfm_macro_results.json`.
+
 ## 3. Planned experiments
 
 1. **Multi-seed scale-up** (seeds 1–4): the paired non-significance
@@ -471,8 +539,10 @@ selects 3/6/12 by trailing-origin CRPS validation per forecast.
 11. **DGP realism upgrade**: burnout state + 30-month seasoning ramp +
     S-curve refinance incentive (industry prepayment canon; see
     LITERATURE_SURVEY.md §5). Current DGP may be too easy for M0.
-12. **TSFM + exogenous FRED**: macro-conditioned Chronos-2/TimesFM-2.5
-    vs conformal baseline — the fair rematch TSFMs deserve.
+12. **TSFM + exogenous FRED** ✅ done (§2j): macro-conditioned
+    Chronos-2/TimesFM-2.5 via the residual approach vs conformal
+    auto-M0 — mechanism works (10–18% vs plain TSFM, 3/3 seeds), but
+    beats the baseline only 1/3 seeds; classical macro_m0 still best.
 
 ---
 
