@@ -24,9 +24,14 @@ secondary: MAE and 80% interval coverage.
 | exp2 v2 | M0 vs M1 (real weights) | 3 scenarios × 5 seeds | real weights | `exp2_report.md` |
 | exp3 | M2 vs M0 | 3 pilot segments | mock + real Groq | `exp3_report.md` |
 | exp4 | M3 vs M0 | 6 macro scenarios | mock + real Groq | `exp4_report.md` |
-| scale-up | M0 vs `*_mock` | 10k×66, 15 seg × 6 origins | mock (plumbing) | `scale_up_report.md` |
-| scale-up | M0 vs real Chronos-2 | 10k×66, 15 seg × 5–6 origins | real weights | `scale_up_report_real-chronos2.md` |
-| scale-up | M0 vs real TimesFM-2.5 | 10k×66, 15 seg × 6 origins | real weights | _in progress_ |
+| scale-up | M0 vs `*_mock` | 10k×66, 14 seg × 5 origins | mock (plumbing) | `scale_up_report.md` |
+| scale-up | M0 vs real Chronos-2 | 10k×66, 14 seg × 5 origins | real weights | `scale_up_report_real-chronos2.md` |
+| scale-up | M0 vs real TimesFM-2.5 | 10k×66, 14 seg × 5 origins | real weights | `scale_up_report_real-timesfm25.md` |
+
+Scale note: 15 segments are designed; `term_short` never scores (no
+observable training data at these origins), so all runs report **14
+segments**. Six origins are configured; one per segment is skipped for
+the same reason, leaving **5 scored origins per segment**.
 
 ## Key findings (read this first)
 
@@ -44,20 +49,39 @@ secondary: MAE and 80% interval coverage.
    spreads, so they score better on CRPS in stable-rate environments.
    The real M0-vs-M1 comparison is exp2 v2.
 
-3. **Real Chronos-2 at scale overcovers** (coverage 1.0/0.8 across
-   segments), matching exp2's finding. CRPS is mixed vs M0 segment by
-   segment. Real TimesFM-2.5 scale-up is running.
+3. **Real Chronos-2 at scale overcovers** (coverage values {0.6, 0.8,
+   1.0} across segments, mean 0.914), matching exp2's finding. Paired
+   tests on the 14 shared segments (same seed, same DGP, same origins —
+   pairing valid): Chronos-2 wins 7/14 (paired-t p=0.212, Wilcoxon
+   p=0.583); TimesFM-2.5 wins 5/14 (p=0.341 / 0.583) — **not
+   significant**, reproducing exp2 v2's conclusion at scale. The mean
+   CRPS gaps (4.463 / 4.591 vs M0 5.360) are driven by a few segments;
+   the median picture is a coin flip. TimesFM mean coverage is 0.80
+   (nominal). ⚠️ Single seed, single DGP — any future superiority claim
+   must be pre-registered across seeds/DGP variants.
 
-4. **Real-Groq M2 (exp3): first real-LLM win.** With the patient retry
-   policy, the agent finalized 2/3 traces; seg-1 M2 CRPS 0.82 vs M0
-   1.33. seg-0 finalized worse than M0; seg-2 never finalized. Mock
-   mode remains the plumbing validation (0/3 pilot segments beat M0 —
-   expected, the scripted LLM adds no skill).
+4. **Real-Groq M2 (exp3): first real-LLM win — with a caveat.** With
+   the patient retry policy (the third real-mode attempt; attempts 1–2
+   were rate-limit-bound), the agent finalized 2/3 traces; seg-1 M2 CRPS
+   0.82 vs M0 1.33. seg-0 finalized worse than M0; seg-2 never
+   finalized. **Honesty note:** real-mode M2 still uses the
+   `timesfm_mock` numerical backend
+   (`exp3_results.json: "forecast_model": "timesfm_mock"`), so the
+   seg-1 edge cannot be separated from the mock sharpness artifact
+   (finding #2). What the run demonstrates is orchestration — the agent
+   driving the tool loop to finalization — not numerical superiority.
+   Mock mode remains the plumbing validation (0/3 pilot segments beat
+   M0 — expected, the scripted LLM adds no skill).
 
-5. **Real-Groq M3 (exp4): 3/6 scenarios beat M0.** The LLM's deltas are
-   directionally right (e.g. −0.25 on the rate-drop scenario) but it
-   over-adjusts — it added +0.30 even on the benign scenario where the
-   right answer is ~0.
+5. **Real-Groq M3 (exp4): 3/6 scenarios beat M0 (exploratory — n=6
+   hand-designed scenarios, no significance claimed).** The LLM's
+   deltas are directionally right 4/6 (e.g. −0.25 on the rate-drop
+   scenario) but: it got the **sign wrong** on `osfi_tightening` (+0.30
+   vs true ≈ −0.35, misread a stress-test policy as pro-switching), it
+   over-adjusts (+0.30 on the benign scenario where the right answer is
+   ~0), and it systematically undershoots magnitude (0.18–0.30 vs true
+   0.45–0.70). Direction doesn't predict the score: `rate_shock_down`
+   was a CRPS loss despite correct direction.
 
 6. **Calibration is the open work.** Coverage sits below the 80%
    nominal for M0 and the mocks at scale; Chronos-2 overcovers.

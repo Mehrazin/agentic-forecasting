@@ -45,9 +45,13 @@ instead of re-downloading.
 ```bash
 cd td-one
 
-uv run --with huggingface_hub --with torch --with chronos-forecasting \
+uv run --with torch --with chronos-forecasting \
     --with timesfm python experiments/exp2_real_weights.py
 ```
+
+(`huggingface_hub` is only needed for the §2 bootstrap, not for the
+run — weights load from the local snapshot pinned in
+`models/MANIFEST.json`.)
 
 What it does:
 1. Loads `models/MANIFEST.json` for weights paths (fails fast if missing).

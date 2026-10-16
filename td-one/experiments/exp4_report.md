@@ -4,9 +4,9 @@
  **Mode:** real.
 
 M3 = M0 (trailing-6 Jeffreys Beta-Binomial) + bounded log-odds
-adjustment Δ ∈ [-0.75, +0.75] applied via HybridReadout. The agent
-proposes Δ per macro scenario; in mock mode the deltas are scripted
-(directionally right, imperfect by design).
+adjustment Δ ∈ [-0.75, +0.75] applied via HybridReadout. In real mode
+the agent (Groq) genuinely judged each macro scenario and proposed Δ;
+there are no scripted deltas in this run.
 
 | Scenario | Δ | M0 CRPS | M3 CRPS | M0 cov | M3 cov |
 |---|---|---|---|---|---|
@@ -19,11 +19,28 @@ proposes Δ per macro scenario; in mock mode the deltas are scripted
 
 M3 beats M0 on CRPS in 3/6 scenarios.
 
+## Failure analysis
+
+- **Sign error:** `osfi_tightening` got the sign wrong — Δ +0.30 vs a
+  true shift of ≈ −0.35. The agent misread a stress-test tightening as
+  pro-switching. This is the most informative failure: directional
+  errors on policy scenarios.
+- **Spurious adjustment:** `benign` was adjusted +0.30 vs a true 0.00 —
+  the agent has no "do nothing" prior for benign regimes.
+- **Magnitude undershoot:** LLM deltas run 0.18–0.30 vs true shifts of
+  0.45–0.70 — systematically too timid even when directionally right.
+- **Direction doesn't predict the score:** `rate_shock_down` was a CRPS
+  loss (4.18 → 5.01) despite the correct negative direction.
+- Net: 4/6 directionally right, 3/6 score wins, 1 sign error. The
+  bounded readout (±0.75) contained the damage; unbounded adjustment
+  would have been worse.
+
 ## Caveats
 
-- Mock-mode deltas are scripted, not LLM judgments; the comparison
-  measures whether a *directionally correct* agent adjustment helps,
-  not whether a real LLM would produce one.
+- **Exploratory framing:** n=6 hand-designed scenarios, chosen by the
+  experimenters — not six exchangeable trials. No significance claimed
+  (a sign test on 3/6 gives p=1.0). Treat all scenario counts as
+  descriptive.
 - Each scenario injects a known true shift, so M3 has an information
   advantage over stationary M0 by construction — the question is
   whether the bounded readout converts that signal into better

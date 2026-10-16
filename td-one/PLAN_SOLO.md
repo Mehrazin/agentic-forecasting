@@ -23,18 +23,18 @@ spec, retained for reference) for all solo execution.
 - **Data**: Synthetic 10k customers × 66 months (60 train + 6 OOT)
 - **PIT**: All queries enforce `record_asof <= run_date`; leakage auditor verifies 0%
 - **Tools**: data_segment, evidence, forecasting ✅ (implemented in
-  `td_one/tools/`; FRED mock + file cache in `td_one/fred/`)
+  `td_one/tools/`; live FRED via vault surrogate (`custom.fred`) + parquet
+  cache in `td_one/fred/`)
 - **Models**: M0 ✅ → M1 ✅ (Chronos-2/TimesFM-2.5, real weights) → M2 ✅
-  (ReAct loop; mock-LLM rung, real Groq gated) → M3 ✅ (hybrid driver;
-  mock deltas, real-Groq path gated)
+  (ReAct loop; mock-LLM rung + real-Groq runs) → M3 ✅ (hybrid driver;
+  mock deltas + real-Groq runs)
 
-Ladder status: M0 ✅ done, M1 ✅ done, M2 ✅ done (mock rung; real-LLM
-ablation open), M3 ✅ done (mock rung; agent-driven real-LLM ablation open).
-Hybrid math in `models/hybrid.py`; `experiments/exp4_m3.py` drives it.
+Ladder status: M0 ✅ done, M1 ✅ done, M2 ✅ done (mock rung done;
+real-Groq runs completed — exp3 `"mode": "real"` committed), M3 ✅ done
+(mock rung done; real-Groq runs completed — exp4 `"mode": "real"`
+committed). Hybrid math in `models/hybrid.py`; `experiments/exp4_m3.py`
+drives it.
 - **Readout**: Beta-Binomial for count coherence: A ~ BetaBinomial(N, α, β)
-
-Ladder status: M0 ✅ done, M1 ✅ done, M2 ❌ planned, M3 ❌ planned
-(hybrid math exists in `models/hybrid.py`; no agent drives it yet).
 
 ## Build order (TDD)
 
@@ -48,14 +48,15 @@ Ladder status: M0 ✅ done, M1 ✅ done, M2 ❌ planned, M3 ❌ planned
 6. **Hybrid readout**: TSFM + LLM log-odds adjustment (bounded ±0.75) ✅
    (math + `experiments/exp4_m3.py` driver)
 7. **Agent controller**: ReAct loop with Groq ✅ (`agent/react.py`; mock LLM
-   default, real Groq behind `TD_ONE_REAL_LLM=1` with ≤10 calls/run and
-   429 backoff)
+   default, real Groq behind `TD_ONE_REAL_LLM=1` — exp3 budget 20
+   calls/run, exp4 budget 10; patient retry policy: 6 attempts, 60s floor
+   on 429)
 8. **Evaluation**: Metrics (MAE/CRPS/Brier/coverage) ✅, leakage auditor ✅,
    backtest runner ✅ (`td_one/backtest/runner.py`; segment panels
    PIT-masked per origin via `observed_asof`)
 9. **Experiments**: exp1 (M0 vs M1 mocks) ✅, exp2 (M0 vs M1 real weights,
-   3-scenario redesign) ✅, exp3 (M2 ReAct, mock LLM) ✅, exp4 (M3 hybrid
-   driver) ✅, scale-up (10k×66 segment backtest) ✅.
+   3-scenario redesign) ✅, exp3 (M2 ReAct, mock + real Groq) ✅, exp4 (M3
+   hybrid driver, mock + real Groq) ✅, scale-up (10k×66 segment backtest) ✅.
    Full pipeline runbook: `docs/SCALE_UP_RUNBOOK.md`.
 
 ## Enterprise controls (from AI2)

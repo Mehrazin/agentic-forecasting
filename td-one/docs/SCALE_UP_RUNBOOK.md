@@ -80,8 +80,8 @@ cd td-one && uv run python scripts/scale_up.py --n-customers 10000 --n-months 66
 |---|---|---|---|
 | exp1 — M0 vs M1 (mock TSFMs) | ✅ | `experiments/exp1_mvp1.py` | 500×24, mock mode; pilot-era, kept for regression |
 | exp2 — M0 vs M1 (real weights) | ✅ | `experiments/exp2_real_weights.py` | 3 scenarios × 5 seeds; `TD_ONE_MOCK=1` for CI |
-| exp3 — M2 ReAct (mock LLM) | ✅ | `experiments/exp3_m2.py` | Scripted ReAct traces against real tools; plumbing validation |
-| exp4 — M3 hybrid driver | ✅ | `experiments/exp4_m3.py` | 6 macro scenarios, bounded Δ; real-Groq path gated (`TD_ONE_REAL_LLM=1`) |
+| exp3 — M2 ReAct (mock + real Groq) | ✅ | `experiments/exp3_m2.py` | Mock: scripted ReAct traces against real tools (plumbing validation). Real: `TD_ONE_REAL_LLM=1`, budget 20 calls; 2/3 traces finalized, first real-LLM win |
+| exp4 — M3 hybrid driver | ✅ | `experiments/exp4_m3.py` | 6 macro scenarios, bounded Δ; real-Groq exercised (`TD_ONE_REAL_LLM=1`, budget 10) — 3/6 beat M0 |
 | scale-up — full 10k×66 | ✅ | `scripts/scale_up.py` | Segment backtest; writes `experiments/scale_up_results.json` + `scale_up_report.md` |
 
 **TSFM runtime (measured, 2-vCPU VM, real weights, 45 origins):** M0 ~0.1s;
@@ -89,9 +89,10 @@ Chronos-2 ~26s; **TimesFM-2.5 ~972s** (compile-heavy; fast once compiled).
 For iteration, run exp2 with `TD_ONE_MOCK=1` (seconds) and reserve real
 weights for the final confirmation run.
 
-**Groq (M2/M3):** real-LLM calls are gated behind the secure connector and
-free-tier rate limits — expect 429s; the controller retries 3× with
-exponential backoff. Budget ~1–2s per call plus retry delays.
+**Groq (M2/M3):** real-LLM calls go through `td_one/agent/groq_client.py`
+(AI2-grade retry: 6 attempts, 60s floor on 429, 2.5s process-wide
+throttle; the old controller is gone). Free-tier rate limits apply —
+expect 429s; do not hammer. Budget ~1–2s per call plus retry delays.
 
 ## 6. Artifact map
 
@@ -122,7 +123,8 @@ exponential backoff. Budget ~1–2s per call plus retry delays.
 
 - Simulator 10k×66: ~1 min (measured at 1k×66: 5.4s)
 - exp2 v2 real weights: ~17 min total (TimesFM dominates)
-- Real-weight scale-up (10k×66, 15 seg × 5–6 origins): Chronos-2 ~144s;
-  TimesFM ~35 min (run per-model with `--tag` on RAM-constrained VMs)
+- Real-weight scale-up (10k×66, 14 seg × 5 origins): Chronos-2 ~144s;
+  TimesFM 764.7s (~13 min, measured; run per-model with `--tag` on
+  RAM-constrained VMs)
 - exp2 mock: seconds
-- Test suite: 73 passed, 2 skipped (2 skipped = gated real-weight tests)
+- Test suite: 157+ passed (3 skipped = gated live-weight/network tests)

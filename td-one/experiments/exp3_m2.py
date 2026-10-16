@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 import os
 import sys
 from collections.abc import Callable
@@ -37,7 +38,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from td_one.agent.groq_client import GROQ_MODEL_DEFAULT, GroqChatClient  # noqa: E402
-from td_one.agent.react import MockLLMClient, ReActAgent
+from td_one.agent.react import LLMClient, MockLLMClient, ReActAgent, ReActResult
 from td_one.evaluation.metrics import (  # noqa: E402
     crps_counts,
     interval_coverage,
@@ -94,7 +95,11 @@ def build_panels(n_customers: int = 300, n_months: int = 66) -> list[dict[str, o
         a = np.zeros(12)
         for b, idx in enumerate(batches):
             n[b] = len(idx)
-            a[b] = sum(int(outcomes[j].switched_lender_flag) for j in idx)
+            # Outcomes were filtered to non-None flags above; the walrus
+            # re-asserts it so mypy sees bool | None narrow to bool.
+            a[b] = sum(
+                int(flag) for j in idx if (flag := outcomes[j].switched_lender_flag) is not None
+            )
         panels.append(
             {
                 "segment_id": f"seg-{i}",
@@ -278,12 +283,12 @@ def run_m2_agent(
 
         agent_tools = {**tools, "forecasting": recording_forecast}
         if use_real_llm:
-            llm: object = GroqChatClient(
+            llm: LLMClient = GroqChatClient(
                 model=GROQ_MODEL_DEFAULT, call_budget=_REAL_LLM_CALL_BUDGET
             )
         else:
             llm = _ScriptedFinalizer(holder, sid, agent_run_date.isoformat())
-        agent = ReActAgent(llm, agent_tools, max_steps=6)  # type: ignore[arg-type]
+        agent = ReActAgent(llm, agent_tools, max_steps=6)
         result = agent.run(f"Forecast switching for segment {sid}", agent_run_date)
 
         forecast = result["forecast"] or {}
@@ -320,7 +325,7 @@ def run_m2_agent(
     return rows
 
 
-def _evidence_card_count(result: dict[str, object]) -> int:
+def _evidence_card_count(result: ReActResult) -> int:
     """Count evidence cards retrieved in the trace (diagnostic)."""
     trace = result.get("trace")
     if not isinstance(trace, list):
@@ -332,6 +337,20 @@ def _evidence_card_count(result: dict[str, object]) -> int:
             except (ValueError, TypeError):
                 return -1
     return -1
+
+
+def _row_float(r: dict[str, object], key: str) -> float:
+    """Extract a float metric from a result row (mypy-safe accessor)."""
+    v = r[key]
+    assert isinstance(v, (int, float)), f"{key}={v!r}"
+    return float(v)
+
+
+def _row_int(r: dict[str, object], key: str) -> int:
+    """Extract an int metric from a result row (mypy-safe accessor)."""
+    v = r[key]
+    assert isinstance(v, int), f"{key}={v!r}"
+    return v
 
 
 def run_exp3(
@@ -367,9 +386,9 @@ def run_exp3(
     results_path = out_path / "exp3_results.json"
     results_path.write_text(json.dumps(results, indent=2, default=float))
 
-    valid = [r for r in combined if r["m2_crps"] == r["m2_crps"]]
-    n_better = sum(1 for r in valid if r["m2_crps"] < r["crps"])
-    total_cards = sum(int(r["evidence_cards"]) for r in combined)
+    valid = [r for r in combined if not math.isnan(_row_float(r, "m2_crps"))]
+    n_better = sum(1 for r in valid if _row_float(r, "m2_crps") < _row_float(r, "crps"))
+    total_cards = sum(_row_int(r, "evidence_cards") for r in combined)
     lines = [
         "# Experiment 3 Report: M2 (ReAct LLM Agent) vs M0",
         "",

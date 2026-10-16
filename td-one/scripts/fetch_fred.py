@@ -16,7 +16,9 @@ Usage:
     uv run python td-one/scripts/fetch_fred.py --series DGS5 DEXCAUS
 
 Output: td-one/data/fred/<series_id>.parquet with (date, value) columns,
-plus fred_manifest.json recording titles, units, frequencies, and fetch time.
+plus fred_manifest.json recording titles, units, frequencies,
+FRED ``last_updated`` stamps (release-awareness for future joins), and
+fetch time. Per-series fetches retry transient transport blips.
 
 PIT discipline: files hold full history; filter ``date <= run_date`` at use
 time (``td_one.fred.get_series_live`` takes start/end for the same purpose).
@@ -35,7 +37,18 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from td_one.fred.live import FredClient  # noqa: E402
+from td_one.agent.retry import RetryConfig, with_retry  # noqa: E402
+from td_one.fred.live import FredClient, FredUnavailableError  # noqa: E402
+
+#: Retry for the bulk download: FRED is generous (120 req/min) but a
+#: transient blip across 34 calls should not abort the run. Modest policy —
+#: this is a script, not the patient Groq free-tier treatment.
+_FETCH_RETRY = RetryConfig(
+    max_attempts=3,
+    base_delay_s=1.0,
+    max_delay_s=30.0,
+    min_rate_limit_delay_s=5.0,
+)
 
 #: series_id -> (category, why it matters for mortgage attrition)
 SERIES: dict[str, tuple[str, str]] = {
@@ -67,22 +80,46 @@ SERIES: dict[str, tuple[str, str]] = {
 DATA_DIR = ROOT / "data" / "fred"
 
 
-def fetch_all(series_ids: list[str], refresh: bool) -> dict[str, dict]:
+@with_retry(_FETCH_RETRY)
+def _fetch_series(client: FredClient, sid: str) -> tuple[pd.DataFrame, dict[str, object]]:
+    """Fetch one series' observations + metadata, retrying transport blips.
+
+    ``FredClient`` wraps transport errors in :class:`FredUnavailableError`;
+    the original error is re-raised from the ``__cause__`` chain so the
+    retry classifier sees it (vault/credential problems and bad series ids
+    have no transport cause, so they stay fatal).
+    """
+    try:
+        df = client.observations(sid)
+        info = client.series_info(sid)
+    except FredUnavailableError as exc:
+        cause = exc.__cause__
+        if cause is not None:
+            raise cause from exc
+        raise
+    return df, info
+
+
+def fetch_all(series_ids: list[str], refresh: bool) -> dict[str, dict[str, object]]:
     """Download each series to parquet; return the manifest entries."""
+    unknown = [s for s in series_ids if s not in SERIES]
+    if unknown:
+        raise ValueError(f"unknown series ids: {unknown}")
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     client = FredClient()
-    manifest: dict[str, dict] = {}
+    manifest: dict[str, dict[str, object]] = {}
     for sid in series_ids:
         out = DATA_DIR / f"{sid}.parquet"
         if out.exists() and not refresh:
             print(f"  skip {sid} (cached)")
             df = pd.read_parquet(out)
+            info = client.series_info(sid)
         else:
             print(f"  fetch {sid} ...", flush=True)
-            df = client.observations(sid)
+            df, info = _fetch_series(client, sid)
             df.to_parquet(out, index=False)
             print(f"        {len(df)} rows, {df['date'].min()}..{df['date'].max()}")
-        info = client.series_info(sid)
+        # Empty frames (bad window, no data) must not produce "nan" strings.
         manifest[sid] = {
             "category": SERIES[sid][0],
             "rationale": SERIES[sid][1],
@@ -90,9 +127,10 @@ def fetch_all(series_ids: list[str], refresh: bool) -> dict[str, dict]:
             "frequency": info.get("frequency"),
             "units": info.get("units"),
             "seasonal_adjustment": info.get("seasonal_adjustment"),
+            "last_updated": info.get("last_updated"),
             "rows": int(len(df)),
-            "start": str(df["date"].min()),
-            "end": str(df["date"].max()),
+            "start": None if df.empty else str(df["date"].min()),
+            "end": None if df.empty else str(df["date"].max()),
         }
     manifest["_meta"] = {
         "fetched_at": datetime.now(UTC).isoformat(),

@@ -25,8 +25,30 @@
 
 ## Interpretation (read before comparing models)
 
-- **The `*_mock` models are interface-only plumbing.** They center on the last observed rate with fixed tight probit spreads, so in a stable-rate environment they score better on CRPS than M0's wider Jeffreys posterior. That gap is a sharpness artifact of the placeholder, NOT evidence about Chronos-2/TimesFM. The real M0-vs-M1 comparison is `experiments/exp2_report.md` (real weights, 3 pre-registered scenarios).
-- **Coverage is below nominal for every model** (target 0.80). M0 undercovers and the mocks undercover; interval calibration remains open work at this sample size.
+- **Real model, single run.** This report covers one real-weight model
+  (TimesFM-2.5) vs the same run's M0 panels. There are no `*_mock` rows
+  here — the mock scale-up (`scale_up_report.md`) is plumbing only and
+  is not compared in this report.
+- **Paired tests vs M0: no significant difference.** On the 14 shared
+  segments (same seed, same DGP, same origins — pairing valid),
+  TimesFM-2.5 wins 5/14 on mean CRPS (paired-t p=0.341, Wilcoxon
+  p=0.583). The mean gap (4.591 vs M0 5.360) is driven by a few
+  segments; the median picture is a coin flip. This reproduces exp2 v2's
+  conclusion ("no model significantly beats M0," all p > 0.18) at scale.
+  Single seed, single DGP — any future superiority claim must be
+  pre-registered across seeds/DGP variants.
+- **Coverage is near nominal** (mean 0.80 across segments, vs the 0.80
+  target), consistent with exp2 v2's "TimesFM closest to nominal"
+  finding. Interval calibration remains open work for the other rungs.
+- **Methods note:** real-model outputs were monotone-sorted (ascending
+  values reassigned to ascending levels) to fix quantile crossing — the
+  standard monotone rearrangement, disclosed not hidden. No diagnostic
+  on crossing frequency was recorded; a future run should log it.
+- **Framing:** this comparison is count-aware Bayes (M0 sees
+  `(n_renewals, n_switches)`) vs rate-only zero-shot on short panels
+  (5–12 monthly points per origin — far below the models' design
+  context). It tests few-shot priors on this DGP, not TSFM capability
+  in general.
 - Segment panels are PIT-masked per origin (`observed_asof`): training months count only outcomes with `outcome_observed_at <= origin`. Future months keep actuals purely as scoring targets.
 - Maturities spread year-round (simulator draws a uniform origination month per customer); origins are the last 6 panel month-ends.
 
