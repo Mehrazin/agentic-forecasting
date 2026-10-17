@@ -133,12 +133,15 @@ class Chronos2Wrapper:
         self,
         series: np.ndarray,
         horizon: int | None = None,
+        validate_input: bool = True,
     ) -> tuple[np.ndarray, np.ndarray]:
         """Forecast quantiles on the native 21-level grid.
 
         Args:
             series: Historical rates in [0, 1].
             horizon: Forecast steps (default: prediction_length).
+            validate_input: If False, skip the [0, 1] range check (for
+                log-space inputs from LogScaleCalibrator).
 
         Returns:
             (levels, values): levels shape (21,), values shape (21, horizon).
@@ -146,13 +149,27 @@ class Chronos2Wrapper:
             see module docstring for the divergence caveat.
 
         """
-        arr = _validate_rates(series)
+        arr = np.asarray(series, dtype=float)
+        if validate_input:
+            arr = _validate_rates(arr)
+        elif arr.size == 0:
+            raise ValueError("series must be non-empty")
+        elif bool(np.isnan(arr).any()):
+            raise ValueError("series must not contain NaN")
         h = horizon or self.prediction_length
         if self.use_mock:
             rng = np.random.default_rng(42)
-            last = float(np.clip(arr[-1], 0.01, 0.99))
-            draws = rng.normal(loc=last, scale=0.02, size=(len(CHRONOS2_LEVELS), h))
-            return CHRONOS2_LEVELS.copy(), np.clip(draws, 0.0, 1.0)
+            if validate_input:
+                last = float(np.clip(arr[-1], 0.01, 0.99))
+                draws = rng.normal(loc=last, scale=0.02, size=(len(CHRONOS2_LEVELS), h))
+                return CHRONOS2_LEVELS.copy(), np.clip(draws, 0.0, 1.0)
+            else:
+                # Log-space (or other transformed) inputs: don't clip, use
+                # last value directly. Fixed 0.02 scale becomes relative
+                # after exponentiation.
+                last = float(arr[-1])
+                draws = rng.normal(loc=last, scale=0.02, size=(len(CHRONOS2_LEVELS), h))
+                return CHRONOS2_LEVELS.copy(), draws
         # Real path: always load (never silently fall back to mock)
         self._load()
         assert self._pipeline is not None
@@ -251,22 +268,31 @@ class TimesFMWrapper:
         self,
         series: np.ndarray,
         horizon: int | None = None,
+        validate_input: bool = True,
     ) -> tuple[np.ndarray, np.ndarray]:
         """Forecast quantiles on the native 9-level grid.
 
         Args:
             series: Historical rates in [0, 1].
             horizon: Forecast steps.
+            validate_input: If False, skip the [0, 1] range check (for
+                log-space inputs from LogScaleCalibrator).
 
         Returns:
             (levels, values): levels shape (9,) = [0.1..0.9],
             values shape (9, horizon).
 
         """
-        arr = _validate_rates(series)
+        arr = np.asarray(series, dtype=float)
+        if validate_input:
+            arr = _validate_rates(arr)
+        elif arr.size == 0:
+            raise ValueError("series must be non-empty")
+        elif bool(np.isnan(arr).any()):
+            raise ValueError("series must not contain NaN")
         h = horizon or self.prediction_length
         if self.use_mock:
-            return TIMESFM_LEVELS.copy(), self._mock_quantiles(arr, h)
+            return TIMESFM_LEVELS.copy(), self._mock_quantiles(arr, h, validate_input)
         self._load()
         assert self._model is not None
         # forecast(horizon, inputs) -> (point, quantiles); quantiles shape
@@ -309,12 +335,16 @@ class TimesFMWrapper:
         return np.asarray(values[q50])
 
     @staticmethod
-    def _mock_quantiles(arr: np.ndarray, h: int) -> np.ndarray:
+    def _mock_quantiles(arr: np.ndarray, h: int, validate_input: bool = True) -> np.ndarray:
         """Mock quantiles: symmetric spreads around last value."""
-        last = float(np.clip(arr[-1], 0.01, 0.99))
+        # Log-space: use last value directly (no clipping).
+        last = float(np.clip(arr[-1], 0.01, 0.99)) if validate_input else float(arr[-1])
         # 9 levels matching TIMESFM_LEVELS: spreads widen away from median
         spreads = np.array([0.05, 0.035, 0.02, 0.01, 0.0, 0.01, 0.02, 0.035, 0.05])
         vals = np.tile(spreads[:, None], (1, h))
         # lower levels subtract, upper add; median = last
         signs = np.array([-1, -1, -1, -1, 0, 1, 1, 1, 1])
-        return np.asarray(np.clip(last + signs[:, None] * vals, 0.0, 1.0))
+        result = last + signs[:, None] * vals
+        if validate_input:
+            result = np.clip(result, 0.0, 1.0)
+        return np.asarray(result)
