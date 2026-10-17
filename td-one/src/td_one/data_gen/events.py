@@ -44,12 +44,41 @@ class EventType(StrEnum):
 
 
 #: Default transmission lags (months) from event_date to DGP effect onset.
+#: Phase 3 (2026-10-17): HOUSING_DISRUPTION raised 1 -> 2. Rationale: regional
+#: price drops take ~2 months to flow through appraisals into LTV ratios and
+#: hence into p(switch). This also makes housing news (delay ~1.1mo) *lead*
+#: the DGP effect, joining POLICY_SHOCK and RATE_SHIFT as news-leading types.
 DEFAULT_TRANSMISSION_LAG: dict[EventType, int] = {
     EventType.POLICY_SHOCK: 2,
     EventType.RATE_SHIFT: 1,  # 2-4 weeks ≈ 1 month at monthly granularity
-    EventType.HOUSING_DISRUPTION: 1,
+    EventType.HOUSING_DISRUPTION: 2,
     EventType.LENDER_SHIFT: 0,  # immediate for the bank's borrowers
     EventType.MACRO_SURPRISE: 0,  # immediate income effect
+}
+
+#: Approximate news lead (months) = transmission_lag - mean news delay.
+#: Positive = news arrives BEFORE the DGP effect (useful for forecasting).
+#: Negative = news is a lagging indicator (structurally useless at h=1).
+#: Derived from DEFAULT_TRANSMISSION_LAG and news_synthesis._NEWS_PARAMS.
+#: Phase 3: kept in sync manually; test_events.py asserts the invariant.
+NEWS_LEAD_MONTHS: dict[EventType, float] = {
+    EventType.POLICY_SHOCK: 2 - 4 / 30,  # ≈ +1.87
+    EventType.RATE_SHIFT: 1 - 3 / 30,  # ≈ +0.90
+    EventType.HOUSING_DISRUPTION: 2 - 32.5 / 30,  # ≈ +0.92 (Phase 3)
+    EventType.LENDER_SHIFT: 0 - 17.5 / 30,  # ≈ -0.58
+    EventType.MACRO_SURPRISE: 0 - 20 / 30,  # ≈ -0.67
+}
+
+#: Default sampling probabilities over event types in generate_event_timeline.
+#: Phase 3 (2026-10-17): biased toward news-leading types per exp21's diagnosis
+#: ("news mostly lags the effect"). Expected fraction of events with
+#: news_lead > 0 under these weights: 0.30 + 0.30 + 0.20 = 0.80 ≥ 0.60.
+DEFAULT_EVENT_TYPE_PROBS: dict[EventType, float] = {
+    EventType.POLICY_SHOCK: 0.30,
+    EventType.RATE_SHIFT: 0.30,
+    EventType.HOUSING_DISRUPTION: 0.20,
+    EventType.LENDER_SHIFT: 0.10,
+    EventType.MACRO_SURPRISE: 0.10,
 }
 
 #: How long the event's effect persists (months) after onset.
@@ -160,6 +189,7 @@ def generate_event_timeline(
     n_months: int,
     seed: int = 42,
     event_rate_per_year: float = 3.0,
+    event_type_probs: dict[EventType, float] | None = None,
 ) -> list[Event]:
     """Generate a random exogenous event timeline.
 
@@ -175,6 +205,9 @@ def generate_event_timeline(
         n_months: Number of months in the timeline.
         seed: Random seed for reproducibility.
         event_rate_per_year: Expected events per 12-month period.
+        event_type_probs: Sampling weights over event types. Defaults to
+            :data:`DEFAULT_EVENT_TYPE_PROBS` (Phase 3: biased toward
+            news-leading types so ≥60% of events have news_lead > 0).
 
     Returns:
         List of Event, sorted by event_date. May be empty.
@@ -184,6 +217,12 @@ def generate_event_timeline(
     # Snap start to month-end
     cur = _last_day(start_date.year, start_date.month)
 
+    if event_type_probs is None:
+        event_type_probs = DEFAULT_EVENT_TYPE_PROBS
+    _types = list(event_type_probs.keys())
+    _probs = np.array([event_type_probs[t] for t in _types], dtype=float)
+    _probs = _probs / _probs.sum()
+
     n_events = int(rng.poisson(event_rate_per_year * n_months / 12))
     events: list[Event] = []
     for i in range(n_events):
@@ -192,7 +231,7 @@ def generate_event_timeline(
         ev_date = _add_months(cur, offset)
         ev_date = _last_day(ev_date.year, ev_date.month)
 
-        ev_type = EventType(rng.choice([e.value for e in EventType]))
+        ev_type = EventType(rng.choice([e.value for e in _types], p=_probs))
         cohort = str(rng.choice(list(VALID_COHORTS[ev_type])))
         magnitude, effect_size = _draw_magnitude(ev_type, rng)
 

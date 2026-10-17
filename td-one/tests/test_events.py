@@ -294,3 +294,62 @@ def test_simulator_events_pit_safe() -> None:
     sim.rng = np.random.default_rng(999)
     with_future = sim.generate_outcomes(history=hist, event_timeline=[future_event])
     assert [o.outcome for o in base] == [o.outcome for o in with_future]
+
+
+def test_news_lead_months_invariant() -> None:
+    """Phase 3: NEWS_LEAD_MONTHS must stay in sync with lag/delay params.
+
+    lead(type) = DEFAULT_TRANSMISSION_LAG[type] - mean(_NEWS_PARAMS[type][:2])/30.
+    """
+    from td_one.data_gen.events import (
+        DEFAULT_TRANSMISSION_LAG,
+        NEWS_LEAD_MONTHS,
+    )
+    from td_one.data_gen.news_synthesis import _NEWS_PARAMS
+
+    for ev_type, lead in NEWS_LEAD_MONTHS.items():
+        lag = DEFAULT_TRANSMISSION_LAG[ev_type]
+        lo, hi, _ = _NEWS_PARAMS[ev_type]
+        expected = lag - (lo + hi) / 2 / 30
+        assert abs(lead - expected) < 1e-9, f"{ev_type}: {lead} != {expected}"
+
+
+def test_default_probs_yield_majority_news_leading() -> None:
+    """Phase 3 (exp21 lesson): >=60% of sampled events must have news_lead > 0."""
+    from datetime import date
+
+    from td_one.data_gen.events import (
+        DEFAULT_EVENT_TYPE_PROBS,
+        NEWS_LEAD_MONTHS,
+        generate_event_timeline,
+    )
+
+    expected_frac = sum(
+        p for t, p in DEFAULT_EVENT_TYPE_PROBS.items() if NEWS_LEAD_MONTHS[t] > 0
+    )
+    assert expected_frac >= 0.60, f"expected leading fraction {expected_frac}"
+
+    # Empirical check over many draws (deterministic seeds)
+    n_lead = n_tot = 0
+    for seed in range(20):
+        for e in generate_event_timeline(
+            date(2021, 1, 31), 66, seed=seed, event_rate_per_year=4.0
+        ):
+            n_tot += 1
+            n_lead += NEWS_LEAD_MONTHS[e.event_type] > 0
+    assert n_lead / n_tot >= 0.55, f"empirical {n_lead}/{n_tot}"
+
+
+def test_custom_event_type_probs_respected() -> None:
+    """generate_event_timeline honors an explicit event_type_probs override."""
+    from datetime import date
+
+    from td_one.data_gen.events import EventType, generate_event_timeline
+
+    only_rate = {t: (1.0 if t == EventType.RATE_SHIFT else 0.0) for t in EventType}
+    evs = generate_event_timeline(
+        date(2021, 1, 31), 66, seed=7, event_rate_per_year=6.0,
+        event_type_probs=only_rate,
+    )
+    assert len(evs) > 0
+    assert all(e.event_type == EventType.RATE_SHIFT for e in evs)
