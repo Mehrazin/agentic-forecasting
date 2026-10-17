@@ -1,0 +1,2738 @@
+{
+  "experiment": "exp22_m2_v2_vs_v1",
+  "seeds": [
+    42,
+    7,
+    123,
+    1,
+    99
+  ],
+  "n_origins": 60,
+  "v1_mean_crps": 0.04939416014531097,
+  "v2_mean_crps": 0.048767439453729494,
+  "mean_diff_v1_minus_v2": 0.0006267206915814753,
+  "rel_improvement": 0.012688153614470798,
+  "v2_wins": 6,
+  "paired_t": 0.34114943597603203,
+  "paired_p": 0.7342030401035385,
+  "v2_code_execute_rate": 1.0,
+  "v2_adjustment_rate": 0.15,
+  "by_kind": {
+    "adjusted": {
+      "n": 9,
+      "v1_mean_crps": 0.0631259515515778,
+      "v2_mean_crps": 0.05894781360770131,
+      "rel_improvement": 0.06618732615004928,
+      "v2_wins": 6
+    },
+    "fallback": {
+      "n": 51,
+      "v1_mean_crps": 0.046970902838322705,
+      "v2_mean_crps": 0.046970902838322705,
+      "rel_improvement": 0.0,
+      "v2_wins": 0
+    }
+  },
+  "rows": [
+    {
+      "origin": "2023-12-31",
+      "actual": 0.1891891891891892,
+      "v1": {
+        "forecast": {
+          "0.1": 0.125,
+          "0.5": 0.375,
+          "0.9": 0.625
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.09527027027027025,
+        "mae": 0.1858108108108108,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.125,
+          "0.5": 0.375,
+          "0.9": 0.625
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.09527027027027025,
+        "mae": 0.1858108108108108,
+        "finalized": 1.0
+      },
+      "seed": 42,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-01-31",
+      "actual": 0.3157894736842105,
+      "v1": {
+        "forecast": {
+          "0.1": 0.14285714285714285,
+          "0.5": 0.2857142857142857,
+          "0.9": 0.42857142857142855
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.02907268170426065,
+        "mae": 0.03007518796992481,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.14285714285714285,
+          "0.5": 0.2857142857142857,
+          "0.9": 0.42857142857142855
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.02907268170426065,
+        "mae": 0.03007518796992481,
+        "finalized": 1.0
+      },
+      "seed": 42,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-02-29",
+      "actual": 0.40476190476190477,
+      "v1": {
+        "forecast": {
+          "0.1": 0.15789473684210525,
+          "0.5": 0.2631578947368421,
+          "0.9": 0.42105263157894735
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.0647451963241437,
+        "mae": 0.14160401002506268,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.15789473684210525,
+          "0.5": 0.2631578947368421,
+          "0.9": 0.42105263157894735
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.0647451963241437,
+        "mae": 0.14160401002506268,
+        "finalized": 1.0
+      },
+      "seed": 42,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-03-31",
+      "actual": 0.42105263157894735,
+      "v1": {
+        "forecast": {
+          "0.1": 0.2,
+          "0.5": 0.32,
+          "0.9": 0.44
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.04968421052631578,
+        "mae": 0.10105263157894734,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.2,
+          "0.5": 0.32,
+          "0.9": 0.44
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.04968421052631578,
+        "mae": 0.10105263157894734,
+        "finalized": 1.0
+      },
+      "seed": 42,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-04-30",
+      "actual": 0.3953488372093023,
+      "v1": {
+        "forecast": {
+          "0.1": 0.20689655172413793,
+          "0.5": 0.3448275862068966,
+          "0.9": 0.4482758620689655
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.032932371023790416,
+        "mae": 0.05052125100240573,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.20689655172413793,
+          "0.5": 0.3448275862068966,
+          "0.9": 0.4482758620689655
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.032932371023790416,
+        "mae": 0.05052125100240573,
+        "finalized": 1.0
+      },
+      "seed": 42,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-05-31",
+      "actual": 0.3888888888888889,
+      "v1": {
+        "forecast": {
+          "0.1": 0.22857142857142856,
+          "0.5": 0.34285714285714286,
+          "0.9": 0.45714285714285713
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.030582010582010585,
+        "mae": 0.046031746031746035,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.390389,
+          "0.5": 0.407054,
+          "0.9": 0.423719
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "code_execute",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": true,
+        "adj_mode": "shift",
+        "fallback_to_m0": false,
+        "cp_idx": null,
+        "crps": 0.009277111111111106,
+        "mae": 0.018165111111111132,
+        "finalized": 1.0
+      },
+      "seed": 42,
+      "kind": "adjusted"
+    },
+    {
+      "origin": "2024-06-30",
+      "actual": 0.40476190476190477,
+      "v1": {
+        "forecast": {
+          "0.1": 0.2564102564102564,
+          "0.5": 0.358974358974359,
+          "0.9": 0.46153846153846156
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.028937728937728942,
+        "mae": 0.04578754578754579,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.379959,
+          "0.5": 0.401763,
+          "0.9": 0.423567
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "code_execute",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": true,
+        "adj_mode": "shift",
+        "fallback_to_m0": false,
+        "cp_idx": null,
+        "crps": 0.003906834920634931,
+        "mae": 0.002998904761904786,
+        "finalized": 1.0
+      },
+      "seed": 42,
+      "kind": "adjusted"
+    },
+    {
+      "origin": "2024-07-31",
+      "actual": 0.3684210526315789,
+      "v1": {
+        "forecast": {
+          "0.1": 0.275,
+          "0.5": 0.4,
+          "0.9": 0.5
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.025526315789473692,
+        "mae": 0.031578947368421095,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.275,
+          "0.5": 0.4,
+          "0.9": 0.5
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.025526315789473692,
+        "mae": 0.031578947368421095,
+        "finalized": 1.0
+      },
+      "seed": 42,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-08-31",
+      "actual": 0.375,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3,
+          "0.5": 0.4,
+          "0.9": 0.5
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.02166666666666667,
+        "mae": 0.025000000000000022,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.3,
+          "0.5": 0.4,
+          "0.9": 0.5
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.02166666666666667,
+        "mae": 0.025000000000000022,
+        "finalized": 1.0
+      },
+      "seed": 42,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-09-30",
+      "actual": 0.3055555555555556,
+      "v1": {
+        "forecast": {
+          "0.1": 0.2894736842105263,
+          "0.5": 0.39473684210526316,
+          "0.9": 0.5
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.04376218323586744,
+        "mae": 0.08918128654970758,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.2894736842105263,
+          "0.5": 0.39473684210526316,
+          "0.9": 0.5
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.04376218323586744,
+        "mae": 0.08918128654970758,
+        "finalized": 1.0
+      },
+      "seed": 42,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-10-31",
+      "actual": 0.35294117647058826,
+      "v1": {
+        "forecast": {
+          "0.1": 0.2631578947368421,
+          "0.5": 0.3684210526315789,
+          "0.9": 0.47368421052631576
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.019195046439628466,
+        "mae": 0.015479876160990669,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.2631578947368421,
+          "0.5": 0.3684210526315789,
+          "0.9": 0.47368421052631576
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.019195046439628466,
+        "mae": 0.015479876160990669,
+        "finalized": 1.0
+      },
+      "seed": 42,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-11-30",
+      "actual": 0.43243243243243246,
+      "v1": {
+        "forecast": {
+          "0.1": 0.25,
+          "0.5": 0.3611111111111111,
+          "0.9": 0.4722222222222222
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.0385885885885886,
+        "mae": 0.07132132132132135,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.25,
+          "0.5": 0.3611111111111111,
+          "0.9": 0.4722222222222222
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.0385885885885886,
+        "mae": 0.07132132132132135,
+        "finalized": 1.0
+      },
+      "seed": 42,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2023-12-31",
+      "actual": 0.45,
+      "v1": {
+        "forecast": {
+          "0.1": 0.2222222222222222,
+          "0.5": 0.3333333333333333,
+          "0.9": 0.6666666666666666
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.06851851851851852,
+        "mae": 0.1166666666666667,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.2222222222222222,
+          "0.5": 0.3333333333333333,
+          "0.9": 0.6666666666666666
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.06851851851851852,
+        "mae": 0.1166666666666667,
+        "finalized": 1.0
+      },
+      "seed": 7,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-01-31",
+      "actual": 0.4117647058823529,
+      "v1": {
+        "forecast": {
+          "0.1": 0.21428571428571427,
+          "0.5": 0.42857142857142855,
+          "0.9": 0.6428571428571429
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.03417366946778711,
+        "mae": 0.016806722689075626,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.21428571428571427,
+          "0.5": 0.42857142857142855,
+          "0.9": 0.6428571428571429
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.03417366946778711,
+        "mae": 0.016806722689075626,
+        "finalized": 1.0
+      },
+      "seed": 7,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-02-29",
+      "actual": 0.45,
+      "v1": {
+        "forecast": {
+          "0.1": 0.2777777777777778,
+          "0.5": 0.3888888888888889,
+          "0.9": 0.5555555555555556
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.03888888888888889,
+        "mae": 0.061111111111111116,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.2777777777777778,
+          "0.5": 0.3888888888888889,
+          "0.9": 0.5555555555555556
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.03888888888888889,
+        "mae": 0.061111111111111116,
+        "finalized": 1.0
+      },
+      "seed": 7,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-03-31",
+      "actual": 0.42857142857142855,
+      "v1": {
+        "forecast": {
+          "0.1": 0.2916666666666667,
+          "0.5": 0.4166666666666667,
+          "0.9": 0.5833333333333334
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.0234126984126984,
+        "mae": 0.011904761904761862,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.2916666666666667,
+          "0.5": 0.4166666666666667,
+          "0.9": 0.5833333333333334
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.0234126984126984,
+        "mae": 0.011904761904761862,
+        "finalized": 1.0
+      },
+      "seed": 7,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-04-30",
+      "actual": 0.4473684210526316,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3103448275862069,
+          "0.5": 0.4482758620689655,
+          "0.9": 0.5517241379310345
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.016394434361766488,
+        "mae": 0.000907441016333943,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.3103448275862069,
+          "0.5": 0.4482758620689655,
+          "0.9": 0.5517241379310345
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.016394434361766488,
+        "mae": 0.000907441016333943,
+        "finalized": 1.0
+      },
+      "seed": 7,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-05-31",
+      "actual": 0.3142857142857143,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3235294117647059,
+          "0.5": 0.4411764705882353,
+          "0.9": 0.5588235294117647
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.06414565826330533,
+        "mae": 0.126890756302521,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.427004,
+          "0.5": 0.44198,
+          "0.9": 0.456956
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "code_execute",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": true,
+        "adj_mode": "shift",
+        "fallback_to_m0": false,
+        "cp_idx": null,
+        "crps": 0.11970708571428569,
+        "mae": 0.1276942857142857,
+        "finalized": 1.0
+      },
+      "seed": 7,
+      "kind": "adjusted"
+    },
+    {
+      "origin": "2024-06-30",
+      "actual": 0.37142857142857144,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3157894736842105,
+          "0.5": 0.42105263157894735,
+          "0.9": 0.5263157894736842
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.03057644110275688,
+        "mae": 0.049624060150375904,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.3157894736842105,
+          "0.5": 0.42105263157894735,
+          "0.9": 0.5263157894736842
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.03057644110275688,
+        "mae": 0.049624060150375904,
+        "finalized": 1.0
+      },
+      "seed": 7,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-07-31",
+      "actual": 0.5238095238095238,
+      "v1": {
+        "forecast": {
+          "0.1": 0.2972972972972973,
+          "0.5": 0.40540540540540543,
+          "0.9": 0.5135135135135135
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.060746460746460784,
+        "mae": 0.11840411840411841,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.2972972972972973,
+          "0.5": 0.40540540540540543,
+          "0.9": 0.5135135135135135
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.060746460746460784,
+        "mae": 0.11840411840411841,
+        "finalized": 1.0
+      },
+      "seed": 7,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-08-31",
+      "actual": 0.5,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3076923076923077,
+          "0.5": 0.4358974358974359,
+          "0.9": 0.5384615384615384
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.03675213675213675,
+        "mae": 0.0641025641025641,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.3076923076923077,
+          "0.5": 0.4358974358974359,
+          "0.9": 0.5384615384615384
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.03675213675213675,
+        "mae": 0.0641025641025641,
+        "finalized": 1.0
+      },
+      "seed": 7,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-09-30",
+      "actual": 0.5428571428571428,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3333333333333333,
+          "0.5": 0.4358974358974359,
+          "0.9": 0.5384615384615384
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.05225885225885223,
+        "mae": 0.10695970695970691,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.3333333333333333,
+          "0.5": 0.4358974358974359,
+          "0.9": 0.5384615384615384
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.05225885225885223,
+        "mae": 0.10695970695970691,
+        "finalized": 1.0
+      },
+      "seed": 7,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-10-31",
+      "actual": 0.5348837209302325,
+      "v1": {
+        "forecast": {
+          "0.1": 0.34210526315789475,
+          "0.5": 0.4473684210526316,
+          "0.9": 0.5789473684210527
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.044961240310077505,
+        "mae": 0.08751529987760093,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.494703,
+          "0.5": 0.522222,
+          "0.9": 0.549741
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "code_execute",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": true,
+        "adj_mode": "shift",
+        "fallback_to_m0": false,
+        "cp_idx": null,
+        "crps": 0.00788977364341085,
+        "mae": 0.012661720930232545,
+        "finalized": 1.0
+      },
+      "seed": 7,
+      "kind": "adjusted"
+    },
+    {
+      "origin": "2024-11-30",
+      "actual": 0.5714285714285714,
+      "v1": {
+        "forecast": {
+          "0.1": 0.358974358974359,
+          "0.5": 0.46153846153846156,
+          "0.9": 0.5897435897435898
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.052014652014651996,
+        "mae": 0.10989010989010983,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.496704,
+          "0.5": 0.525914,
+          "0.9": 0.555124
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "code_execute",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": true,
+        "adj_mode": "shift",
+        "fallback_to_m0": false,
+        "cp_idx": null,
+        "crps": 0.029935904761904764,
+        "mae": 0.045514571428571404,
+        "finalized": 1.0
+      },
+      "seed": 7,
+      "kind": "adjusted"
+    },
+    {
+      "origin": "2023-12-31",
+      "actual": 0.4444444444444444,
+      "v1": {
+        "forecast": {
+          "0.1": 0.2222222222222222,
+          "0.5": 0.4444444444444444,
+          "0.9": 0.6666666666666666
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.029629629629629627,
+        "mae": 0.0,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.2222222222222222,
+          "0.5": 0.4444444444444444,
+          "0.9": 0.6666666666666666
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.029629629629629627,
+        "mae": 0.0,
+        "finalized": 1.0
+      },
+      "seed": 123,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-01-31",
+      "actual": 0.41935483870967744,
+      "v1": {
+        "forecast": {
+          "0.1": 0.23076923076923078,
+          "0.5": 0.38461538461538464,
+          "0.9": 0.6153846153846154
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.03722084367245657,
+        "mae": 0.0347394540942928,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.23076923076923078,
+          "0.5": 0.38461538461538464,
+          "0.9": 0.6153846153846154
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.03722084367245657,
+        "mae": 0.0347394540942928,
+        "finalized": 1.0
+      },
+      "seed": 123,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-02-29",
+      "actual": 0.46938775510204084,
+      "v1": {
+        "forecast": {
+          "0.1": 0.23529411764705882,
+          "0.5": 0.4117647058823529,
+          "0.9": 0.5882352941176471
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.04273709483793519,
+        "mae": 0.057623049219687916,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.23529411764705882,
+          "0.5": 0.4117647058823529,
+          "0.9": 0.5882352941176471
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.04273709483793519,
+        "mae": 0.057623049219687916,
+        "finalized": 1.0
+      },
+      "seed": 123,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-03-31",
+      "actual": 0.5666666666666667,
+      "v1": {
+        "forecast": {
+          "0.1": 0.2916666666666667,
+          "0.5": 0.4166666666666667,
+          "0.9": 0.5833333333333334
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.06944444444444443,
+        "mae": 0.14999999999999997,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.2916666666666667,
+          "0.5": 0.4166666666666667,
+          "0.9": 0.5833333333333334
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.06944444444444443,
+        "mae": 0.14999999999999997,
+        "finalized": 1.0
+      },
+      "seed": 123,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-04-30",
+      "actual": 0.3783783783783784,
+      "v1": {
+        "forecast": {
+          "0.1": 0.32142857142857145,
+          "0.5": 0.4642857142857143,
+          "0.9": 0.6071428571428571
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.04768339768339767,
+        "mae": 0.0859073359073359,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.32142857142857145,
+          "0.5": 0.4642857142857143,
+          "0.9": 0.6071428571428571
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.04768339768339767,
+        "mae": 0.0859073359073359,
+        "finalized": 1.0
+      },
+      "seed": 123,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-05-31",
+      "actual": 0.375,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3125,
+          "0.5": 0.4375,
+          "0.9": 0.5625
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.0375,
+        "mae": 0.0625,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.3125,
+          "0.5": 0.4375,
+          "0.9": 0.5625
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.0375,
+        "mae": 0.0625,
+        "finalized": 1.0
+      },
+      "seed": 123,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-06-30",
+      "actual": 0.46153846153846156,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3157894736842105,
+          "0.5": 0.4473684210526316,
+          "0.9": 0.5526315789473685
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.020512820512820523,
+        "mae": 0.014170040485829982,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.3157894736842105,
+          "0.5": 0.4473684210526316,
+          "0.9": 0.5526315789473685
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.020512820512820523,
+        "mae": 0.014170040485829982,
+        "finalized": 1.0
+      },
+      "seed": 123,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-07-31",
+      "actual": 0.6,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3333333333333333,
+          "0.5": 0.4358974358974359,
+          "0.9": 0.5384615384615384
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.1094017094017094,
+        "mae": 0.16410256410256407,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.3333333333333333,
+          "0.5": 0.4358974358974359,
+          "0.9": 0.5384615384615384
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.1094017094017094,
+        "mae": 0.16410256410256407,
+        "finalized": 1.0
+      },
+      "seed": 123,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-08-31",
+      "actual": 0.4838709677419355,
+      "v1": {
+        "forecast": {
+          "0.1": 0.35,
+          "0.5": 0.475,
+          "0.9": 0.575
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.017956989247311834,
+        "mae": 0.00887096774193552,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.35,
+          "0.5": 0.475,
+          "0.9": 0.575
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.017956989247311834,
+        "mae": 0.00887096774193552,
+        "finalized": 1.0
+      },
+      "seed": 123,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-09-30",
+      "actual": 0.34375,
+      "v1": {
+        "forecast": {
+          "0.1": 0.35135135135135137,
+          "0.5": 0.4594594594594595,
+          "0.9": 0.5945945945945946
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.059853603603603624,
+        "mae": 0.11570945945945948,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.35135135135135137,
+          "0.5": 0.4594594594594595,
+          "0.9": 0.5945945945945946
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.059853603603603624,
+        "mae": 0.11570945945945948,
+        "finalized": 1.0
+      },
+      "seed": 123,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-10-31",
+      "actual": 0.24444444444444444,
+      "v1": {
+        "forecast": {
+          "0.1": 0.32432432432432434,
+          "0.5": 0.43243243243243246,
+          "0.9": 0.5405405405405406
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.13033033033033034,
+        "mae": 0.18798798798798802,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.32432432432432434,
+          "0.5": 0.43243243243243246,
+          "0.9": 0.5405405405405406
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.13033033033033034,
+        "mae": 0.18798798798798802,
+        "finalized": 1.0
+      },
+      "seed": 123,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-11-30",
+      "actual": 0.5365853658536586,
+      "v1": {
+        "forecast": {
+          "0.1": 0.2894736842105263,
+          "0.5": 0.42105263157894735,
+          "0.9": 0.5263157894736842
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.06114676936243052,
+        "mae": 0.11553273427471122,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.2894736842105263,
+          "0.5": 0.42105263157894735,
+          "0.9": 0.5263157894736842
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.06114676936243052,
+        "mae": 0.11553273427471122,
+        "finalized": 1.0
+      },
+      "seed": 123,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2023-12-31",
+      "actual": 0.4722222222222222,
+      "v1": {
+        "forecast": {
+          "0.1": 0.14285714285714285,
+          "0.5": 0.42857142857142855,
+          "0.9": 0.7142857142857143
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.05264550264550264,
+        "mae": 0.04365079365079366,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.14285714285714285,
+          "0.5": 0.42857142857142855,
+          "0.9": 0.7142857142857143
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.05264550264550264,
+        "mae": 0.04365079365079366,
+        "finalized": 1.0
+      },
+      "seed": 1,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-01-31",
+      "actual": 0.48717948717948717,
+      "v1": {
+        "forecast": {
+          "0.1": 0.25,
+          "0.5": 0.5,
+          "0.9": 0.6666666666666666
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.03205128205128205,
+        "mae": 0.01282051282051283,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.25,
+          "0.5": 0.5,
+          "0.9": 0.6666666666666666
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.03205128205128205,
+        "mae": 0.01282051282051283,
+        "finalized": 1.0
+      },
+      "seed": 1,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-02-29",
+      "actual": 0.6216216216216216,
+      "v1": {
+        "forecast": {
+          "0.1": 0.29411764705882354,
+          "0.5": 0.47058823529411764,
+          "0.9": 0.6470588235294118
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.07387387387387387,
+        "mae": 0.15103338632750396,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.29411764705882354,
+          "0.5": 0.47058823529411764,
+          "0.9": 0.6470588235294118
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.07387387387387387,
+        "mae": 0.15103338632750396,
+        "finalized": 1.0
+      },
+      "seed": 1,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-03-31",
+      "actual": 0.5531914893617021,
+      "v1": {
+        "forecast": {
+          "0.1": 0.36363636363636365,
+          "0.5": 0.5,
+          "0.9": 0.6363636363636364
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.035912314635718895,
+        "mae": 0.05319148936170215,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.36363636363636365,
+          "0.5": 0.5,
+          "0.9": 0.6363636363636364
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.035912314635718895,
+        "mae": 0.05319148936170215,
+        "finalized": 1.0
+      },
+      "seed": 1,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-04-30",
+      "actual": 0.5116279069767442,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3793103448275862,
+          "0.5": 0.5172413793103449,
+          "0.9": 0.6551724137931034
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.0202619620422347,
+        "mae": 0.005613472333600655,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.3793103448275862,
+          "0.5": 0.5172413793103449,
+          "0.9": 0.6551724137931034
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.0202619620422347,
+        "mae": 0.005613472333600655,
+        "finalized": 1.0
+      },
+      "seed": 1,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-05-31",
+      "actual": 0.5757575757575758,
+      "v1": {
+        "forecast": {
+          "0.1": 0.4,
+          "0.5": 0.5428571428571428,
+          "0.9": 0.6571428571428571
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.028109668109668137,
+        "mae": 0.032900432900432985,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.4,
+          "0.5": 0.5428571428571428,
+          "0.9": 0.6571428571428571
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.028109668109668137,
+        "mae": 0.032900432900432985,
+        "finalized": 1.0
+      },
+      "seed": 1,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-06-30",
+      "actual": 0.44,
+      "v1": {
+        "forecast": {
+          "0.1": 0.4358974358974359,
+          "0.5": 0.5384615384615384,
+          "0.9": 0.6410256410256411
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.04649572649572648,
+        "mae": 0.09846153846153843,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.4358974358974359,
+          "0.5": 0.5384615384615384,
+          "0.9": 0.6410256410256411
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.04649572649572648,
+        "mae": 0.09846153846153843,
+        "finalized": 1.0
+      },
+      "seed": 1,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-07-31",
+      "actual": 0.48,
+      "v1": {
+        "forecast": {
+          "0.1": 0.43243243243243246,
+          "0.5": 0.5405405405405406,
+          "0.9": 0.6486486486486487
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.03459459459459461,
+        "mae": 0.06054054054054059,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.43243243243243246,
+          "0.5": 0.5405405405405406,
+          "0.9": 0.6486486486486487
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.03459459459459461,
+        "mae": 0.06054054054054059,
+        "finalized": 1.0
+      },
+      "seed": 1,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-08-31",
+      "actual": 0.43902439024390244,
+      "v1": {
+        "forecast": {
+          "0.1": 0.41025641025641024,
+          "0.5": 0.5384615384615384,
+          "0.9": 0.6410256410256411
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.048530331457160715,
+        "mae": 0.099437148217636,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.41025641025641024,
+          "0.5": 0.5384615384615384,
+          "0.9": 0.6410256410256411
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.048530331457160715,
+        "mae": 0.099437148217636,
+        "finalized": 1.0
+      },
+      "seed": 1,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-09-30",
+      "actual": 0.3488372093023256,
+      "v1": {
+        "forecast": {
+          "0.1": 0.4,
+          "0.5": 0.5,
+          "0.9": 0.6
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.09782945736434108,
+        "mae": 0.1511627906976744,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.423044,
+          "0.5": 0.453008,
+          "0.9": 0.482972
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "code_execute",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": true,
+        "adj_mode": "shift",
+        "fallback_to_m0": false,
+        "cp_idx": null,
+        "crps": 0.0881899906976744,
+        "mae": 0.10417079069767443,
+        "finalized": 1.0
+      },
+      "seed": 1,
+      "kind": "adjusted"
+    },
+    {
+      "origin": "2024-10-31",
+      "actual": 0.5675675675675675,
+      "v1": {
+        "forecast": {
+          "0.1": 0.358974358974359,
+          "0.5": 0.46153846153846156,
+          "0.9": 0.5641025641025641
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.0513282513282513,
+        "mae": 0.10602910602910598,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.336626,
+          "0.5": 0.422621,
+          "0.9": 0.508616
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "code_execute",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": true,
+        "adj_mode": "shift",
+        "fallback_to_m0": false,
+        "cp_idx": null,
+        "crps": 0.09908256756756756,
+        "mae": 0.14494656756756752,
+        "finalized": 1.0
+      },
+      "seed": 1,
+      "kind": "adjusted"
+    },
+    {
+      "origin": "2024-11-30",
+      "actual": 0.5,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3684210526315789,
+          "0.5": 0.47368421052631576,
+          "0.9": 0.5789473684210527
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.02280701754385966,
+        "mae": 0.026315789473684237,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.3684210526315789,
+          "0.5": 0.47368421052631576,
+          "0.9": 0.5789473684210527
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.02280701754385966,
+        "mae": 0.026315789473684237,
+        "finalized": 1.0
+      },
+      "seed": 1,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2023-12-31",
+      "actual": 0.37037037037037035,
+      "v1": {
+        "forecast": {
+          "0.1": 0.125,
+          "0.5": 0.25,
+          "0.9": 0.5
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.06512345679012345,
+        "mae": 0.12037037037037035,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.125,
+          "0.5": 0.25,
+          "0.9": 0.5
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.06512345679012345,
+        "mae": 0.12037037037037035,
+        "finalized": 1.0
+      },
+      "seed": 99,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-01-31",
+      "actual": 0.5862068965517241,
+      "v1": {
+        "forecast": {
+          "0.1": 0.09090909090909091,
+          "0.5": 0.2727272727272727,
+          "0.9": 0.5454545454545454
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.1619644723092999,
+        "mae": 0.3134796238244514,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.09090909090909091,
+          "0.5": 0.2727272727272727,
+          "0.9": 0.5454545454545454
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.1619644723092999,
+        "mae": 0.3134796238244514,
+        "finalized": 1.0
+      },
+      "seed": 99,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-02-29",
+      "actual": 0.6585365853658537,
+      "v1": {
+        "forecast": {
+          "0.1": 0.2,
+          "0.5": 0.4,
+          "0.9": 0.6
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.15186991869918703,
+        "mae": 0.25853658536585367,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.346293,
+          "0.5": 0.485526,
+          "0.9": 0.624759
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "code_execute",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": true,
+        "adj_mode": "shift",
+        "fallback_to_m0": false,
+        "cp_idx": null,
+        "crps": 0.09875298536585371,
+        "mae": 0.17301058536585368,
+        "finalized": 1.0
+      },
+      "seed": 99,
+      "kind": "adjusted"
+    },
+    {
+      "origin": "2024-03-31",
+      "actual": 0.37209302325581395,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3333333333333333,
+          "0.5": 0.47619047619047616,
+          "0.9": 0.6190476190476191
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.05374677002583978,
+        "mae": 0.10409745293466222,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.3333333333333333,
+          "0.5": 0.47619047619047616,
+          "0.9": 0.6190476190476191
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.05374677002583978,
+        "mae": 0.10409745293466222,
+        "finalized": 1.0
+      },
+      "seed": 99,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-04-30",
+      "actual": 0.3939393939393939,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3333333333333333,
+          "0.5": 0.48148148148148145,
+          "0.9": 0.5925925925925926
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.04646464646464646,
+        "mae": 0.08754208754208753,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.348052,
+          "0.5": 0.538946,
+          "0.9": 0.72984
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "code_execute",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": true,
+        "adj_mode": "shift",
+        "fallback_to_m0": false,
+        "cp_idx": null,
+        "crps": 0.0737880686868687,
+        "mae": 0.1450066060606061,
+        "finalized": 1.0
+      },
+      "seed": 99,
+      "kind": "adjusted"
+    },
+    {
+      "origin": "2024-05-31",
+      "actual": 0.358974358974359,
+      "v1": {
+        "forecast": {
+          "0.1": 0.36666666666666664,
+          "0.5": 0.4666666666666667,
+          "0.9": 0.6
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.05658119658119656,
+        "mae": 0.1076923076923077,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.36666666666666664,
+          "0.5": 0.4666666666666667,
+          "0.9": 0.6
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.05658119658119656,
+        "mae": 0.1076923076923077,
+        "finalized": 1.0
+      },
+      "seed": 99,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-06-30",
+      "actual": 0.4117647058823529,
+      "v1": {
+        "forecast": {
+          "0.1": 0.34285714285714286,
+          "0.5": 0.45714285714285713,
+          "0.9": 0.5714285714285714
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.030364145658263304,
+        "mae": 0.04537815126050421,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.34285714285714286,
+          "0.5": 0.45714285714285713,
+          "0.9": 0.5714285714285714
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.030364145658263304,
+        "mae": 0.04537815126050421,
+        "finalized": 1.0
+      },
+      "seed": 99,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-07-31",
+      "actual": 0.5294117647058824,
+      "v1": {
+        "forecast": {
+          "0.1": 0.358974358974359,
+          "0.5": 0.46153846153846156,
+          "0.9": 0.5641025641025641
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.036299648064353936,
+        "mae": 0.0678733031674208,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.358974358974359,
+          "0.5": 0.46153846153846156,
+          "0.9": 0.5641025641025641
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.036299648064353936,
+        "mae": 0.0678733031674208,
+        "finalized": 1.0
+      },
+      "seed": 99,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-08-31",
+      "actual": 0.41025641025641024,
+      "v1": {
+        "forecast": {
+          "0.1": 0.35,
+          "0.5": 0.45,
+          "0.9": 0.55
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.026581196581196592,
+        "mae": 0.03974358974358977,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.35,
+          "0.5": 0.45,
+          "0.9": 0.55
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.026581196581196592,
+        "mae": 0.03974358974358977,
+        "finalized": 1.0
+      },
+      "seed": 99,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-09-30",
+      "actual": 0.5,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3,
+          "0.5": 0.4,
+          "0.9": 0.525
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.04833333333333333,
+        "mae": 0.09999999999999998,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.3,
+          "0.5": 0.4,
+          "0.9": 0.525
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.04833333333333333,
+        "mae": 0.09999999999999998,
+        "finalized": 1.0
+      },
+      "seed": 99,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-10-31",
+      "actual": 0.5428571428571428,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3333333333333333,
+          "0.5": 0.4358974358974359,
+          "0.9": 0.5384615384615384
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.05225885225885223,
+        "mae": 0.10695970695970691,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.3333333333333333,
+          "0.5": 0.4358974358974359,
+          "0.9": 0.5384615384615384
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.05225885225885223,
+        "mae": 0.10695970695970691,
+        "finalized": 1.0
+      },
+      "seed": 99,
+      "kind": "fallback"
+    },
+    {
+      "origin": "2024-11-30",
+      "actual": 0.4375,
+      "v1": {
+        "forecast": {
+          "0.1": 0.3333333333333333,
+          "0.5": 0.46153846153846156,
+          "0.9": 0.5641025641025641
+        },
+        "actions": [
+          "data_segment",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "crps": 0.023397435897435908,
+        "mae": 0.024038461538461564,
+        "finalized": 1.0
+      },
+      "v2": {
+        "forecast": {
+          "0.1": 0.3333333333333333,
+          "0.5": 0.46153846153846156,
+          "0.9": 0.5641025641025641
+        },
+        "actions": [
+          "data_segment",
+          "code_execute",
+          "evidence",
+          "forecasting",
+          "finalize"
+        ],
+        "used_code_execute": true,
+        "used_evidence": true,
+        "adjusted": false,
+        "adj_mode": null,
+        "fallback_to_m0": true,
+        "cp_idx": null,
+        "crps": 0.023397435897435908,
+        "mae": 0.024038461538461564,
+        "finalized": 1.0
+      },
+      "seed": 99,
+      "kind": "fallback"
+    }
+  ]
+}

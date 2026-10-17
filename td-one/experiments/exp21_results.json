@@ -1,0 +1,667 @@
+{
+  "experiment": "exp21_feature_discovery",
+  "config": {
+    "n_months": 66,
+    "n_customers": 2000,
+    "discovery_months": [
+      0,
+      48
+    ],
+    "eval": {
+      "min_train": 54,
+      "n_splits": 12
+    },
+    "levels": [
+      0.05,
+      0.15,
+      0.25,
+      0.35,
+      0.5,
+      0.65,
+      0.75,
+      0.85,
+      0.95
+    ],
+    "selection_min_gain": 0.005,
+    "seeds": [
+      42,
+      7,
+      123
+    ]
+  },
+  "per_seed": {
+    "42": {
+      "seed": 42,
+      "n_events": 20,
+      "n_articles": 70,
+      "series_mean": 0.3575491154680334,
+      "series_std": 0.19726880670147182,
+      "discovery": {
+        "n_disc_obs": 48,
+        "ets_in_sample_rmse": 0.12944161167932947,
+        "heteroskedastic": false,
+        "top_residual_features": [
+          {
+            "name": "news_rate_shift_3m",
+            "corr": 0.4308
+          },
+          {
+            "name": "news_lender_shift_3m",
+            "corr": 0.354
+          },
+          {
+            "name": "news_policy_shock_3m",
+            "corr": -0.2756
+          }
+        ],
+        "changepoints": [
+          11,
+          20,
+          30,
+          41
+        ],
+        "selection_log": [
+          {
+            "features": [],
+            "mean_crps": 0.04121876459806945,
+            "se": 0.006110204474552755
+          },
+          {
+            "features": [
+              "news_rate_shift_3m"
+            ],
+            "mean_crps": 0.04018826887383966,
+            "se": 0.0056563878568118,
+            "kept": true
+          },
+          {
+            "features": [
+              "news_rate_shift_3m",
+              "news_lender_shift_3m"
+            ],
+            "mean_crps": 0.040188268873839694,
+            "se": 0.005656387856811844,
+            "kept": false
+          },
+          {
+            "features": [
+              "news_rate_shift_3m",
+              "news_policy_shock_3m"
+            ],
+            "mean_crps": 0.0376294740666564,
+            "se": 0.0028330042673508408,
+            "kept": true
+          },
+          {
+            "features": [
+              "news_rate_shift_3m",
+              "news_policy_shock_3m",
+              "news_housing_disruption_3m"
+            ],
+            "mean_crps": 0.037711221698257934,
+            "se": 0.0028174678487337826,
+            "kept": false
+          },
+          {
+            "features": [
+              "news_rate_shift_3m",
+              "news_policy_shock_3m",
+              "news_macro_surprise_3m"
+            ],
+            "mean_crps": 0.036859347742316986,
+            "se": 0.003023942904353174,
+            "kept": true
+          },
+          {
+            "features": [
+              "news_rate_shift_3m",
+              "news_policy_shock_3m",
+              "news_macro_surprise_3m",
+              "news_total_3m"
+            ],
+            "mean_crps": 0.036988400380719426,
+            "se": 0.003296259370944675,
+            "kept": false
+          },
+          {
+            "features": [
+              "news_rate_shift_3m",
+              "news_policy_shock_3m",
+              "news_macro_surprise_3m",
+              "news_any_3m"
+            ],
+            "mean_crps": 0.03805228035101543,
+            "se": 0.0064715746009865885,
+            "kept": false
+          },
+          {
+            "features": [
+              "news_rate_shift_3m",
+              "news_policy_shock_3m",
+              "news_macro_surprise_3m",
+              "months_since_news"
+            ],
+            "mean_crps": 0.04008195149384296,
+            "se": 0.0055653629513749735,
+            "kept": false
+          }
+        ],
+        "selected_features": [
+          "news_rate_shift_3m",
+          "news_policy_shock_3m",
+          "news_macro_surprise_3m"
+        ],
+        "baseline_cv_crps": 0.04121876459806945,
+        "selected_cv_crps": 0.036859347742316986
+      },
+      "held_out": {
+        "per_model": {
+          "ets": {
+            "mean_crps": 0.08082077434277829,
+            "se_crps": 0.02912774196989588
+          },
+          "ols_ar1": {
+            "mean_crps": 0.07547118856973921,
+            "se_crps": 0.019618133331488197
+          },
+          "ols_agent": {
+            "mean_crps": 0.07984253512511931,
+            "se_crps": 0.020470471738015462
+          }
+        },
+        "ranking": [
+          "ols_ar1",
+          "ols_agent",
+          "ets"
+        ],
+        "pairwise": [
+          {
+            "a": "ets",
+            "b": "ols_ar1",
+            "mean_diff": 0.005349585773039102,
+            "p": 0.7847096218518235,
+            "winner": null
+          },
+          {
+            "a": "ets",
+            "b": "ols_agent",
+            "mean_diff": 0.0009782392176589801,
+            "p": 0.9551815929183731,
+            "winner": null
+          },
+          {
+            "a": "ols_ar1",
+            "b": "ols_agent",
+            "mean_diff": -0.004371346555380121,
+            "p": 0.10556358636855687,
+            "winner": null
+          }
+        ],
+        "gain_vs_ets": 0.012103809022047437
+      },
+      "scripted_trace": {
+        "steps": 3,
+        "finalized": true,
+        "wall_s": 6.0,
+        "trace": [
+          {
+            "action": "code_execute",
+            "observation": "[exit=0 wall_ms=2252]\n--- stdout ---\n{\"changepoints\": [11, 20, 30, 41], \"segment_means\": [0.11363636363636363, 0.2764670514670515, 0.44190476190476186, 0.4714531010566816, 0.3452214579341894], \"n_segments\": 5, \"bic\": -163.38159108187193}\n"
+          },
+          {
+            "action": "code_execute",
+            "observation": "[exit=0 wall_ms=3762]\n--- stdout ---\n{\"n\": 44, \"rmse\": 0.12944161167932947, \"mae\": 0.10034755183124217, \"mean_residual\": 0.007239416788996773, \"breusch_pagan_lm\": 0.3406518520340449, \"breusch_pagan_pvalue\": 0.5594532020422041, \"heteroskedastic\": false, \"top_features\": [{\"name\": \"news_rate_shift_3m\", \"corr\": 0.43084820242427163}, {\"name\": \"news_lender_shift_3m\", \"corr\": 0.35401816570133765}, {\"name\": \"news_policy_shock_3m\", \"corr\": -0.27556464599675307}]}\n"
+          },
+          {
+            "action": "finalize",
+            "observation": "{\"0.05\": 0.453608, \"0.15\": 0.52831, \"0.25\": 0.57275, \"0.35\": 0.608254, \"0.5\": 0.655564, \"0.65\": 0.702873, \"0.75\": 0.738378, \"0.85\": 0.782817, \"0.95\": 0.857519}"
+          }
+        ]
+      }
+    },
+    "7": {
+      "seed": 7,
+      "n_events": 20,
+      "n_articles": 110,
+      "series_mean": 0.39236112831618764,
+      "series_std": 0.1491351034383904,
+      "discovery": {
+        "n_disc_obs": 48,
+        "ets_in_sample_rmse": 0.12569853574651435,
+        "heteroskedastic": false,
+        "top_residual_features": [
+          {
+            "name": "news_rate_shift_3m",
+            "corr": -0.3077
+          },
+          {
+            "name": "news_total_3m",
+            "corr": -0.2602
+          },
+          {
+            "name": "news_lender_shift_3m",
+            "corr": -0.1168
+          }
+        ],
+        "changepoints": [
+          10,
+          24,
+          33
+        ],
+        "selection_log": [
+          {
+            "features": [],
+            "mean_crps": 0.05480807411109827,
+            "se": 0.016035027876938373
+          },
+          {
+            "features": [
+              "news_rate_shift_3m"
+            ],
+            "mean_crps": 0.05433988185327613,
+            "se": 0.01570129198230474,
+            "kept": true
+          },
+          {
+            "features": [
+              "news_rate_shift_3m",
+              "news_total_3m"
+            ],
+            "mean_crps": 0.051527054806106955,
+            "se": 0.013742718408342163,
+            "kept": true
+          },
+          {
+            "features": [
+              "news_rate_shift_3m",
+              "news_total_3m",
+              "news_lender_shift_3m"
+            ],
+            "mean_crps": 0.05297674834542443,
+            "se": 0.01503270437059956,
+            "kept": false
+          },
+          {
+            "features": [
+              "news_rate_shift_3m",
+              "news_total_3m",
+              "news_policy_shock_3m"
+            ],
+            "mean_crps": 0.05247764605269749,
+            "se": 0.014409813555232711,
+            "kept": false
+          },
+          {
+            "features": [
+              "news_rate_shift_3m",
+              "news_total_3m",
+              "news_housing_disruption_3m"
+            ],
+            "mean_crps": 0.05136759796520886,
+            "se": 0.013627561558442539,
+            "kept": false
+          },
+          {
+            "features": [
+              "news_rate_shift_3m",
+              "news_total_3m",
+              "news_macro_surprise_3m"
+            ],
+            "mean_crps": 0.0519181777746389,
+            "se": 0.014029261876190302,
+            "kept": false
+          },
+          {
+            "features": [
+              "news_rate_shift_3m",
+              "news_total_3m",
+              "news_any_3m"
+            ],
+            "mean_crps": 0.053748840641042815,
+            "se": 0.015140548789808706,
+            "kept": false
+          },
+          {
+            "features": [
+              "news_rate_shift_3m",
+              "news_total_3m",
+              "months_since_news"
+            ],
+            "mean_crps": 0.06122685670334114,
+            "se": 0.020172254900764894,
+            "kept": false
+          }
+        ],
+        "selected_features": [
+          "news_rate_shift_3m",
+          "news_total_3m"
+        ],
+        "baseline_cv_crps": 0.05480807411109827,
+        "selected_cv_crps": 0.051527054806106955
+      },
+      "held_out": {
+        "per_model": {
+          "ets": {
+            "mean_crps": 0.09603845475161338,
+            "se_crps": 0.022699017533513235
+          },
+          "ols_ar1": {
+            "mean_crps": 0.1190467763064506,
+            "se_crps": 0.017936023098033008
+          },
+          "ols_agent": {
+            "mean_crps": 0.12242917418001625,
+            "se_crps": 0.018642641339761273
+          }
+        },
+        "ranking": [
+          "ets",
+          "ols_ar1",
+          "ols_agent"
+        ],
+        "pairwise": [
+          {
+            "a": "ets",
+            "b": "ols_ar1",
+            "mean_diff": -0.023008321554837185,
+            "p": 0.3075985333993971,
+            "winner": null
+          },
+          {
+            "a": "ets",
+            "b": "ols_agent",
+            "mean_diff": -0.02639071942840286,
+            "p": 0.18313316195338347,
+            "winner": null
+          },
+          {
+            "a": "ols_ar1",
+            "b": "ols_agent",
+            "mean_diff": -0.0033823978735656704,
+            "p": 0.29261080162732933,
+            "winner": null
+          }
+        ],
+        "gain_vs_ets": -0.27479325335520904
+      },
+      "scripted_trace": {
+        "steps": 3,
+        "finalized": true,
+        "wall_s": 6.0,
+        "trace": [
+          {
+            "action": "code_execute",
+            "observation": "[exit=0 wall_ms=2078]\n--- stdout ---\n{\"changepoints\": [10, 24, 33], \"segment_means\": [0.33333333333333337, 0.3568800247371676, 0.25842151675485003, 0.41581968903164196], \"n_segments\": 4, \"bic\": -854.5195447208242}\n"
+          },
+          {
+            "action": "code_execute",
+            "observation": "[exit=0 wall_ms=3944]\n--- stdout ---\n{\"n\": 44, \"rmse\": 0.12569853574651435, \"mae\": 0.09441147024029911, \"mean_residual\": 0.019091126445334252, \"breusch_pagan_lm\": 1.1348559568117218, \"breusch_pagan_pvalue\": 0.2867419197014168, \"heteroskedastic\": false, \"top_features\": [{\"name\": \"news_rate_shift_3m\", \"corr\": -0.3077451032420108}, {\"name\": \"news_total_3m\", \"corr\": -0.2602280383588945}, {\"name\": \"news_lender_shift_3m\", \"corr\": -0.11679111056411555}]}\n"
+          },
+          {
+            "action": "finalize",
+            "observation": "{\"0.05\": 0.304644, \"0.15\": 0.382052, \"0.25\": 0.428101, \"0.35\": 0.464891, \"0.5\": 0.513915, \"0.65\": 0.562938, \"0.75\": 0.599728, \"0.85\": 0.645777, \"0.95\": 0.723185}"
+          }
+        ]
+      }
+    },
+    "123": {
+      "seed": 123,
+      "n_events": 19,
+      "n_articles": 99,
+      "series_mean": 0.42209088229028513,
+      "series_std": 0.15125256002243076,
+      "discovery": {
+        "n_disc_obs": 48,
+        "ets_in_sample_rmse": 0.156052780829105,
+        "heteroskedastic": false,
+        "top_residual_features": [
+          {
+            "name": "months_since_news",
+            "corr": -0.4254
+          },
+          {
+            "name": "news_any_3m",
+            "corr": 0.2524
+          },
+          {
+            "name": "news_total_3m",
+            "corr": 0.1974
+          }
+        ],
+        "changepoints": [
+          12,
+          31,
+          38
+        ],
+        "selection_log": [
+          {
+            "features": [],
+            "mean_crps": 0.07304308489231011,
+            "se": 0.012930227460844601
+          },
+          {
+            "features": [
+              "months_since_news"
+            ],
+            "mean_crps": 0.07295702422865588,
+            "se": 0.013302486135187228,
+            "kept": false
+          },
+          {
+            "features": [
+              "news_any_3m"
+            ],
+            "mean_crps": 0.08045985536523399,
+            "se": 0.016755446445695904,
+            "kept": false
+          },
+          {
+            "features": [
+              "news_total_3m"
+            ],
+            "mean_crps": 0.07331774572638164,
+            "se": 0.014297302690268089,
+            "kept": false
+          },
+          {
+            "features": [
+              "news_policy_shock_3m"
+            ],
+            "mean_crps": 0.07222533005739298,
+            "se": 0.0124568587728267,
+            "kept": true
+          },
+          {
+            "features": [
+              "news_policy_shock_3m",
+              "news_rate_shift_3m"
+            ],
+            "mean_crps": 0.07310216144307125,
+            "se": 0.01345863105454214,
+            "kept": false
+          },
+          {
+            "features": [
+              "news_policy_shock_3m",
+              "news_housing_disruption_3m"
+            ],
+            "mean_crps": 0.06409168777669273,
+            "se": 0.017598411120742726,
+            "kept": true
+          },
+          {
+            "features": [
+              "news_policy_shock_3m",
+              "news_housing_disruption_3m",
+              "news_lender_shift_3m"
+            ],
+            "mean_crps": 0.06410943061003506,
+            "se": 0.017279858674957235,
+            "kept": false
+          },
+          {
+            "features": [
+              "news_policy_shock_3m",
+              "news_housing_disruption_3m",
+              "news_macro_surprise_3m"
+            ],
+            "mean_crps": 0.0695935699713365,
+            "se": 0.02433491640296862,
+            "kept": false
+          }
+        ],
+        "selected_features": [
+          "news_policy_shock_3m",
+          "news_housing_disruption_3m"
+        ],
+        "baseline_cv_crps": 0.07304308489231011,
+        "selected_cv_crps": 0.06409168777669273
+      },
+      "held_out": {
+        "per_model": {
+          "ets": {
+            "mean_crps": 0.07018881527188313,
+            "se_crps": 0.013578685313250898
+          },
+          "ols_ar1": {
+            "mean_crps": 0.08475042053804464,
+            "se_crps": 0.017287478729449603
+          },
+          "ols_agent": {
+            "mean_crps": 0.09733432813959564,
+            "se_crps": 0.027475059216703335
+          }
+        },
+        "ranking": [
+          "ets",
+          "ols_ar1",
+          "ols_agent"
+        ],
+        "pairwise": [
+          {
+            "a": "ets",
+            "b": "ols_ar1",
+            "mean_diff": -0.014561605266161506,
+            "p": 0.1717696727347172,
+            "winner": null
+          },
+          {
+            "a": "ets",
+            "b": "ols_agent",
+            "mean_diff": -0.027145512867712496,
+            "p": 0.5298898103181119,
+            "winner": null
+          },
+          {
+            "a": "ols_ar1",
+            "b": "ols_agent",
+            "mean_diff": -0.01258390760155099,
+            "p": 0.7237681618343123,
+            "winner": null
+          }
+        ],
+        "gain_vs_ets": -0.38674983702975685
+      },
+      "scripted_trace": {
+        "steps": 3,
+        "finalized": true,
+        "wall_s": 5.7,
+        "trace": [
+          {
+            "action": "code_execute",
+            "observation": "[exit=0 wall_ms=2142]\n--- stdout ---\n{\"changepoints\": [12, 31, 38], \"segment_means\": [0.36904761904761907, 0.31634053081421504, 0.5133185416615649, 0.5160435095090667], \"n_segments\": 4, \"bic\": -158.1422642223625}\n"
+          },
+          {
+            "action": "code_execute",
+            "observation": "[exit=0 wall_ms=3558]\n--- stdout ---\n{\"n\": 44, \"rmse\": 0.15605278082910506, \"mae\": 0.1208470869410604, \"mean_residual\": 0.0032588677625544804, \"breusch_pagan_lm\": 1.1047767549203895, \"breusch_pagan_pvalue\": 0.29322019105877195, \"heteroskedastic\": false, \"top_features\": [{\"name\": \"months_since_news\", \"corr\": -0.42538590574106294}, {\"name\": \"news_any_3m\", \"corr\": 0.2524132992481795}, {\"name\": \"news_total_3m\", \"corr\": 0.19735573803633896}]}\n"
+          },
+          {
+            "action": "finalize",
+            "observation": "{\"0.05\": 0.166804, \"0.15\": 0.251418, \"0.25\": 0.301755, \"0.35\": 0.34197, \"0.5\": 0.395557, \"0.65\": 0.449144, \"0.75\": 0.489359, \"0.85\": 0.539696, \"0.95\": 0.62431}"
+          }
+        ]
+      }
+    }
+  },
+  "verdict": {
+    "mean_gain_vs_ets": -0.21647976045430614,
+    "min_gain_vs_ets": -0.38674983702975685,
+    "seeds_agent_beats_ets": 1,
+    "n_seeds": 3,
+    "selected_features_per_seed": [
+      [
+        "news_rate_shift_3m",
+        "news_policy_shock_3m",
+        "news_macro_surprise_3m"
+      ],
+      [
+        "news_rate_shift_3m",
+        "news_total_3m"
+      ],
+      [
+        "news_policy_shock_3m",
+        "news_housing_disruption_3m"
+      ]
+    ],
+    "rankings": [
+      [
+        "ols_ar1",
+        "ols_agent",
+        "ets"
+      ],
+      [
+        "ets",
+        "ols_ar1",
+        "ols_agent"
+      ],
+      [
+        "ets",
+        "ols_ar1",
+        "ols_agent"
+      ]
+    ],
+    "success_criterion_met": false,
+    "wall_s": 70.8
+  },
+  "groq_trace": {
+    "status": "completed",
+    "steps": 8,
+    "finalized": false,
+    "wall_s": 80.4,
+    "protocol_translations": 0,
+    "trace": [
+      {
+        "action": "code_execute",
+        "observation": "[exit=0 wall_ms=1880]\n--- stdout ---\n\"changepoints=[11, 20, 30, 41] segment_means=[0.11363636363636363, 0.2764670514670515, 0.44190476190476186, 0.4714531010566816, 0.3452214579341894] n_segments=5 bic=-163.38159108187193\"\n"
+      },
+      {
+        "action": "code_execute",
+        "observation": "[exit=0 wall_ms=3515]\n--- stdout ---\n{\"residual_mean\": 0.007239416788996773, \"residual_std\": 0.1307331521327861}\n"
+      },
+      {
+        "action": "llm_error",
+        "observation": "LLM call failed: Groq request failed: HTTP Error 400: {\"error\":{\"message\":\"Tool choice is none, but model called a tool\",\"type\":\"invalid_request_error\",\"code\":\"tool_use_failed\",\"failed_generation\":\"{\\\"name\\\": \\\"code_execute\\\", \\\"arguments\\\": {\\n  \\\"code\\\": \\\"import pandas as _pd\\\\nyp = _pd.read_csv('/tmp/exp21/stage_seed42/yp.csv', index_col=0, parse_dates=True).squeeze()\\\\nprint('last yp index', "
+      },
+      {
+        "action": "llm_error",
+        "observation": "LLM call failed: Groq request failed: HTTP Error 400: {\"error\":{\"message\":\"Tool choice is none, but model called a tool\",\"type\":\"invalid_request_error\",\"code\":\"tool_use_failed\",\"failed_generation\":\"{\\\"name\\\": \\\"code_execute\\\", \\\"arguments\\\": {\\n  \\\"code\\\": \\\"import pandas as _pd, numpy as _np, scipy.stats as _st\\\\nseries = _pd.read_csv('/tmp/exp21/stage_seed42/series.csv', index_col=0, parse_dates"
+      },
+      {
+        "action": "code_execute",
+        "observation": "[exit=0 wall_ms=1920]\n--- stdout ---\n{'residual_mean': 0.007239416788996775, 'residual_std': 0.1307331521327861}\n{'residual_lag1_autocorr': -0.05804415725762502}\n"
+      },
+      {
+        "action": "llm_error",
+        "observation": "LLM call failed: Groq request failed: HTTP Error 400: {\"error\":{\"message\":\"Tool choice is none, but model called a tool\",\"type\":\"invalid_request_error\",\"code\":\"tool_use_failed\",\"failed_generation\":\"{\\\"name\\\": \\\"code_execute\\\", \\\"arguments\\\": {\\n  \\\"code\\\": \\\"import pandas as _pd, numpy as _np, scipy.stats as _st\\\\nyp = _pd.read_csv('/tmp/exp21/stage_seed42/yp.csv', index_col=0, parse_dates=True).s"
+      },
+      {
+        "action": "llm_error",
+        "observation": "LLM call failed: Groq request failed: HTTP Error 400: {\"error\":{\"message\":\"Tool choice is none, but model called a tool\",\"type\":\"invalid_request_error\",\"code\":\"tool_use_failed\",\"failed_generation\":\"{\\\"name\\\": \\\"code_execute\\\", \\\"arguments\\\": {\\n  \\\"code\\\": \\\"import pandas as _pd\\\\nyt = _pd.read_csv('/tmp/exp21/stage_seed42/yt.csv', index_col=0, parse_dates=True).squeeze()\\\\nprint('last actual inde"
+      },
+      {
+        "action": "llm_error",
+        "observation": "LLM call failed: Groq request failed: HTTP Error 400: {\"error\":{\"message\":\"Tool choice is none, but model called a tool\",\"type\":\"invalid_request_error\",\"code\":\"tool_use_failed\",\"failed_generation\":\"{\\\"name\\\": \\\"code_execute\\\", \\\"arguments\\\": {\\n  \\\"code\\\": \\\"import pandas as _pd\\\\nyp = _pd.read_csv('/tmp/exp21/stage_seed42/yp.csv', index_col=0, parse_dates=True).squeeze()\\\\nlast_yp = yp.iloc[-1]\\\\"
+      }
+    ]
+  }
+}

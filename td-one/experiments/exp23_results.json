@@ -1,0 +1,2547 @@
+{
+  "n_records": 120,
+  "n_segments": 10,
+  "mean_crps": {
+    "select": 0.11959315684105934,
+    "oracle": 0.10416489430221955,
+    "random": 0.12031664367374009,
+    "recency": 0.12296355198880944,
+    "single_m0": 0.13002803797475151,
+    "single_ets": 0.12095131367106857,
+    "single_arima": 0.11868002885544332
+  },
+  "best_single_model": "arima",
+  "best_single_crps": 0.11868002885544332,
+  "oracle_crps": 0.10416489430221955,
+  "selection_crps": 0.11959315684105934,
+  "oracle_gap_closed": -0.06290868212539,
+  "choice_counts": {
+    "ets": 44,
+    "arima": 67,
+    "m0": 9
+  },
+  "selection_policy": "recent_cp->ets; non_stationary->ets; trend>0.7->ets; seasonal>0.5->arima; vol_ratio>1.2->m0; default arima",
+  "records": [
+    {
+      "segment": 0,
+      "origin": "2023-04-30",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.06963418864830924,
+        "ets": 0.07926047434233657,
+        "arima": 0.08210614437251
+      },
+      "oracle_choice": "m0",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "non_stationary",
+        "trend_strength": 0.7172694179183386,
+        "seasonal_strength": 0.6397134203683494,
+        "vol_ratio": 0.654814439529025
+      }
+    },
+    {
+      "segment": 0,
+      "origin": "2023-05-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.05402841853629721,
+        "ets": 0.04695964081701373,
+        "arima": 0.06631923431835073
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "trend_stationary",
+        "trend_strength": 0.5431459469397297,
+        "seasonal_strength": 0.11344870627782755,
+        "vol_ratio": 0.682051298655094
+      }
+    },
+    {
+      "segment": 0,
+      "origin": "2023-06-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.15960443144882097,
+        "ets": 0.12855739486324738,
+        "arima": 0.10968335948767279
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.6587678592263664,
+        "seasonal_strength": 0.8042696408399788,
+        "vol_ratio": 0.7045225633670831
+      }
+    },
+    {
+      "segment": 0,
+      "origin": "2023-07-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.05379503826616368,
+        "ets": 0.06305354680332567,
+        "arima": 0.06824166108536792
+      },
+      "oracle_choice": "m0",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.636388516867464,
+        "seasonal_strength": 0.8111532666365652,
+        "vol_ratio": 0.7348773815559796
+      }
+    },
+    {
+      "segment": 0,
+      "origin": "2023-08-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.06854422924706582,
+        "ets": 0.06318984070511816,
+        "arima": 0.061837098787347625
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.49162844620968693,
+        "seasonal_strength": 0.6985079534381684,
+        "vol_ratio": 0.7800876738205522
+      }
+    },
+    {
+      "segment": 0,
+      "origin": "2023-09-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.08722791222047462,
+        "ets": 0.09625963084432257,
+        "arima": 0.07934970305692743
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.23940756938310714,
+        "seasonal_strength": 0.25418435020444463,
+        "vol_ratio": 0.8206698271114456
+      }
+    },
+    {
+      "segment": 0,
+      "origin": "2023-10-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.06037416005665226,
+        "ets": 0.06720242817258507,
+        "arima": 0.06564920110010057
+      },
+      "oracle_choice": "m0",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.24838567315870863,
+        "seasonal_strength": 0.0,
+        "vol_ratio": 0.9051406541942563
+      }
+    },
+    {
+      "segment": 0,
+      "origin": "2023-11-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.11191061085049867,
+        "ets": 0.11840783440702388,
+        "arima": 0.0847232529764525
+      },
+      "oracle_choice": "arima",
+      "random_choice": "m0",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.290833476875219,
+        "seasonal_strength": 0.5171998111986744,
+        "vol_ratio": 0.9984791830571502
+      }
+    },
+    {
+      "segment": 0,
+      "origin": "2023-12-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.07895930259761363,
+        "ets": 0.05915078799825986,
+        "arima": 0.08776735543768628
+      },
+      "oracle_choice": "ets",
+      "random_choice": "m0",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.06490288700686286,
+        "vol_ratio": 1.1528329581922294
+      }
+    },
+    {
+      "segment": 0,
+      "origin": "2024-01-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.0924482644120216,
+        "ets": 0.18898456138828837,
+        "arima": 0.0409782258212706
+      },
+      "oracle_choice": "arima",
+      "random_choice": "m0",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.14230003516951784,
+        "seasonal_strength": 0.8353890251723773,
+        "vol_ratio": 1.1240467009680915
+      }
+    },
+    {
+      "segment": 0,
+      "origin": "2024-02-29",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.04561594688223376,
+        "ets": 0.12154881166495331,
+        "arima": 0.04008572684818547
+      },
+      "oracle_choice": "arima",
+      "random_choice": "m0",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.12079490387736103,
+        "seasonal_strength": 0.11820556053573639,
+        "vol_ratio": 1.0694623083036614
+      }
+    },
+    {
+      "segment": 0,
+      "origin": "2024-03-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.04542150135423919,
+        "ets": 0.04107337095904141,
+        "arima": 0.044841301214335015
+      },
+      "oracle_choice": "ets",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.18264668435112763,
+        "seasonal_strength": 0.31324815649555404,
+        "vol_ratio": 0.9938294948363113
+      }
+    },
+    {
+      "segment": 1,
+      "origin": "2023-04-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.08209629829708014,
+        "ets": 0.051613045756646894,
+        "arima": 0.046549466576556765
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.5608413272422466,
+        "vol_ratio": 1.396466079704588
+      }
+    },
+    {
+      "segment": 1,
+      "origin": "2023-05-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.06197802395580171,
+        "ets": 0.04815112427752284,
+        "arima": 0.07226387432198453
+      },
+      "oracle_choice": "ets",
+      "random_choice": "m0",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.6048690621091024
+      }
+    },
+    {
+      "segment": 1,
+      "origin": "2023-06-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.2532815619747072,
+        "ets": 0.3563945940559702,
+        "arima": 0.32542528583303476
+      },
+      "oracle_choice": "m0",
+      "random_choice": "ets",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.03997809135493524,
+        "seasonal_strength": 0.9215392690215074,
+        "vol_ratio": 1.6048690621091024
+      }
+    },
+    {
+      "segment": 1,
+      "origin": "2023-07-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.057197417355495606,
+        "ets": 0.04832971236297992,
+        "arima": 0.05666501057773167
+      },
+      "oracle_choice": "ets",
+      "random_choice": "arima",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.018574735854522184,
+        "seasonal_strength": 0.9025900311199692,
+        "vol_ratio": 1.501772615360319
+      }
+    },
+    {
+      "segment": 1,
+      "origin": "2023-08-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.26868117979423883,
+        "ets": 0.19223986441556334,
+        "arima": 0.21502082653673874
+      },
+      "oracle_choice": "ets",
+      "random_choice": "m0",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.8667954476329691,
+        "seasonal_strength": 0.9988165371232591,
+        "vol_ratio": 1.6193066107043403
+      }
+    },
+    {
+      "segment": 1,
+      "origin": "2023-09-30",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.04878192973190146,
+        "ets": 0.05873809263355506,
+        "arima": 0.05076367278293666
+      },
+      "oracle_choice": "m0",
+      "random_choice": "arima",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "non_stationary",
+        "trend_strength": 0.2171099121701865,
+        "seasonal_strength": 0.964908892075179,
+        "vol_ratio": 1.575868908986851
+      }
+    },
+    {
+      "segment": 1,
+      "origin": "2023-10-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.04678496464433028,
+        "ets": 0.048592955348146734,
+        "arima": 0.05145190889137855
+      },
+      "oracle_choice": "m0",
+      "random_choice": "m0",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.4522526579619869,
+        "seasonal_strength": 0.9723610975028366,
+        "vol_ratio": 1.6326255821421851
+      }
+    },
+    {
+      "segment": 1,
+      "origin": "2023-11-30",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.26237282818307406,
+        "ets": 0.20043249473168295,
+        "arima": 0.16202559613850165
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.6482395736548185
+      }
+    },
+    {
+      "segment": 1,
+      "origin": "2023-12-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.14253577516369495,
+        "ets": 0.09167803030524879,
+        "arima": 0.06253616831697423
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "trend_stationary",
+        "trend_strength": 0.5635971631069034,
+        "seasonal_strength": 0.9774487075934593,
+        "vol_ratio": 1.618279922819194
+      }
+    },
+    {
+      "segment": 1,
+      "origin": "2024-01-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.10341551179309835,
+        "ets": 0.10844894946261634,
+        "arima": 0.12626854764935955
+      },
+      "oracle_choice": "m0",
+      "random_choice": "m0",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.048707394285604555,
+        "seasonal_strength": 0.9893080113320536,
+        "vol_ratio": 1.6721797620911212
+      }
+    },
+    {
+      "segment": 1,
+      "origin": "2024-02-29",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.05417643134931418,
+        "ets": 0.04944269682127313,
+        "arima": 0.05112924980659021
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.645205644960652
+      }
+    },
+    {
+      "segment": 1,
+      "origin": "2024-03-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.06438676087502807,
+        "ets": 0.09380174191752118,
+        "arima": 0.097368530668626
+      },
+      "oracle_choice": "m0",
+      "random_choice": "m0",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.6298390515743961,
+        "seasonal_strength": 0.981083186721285,
+        "vol_ratio": 1.6317233133347095
+      }
+    },
+    {
+      "segment": 2,
+      "origin": "2023-04-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.3567250258352933,
+        "ets": 0.31109588576505065,
+        "arima": 0.2410377918295305
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.40293131050433373,
+        "seasonal_strength": 0.39409159987152453,
+        "vol_ratio": 0.8817567294485559
+      }
+    },
+    {
+      "segment": 2,
+      "origin": "2023-05-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.09311935657957142,
+        "ets": 0.07352424749919687,
+        "arima": 0.061947468951482045
+      },
+      "oracle_choice": "arima",
+      "random_choice": "m0",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.15566275420582876,
+        "seasonal_strength": 0.0,
+        "vol_ratio": 0.8894953153663886
+      }
+    },
+    {
+      "segment": 2,
+      "origin": "2023-06-30",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.060065762344153895,
+        "ets": 0.05762887510451722,
+        "arima": 0.06480945847779229
+      },
+      "oracle_choice": "ets",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 0.9110028860622492
+      }
+    },
+    {
+      "segment": 2,
+      "origin": "2023-07-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.125143031466792,
+        "ets": 0.09501318332322414,
+        "arima": 0.07240343097955373
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.18162950601413674,
+        "seasonal_strength": 0.6225141203166161,
+        "vol_ratio": 0.9261845714320344
+      }
+    },
+    {
+      "segment": 2,
+      "origin": "2023-08-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.08358149461594658,
+        "ets": 0.0632412686374225,
+        "arima": 0.052020131364830094
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.2533304215716822,
+        "seasonal_strength": 0.690746579694682,
+        "vol_ratio": 0.9700158599681229
+      }
+    },
+    {
+      "segment": 2,
+      "origin": "2023-09-30",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.06451003410310416,
+        "ets": 0.06173749042738515,
+        "arima": 0.05909513915092438
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.008800801991875
+      }
+    },
+    {
+      "segment": 2,
+      "origin": "2023-10-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.09230722735507388,
+        "ets": 0.08167242893648922,
+        "arima": 0.07798991564843459
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.6459688079326198,
+        "vol_ratio": 1.0567850094087419
+      }
+    },
+    {
+      "segment": 2,
+      "origin": "2023-11-30",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.28822505069750387,
+        "ets": 0.2364192493852392,
+        "arima": 0.29160828001047373
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.9999999999866822,
+        "seasonal_strength": 0.9999999999994901,
+        "vol_ratio": 1.1147379778826085
+      }
+    },
+    {
+      "segment": 2,
+      "origin": "2023-12-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.07998707856575703,
+        "ets": 0.07948877467547014,
+        "arima": 0.06926860711203392
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.630227485890417,
+        "vol_ratio": 1.1343763046318494
+      }
+    },
+    {
+      "segment": 2,
+      "origin": "2024-01-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.09919439836745375,
+        "ets": 0.10506685482726445,
+        "arima": 0.07162540447884914
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.7689627182436118,
+        "vol_ratio": 1.0330575767011276
+      }
+    },
+    {
+      "segment": 2,
+      "origin": "2024-02-29",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.12829172042326745,
+        "ets": 0.06680716033204424,
+        "arima": 0.058146310653272845
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.065126399253092
+      }
+    },
+    {
+      "segment": 2,
+      "origin": "2024-03-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.05846089682632062,
+        "ets": 0.06564902532379152,
+        "arima": 0.06476500646587405
+      },
+      "oracle_choice": "m0",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.0516841542068391
+      }
+    },
+    {
+      "segment": 3,
+      "origin": "2023-04-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.0909861804913972,
+        "ets": 0.07043389395096182,
+        "arima": 0.07288051448865801
+      },
+      "oracle_choice": "ets",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.39707245210221875,
+        "seasonal_strength": 0.5324492957765132,
+        "vol_ratio": 1.4313243120979156
+      }
+    },
+    {
+      "segment": 3,
+      "origin": "2023-05-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.07226170696618052,
+        "ets": 0.05080645228317365,
+        "arima": 0.051994668259869814
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.061073797876026625,
+        "seasonal_strength": 0.6454500675412401,
+        "vol_ratio": 1.4359895146782642
+      }
+    },
+    {
+      "segment": 3,
+      "origin": "2023-06-30",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.08266491322242142,
+        "ets": 0.06674806774004609,
+        "arima": 0.06623336445680664
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.4485628347882882
+      }
+    },
+    {
+      "segment": 3,
+      "origin": "2023-07-31",
+      "chosen": "m0",
+      "crps": {
+        "m0": 0.0875243073306029,
+        "ets": 0.07883398848503995,
+        "arima": 0.08168500370477857
+      },
+      "oracle_choice": "ets",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.08633968512405776,
+        "seasonal_strength": 0.30105094699023116,
+        "vol_ratio": 1.4574647628350688
+      }
+    },
+    {
+      "segment": 3,
+      "origin": "2023-08-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.08356222914268388,
+        "ets": 0.10024810939399047,
+        "arima": 0.10834350080373371
+      },
+      "oracle_choice": "m0",
+      "random_choice": "ets",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.18489796497293787,
+        "seasonal_strength": 0.6644676806779947,
+        "vol_ratio": 1.4572570735283572
+      }
+    },
+    {
+      "segment": 3,
+      "origin": "2023-09-30",
+      "chosen": "m0",
+      "crps": {
+        "m0": 0.0695139180123042,
+        "ets": 0.08401148102250447,
+        "arima": 0.09961648410423594
+      },
+      "oracle_choice": "m0",
+      "random_choice": "m0",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.04420342630402874,
+        "vol_ratio": 1.4488006585260533
+      }
+    },
+    {
+      "segment": 3,
+      "origin": "2023-10-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.06119125812265943,
+        "ets": 0.07576369797849496,
+        "arima": 0.09089874970191661
+      },
+      "oracle_choice": "m0",
+      "random_choice": "arima",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.7862756451253232,
+        "vol_ratio": 1.4465665808194303
+      }
+    },
+    {
+      "segment": 3,
+      "origin": "2023-11-30",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.08247383366269496,
+        "ets": 0.055929442245640705,
+        "arima": 0.055206689912708995
+      },
+      "oracle_choice": "arima",
+      "random_choice": "m0",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.4510451192379714
+      }
+    },
+    {
+      "segment": 3,
+      "origin": "2023-12-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.07767891354050176,
+        "ets": 0.057938422587763806,
+        "arima": 0.05089508380254228
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.5668227149286824,
+        "vol_ratio": 1.4837550213857644
+      }
+    },
+    {
+      "segment": 3,
+      "origin": "2024-01-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.06843627406805133,
+        "ets": 0.06540956912587476,
+        "arima": 0.06959705898687904
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.06880352666880685,
+        "seasonal_strength": 0.883683321763056,
+        "vol_ratio": 1.5134428512820426
+      }
+    },
+    {
+      "segment": 3,
+      "origin": "2024-02-29",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.06083320970332225,
+        "ets": 0.05364171574242297,
+        "arima": 0.055104592065696734
+      },
+      "oracle_choice": "ets",
+      "random_choice": "m0",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.5682180726832539,
+        "vol_ratio": 1.509564697530454
+      }
+    },
+    {
+      "segment": 3,
+      "origin": "2024-03-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.060071335666976665,
+        "ets": 0.052467789236569494,
+        "arima": 0.05183742397518236
+      },
+      "oracle_choice": "arima",
+      "random_choice": "m0",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.514876874098124
+      }
+    },
+    {
+      "segment": 4,
+      "origin": "2023-04-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.2545159788582453,
+        "ets": 0.3372886650295977,
+        "arima": 0.2859796016662318
+      },
+      "oracle_choice": "m0",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.30645701362980016,
+        "seasonal_strength": 0.9493524176581765,
+        "vol_ratio": 1.4981945859440842
+      }
+    },
+    {
+      "segment": 4,
+      "origin": "2023-05-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.22406033740629905,
+        "ets": 0.09069546740894655,
+        "arima": 0.09597635254966634
+      },
+      "oracle_choice": "ets",
+      "random_choice": "m0",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.5381963104392545,
+        "vol_ratio": 1.4718539755312599
+      }
+    },
+    {
+      "segment": 4,
+      "origin": "2023-06-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.2624761255257085,
+        "ets": 0.19545779752578227,
+        "arima": 0.2622222421782209
+      },
+      "oracle_choice": "ets",
+      "random_choice": "m0",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.11455893479974544,
+        "seasonal_strength": 0.8996672871826048,
+        "vol_ratio": 1.5387735926349695
+      }
+    },
+    {
+      "segment": 4,
+      "origin": "2023-07-31",
+      "chosen": "m0",
+      "crps": {
+        "m0": 0.10564996329463035,
+        "ets": 0.09618061703721668,
+        "arima": 0.08850372345127841
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.030585473623189086,
+        "seasonal_strength": 0.4714555571627872,
+        "vol_ratio": 1.4804758304041168
+      }
+    },
+    {
+      "segment": 4,
+      "origin": "2023-08-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.14263880818448388,
+        "ets": 0.09637576343712725,
+        "arima": 0.09386528307364
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.9469222138544618,
+        "vol_ratio": 1.5261619284839312
+      }
+    },
+    {
+      "segment": 4,
+      "origin": "2023-09-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.18645709171746655,
+        "ets": 0.1910993266688128,
+        "arima": 0.22115564697557022
+      },
+      "oracle_choice": "m0",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.19753507297408435,
+        "seasonal_strength": 0.7654325767268931,
+        "vol_ratio": 1.5212400311344074
+      }
+    },
+    {
+      "segment": 4,
+      "origin": "2023-10-31",
+      "chosen": "m0",
+      "crps": {
+        "m0": 0.10818715956854512,
+        "ets": 0.098553080352302,
+        "arima": 0.0897871029798725
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.4129113323931385,
+        "vol_ratio": 1.508525947690248
+      }
+    },
+    {
+      "segment": 4,
+      "origin": "2023-11-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.08731357366166372,
+        "ets": 0.0775272253730982,
+        "arima": 0.09033385129235039
+      },
+      "oracle_choice": "ets",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.5863785740211727,
+        "vol_ratio": 1.549268050697355
+      }
+    },
+    {
+      "segment": 4,
+      "origin": "2023-12-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.11283089850467179,
+        "ets": 0.09053285997938323,
+        "arima": 0.08764305602591313
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.5548969830645252
+      }
+    },
+    {
+      "segment": 4,
+      "origin": "2024-01-31",
+      "chosen": "m0",
+      "crps": {
+        "m0": 0.08048986135001827,
+        "ets": 0.08104403479127122,
+        "arima": 0.08219418077879923
+      },
+      "oracle_choice": "m0",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.012512857679554124,
+        "seasonal_strength": 0.45657210758511446,
+        "vol_ratio": 1.5538231600674728
+      }
+    },
+    {
+      "segment": 4,
+      "origin": "2024-02-29",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.07530119708722,
+        "ets": 0.07665640108180505,
+        "arima": 0.08494715660161205
+      },
+      "oracle_choice": "m0",
+      "random_choice": "ets",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0038766640731932034,
+        "seasonal_strength": 0.8303997632068041,
+        "vol_ratio": 1.4421188089555226
+      }
+    },
+    {
+      "segment": 4,
+      "origin": "2024-03-31",
+      "chosen": "m0",
+      "crps": {
+        "m0": 0.07749229327199388,
+        "ets": 0.07127925835173402,
+        "arima": 0.07937679352590762
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.3298109859559276,
+        "vol_ratio": 1.6140556336355676
+      }
+    },
+    {
+      "segment": 5,
+      "origin": "2023-04-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.39440064084766235,
+        "ets": 0.3903743885368023,
+        "arima": 0.3873867987687845
+      },
+      "oracle_choice": "arima",
+      "random_choice": "m0",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "trend_stationary",
+        "trend_strength": 0.6318935067608142,
+        "seasonal_strength": 0.5565969943541542,
+        "vol_ratio": 1.1684584961843631
+      }
+    },
+    {
+      "segment": 5,
+      "origin": "2023-05-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.16234113097421088,
+        "ets": 0.12545388090913046,
+        "arima": 0.15623041295912293
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.8916180505897833,
+        "seasonal_strength": 0.9798724284960445,
+        "vol_ratio": 1.1319208150770061
+      }
+    },
+    {
+      "segment": 5,
+      "origin": "2023-06-30",
+      "chosen": "m0",
+      "crps": {
+        "m0": 0.0853798297372797,
+        "ets": 0.05016554905913401,
+        "arima": 0.05715545122926252
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.16711281936812405,
+        "seasonal_strength": 0.0,
+        "vol_ratio": 1.2765754335896198
+      }
+    },
+    {
+      "segment": 5,
+      "origin": "2023-07-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.061954213550193406,
+        "ets": 0.04796843081720624,
+        "arima": 0.05703336254245428
+      },
+      "oracle_choice": "ets",
+      "random_choice": "m0",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.5013953769339465,
+        "seasonal_strength": 0.856122314663356,
+        "vol_ratio": 1.3022264140210291
+      }
+    },
+    {
+      "segment": 5,
+      "origin": "2023-08-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.09075754366927749,
+        "ets": 0.06728725585383702,
+        "arima": 0.07612061485435098
+      },
+      "oracle_choice": "ets",
+      "random_choice": "arima",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.3261032273437632
+      }
+    },
+    {
+      "segment": 5,
+      "origin": "2023-09-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.06610825514727833,
+        "ets": 0.06144329634908876,
+        "arima": 0.06829037398215525
+      },
+      "oracle_choice": "ets",
+      "random_choice": "m0",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.17298149857282363,
+        "seasonal_strength": 0.591488754677818,
+        "vol_ratio": 1.3478713829362694
+      }
+    },
+    {
+      "segment": 5,
+      "origin": "2023-10-31",
+      "chosen": "m0",
+      "crps": {
+        "m0": 0.06644399065882398,
+        "ets": 0.06638167390919807,
+        "arima": 0.0765391342229145
+      },
+      "oracle_choice": "ets",
+      "random_choice": "m0",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.07170013381136775,
+        "seasonal_strength": 0.08091416780493532,
+        "vol_ratio": 1.3865012070315368
+      }
+    },
+    {
+      "segment": 5,
+      "origin": "2023-11-30",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.07999756862026955,
+        "ets": 0.06957466227778591,
+        "arima": 0.06967534797931718
+      },
+      "oracle_choice": "ets",
+      "random_choice": "m0",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.4212619262044255
+      }
+    },
+    {
+      "segment": 5,
+      "origin": "2023-12-31",
+      "chosen": "m0",
+      "crps": {
+        "m0": 0.06757097262052154,
+        "ets": 0.06721249621338256,
+        "arima": 0.069048362841509
+      },
+      "oracle_choice": "ets",
+      "random_choice": "arima",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.09609387859907814,
+        "vol_ratio": 1.4717821372509028
+      }
+    },
+    {
+      "segment": 5,
+      "origin": "2024-01-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.06278153245623956,
+        "ets": 0.055690012504500605,
+        "arima": 0.06322340711361564
+      },
+      "oracle_choice": "ets",
+      "random_choice": "arima",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.11853302919198028,
+        "seasonal_strength": 0.5287680957525491,
+        "vol_ratio": 1.5095489698744402
+      }
+    },
+    {
+      "segment": 5,
+      "origin": "2024-02-29",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.06299129904170532,
+        "ets": 0.05132608328017899,
+        "arima": 0.05641038005444371
+      },
+      "oracle_choice": "ets",
+      "random_choice": "arima",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.8636363636363626,
+        "seasonal_strength": 0.9792547421207894,
+        "vol_ratio": 1.505432413590499
+      }
+    },
+    {
+      "segment": 5,
+      "origin": "2024-03-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.08866911032951388,
+        "ets": 0.10290623665388413,
+        "arima": 0.10230061499742202
+      },
+      "oracle_choice": "m0",
+      "random_choice": "m0",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.513437799244287
+      }
+    },
+    {
+      "segment": 6,
+      "origin": "2023-04-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.1595201410307263,
+        "ets": 0.15961616660307168,
+        "arima": 0.12034145102435605
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.2417835663881439,
+        "seasonal_strength": 0.3171485433519461,
+        "vol_ratio": 1.053684551921255
+      }
+    },
+    {
+      "segment": 6,
+      "origin": "2023-05-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.3240180989273371,
+        "ets": 0.2878850188088886,
+        "arima": 0.2432716829415483
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.43898995082439896,
+        "seasonal_strength": 0.3682245943574327,
+        "vol_ratio": 1.062161822678217
+      }
+    },
+    {
+      "segment": 6,
+      "origin": "2023-06-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.0762558944921172,
+        "ets": 0.07538100332415568,
+        "arima": 0.13284523516247854
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.4661949550202681,
+        "seasonal_strength": 0.7414156544887511,
+        "vol_ratio": 1.1995103106827365
+      }
+    },
+    {
+      "segment": 6,
+      "origin": "2023-07-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.21113131120759765,
+        "ets": 0.23287718790102202,
+        "arima": 0.3014101489625699
+      },
+      "oracle_choice": "m0",
+      "random_choice": "m0",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.15372266096667442,
+        "seasonal_strength": 0.7350338280428841,
+        "vol_ratio": 1.2283620542946052
+      }
+    },
+    {
+      "segment": 6,
+      "origin": "2023-08-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.22816251738234108,
+        "ets": 0.3205215659931736,
+        "arima": 0.27273217013694695
+      },
+      "oracle_choice": "m0",
+      "random_choice": "ets",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.18571846132279357,
+        "seasonal_strength": 0.9174541338334086,
+        "vol_ratio": 1.2708254350905503
+      }
+    },
+    {
+      "segment": 6,
+      "origin": "2023-09-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.07205355672526016,
+        "ets": 0.06945001971510589,
+        "arima": 0.058970352285362446
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.003489429850836223,
+        "seasonal_strength": 0.9849321619191276,
+        "vol_ratio": 1.3947016249071087
+      }
+    },
+    {
+      "segment": 6,
+      "origin": "2023-10-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.4207191566631258,
+        "ets": 0.40501930159816163,
+        "arima": 0.3319012171217731
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.486532622235645
+      }
+    },
+    {
+      "segment": 6,
+      "origin": "2023-11-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.21125191991003828,
+        "ets": 0.1311557149638792,
+        "arima": 0.09612584156185552
+      },
+      "oracle_choice": "arima",
+      "random_choice": "m0",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.017627437208269536,
+        "seasonal_strength": 0.8684302250506567,
+        "vol_ratio": 1.4394453684954833
+      }
+    },
+    {
+      "segment": 6,
+      "origin": "2023-12-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.09958010782642882,
+        "ets": 0.13283610620566583,
+        "arima": 0.09338382139118166
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.575675537221409
+      }
+    },
+    {
+      "segment": 6,
+      "origin": "2024-01-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.07437260553424654,
+        "ets": 0.19670999090945723,
+        "arima": 0.14647186661856273
+      },
+      "oracle_choice": "m0",
+      "random_choice": "m0",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "non_stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.5713694958196627
+      }
+    },
+    {
+      "segment": 6,
+      "origin": "2024-02-29",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.10782024205226134,
+        "ets": 0.14091929448883295,
+        "arima": 0.10987065752555256
+      },
+      "oracle_choice": "m0",
+      "random_choice": "arima",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "non_stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.4989187428477035
+      }
+    },
+    {
+      "segment": 6,
+      "origin": "2024-03-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.06361381480408372,
+        "ets": 0.06842153498384737,
+        "arima": 0.058883410972629634
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "non_stationary",
+        "trend_strength": 0.5055617117843066,
+        "seasonal_strength": 0.6647842565582605,
+        "vol_ratio": 1.4172822794147966
+      }
+    },
+    {
+      "segment": 7,
+      "origin": "2023-04-30",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.17889354874054886,
+        "ets": 0.13403635424447466,
+        "arima": 0.15269797350030043
+      },
+      "oracle_choice": "ets",
+      "random_choice": "m0",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.3945543598664192
+      }
+    },
+    {
+      "segment": 7,
+      "origin": "2023-05-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.20905135980965733,
+        "ets": 0.2460198409738476,
+        "arima": 0.22234174268205384
+      },
+      "oracle_choice": "m0",
+      "random_choice": "ets",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.4742658468177114
+      }
+    },
+    {
+      "segment": 7,
+      "origin": "2023-06-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.4243473181297072,
+        "ets": 0.28946345197673373,
+        "arima": 0.2421090845657628
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.7371403086599813,
+        "vol_ratio": 1.5098983126909247
+      }
+    },
+    {
+      "segment": 7,
+      "origin": "2023-07-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.10815340793533315,
+        "ets": 0.07211947479952777,
+        "arima": 0.059979101716591134
+      },
+      "oracle_choice": "arima",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.565927899673496
+      }
+    },
+    {
+      "segment": 7,
+      "origin": "2023-08-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.12375964416010876,
+        "ets": 0.1346840198125049,
+        "arima": 0.1713060117979906
+      },
+      "oracle_choice": "m0",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.631873761344404
+      }
+    },
+    {
+      "segment": 7,
+      "origin": "2023-09-30",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.4834165260168093,
+        "ets": 0.4773503214953411,
+        "arima": 0.502261679083777
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.6023953849576262
+      }
+    },
+    {
+      "segment": 7,
+      "origin": "2023-10-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.08623356008760077,
+        "ets": 0.1117999524481464,
+        "arima": 0.09081935921987122
+      },
+      "oracle_choice": "m0",
+      "random_choice": "m0",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.7480859781119175,
+        "vol_ratio": 1.4517595598387403
+      }
+    },
+    {
+      "segment": 7,
+      "origin": "2023-11-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.19381121175409793,
+        "ets": 0.060553973566083795,
+        "arima": 0.15090499161948662
+      },
+      "oracle_choice": "ets",
+      "random_choice": "arima",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.6832267099167112,
+        "seasonal_strength": 0.9967548323213259,
+        "vol_ratio": 1.4815307247646439
+      }
+    },
+    {
+      "segment": 7,
+      "origin": "2023-12-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.12018022700560464,
+        "ets": 0.07002765057058073,
+        "arima": 0.10674580642521428
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.5249666041603764,
+        "vol_ratio": 1.4909162461144116
+      }
+    },
+    {
+      "segment": 7,
+      "origin": "2024-01-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.06854022599533569,
+        "ets": 0.07308345303483389,
+        "arima": 0.07693136882385823
+      },
+      "oracle_choice": "m0",
+      "random_choice": "m0",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.4064807448623058
+      }
+    },
+    {
+      "segment": 7,
+      "origin": "2024-02-29",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.06970339628527891,
+        "ets": 0.0583874728990247,
+        "arima": 0.08141969014772668
+      },
+      "oracle_choice": "ets",
+      "random_choice": "m0",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.9332758569075117,
+        "seasonal_strength": 0.989248525444222,
+        "vol_ratio": 1.486032517706159
+      }
+    },
+    {
+      "segment": 7,
+      "origin": "2024-03-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.07930821890999969,
+        "ets": 0.08410160478870381,
+        "arima": 0.0850449626657312
+      },
+      "oracle_choice": "m0",
+      "random_choice": "ets",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.43053761147930036,
+        "seasonal_strength": 0.7754469289527057,
+        "vol_ratio": 1.4705111028758162
+      }
+    },
+    {
+      "segment": 8,
+      "origin": "2023-04-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.21325283307039725,
+        "ets": 0.25321487521963404,
+        "arima": 0.24671012110060472
+      },
+      "oracle_choice": "m0",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 0.2099098549549857,
+        "seasonal_strength": 0.8886727387036816,
+        "vol_ratio": 1.4137994454996843
+      }
+    },
+    {
+      "segment": 8,
+      "origin": "2023-05-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.22856057706852634,
+        "ets": 0.11999523495630897,
+        "arima": 0.1401557883537964
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.047290439204674684,
+        "seasonal_strength": 0.6080480885388045,
+        "vol_ratio": 1.3401012622283626
+      }
+    },
+    {
+      "segment": 8,
+      "origin": "2023-06-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.14044798948717144,
+        "ets": 0.10819529048701446,
+        "arima": 0.1066773753221274
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.29990386976872274,
+        "seasonal_strength": 0.7542088378912797,
+        "vol_ratio": 1.464746057626007
+      }
+    },
+    {
+      "segment": 8,
+      "origin": "2023-07-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.05917604789859539,
+        "ets": 0.05301222915290095,
+        "arima": 0.053426865018078404
+      },
+      "oracle_choice": "ets",
+      "random_choice": "arima",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.10278183161273491,
+        "seasonal_strength": 0.7606047043869593,
+        "vol_ratio": 1.4330959879429495
+      }
+    },
+    {
+      "segment": 8,
+      "origin": "2023-08-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.11010432290590084,
+        "ets": 0.05185172683756376,
+        "arima": 0.05290155081404122
+      },
+      "oracle_choice": "ets",
+      "random_choice": "arima",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.442218949826023
+      }
+    },
+    {
+      "segment": 8,
+      "origin": "2023-09-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.05451174698827479,
+        "ets": 0.05883191100169997,
+        "arima": 0.05948485680536515
+      },
+      "oracle_choice": "m0",
+      "random_choice": "ets",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.009217850328555488,
+        "seasonal_strength": 0.7081834909245391,
+        "vol_ratio": 1.456351197993132
+      }
+    },
+    {
+      "segment": 8,
+      "origin": "2023-10-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.07357717636026273,
+        "ets": 0.09038527421539437,
+        "arima": 0.08927702881034051
+      },
+      "oracle_choice": "m0",
+      "random_choice": "ets",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "inconclusive",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.4696524177562749
+      }
+    },
+    {
+      "segment": 8,
+      "origin": "2023-11-30",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.3242071798348767,
+        "ets": 0.38270642693622875,
+        "arima": 0.3847628518200087
+      },
+      "oracle_choice": "m0",
+      "random_choice": "ets",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.455617115193856
+      }
+    },
+    {
+      "segment": 8,
+      "origin": "2023-12-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.06391496764903977,
+        "ets": 0.12158735075916342,
+        "arima": 0.12847639111570197
+      },
+      "oracle_choice": "m0",
+      "random_choice": "m0",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.813000532794638,
+        "vol_ratio": 1.3098085926584373
+      }
+    },
+    {
+      "segment": 8,
+      "origin": "2024-01-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.10132393260235846,
+        "ets": 0.05883320268383778,
+        "arima": 0.05158470369192804
+      },
+      "oracle_choice": "arima",
+      "random_choice": "m0",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.36581170948546093,
+        "seasonal_strength": 0.9796009523946259,
+        "vol_ratio": 1.2718872959962941
+      }
+    },
+    {
+      "segment": 8,
+      "origin": "2024-02-29",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.14632356811915853,
+        "ets": 0.08812937485382868,
+        "arima": 0.0659018624069602
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.7552943613044966,
+        "vol_ratio": 1.2732517395923482
+      }
+    },
+    {
+      "segment": 8,
+      "origin": "2024-03-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.0685914655347261,
+        "ets": 0.06789934350714806,
+        "arima": 0.08758602979642538
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.2493348156261233
+      }
+    },
+    {
+      "segment": 9,
+      "origin": "2023-04-30",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.05515766460949338,
+        "ets": 0.0531434579043308,
+        "arima": 0.052775854681526624
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.1940802677333282
+      }
+    },
+    {
+      "segment": 9,
+      "origin": "2023-05-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.5703718013227645,
+        "ets": 0.5245569205859889,
+        "arima": 0.5069286791734511
+      },
+      "oracle_choice": "arima",
+      "random_choice": "m0",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.2002686835626974
+      }
+    },
+    {
+      "segment": 9,
+      "origin": "2023-06-30",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.06927265222903613,
+        "ets": 0.06124588921344352,
+        "arima": 0.0788248570543438
+      },
+      "oracle_choice": "ets",
+      "random_choice": "m0",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.1910512635224046
+      }
+    },
+    {
+      "segment": 9,
+      "origin": "2023-07-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.09152153385321017,
+        "ets": 0.1744148377578911,
+        "arima": 0.17385877834013222
+      },
+      "oracle_choice": "m0",
+      "random_choice": "m0",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.2909326918694302
+      }
+    },
+    {
+      "segment": 9,
+      "origin": "2023-08-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.1372463073068903,
+        "ets": 0.05834824864165665,
+        "arima": 0.06379276422156083
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.757554856146325,
+        "vol_ratio": 1.2591139188659812
+      }
+    },
+    {
+      "segment": 9,
+      "origin": "2023-09-30",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.11610004176887719,
+        "ets": 0.07443624761129722,
+        "arima": 0.07513706098969566
+      },
+      "oracle_choice": "ets",
+      "random_choice": "arima",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 1,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.2815548132266643
+      }
+    },
+    {
+      "segment": 9,
+      "origin": "2023-10-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.24715767311175982,
+        "ets": 0.20611353624626033,
+        "arima": 0.15792767694253068
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.2867757850720067
+      }
+    },
+    {
+      "segment": 9,
+      "origin": "2023-11-30",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.33507206677684487,
+        "ets": 0.24948310606469218,
+        "arima": 0.3473040326875972
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "arima",
+      "diag": {
+        "n_changepoints": 0,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.0,
+        "seasonal_strength": 0.5613731563895168,
+        "vol_ratio": 1.2641917611150224
+      }
+    },
+    {
+      "segment": 9,
+      "origin": "2023-12-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.10280014770178654,
+        "ets": 0.08279449087936222,
+        "arima": 0.08533310105381646
+      },
+      "oracle_choice": "ets",
+      "random_choice": "ets",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.37503859522791894,
+        "seasonal_strength": 0.9284575482313564,
+        "vol_ratio": 1.3294339709071283
+      }
+    },
+    {
+      "segment": 9,
+      "origin": "2024-01-31",
+      "chosen": "arima",
+      "crps": {
+        "m0": 0.11452957794996928,
+        "ets": 0.13876352485276422,
+        "arima": 0.1412903890658514
+      },
+      "oracle_choice": "m0",
+      "random_choice": "arima",
+      "recency_choice": "ets",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 0.49045802049366205,
+        "seasonal_strength": 0.9118043724632863,
+        "vol_ratio": 1.334797872724995
+      }
+    },
+    {
+      "segment": 9,
+      "origin": "2024-02-29",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.07468527119327166,
+        "ets": 0.12098353985210272,
+        "arima": 0.11087455895679876
+      },
+      "oracle_choice": "m0",
+      "random_choice": "ets",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "stationary",
+        "trend_strength": 1.0,
+        "seasonal_strength": 1.0,
+        "vol_ratio": 1.3019696205385052
+      }
+    },
+    {
+      "segment": 9,
+      "origin": "2024-03-31",
+      "chosen": "ets",
+      "crps": {
+        "m0": 0.104688779409231,
+        "ets": 0.09324796171762278,
+        "arima": 0.0823809218402379
+      },
+      "oracle_choice": "arima",
+      "random_choice": "ets",
+      "recency_choice": "m0",
+      "diag": {
+        "n_changepoints": 2,
+        "n_recent_cps": 0,
+        "stationarity": "non_stationary",
+        "trend_strength": 0.33318222949670984,
+        "seasonal_strength": 0.49201305548058316,
+        "vol_ratio": 1.175778008571491
+      }
+    }
+  ],
+  "elapsed_s": 89.0
+}
