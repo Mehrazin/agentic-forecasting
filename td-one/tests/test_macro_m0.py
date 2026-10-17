@@ -36,9 +36,11 @@ def _months(n: int, year: int = 2021, month: int = 4) -> list[date]:
 def _macro_panel(
     beta: float, seed: int = 0, n_months: int = 36
 ) -> tuple[np.ndarray, np.ndarray, list[date], dict[date, float]]:
-    """Synthetic panel with logit(rate) = logit(0.2) + beta * z.
+    """Synthetic panel with logit(rate[i]) = logit(0.2) + beta * z[i-1].
 
-    z is a fixed AR(1)-like wave (not random) so the test is deterministic
+    Lagged z (predictive regression): the rate in month i depends on the
+    macro state at i-1, which is knowable at a forecast origin. z is a
+    fixed AR(1)-like wave (not random) so the test is deterministic
     given the seed; binomial noise comes from the seed.
     """
     rng = np.random.default_rng(seed)
@@ -48,7 +50,8 @@ def _macro_panel(
     z = (z - z.mean()) / z.std()
     base = np.log(0.2 / 0.8)
     n = np.full(n_months, 500.0)
-    p = 1.0 / (1.0 + np.exp(-(base + beta * z)))
+    z_lag = np.concatenate([[0.0], z[:-1]])  # z[i-1]; first month uses 0
+    p = 1.0 / (1.0 + np.exp(-(base + beta * z_lag)))
     a = rng.binomial(n.astype(int), p).astype(float)
     return n, a, months, {d: float(v) for d, v in zip(months, z, strict=True)}
 
@@ -82,13 +85,15 @@ def test_macro_shift_moves_forecast_in_z_direction() -> None:
     mm = MacroM0(trailing_window=6, fred_z=z)
     mm.fit(n, a, months)
     assert mm.beta_hat_ > 0.2
-    # Positive z on the forecast month must raise every quantile.
+    # Positive z at the origin (last training month) must raise the
+    # forecast for the next month (PIT-safe lagged shift).
     fz = dict(z)
     fz[months[-1]] = 2.0
     mm2 = MacroM0(trailing_window=6, fred_z=fz)
     mm2.fit(n, a, months)
-    up = mm2.predict_rate_quantiles(500, months[-1])
-    base = mm.predict_rate_quantiles(500, months[-1])
+    next_month = (pd.Timestamp(months[-1]) + pd.offsets.MonthEnd(1)).date()
+    up = mm2.predict_rate_quantiles(500, next_month)
+    base = mm.predict_rate_quantiles(500, next_month)
     for k in base:
         assert up[k] > base[k]
     # Monotonicity preserved.
@@ -114,7 +119,8 @@ def test_too_little_history_gives_zero_beta() -> None:
     n, a, months, z = _macro_panel(beta=0.6, seed=5, n_months=8)
     mm = MacroM0(trailing_window=6, fred_z=z)
     mm.fit(n, a, months)
-    assert mm.n_est_ == 8
+    # 8 months -> 7 usable (first has no lagged z); still < 12 minimum.
+    assert mm.n_est_ == 7
     assert mm.beta_hat_ == 0.0
 
 

@@ -288,9 +288,12 @@ class MortgageSimulator:
                 deposit_change = DEPOSIT_RHO * deposit_change + rng.normal(0, 300) + shock_drag
                 deposits = max(0.0, deposits + deposit_change)
 
-                # New episode at maturity (renewal repricing for fixed)
+                # New episode at maturity (renewal repricing for fixed).
+                # Strictly AFTER the maturity month: the maturity-month
+                # snapshot must retain the expiring contract's rate/payment
+                # (the borrower's state at the renewal decision).
                 ep_id = f"E{str(cust['mortgage_id'])[1:]}-{episode:02d}"
-                if snap_date >= maturity and episode == 1:
+                if snap_date > maturity and episode == 1:
                     episode = 2
                     ep_id = f"E{str(cust['mortgage_id'])[1:]}-02"
                     if not is_variable:

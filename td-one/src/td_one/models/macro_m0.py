@@ -198,13 +198,16 @@ class MacroM0:
             raise ValueError("switch counts must satisfy 0 <= A <= N")
         self._m0.fit(n, a)
 
-        # OLS of trailing logit(rates) on z.
+        # OLS of trailing logit(rates) on LAGGED z (predictive regression).
+        # For a 1-step-ahead forecast from origin t we need z[t]; training
+        # regresses logit(rate[i]) on z[i-1]. Using contemporaneous z[i]
+        # would require knowing z[t+1] at forecast time (PIT violation).
         z_vals: list[float] = []
         y_vals: list[float] = []
-        start = max(0, n.size - self.est_months)
+        start = max(1, n.size - self.est_months)
         for i in range(start, n.size):
-            d = m[i].date()
-            z = self.fred_z.get(d)
+            d_prev = m[i - 1].date()
+            z = self.fred_z.get(d_prev)
             if z is None or not np.isfinite(z):
                 continue
             denom = max(n[i], 1.0)
@@ -226,17 +229,21 @@ class MacroM0:
         forecast_month: date,
         levels: np.ndarray | None = None,
     ) -> dict[float, float]:
-        """Rate quantiles shifted by ``beta_hat * z[forecast_month]``.
+        """Rate quantiles shifted by ``beta_hat * z[origin]`` (lagged).
 
         The M0 lattice is computed, each level mapped through
         ``sigmoid(logit(rate) + beta_hat * z)``. Monotonicity is
         preserved (sigmoid is monotone). With ``beta_hat == 0`` or a
         missing z this is exactly the M0 lattice.
 
+        PIT note: ``forecast_month`` is t+1 but z[t+1] is unknowable at
+        origin t. We use the latest z at or before the origin
+        (z[t]), matching the lagged training regression.
+
         Args:
             n_upcoming: Upcoming renewals (exposure, >= 1).
-            forecast_month: Month-end date being forecast; its z-score
-                shifts the lattice.
+            forecast_month: Month-end date being forecast; the z used is
+                the latest available strictly before it.
             levels: Quantile levels in (0, 1); defaults to TIMESFM_LEVELS.
 
         Returns:
@@ -253,7 +260,9 @@ class MacroM0:
         if bool((lv <= 0.0).any() or (lv >= 1.0).any()):
             raise ValueError("levels must be in (0, 1)")
         lattice = self._m0.predict_rate_quantiles(n_upcoming, lv)
-        z = self.fred_z.get(forecast_month, 0.0)
+        # Latest z strictly before forecast_month (= origin when asof is set).
+        avail = [d for d in self.fred_z if d < forecast_month]
+        z = self.fred_z[max(avail)] if avail else 0.0
         shift = self._beta_hat * (z if np.isfinite(z) else 0.0)
         if shift == 0.0:
             return lattice

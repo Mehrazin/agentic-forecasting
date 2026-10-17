@@ -129,8 +129,17 @@ class MacroConditionedTSFM:
 
         rates = _as_rates(n, a)
         if beta != 0.0:
-            z = np.array([self._beta_est.fred_z.get(d, 0.0) for d in months], dtype=float)
-            z = np.where(np.isfinite(z), z, 0.0)
+            # Lagged residualization: logit(r[i]) - beta*z[i-1], matching
+            # the predictive setup (re-add uses z[t] at forecast time).
+            # First month has no lagged z, uses 0.0.
+            z_list: list[float] = []
+            for j in range(len(months)):
+                if j == 0:
+                    z_list.append(0.0)
+                else:
+                    zv = self._beta_est.fred_z.get(months[j - 1], 0.0)
+                    z_list.append(float(zv) if np.isfinite(zv) else 0.0)
+            z = np.array(z_list, dtype=float)
             resid = np.array(
                 [
                     _m_sigmoid(_m_logit(float(r)) - beta * float(zz))
@@ -144,7 +153,13 @@ class MacroConditionedTSFM:
         raw = np.asarray(values[:, 0], dtype=float)
 
         if beta != 0.0:
-            z_f = self._beta_est.fred_z.get(forecast_month, 0.0)
+            # PIT-safe: re-add using latest z at origin (not forecast_month,
+            # which is unknowable). Falls back to last training month.
+            avail = [d for d in self._beta_est.fred_z if d < forecast_month]
+            if avail:
+                z_f = self._beta_est.fred_z[max(avail)]
+            else:
+                z_f = self._beta_est.fred_z.get(months[-1], 0.0)
             shift = beta * (z_f if np.isfinite(z_f) else 0.0)
             raw = np.array([_m_sigmoid(_m_logit(float(v)) + shift) for v in raw])
 

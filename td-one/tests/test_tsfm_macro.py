@@ -93,9 +93,15 @@ def test_residualization_removes_macro() -> None:
     base = 0.2
     beta_true = 0.6
     fred_z = {d: float(np.sin(i / 3.0)) for i, d in enumerate(months)}
-    # DGP: logit(r) = logit(base) + beta_true * z.
+    # DGP: logit(r[i]) = logit(base) + beta_true * z[i-1] (lagged).
     logit_base = float(np.log(base / (1 - base)))
-    rates = np.array([1.0 / (1.0 + np.exp(-(logit_base + beta_true * fred_z[d]))) for d in months])
+    z_list = [fred_z[d] for d in months]
+    rates = np.array(
+        [
+            1.0 / (1.0 + np.exp(-(logit_base + beta_true * (z_list[i - 1] if i > 0 else 0.0))))
+            for i in range(n)
+        ]
+    )
     n_arr = np.full(n, 2000.0)
     a_arr = rates * n_arr
 

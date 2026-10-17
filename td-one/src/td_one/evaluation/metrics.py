@@ -75,15 +75,19 @@ def crps_counts(
 ) -> np.ndarray:
     """CRPS for count predictive distributions.
 
-    Uses the sample-based estimator:
+    Uses the exact sample-based estimator:
         CRPS = E|X - y| - 0.5 * E|X - X'|
     where X, X' are independent draws from the predictive distribution.
+
+    The pairwise term uses the exact O(M log M) sorted L-moment identity
+    (no subsampling, no diagonal bias, seed-free):
+        0.5 * E|X - X'| = sum_{i}(2i - M + 1) * s_(i) / M^2
+    where s_(i) are the sorted samples.
 
     Args:
         samples: Shape (n_segments, n_samples) of predictive draws.
         actual: Shape (n_segments,) of realized counts.
-        seed: RNG seed for the pairwise subsample. A metric must be
-            deterministic given its inputs.
+        seed: Accepted for backward compatibility; ignored (deterministic).
 
     Returns:
         CRPS per segment (lower is better).
@@ -92,12 +96,9 @@ def crps_counts(
     n_segments, n_samples = samples.shape
     # E|X - y|
     term1 = np.mean(np.abs(samples - actual[:, None]), axis=1)
-    # 0.5 * E|X - X'| (using all pairs, O(n^2) but n_samples=1000 is OK)
-    # For efficiency, use a subsample for the pairwise term
-    rng = np.random.default_rng(seed)
-    idx = rng.choice(n_samples, size=min(100, n_samples), replace=False)
-    subs = samples[:, idx]
-    # Pairwise differences via broadcasting
-    diff = np.abs(subs[:, :, None] - subs[:, None, :])
-    term2 = 0.5 * np.mean(diff, axis=(1, 2))
+    # 0.5 * E|X - X'| via exact sorted identity (no subsample, no diagonal).
+    s = np.sort(samples, axis=1)
+    m = float(n_samples)
+    i = np.arange(n_samples, dtype=float)
+    term2 = np.sum((2.0 * i - m + 1.0) * s, axis=1) / (m * m)
     return term1 - term2

@@ -41,6 +41,7 @@ from __future__ import annotations
 
 from datetime import date
 
+import numpy as np
 import pandas as pd
 
 from td_one.schemas import MortgageHistoryRecord, RenewalOutcomeRecord
@@ -198,7 +199,24 @@ def discover_segments(
     # Segment covariates from the maturity-month history row.
     income_mo = (renew["household_income_cad"] / 12).clip(lower=1.0)
     payment_to_income = renew["mortgage_payment_monthly_cad"] / income_mo
-    renew["shock_q"] = _payment_shock_quintile(payment_to_income)
+    # PIT-safe quintiles: fit boundaries on data at or before observed_asof,
+    # apply via pd.cut to all months (no transductive leakage from future).
+    if observed_asof is not None:
+        asof_ts = pd.Timestamp(observed_asof)
+        train_mask = pd.to_datetime(renew["month"]) <= asof_ts
+        train_pti = payment_to_income[train_mask]
+    else:
+        train_pti = payment_to_income
+    if len(train_pti) >= 5:
+        _, bins = pd.qcut(train_pti, q=5, labels=False, duplicates="drop", retbins=True)
+        # Ensure bins cover the full range for pd.cut.
+        bins[0], bins[-1] = -np.inf, np.inf
+        codes = pd.cut(payment_to_income, bins=bins, labels=False)
+        renew["shock_q"] = pd.Series(codes, index=payment_to_income.index).map(
+            lambda c: f"q{int(c) + 1}" if pd.notna(c) else "q1"
+        )
+    else:
+        renew["shock_q"] = _payment_shock_quintile(payment_to_income)
     renew["term_bucket"] = pd.cut(
         renew["term_months"],
         bins=[0, 36, 60, 10**9],
