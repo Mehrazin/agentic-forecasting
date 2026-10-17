@@ -1,0 +1,8 @@
+{
+  "n_meetings": 143,
+  "n_failures": 22,
+  "failure_rate": 0.15384615384615385,
+  "rule_accuracy_test": 0.8372093023255814,
+  "improved_accuracy_test": 0.8372093023255814,
+  "improvement": 0.0
+}
