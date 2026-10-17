@@ -16,39 +16,39 @@
   },
   "per_seed_crps": {
     "0": {
-      "m0": 0.8477,
-      "m0_macro_oracle": 0.8701,
-      "m0_macro_est": 0.8477
+      "m0": 0.8435,
+      "m0_macro_oracle": 0.8803,
+      "m0_macro_est": 1.0214
     },
     "1": {
-      "m0": 0.609,
-      "m0_macro_oracle": 0.6272,
-      "m0_macro_est": 0.609
+      "m0": 0.6271,
+      "m0_macro_oracle": 0.6413,
+      "m0_macro_est": 0.6952
     },
     "2": {
-      "m0": 0.48,
-      "m0_macro_oracle": 0.4562,
-      "m0_macro_est": 0.48
+      "m0": 0.3569,
+      "m0_macro_oracle": 0.3382,
+      "m0_macro_est": 0.3594
     }
   },
   "beta_hats": {
     "0": [
-      0.4022
+      1.1834
     ],
     "1": [
-      1.7894
+      0.9403
     ],
     "2": [
-      -0.4752
+      -1.4228
     ]
   },
   "mean_crps": {
-    "m0": 0.6456,
-    "m0_macro_oracle": 0.6512,
-    "m0_macro_est": 0.6456
+    "m0": 0.6092,
+    "m0_macro_oracle": 0.6199,
+    "m0_macro_est": 0.692
   },
-  "oracle_gain": -0.0056,
-  "est_gain": 0.0,
+  "oracle_gain": -0.0107,
+  "est_gain": -0.0828,
   "fraction_oracle_gain_captured": null,
-  "elapsed_s": 130.9
+  "elapsed_s": 117.7
 }
