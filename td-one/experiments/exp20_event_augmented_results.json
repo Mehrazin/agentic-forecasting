@@ -1,0 +1,16 @@
+{
+  "seed": 42,
+  "n_customers": 2000,
+  "n_months": 36,
+  "n_events": 15,
+  "n_articles": 46,
+  "coverage_rate": 0.6,
+  "n_outcomes": 658,
+  "signal_strength": 0.09107443088272492,
+  "signal_detectable": true,
+  "n_test_origins": 12,
+  "ets_mae": 0.07748712254361291,
+  "oracle_mae": 0.08792605867724022,
+  "improvement": -0.13471833500788283,
+  "success": false
+}

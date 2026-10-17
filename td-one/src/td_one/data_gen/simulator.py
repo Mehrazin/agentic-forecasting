@@ -34,6 +34,12 @@ from td_one.data_gen.amortization import (
     canadian_balance_after_payment,
     canadian_monthly_payment,
 )
+from td_one.data_gen.events import (
+    Event,
+    active_effect_shift,
+    cohort_matches,
+    events_visible_asof,
+)
 from td_one.schemas import MortgageHistoryRecord, RenewalOutcomeRecord
 
 
@@ -367,6 +373,7 @@ class MortgageSimulator:
         self,
         history: list[MortgageHistoryRecord] | None = None,
         macro_shifts: dict[date, float] | None = None,
+        event_timeline: list[Event] | None = None,
     ) -> list[RenewalOutcomeRecord]:
         """Generate renewal outcomes from the structural switching DGP.
 
@@ -375,11 +382,21 @@ class MortgageSimulator:
             logit(p) = β0 + β1·payment_shock + β2·rate_spread
                      + β3·family_squeeze + β4·osfi_exempt + ε_cohort
                      + macro_shifts[maturity_month]  (if provided)
+                     + event_shift  (if event_timeline provided)
 
         The optional ``macro_shifts`` maps month-end dates to logit shifts,
         e.g. driven by historical FRED macro series. This lets experiments
         test whether macro-aware models beat macro-blind ones when the DGP
         genuinely contains macro structure (the default DGP does not).
+
+        The optional ``event_timeline`` is a list of exogenous Event objects
+        (see td_one.data_gen.events). For each outcome, only events with
+        ``event_date <= maturity_month_end`` are considered (PIT-safe), and
+        only events whose ``affected_cohort`` matches the borrower contribute
+        their ``effect_size`` if the event's effect window is active at the
+        maturity month. This creates genuine information asymmetry: an agent
+        with access to the (noisy, delayed) news feed can detect these shifts
+        while purely numerical models cannot.
 
         Outcomes carry an observation lag (outcome_observed_at = event + 2mo)
         for PIT masking.
@@ -389,6 +406,8 @@ class MortgageSimulator:
             macro_shifts: Optional mapping of month dates to logit shifts
                 (e.g. FRED-driven macro overlay). Missing months default
                 to 0.0.
+            event_timeline: Optional list of exogenous events. When None,
+                behavior is identical to the pre-event simulator.
 
         Returns:
             List of validated RenewalOutcomeRecord.
@@ -474,6 +493,25 @@ class MortgageSimulator:
                     eom = _month_end(rec.maturity_date.year, rec.maturity_date.month)
                     shift = macro_shifts.get(eom, 0.0)
                 logit_p += float(shift)
+            if event_timeline:
+                # PIT-safe: only events with event_date <= maturity month-end.
+                mat_eom = _month_end(rec.maturity_date.year, rec.maturity_date.month)
+                visible = events_visible_asof(event_timeline, mat_eom)
+                # Cohort-match each visible event against this borrower.
+                matching = [
+                    e
+                    for e in visible
+                    if cohort_matches(
+                        e.affected_cohort,
+                        province=str(rec.province),
+                        insured_flag=bool(rec.insured_flag),
+                        credit_score_band=str(rec.credit_score_band),
+                        rate_type=str(cov_rec.rate_type),
+                        occupancy_type=str(rec.occupancy_type),
+                        borrower_id=str(rec.customer_id),
+                    )
+                ]
+                logit_p += active_effect_shift(matching, mat_eom)
             p_switch = float(1 / (1 + np.exp(-logit_p)))
             switched = bool(rng.random() < p_switch)
             # Event at maturity; observed after settlement lag

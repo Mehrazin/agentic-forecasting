@@ -1,0 +1,201 @@
+"""Regime tools: changepoint detection and event-impact backtesting.
+
+``detect_changepoints`` finds structural breaks where models typically fail.
+``backtest_event_impact`` quantifies whether Phase-1 events actually move a
+series, using a pre-event baseline as the synthetic control.
+"""
+
+from __future__ import annotations
+
+from typing import Any
+
+import numpy as np
+import pandas as pd
+from pydantic import BaseModel, Field
+
+
+class ChangepointResult(BaseModel):
+    """Structured output of :func:`detect_changepoints`."""
+
+    changepoints: list[int] = Field(description="0-based indices of segment ends")
+    segment_means: list[float]
+    n_segments: int
+    bic: float = Field(description="BIC of the segmented model (lower is better)")
+
+
+def _segment_cost(x: np.ndarray, start: int, end: int) -> float:
+    """Gaussian negative log-likelihood cost of segment [start, end)."""
+    seg = x[start:end]
+    n = seg.size
+    if n < 2:
+        return 0.0
+    var = float(np.var(seg))
+    if var <= 0:
+        return 0.0
+    return float(n * (np.log(var) + 1.0))
+
+
+def _binary_segmentation(
+    x: np.ndarray, start: int, end: int, penalty: float, out: list[int]
+) -> None:
+    """Recursive binary segmentation for changepoint detection."""
+    n = end - start
+    if n < 12:  # minimum segment length guard (2 * min_distance)
+        return
+    base_cost = _segment_cost(x, start, end)
+    best_gain = 0.0
+    best_cp = -1
+    # Candidate changepoints respect the minimum distance on both sides.
+    for cp in range(start + 6, end - 6):
+        gain = base_cost - (_segment_cost(x, start, cp) + _segment_cost(x, cp, end))
+        if gain > best_gain:
+            best_gain = gain
+            best_cp = cp
+    if best_cp > 0 and best_gain > penalty:
+        out.append(best_cp)
+        _binary_segmentation(x, start, best_cp, penalty, out)
+        _binary_segmentation(x, best_cp, end, penalty, out)
+
+
+def detect_changepoints(series: Any, min_distance: int = 6) -> ChangepointResult:
+    """Detect mean-shifts via binary segmentation with a BIC penalty.
+
+    A lightweight PELT-style detector (no ruptures dependency): recursively
+    splits where the Gaussian log-likelihood gain exceeds ``penalty =
+    log(n)`` (BIC), respecting ``min_distance`` between changepoints.
+
+    Args:
+        series: 1-D numeric series (min 24 observations).
+        min_distance: Minimum observations between changepoints.
+
+    Returns:
+        ChangepointResult with changepoint indices and segment means.
+
+    """
+    x = np.asarray(series, dtype=float).ravel()
+    if x.size < 24:
+        raise ValueError(f"series needs at least 24 observations, got {x.size}")
+    if not np.all(np.isfinite(x)):
+        raise ValueError("series contains NaN or inf")
+    if min_distance < 2:
+        raise ValueError("min_distance must be >= 2")
+
+    penalty = float(np.log(x.size))  # BIC penalty per added changepoint
+    cps: list[int] = []
+    _binary_segmentation(x, 0, x.size, penalty, cps)
+    cps.sort()
+    # Enforce min_distance post-hoc (binary segmentation uses 6 internally).
+    filtered: list[int] = []
+    for cp in cps:
+        if not filtered or cp - filtered[-1] >= min_distance:
+            filtered.append(cp)
+
+    bounds = [0, *filtered, x.size]
+    means = [float(np.mean(x[bounds[i] : bounds[i + 1]])) for i in range(len(bounds) - 1)]
+    # BIC of the fitted segmented model.
+    total_cost = sum(_segment_cost(x, bounds[i], bounds[i + 1]) for i in range(len(bounds) - 1))
+    n_params = len(means) + len(filtered)  # segment means + changepoint locations
+    bic = float(total_cost + n_params * np.log(x.size))
+    return ChangepointResult(
+        changepoints=filtered,
+        segment_means=means,
+        n_segments=len(means),
+        bic=bic,
+    )
+
+
+class EventImpact(BaseModel):
+    """Per-event impact estimate from :func:`backtest_event_impact`."""
+
+    event_index: int
+    event_date: str | None = None
+    pre_mean: float
+    post_mean: float
+    ate: float = Field(description="post_mean - pre_mean (average treatment effect)")
+    n_pre: int
+    n_post: int
+
+
+class EventImpactResult(BaseModel):
+    """Structured output of :func:`backtest_event_impact`."""
+
+    impacts: list[EventImpact]
+    mean_ate: float
+    share_positive: float = Field(description="Fraction of events with ate > 0")
+
+
+def backtest_event_impact(
+    event_dates: list[Any],
+    series: Any,
+    dates: list[Any] | None = None,
+    window: int = 6,
+) -> EventImpactResult:
+    """Average treatment effect of events on a series.
+
+    For each event, compares the mean of the ``window`` observations after
+    the event to the mean of the ``window`` observations before it (the
+    pre-event baseline acts as the synthetic control). Events too close to
+    the series edges are skipped.
+
+    Args:
+        event_dates: Dates of events (date/datetime/str, or integer indices
+            into the series when ``dates`` is None).
+        series: 1-D numeric series.
+        dates: Optional date index aligned with the series. When given,
+            event_dates are matched to the nearest date <= event.
+        window: Observations before/after each event to compare.
+
+    Returns:
+        EventImpactResult with per-event ATEs and the mean ATE.
+
+    """
+    x = np.asarray(series, dtype=float).ravel()
+    if x.size < 2 * window + 1:
+        raise ValueError(f"series too short for window={window}")
+    if not np.all(np.isfinite(x)):
+        raise ValueError("series contains NaN or inf")
+    if window < 1:
+        raise ValueError("window must be >= 1")
+
+    idx: list[int] = []
+    if dates is None:
+        for e in event_dates:
+            i = int(e)
+            if window <= i < x.size - window:
+                idx.append(i)
+    else:
+        d = pd.to_datetime(pd.Series(list(dates)))
+        for e in event_dates:
+            ev = pd.Timestamp(e)
+            # Nearest date <= event (PIT-safe: never looks ahead).
+            mask = d <= ev
+            if not bool(mask.any()):
+                continue
+            i = int(np.flatnonzero(mask.to_numpy())[-1])
+            if window <= i < x.size - window:
+                idx.append(i)
+
+    impacts: list[EventImpact] = []
+    for k, i in enumerate(idx):
+        pre = x[i - window : i]
+        post = x[i : i + window]
+        ev_date = None
+        if dates is not None:
+            ev_date = str(pd.Timestamp(event_dates[k]).date())
+        impacts.append(
+            EventImpact(
+                event_index=i,
+                event_date=ev_date,
+                pre_mean=float(np.mean(pre)),
+                post_mean=float(np.mean(post)),
+                ate=float(np.mean(post) - np.mean(pre)),
+                n_pre=window,
+                n_post=window,
+            )
+        )
+    ates = [im.ate for im in impacts]
+    return EventImpactResult(
+        impacts=impacts,
+        mean_ate=float(np.mean(ates)) if ates else 0.0,
+        share_positive=float(np.mean([a > 0 for a in ates])) if ates else 0.0,
+    )
