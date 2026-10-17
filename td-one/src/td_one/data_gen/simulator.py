@@ -398,13 +398,18 @@ class MortgageSimulator:
             history = self.generate_history()
         rng = self.rng
         # First snapshot per mortgage → origination characteristics (cohort);
-        # last snapshot per mortgage → covariates at maturity.
+        # last snapshot per mortgage → for iteration (only maturities in window).
+        # Maturity-month snapshot per mortgage → covariates at renewal decision
+        # (Argon Finding 2: must use the expiring contract's payment, not the
+        # post-repricing payment from a later snapshot).
         first: dict[str, MortgageHistoryRecord] = {}
         last: dict[str, MortgageHistoryRecord] = {}
+        by_mid_month: dict[tuple[str, date], MortgageHistoryRecord] = {}
         for r in history:
             if r.mortgage_id not in first:
                 first[r.mortgage_id] = r
             last[r.mortgage_id] = r  # chronological, last wins
+            by_mid_month[(r.mortgage_id, r.snapshot_date)] = r
 
         month_dates = self._month_dates()
         outcomes: list[RenewalOutcomeRecord] = []
@@ -430,9 +435,12 @@ class MortgageSimulator:
                     if (orig.household_income_cad < 75000 and n_kids0 >= 3)
                     else "control"
                 )
-            # Covariates at maturity (from last snapshot)
-            income_mo = rec.household_income_cad / 12
-            payment_shock = max(0.0, rec.mortgage_payment_monthly_cad / max(income_mo, 1.0) - 0.32)
+            # Covariates at maturity: use the maturity-month snapshot (expiring
+            # contract), not the last snapshot (post-repricing). Argon Finding 2.
+            mat_snap = by_mid_month.get((mid, _month_end(rec.maturity_date.year, rec.maturity_date.month)))
+            cov_rec = mat_snap if mat_snap is not None else rec
+            income_mo = cov_rec.household_income_cad / 12
+            payment_shock = max(0.0, cov_rec.mortgage_payment_monthly_cad / max(income_mo, 1.0) - 0.32)
             rate_spread = max(0.0, 5.0 - orig.mortgage_rate_pct)  # vs ORIGINATION rate
             family_squeeze = 1.0 if cohort == "family_squeeze" else 0.0
             osfi_exempt = 1.0 if cohort == "osfi_exempt" else 0.0
