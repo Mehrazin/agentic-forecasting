@@ -11,15 +11,14 @@ Fixed in d91d5fe. Rerun complete:
 
 **Clarification:** Argon's mechanism explanation ("subtracted β·z_t, never added back") was correct for the buggy code. But the fix revealed something Argon didn't predict: even with correct lagged re-addition, the residual conditioning approach hurts Chronos2. The method is structurally unsuited to PIT-safe lagged conditioning, not just buggy. Direct logit shift (macro_m0) works; residual conditioning doesn't.
 
-## Finding 2 (P0): Simulator pre-repricing — ⚠️ HALF ADDRESSED, Argon correct
+## Finding 2 (P0): Simulator pre-repricing — ✅ FULLY ADDRESSED, Argon correct
 
-**What we did (d91d5fe):** Changed `snap_date >= maturity` to `snap_date > maturity`. This fixes the maturity-month snapshot to retain the expiring contract's rate/payment.
+**What we did (d91d5fe + 6dacafa):**
+1. Changed `snap_date >= maturity` to `snap_date > maturity` — maturity-month snapshot retains expiring contract's rate/payment.
+2. `generate_outcomes()` now looks up the maturity-month snapshot via `by_mid_month[(mid, month_end)]` for `payment_shock` computation, instead of using `last[mid]` (month-66, post-repricing). Falls back to `last` with a warning if missing.
+3. Outcome records use `cov_rec.renewal_episode_id` (maturity-month episode 01) instead of `rec.renewal_episode_id` (post-renewal -02).
 
-**What we missed:** Argon also flagged that `generate_outcomes()` uses `last[mid]` (the month-66 snapshot) to compute `payment_shock`, not the maturity-month snapshot. For any mortgage maturing before month 66, `last[mid].mortgage_payment_monthly_cad` is the POST-repricing payment (4.5-5.5%), not the expiring contract's payment.
-
-The comment on line 436 says "Covariates at maturity (from last snapshot)" — but `last` is month 66, not the maturity month. This is still wrong.
-
-**Action needed:** In `generate_outcomes()`, look up the snapshot at the maturity month (renew_ym) instead of using `last[mid]` for payment_shock computation.
+All 10 simulator tests pass.
 
 ## Finding 3 (P1): Segment discovery — ⚠️ PARTIALLY ADDRESSED
 
@@ -57,7 +56,7 @@ exp18 manager report not yet built. This is the flagship deliverable for the boo
 | Finding | Status | Argon correct? |
 |---|---|---|
 | 1. R2 macro bug | ✅ Fixed + rerun | Yes |
-| 2. Simulator repricing | ⚠️ Half fixed | Yes — we missed the outcomes lookup |
+| 2. Simulator repricing | ✅ Fully fixed | Yes |
 | 3. Segment discovery | ⚠️ 1/3 fixed | Yes |
 | 4. PITStore gaps | ❌ Not done | Yes |
 | 5. CRPS bias | ✅ Fixed | Yes |

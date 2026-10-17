@@ -253,8 +253,8 @@ unbounded adjustment destroys calibration.
 | exp5 | Better classical baselines? | 9 models, 10k×66, seed 0 | Nothing beats m0_w3 (3.20); conformal fixes coverage 0.67→0.91 |
 | exp6 | Fix M3 over-adjustment? | Statistical gate + shrinkage, 12 scenarios | "Do nothing" z-gate edges past M0 (7.60 vs 7.86); shrinkage helps vs M3 only |
 | multi-seed | Does the scale-up generalize? | Seeds 0–4, real TSFMs | No TSFM beats M0 significantly on any seed; M0's window is a seed-dependent tuning parameter |
-| exp8 | Is macro structure worth modeling? | Real FRED 30y-mortgage overlay on the simulator | Oracle cuts CRPS 32%; OLS captures 93% — justifies the FRED workstream |
-| exp10 | Promote better classical defaults? | 2 DGPs; conformal, ACI, macro, hierarchical | Conformal M0 now default; macro_m0 honest null on standard DGP, 93% oracle recovery on macro DGP; hierarchical niche on thin segments |
+| exp8 | Is macro structure worth modeling? | Real FRED 30y-mortgage overlay on the simulator | Oracle cuts CRPS 32%; OLS claim (93%) later retracted as wrong-sign/DGP artifact (exp15) — justifies the FRED workstream with caution |
+| exp10 | Promote better classical defaults? | 2 DGPs; conformal, ACI, macro, hierarchical | Conformal M0 now default; macro_m0 honest null on standard DGP; hierarchical niche on thin segments |
 | exp11 | Redesign the agent's role? | Regime-reader → gate, real Groq | Qualified positive: 3.59 vs M0 4.82 — first agentic win with real components |
 | exp12 | LLM as ensemble router? | 4 scenarios, real Groq | Clean negative: 2.60 vs inverse-CRPS 2.32 — the survey's top-ranked role fails here |
 | exp13 | TSFM + FRED rematch | Macro-conditioned TSFMs, 2 DGPs × 3 seeds | Mechanism works (+13–18% on macro DGP); hurts on standard DGP — conditioning needs a gate |

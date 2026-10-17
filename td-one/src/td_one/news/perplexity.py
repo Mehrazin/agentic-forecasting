@@ -57,6 +57,7 @@ class PerplexityClient:
     ----------
     preset:
         Agent API preset. "fast" (ex-sonar) is cheapest; "low" is better.
+
     """
 
     def __init__(self, preset: str = "fast") -> None:
@@ -68,9 +69,7 @@ class PerplexityClient:
             data=json.dumps({"preset": self.preset, "input": prompt}).encode(),
             headers={"Content-Type": "application/json", "User-Agent": _UA},
         )
-        add_surrogate_to_request(
-            req, "custom.perplexity", allowed_hosts=["api.perplexity.ai"]
-        )
+        add_surrogate_to_request(req, "custom.perplexity", allowed_hosts=["api.perplexity.ai"])
         with urllib.request.build_opener(_NoRedirect()).open(req, timeout=120) as resp:
             return read_json_response(resp)  # type: ignore[no-any-return]
 
@@ -88,19 +87,35 @@ class PerplexityClient:
         query: str,
         before: str | date,
         limit: int = 10,
+        after: str | date | None = None,
     ) -> list[PerplexityArticle]:
         """Search news published strictly before ``before``.
 
         The cutoff is enforced twice: in the prompt (server-side date
         restriction) and by dropping any result with date >= cutoff.
+
+        If ``after`` is given, the prompt explicitly requests articles in
+        the [after, before) range — critical for historical months, where
+        a bare "before" cutoff returns evergreen content from any era.
         """
         cutoff = before.isoformat() if isinstance(before, date) else before
         date.fromisoformat(cutoff)  # fail loudly on malformed dates
+        start = after.isoformat() if isinstance(after, date) else after
+        if start is not None:
+            date.fromisoformat(start)
 
+        if start:
+            window = (
+                f"Only articles published from {start} up to (but not "
+                f"including) {cutoff} — exclude anything outside that range."
+            )
+        else:
+            window = (
+                f"Only articles published BEFORE {cutoff} — exclude anything on or after that date."
+            )
         prompt = (
             f"Find {limit} news articles about: {query}. "
-            f"Only articles published BEFORE {cutoff} — exclude anything on "
-            f"or after that date. Return a JSON array of objects with keys: "
+            f"{window} Return a JSON array of objects with keys: "
             f"title, url, date (YYYY-MM-DD), snippet (1-2 sentences). "
             f"Return ONLY the JSON array, no other text."
         )

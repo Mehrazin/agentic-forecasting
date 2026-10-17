@@ -272,8 +272,9 @@ data store), Monash slices (dominated on both axes).
    M0, macro_m0, TSFMs, regime-gated agent.
 7. **Compare against synthetic findings.** The key questions: does the
    m0_w6-beats-m0_w3 reversal from simulator v2 hold on real data? Does
-   the M4 regime-reader still beat M0? Does macro_m0's 93%-of-oracle
-   transfer? Negative answers are as valuable as positive ones — that's
+   the M4 regime-reader still beat M0? Does the macro overlay transfer?
+   (Note: exp8's "93%-of-oracle" was retracted as DGP artifact — exp15.)
+   Negative answers are as valuable as positive ones — that's
    the point of leaving the bubble.
 
 ### Note on the LLM-context direction

@@ -60,6 +60,7 @@ class LogScaleCalibrator:
         self,
         series: np.ndarray,
         horizon: int | None = None,
+        seed: int | None = None,
     ) -> tuple[np.ndarray, np.ndarray]:
         """Forecast quantiles, using log-space for tiny series.
 
@@ -67,6 +68,7 @@ class LogScaleCalibrator:
             series: Non-negative rates. If max(series) < tiny_threshold,
                 forecasts in log-space; otherwise passes through.
             horizon: Forecast steps (passed to inner wrapper).
+            seed: If set, passed to inner wrapper for reproducibility.
 
         Returns:
             (levels, values): Same format as the inner wrapper, values
@@ -84,21 +86,26 @@ class LogScaleCalibrator:
         # Not tiny: pass through unchanged.
         if float(arr.max()) >= self.tiny_threshold:
             fn = self.wrapper.forecast_quantiles  # type: ignore[attr-defined]
-            result: tuple[np.ndarray, np.ndarray] = fn(arr, horizon)
+            result: tuple[np.ndarray, np.ndarray] = fn(arr, horizon, seed=seed)
             return result
 
         # Tiny: forecast in log-space.
         log_arr = np.log(np.maximum(arr, self.eps))
         fn = self.wrapper.forecast_quantiles  # type: ignore[attr-defined]
         # Bypass [0,1] validation since log values are negative.
-        levels, log_vals = fn(log_arr, horizon, validate_input=False)
+        levels, log_vals = fn(log_arr, horizon, validate_input=False, seed=seed)
         # Exponentiate back to original scale; quantiles are preserved
         # under monotonic transforms.
         vals = np.clip(np.exp(np.asarray(log_vals, dtype=float)), 0.0, 1.0)
+        # Validate shape contract: rows are quantile levels, cols are horizons.
+        levels_arr = np.asarray(levels, dtype=float)
+        assert vals.ndim == 2, f"expected 2-D quantiles, got shape {vals.shape}"
+        assert vals.shape[0] == len(levels_arr), (
+            f"level count mismatch: {vals.shape[0]} rows vs {len(levels_arr)} levels"
+        )
         # Ensure monotonicity across levels (mocks may produce non-monotonic
         # draws; real TSFMs are monotonic but belt-and-braces is cheap).
         # Sort each horizon column by the level order.
-        levels_arr = np.asarray(levels, dtype=float)
         order = np.argsort(levels_arr, kind="stable")
         vals_sorted = np.empty_like(vals)
         for h_idx in range(vals.shape[1]):

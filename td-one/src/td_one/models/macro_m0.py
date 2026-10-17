@@ -1,8 +1,9 @@
 """MacroM0: M0 baseline with a FRED macro overlay.
 
 Extends the trailing-window Beta-Binomial with a macro adjustment: OLS
-of trailing logit(rates) on a z-scored FRED series, then shifts the
-forecast in logit space by ``beta_hat * z[forecast_month]``.
+of trailing logit(rates) on lagged z-scored FRED series, then shifts the
+forecast in logit space by ``beta_hat * z[origin]`` (the latest observed
+macro state — PIT-safe predictive regression).
 
 On DGPs without macro structure the estimated beta is ~0 and the model
 reduces to plain M0 (honest null -- see ``experiments/exp10_classical.py``).

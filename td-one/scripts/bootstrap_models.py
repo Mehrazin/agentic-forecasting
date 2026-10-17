@@ -43,13 +43,14 @@ MODELS: list[ModelSpec] = [
     {
         "key": "chronos2",
         "repo_id": "amazon/chronos-2",
-        "revision": "main",  # pinned at download time, recorded in manifest
+        # Pinned 2026-10-15 — all TSFM results in the repo use these weights.
+        "revision": "29ec3766d36d6f73f0696f85560a422f50e8498c",
         "allow_patterns": ["*.safetensors", "*.json", "*.txt"],
     },
     {
         "key": "timesfm25",
         "repo_id": "google/timesfm-2.5-200m-pytorch",
-        "revision": "main",
+        "revision": "1d952420fba87f3c6dee4f240de0f1a0fbc790e3",
         "allow_patterns": ["*.safetensors", "*.pt", "*.bin", "*.json", "*.txt"],
     },
 ]

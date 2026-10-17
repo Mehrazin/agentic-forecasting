@@ -74,11 +74,14 @@ def main() -> None:
     total = 0
     for month in args.months:
         cutoff = month_cutoff(args.year, month)
+        # Explicit [month_start, cutoff) window: a bare "before" cutoff
+        # returns evergreen content from any era (0 in-month hits for 2025).
+        month_start = f"{args.year}-{month:02d}-01"
         want_prefix = f"{args.year}-{month:02d}"
         for topic in TOPICS:
-            print(f"Perplexity [{args.preset}]: {topic} before {cutoff}...", flush=True)
+            print(f"Perplexity [{args.preset}]: {topic} {month_start}..{cutoff}...", flush=True)
             try:
-                arts = client.search(topic, before=cutoff, limit=10)
+                arts = client.search(topic, before=cutoff, after=month_start, limit=10)
             except Exception as e:  # noqa: BLE001 — keep going on transient errors
                 print(f"  !! error: {e}")
                 arts = []

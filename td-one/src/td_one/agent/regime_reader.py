@@ -191,9 +191,32 @@ def format_news_block(articles: list[tuple[str, str, str]]) -> str:
     for pub_date, title, url in articles:
         # Strip characters that could break out of the data framing.
         safe_title = title.replace("<", "").replace(">", "")[:200]
+        # Sanitize URLs: keep only scheme://netloc/path, strip query/fragment
+        # that could carry instruction-like payloads. Reject non-http(s).
+        safe_url = _sanitize_url(url)
         lines.append(f"- [{pub_date}] {safe_title}")
-        lines.append(f"  {url}")
+        lines.append(f"  {safe_url}")
     return "\n".join(lines)
+
+
+def _sanitize_url(url: str) -> str:
+    """Reduce a URL to its scheme://netloc/path for prompt safety.
+
+    Drops query strings and fragments (common injection carriers) and
+    rejects anything that isn't http(s). Returns "[invalid url]" for
+    anything that fails to parse as a safe URL.
+    """
+    from urllib.parse import urlsplit
+
+    try:
+        parts = urlsplit(url.strip()[:500])
+    except Exception:
+        return "[invalid url]"
+    if parts.scheme not in ("http", "https") or not parts.netloc:
+        return "[invalid url]"
+    # Rebuild without query/fragment; strip whitespace/newlines defensively.
+    safe = f"{parts.scheme}://{parts.netloc}{parts.path}"
+    return "".join(c for c in safe if c not in "\r\n\t")
 
 
 class MockRegimeReader:

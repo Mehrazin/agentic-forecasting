@@ -20,7 +20,7 @@ evidence for each decision.
 | 70 years of judgmental-adjustment literature: routine expert adjustment *increases* errors; adjust only on strong evidence | LITERATURE_SURVEY §3 |
 | Agentic literature: LLM as orchestrator/router, never number-generator; "extended deliberation may worsen calibration" | LITERATURE_SURVEY §2 |
 | Raw-LLM forecasting fragile by theory (linear attention ≤ linear models on AR(p); CoT collapses to mean) | LITERATURE_SURVEY §1.2 |
-| Macro structure, when present, is worth 32% CRPS; OLS-estimated version captures 93% | exp8 |
+| Macro structure, when present, is worth 32% CRPS (exp8, oracle); OLS estimate later retracted as DGP artifact (exp15) | exp8, exp15 |
 | Current DGP likely too easy for M0 — missing burnout, 30-month seasoning, S-curve refinance incentive | LITERATURE_SURVEY §5 |
 | Real M4 data flips the TSFM story: both real TSFMs beat classical ~20% CRPS; "M0 beats everything" was a synthetic-DGP artifact | exp14 (§2k) |
 

@@ -158,6 +158,16 @@ def discover_segments(
         raise ValueError("histories is empty")
     if not outcomes:
         raise ValueError("outcomes is empty")
+    if observed_asof is None:
+        import logging
+
+        logging.getLogger(__name__).warning(
+            "discover_segments called without observed_asof: quintile "
+            "boundaries are fit on the FULL dataset (transductive). This is "
+            "safe only for origin enumeration — do NOT use the segment "
+            "labels for modeling. Pass observed_asof=<origin> for PIT-safe "
+            "per-origin panels."
+        )
 
     hist = pd.DataFrame([r.model_dump(include=_HISTORY_FIELDS) for r in histories])
     out = pd.DataFrame([r.model_dump(include=_OUTCOME_FIELDS) for r in outcomes])

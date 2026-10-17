@@ -92,8 +92,8 @@ See [experiments/REPRODUCIBILITY.md](experiments/REPRODUCIBILITY.md) for full re
 |---|---|
 | M4 regime reader + news RAG | ✅ Alive — 3.59 vs M0 4.82; 3/4 end-to-end |
 | Conformal M0 | ✅ Strong baseline — nothing beats it cleanly on synthetic |
-| TSFMs | ✅ Beat classical ~20% on real M4 data |
-| Macro (FRED overlay) | 🔄 Under re-test — Argon found R2 had a lookup bug; lagged version pending |
+| TSFMs | ✅ Beat m0 30% on 63-mo real SMM (exp18, p=0.0012); beat classical ~20% on M4 |
+| Macro (FRED overlay) | ⚠️ Method-specific — lagged macro helps classical (-0.357), residual conditioning hurts TSFM |
 | M5 router | ❌ Dead — loses to inverse-CRPS even constrained |
 | M2 ReAct / M3 hybrid | ❌ Dead — LLM numerical output is net-negative |
 

@@ -41,6 +41,7 @@ class NewsStore:
     ----------
     db_path:
         Path to the SQLite DB. Defaults to ``td-one/data/news/news_2026.db``.
+
     """
 
     def __init__(self, db_path: Path | None = None) -> None:
@@ -68,6 +69,7 @@ class NewsStore:
             ``pub_date >= before`` are excluded — the PIT guard.
         limit:
             Max articles returned, newest first.
+
         """
         cutoff = before.isoformat() if isinstance(before, date) else before
         # Validate the cutoff format early — a malformed date must fail

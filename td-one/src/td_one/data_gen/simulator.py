@@ -437,10 +437,21 @@ class MortgageSimulator:
                 )
             # Covariates at maturity: use the maturity-month snapshot (expiring
             # contract), not the last snapshot (post-repricing). Argon Finding 2.
-            mat_snap = by_mid_month.get((mid, _month_end(rec.maturity_date.year, rec.maturity_date.month)))
+            mat_key = (mid, _month_end(rec.maturity_date.year, rec.maturity_date.month))
+            mat_snap = by_mid_month.get(mat_key)
+            if mat_snap is None:
+                import logging
+
+                logging.getLogger(__name__).warning(
+                    "maturity-month snapshot missing for %s at %s; "
+                    "falling back to last snapshot (may be post-repricing)",
+                    mid,
+                    mat_key[1],
+                )
             cov_rec = mat_snap if mat_snap is not None else rec
             income_mo = cov_rec.household_income_cad / 12
-            payment_shock = max(0.0, cov_rec.mortgage_payment_monthly_cad / max(income_mo, 1.0) - 0.32)
+            payment = cov_rec.mortgage_payment_monthly_cad
+            payment_shock = max(0.0, payment / max(income_mo, 1.0) - 0.32)
             rate_spread = max(0.0, 5.0 - orig.mortgage_rate_pct)  # vs ORIGINATION rate
             family_squeeze = 1.0 if cohort == "family_squeeze" else 0.0
             osfi_exempt = 1.0 if cohort == "osfi_exempt" else 0.0
@@ -477,7 +488,7 @@ class MortgageSimulator:
                 RenewalOutcomeRecord(
                     customer_id=rec.customer_id,
                     mortgage_id=rec.mortgage_id,
-                    renewal_episode_id=rec.renewal_episode_id,
+                    renewal_episode_id=cov_rec.renewal_episode_id,
                     scheduled_maturity_date=rec.maturity_date,
                     outcome=outcome,  # type: ignore[arg-type]
                     switched_lender_flag=switched,

@@ -134,6 +134,7 @@ class Chronos2Wrapper:
         series: np.ndarray,
         horizon: int | None = None,
         validate_input: bool = True,
+        seed: int | None = None,
     ) -> tuple[np.ndarray, np.ndarray]:
         """Forecast quantiles on the native 21-level grid.
 
@@ -142,6 +143,7 @@ class Chronos2Wrapper:
             horizon: Forecast steps (default: prediction_length).
             validate_input: If False, skip the [0, 1] range check (for
                 log-space inputs from LogScaleCalibrator).
+            seed: If set, seed torch RNG before predict for reproducibility.
 
         Returns:
             (levels, values): levels shape (21,), values shape (21, horizon).
@@ -176,6 +178,8 @@ class Chronos2Wrapper:
         try:
             import torch
 
+            if seed is not None:
+                torch.manual_seed(seed)
             context: Any = torch.tensor(arr, dtype=torch.float32)
         except ImportError:
             # torch absent: only viable when _pipeline was stubbed (tests);
@@ -274,6 +278,7 @@ class TimesFMWrapper:
         series: np.ndarray,
         horizon: int | None = None,
         validate_input: bool = True,
+        seed: int | None = None,
     ) -> tuple[np.ndarray, np.ndarray]:
         """Forecast quantiles on the native 9-level grid.
 
@@ -282,6 +287,7 @@ class TimesFMWrapper:
             horizon: Forecast steps.
             validate_input: If False, skip the [0, 1] range check (for
                 log-space inputs from LogScaleCalibrator).
+            seed: If set, seed torch RNG before forecast for reproducibility.
 
         Returns:
             (levels, values): levels shape (9,) = [0.1..0.9],
@@ -300,6 +306,13 @@ class TimesFMWrapper:
             return TIMESFM_LEVELS.copy(), self._mock_quantiles(arr, h, validate_input)
         self._load()
         assert self._model is not None
+        if seed is not None:
+            try:
+                import torch
+
+                torch.manual_seed(seed)
+            except ImportError:
+                pass
         # forecast(horizon, inputs) -> (point, quantiles); quantiles shape
         # (batch, horizon, 9) at TIMESFM_LEVELS
         point, q = self._model.forecast(horizon=h, inputs=[arr])
