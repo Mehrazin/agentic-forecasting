@@ -194,7 +194,12 @@ class Chronos2Wrapper:
                 f"Unexpected Chronos-2 output shape {vals.shape}; "
                 f"expected ({len(CHRONOS2_LEVELS)}, {h})"
             )
-        return CHRONOS2_LEVELS.copy(), np.clip(vals, 0.0, 1.0)
+        # Skip the [0, 1] output clip for transformed (e.g. log-space)
+        # inputs: the caller (e.g. LogScaleCalibrator) owns the
+        # back-transform and clips afterwards.
+        if validate_input:
+            vals = np.clip(vals, 0.0, 1.0)
+        return CHRONOS2_LEVELS.copy(), vals
 
     def forecast_mean(
         self,
@@ -298,10 +303,12 @@ class TimesFMWrapper:
         # forecast(horizon, inputs) -> (point, quantiles); quantiles shape
         # (batch, horizon, 9) at TIMESFM_LEVELS
         point, q = self._model.forecast(horizon=h, inputs=[arr])
-        return self._parse_timesfm_result(point, q, h)
+        return self._parse_timesfm_result(point, q, h, validate_input)
 
     @staticmethod
-    def _parse_timesfm_result(point: object, q: object, h: int) -> tuple[np.ndarray, np.ndarray]:
+    def _parse_timesfm_result(
+        point: object, q: object, h: int, validate_input: bool = True
+    ) -> tuple[np.ndarray, np.ndarray]:
         """Parse timesfm forecast output into (levels, values).
 
         The compiled model returns 10 columns: column 0 is the point
@@ -321,8 +328,12 @@ class TimesFMWrapper:
             )
         # Drop column 0 (point forecast); keep the 9 quantile columns.
         q_vals = q_arr[:, 1:]
-        # Transpose to (levels, horizon) for a uniform interface
-        return TIMESFM_LEVELS.copy(), np.clip(q_vals.T, 0.0, 1.0)
+        # Transpose to (levels, horizon) for a uniform interface.
+        # Skip the [0, 1] output clip for transformed (e.g. log-space)
+        # inputs: the caller owns the back-transform and clips afterwards.
+        if validate_input:
+            q_vals = np.clip(q_vals, 0.0, 1.0)
+        return TIMESFM_LEVELS.copy(), q_vals.T
 
     def forecast_mean(
         self,
