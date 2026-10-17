@@ -1,0 +1,24 @@
+{
+  "baseline": {
+    "accuracy": 0.8461538461538461,
+    "n_failures": 22
+  },
+  "diagnosis": {
+    "correlations": {
+      "inflation_gap": 0.1043079632702194,
+      "unemployment_momentum": 0.05083794664878057,
+      "rate_momentum": 0.09627122860064231
+    },
+    "n_missed_hikes": 11,
+    "n_false_hikes": 5,
+    "missed_hike_ig": 0.8606920909090907,
+    "correct_hold_ig": -0.06856433321428572
+  },
+  "proposed_feature": "rm_x_ig",
+  "test": {
+    "proposed_feature": "rm_x_ig",
+    "cv_accuracy": 0.7217391304347827,
+    "baseline_cv_accuracy": 0.7304347826086957,
+    "gain": -0.008695652173912993
+  }
+}
