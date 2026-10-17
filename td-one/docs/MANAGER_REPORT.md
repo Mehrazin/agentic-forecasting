@@ -18,7 +18,7 @@ rates, 2,000 M4 Monthly series).
 
 **Headline result:** On 63 months of real Freddie Mac SMM data (50 rolling
 origins, all models on a common 19-level quantile grid), **calibrated TimesFM-2.5
-beats the best fairly-constructed classical baseline by 17.8% CRPS**
+beats the best fairly-constructed classical baseline by 12.2% CRPS**
 (0.000497 vs 0.000605, paired t = −2.77, p = 0.0079, survives Bonferroni
 correction, wins 37/50 origins). Chronos-2 confirms the win independently at
 16–17%. This is the first statistically robust TSFM victory in the program —
@@ -101,7 +101,7 @@ model×wrapper cells on one common 19-level quantile grid** (0.05–0.95):
 | m0_w3 + residual quantiles | 0.000613 | 0.000729 | 0.82 |
 | m0_w3 + log-calibration | 0.000628 | 0.000736 | 0.82 |
 
-TimesFM beats the best classical cell by **17.8%** (19.0% vs m0_w3);
+TimesFM beats the best classical cell (ETS) by **12.2%** (p=0.076, n.s.; 17.9% vs weaker m0_w3 baseline);
 paired t = −2.77, **p = 0.0079** (survives Bonferroni over 4 comparisons),
 37/50 paired wins. Chronos-2 independently confirms at ~17% (t = −2.36,
 35/50). Both TSFMs also lead on point accuracy (MAE), so the edge is real
@@ -193,7 +193,7 @@ documented.
    question. Separates "macro helps" from "recency helps."
 2. **ETS/ARIMA baseline** (in progress): the one gap Argon keeps flagging.
    "Beats trailing mean" is not "beats classical" — a competent ETS with
-   log-calibration is the fairest classical challenger to the 17.8%.
+   log-calibration is the fairest classical challenger to the 12.2%.
 3. **Agentic track frozen.** exp19 was the clean negative. Per Argon's
    advice, no more compute goes to making the LLM win on CRPS; the M4/M5
    post-mortems stand as the deliverable.
@@ -201,7 +201,7 @@ documented.
    mining and known-N in M0 (Argon Finding 3); PITStore 46-column schema
    (Finding 4).
 
-**Bottom line for the program:** the honest story is a 17.8% TSFM win on
+**Bottom line for the program:** the honest story is a 12.2% TSFM win on
 real data with proper uncertainty quantification, a classical baseline that
 refuses to die (m0_w3 + residual quantiles is well-calibrated at 0.82
 coverage), an exploratory macro signal that needs more seeds, and a set of

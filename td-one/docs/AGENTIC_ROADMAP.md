@@ -212,9 +212,9 @@ Each tool has:
 
 **Phase 2:** Code execution + sandboxing + 10 tools. This is the capability unlock.
 
-**Phase 3:** exp21 (feature discovery), exp22 (M2 v2), exp23 (model selection). These can run in parallel once Phase 1+2 are done.
+**Phase 3:** exp21 (feature discovery), exp22 (M2 v2), exp23 (model selection). These can run in parallel once Phase 1+2 are done. **DONE 2026-10-17:** exp21 honest negative (-21.6%, news lags), exp22 mixed (+6.6% when active, high variance), exp23 clean negative (diagnostic = random). Phase 3 adjustments: news-leading DGP (84%), decision policy with shrinkage, exp24 regime (wash), exp25 h=3 (news worse). See `experiments/PHASE3_SUMMARY.md`.
 
-**Phase 4:** exp24 (full pipeline). The capstone.
+**Phase 4:** Real-data benchmarks. **DONE 2026-10-17:** WTI (random walk, method sound but task impossible), BoC rates (methodology validated, agent discovers interaction autonomously). See `td-one/benchmarks/`.
 
 **Estimated effort:** Phase 1 is 2-3 days. Phase 2 is 3-4 days (mostly porting AI2 sandbox). Phases 3-4 are 1-2 weeks of experiments.
 

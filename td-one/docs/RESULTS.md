@@ -144,3 +144,53 @@ Full results: `experiments/exp17_news_regime_results.json`.
 | exp17 | `experiments/exp17_news_regime.py` → `exp17_news_regime_results.json` |
 | Archive | `docs/RESULTS_ARCHIVE.md` |
 | Audit | `docs/DATA_AUDIT.md` |
+
+---
+
+## Agentic Rebuild: Phases 1–3 (exp20–exp25)
+
+After M2/M3/M4/M5 failed as output-layer wrappers, we rebuilt the agentic track from first principles. See `docs/AGENTIC_ROADMAP.md` for the full plan.
+
+**Phase 1: Event-augmented simulator** (`src/td_one/data_gen/events.py`, `news_synthesis.py`)
+- 5 event types with causal mechanisms, PIT-safe news feed, 84% news-leading
+- 30/30 tests pass
+
+**Phase 2: Agent infrastructure** (`src/td_one/agent/sandbox.py`, `tools/`, `react_v2.py`)
+- Sandboxed code execution (ported from AI2), 10 statistical tools, tool call tracker
+- 66 tests pass
+
+**Phase 3: Reflect and adjust**
+- Decision policy with shrinkage + corroboration gating (11 tests)
+- exp24 (regime selection): ties best single, no alpha
+- exp25 (h=3): news **significantly worse** (+25%, p=0.0013)
+
+**exp21 (feature discovery):** Honest negative. Agent finds sensible features that don't transfer (-21.6%) — news lags the effect.
+
+**exp22 (M2 v2 vs v1):** Mixed. v2 is a data scientist (+6.6% when active, 6/9 wins) but high variance from overconfident intervals.
+
+**exp23 (model selection):** Clean negative. Diagnostic selection = random (p=0.80) — backward can't predict forward.
+
+Full reports: `experiments/exp21_report.md`, `exp22_report.md`, `exp23_report.md`, `exp24_report.md`, `exp25_report.md`, `experiments/PHASE3_SUMMARY.md`.
+
+---
+
+## Real-Data Benchmarks
+
+**Energy/Oil (WTI):** `td-one/benchmarks/energy_oil/`
+- WTI is a random walk. ETS/ARIMA/naive identical to 4 decimals.
+- Our agent correctly finds nothing (92% of the time) but false positives cost 4-7%.
+- **Lesson:** Method is sound; task is impossible. Calibrate synthetic DGP to 2-3pp effects.
+
+**BoC Rate Decisions:** `td-one/benchmarks/boc_rates/`
+- Simple rule: 83.7% vs 79.1% climatology (143 meetings)
+- Our tools diagnosed the missing signal: inflation_gap × rate_momentum interaction
+- **Agent discovery test: SUCCESS.** Agent found the interaction autonomously with no hints.
+- **Methodology validated:** Works when signal exists (BoC), correctly reports nothing when it doesn't (WTI).
+
+---
+
+## News Audits
+
+**Date-level:** `td-one/audits/NEWS_LEAKAGE_REPORT.md` — 33/34 pass, 0 leakage. Triple-layer RAG defense verified.
+
+**Content-level:** `td-one/audits/NEWS_CONTENT_REPORT.md` — CLEAN. Forward-looking language is about inputs (rates, prices), never about targets (switching rates). Vector bootcamp has date-only guard; ours is strictly stronger.
