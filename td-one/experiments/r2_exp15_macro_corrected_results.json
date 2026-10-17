@@ -1,0 +1,54 @@
+{
+  "experiment": "r2_exp15_macro_corrected",
+  "config": {
+    "n_customers": 2000,
+    "n_months": 66,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "dgp": "simulator_v2, use_fred_macro=True (default)",
+    "true_beta": -0.3,
+    "fred_z_cap": 2.5,
+    "note": "PIT-safe R2: estimated model uses per-origin load_fred_z(asof=origin). DGP/oracle unchanged from R1.",
+    "pit_safe": true
+  },
+  "per_seed_crps": {
+    "0": {
+      "m0": 0.8477,
+      "m0_macro_oracle": 0.8701,
+      "m0_macro_est": 0.8477
+    },
+    "1": {
+      "m0": 0.609,
+      "m0_macro_oracle": 0.6272,
+      "m0_macro_est": 0.609
+    },
+    "2": {
+      "m0": 0.48,
+      "m0_macro_oracle": 0.4562,
+      "m0_macro_est": 0.48
+    }
+  },
+  "beta_hats": {
+    "0": [
+      0.4022
+    ],
+    "1": [
+      1.7894
+    ],
+    "2": [
+      -0.4752
+    ]
+  },
+  "mean_crps": {
+    "m0": 0.6456,
+    "m0_macro_oracle": 0.6512,
+    "m0_macro_est": 0.6456
+  },
+  "oracle_gain": -0.0056,
+  "est_gain": 0.0,
+  "fraction_oracle_gain_captured": null,
+  "elapsed_s": 130.9
+}

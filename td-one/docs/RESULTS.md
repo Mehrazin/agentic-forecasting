@@ -27,34 +27,40 @@ Secondary: MAE, 80% interval coverage.
 
 | # | Rerun of | File | Status | One-line verdict |
 |---|---|---|---|---|
-| R2-1 | exp10 (classical) | `experiments/r2_exp10_classical.py` | ⏳ running | PIT-safe macro vs M0 |
-| R2-2 | exp13 (TSFM macro) | `experiments/r2_exp13_tsfm_macro.py` | ⏳ running | PIT-safe TSFM+FRED |
-| R2-3 | exp15 (corrected macro) | `experiments/r2_exp15_macro_corrected.py` | ⏳ running | PIT-safe corrected sign |
+| R2-1 | exp10 (classical) | `experiments/r2_exp10_classical.py` | ✅ done | **Leak was 100% of macro benefit** |
+| R2-2 | exp13 (TSFM macro) | `experiments/r2_exp13_tsfm_macro.py` | ✅ done | **Benefit reversed to penalty** |
+| R2-3 | exp15 (corrected macro) | `experiments/r2_exp15_macro_corrected.py` | ✅ done | PIT-safe = harmless |
 | R2-4 | exp14 (M4 real) | — | 📝 planned | Soundness-fix rerun |
 
 ---
 
-## R2-1: Classical with PIT-safe macro
+## R2-1: Classical with PIT-safe macro — the leak WAS the benefit
 
-⏳ Running. Will compare against archived exp10 (§2g in `RESULTS_ARCHIVE.md`).
+| Model | R1 (leaky) | R2 (PIT-safe) | Delta |
+|---|---|---:|---:|
+| m0_w6 | 2.305 | 2.305 | 0.000 |
+| macro_m0 | 1.627 | 2.305 | **+0.678** |
 
-**Key question:** Did the z-score leak inflate the macro benefit in exp10?
+The entire 0.678 CRPS "macro benefit" was the model seeing `z[forecast_month]`
+from the future. PIT-safe: forecast-month z is unknowable → zero shift → pure M0.
 
----
+## R2-2: TSFM + FRED — benefit reversed
 
-## R2-2: TSFM + FRED (PIT-safe)
+Chronos2 macro-conditioning beat plain on all 3 seeds (R1). PIT-safe: **worse**
+on all 3 seeds (+0.257 to +0.762 CRPS). The residual approach needs `z[T+1]`,
+which is unknowable — training gets distorted without compensation.
 
-⏳ Running. Will compare against archived exp13 (§2j in `RESULTS_ARCHIVE.md`).
+## R2-3: Corrected macro — PIT safety neutralizes the damage
 
-**Key question:** Does macro-conditioned TSFM still help without the leak?
+R1: estimated overlay hurt by 0.151. R2: exactly equals M0 (harmless).
+The damage was leak-amplified wrong-sign beta; PIT safety kills it.
 
----
+## Bottom line
 
-## R2-3: Corrected-sign macro (PIT-safe)
-
-⏳ Running. Will compare against archived exp15 (§2m in `RESULTS_ARCHIVE.md`).
-
-**Key question:** exp15 already killed the macro claim; does PIT-safety change anything?
+**None of the published macro results survive PIT-safe reruns.** The FRED overlay
+as designed (contemporaneous `z[forecast_month]`) is not a realizable forecasting
+strategy. A PIT-safe macro model needs to forecast the macro itself or use lagged z.
+Full analysis: `experiments/r2_comparison.md`.
 
 ---
 
