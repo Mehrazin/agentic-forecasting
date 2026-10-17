@@ -1,0 +1,86 @@
+{
+  "experiment": "exp12b_router_v2",
+  "config": {
+    "seed": 42,
+    "n_test": 200,
+    "models": [
+      "m0_w3",
+      "conf_w6",
+      "chronos2",
+      "timesfm25"
+    ],
+    "router": "v2 critic-constrained (read_weights_critic)",
+    "compares_against": "exp12 v1 (2.60) and inv-CRPS (2.32)"
+  },
+  "v2_real": {
+    "per_scenario": [
+      {
+        "scenario": "s_stable_1",
+        "type": "stable",
+        "llm_ok": true,
+        "v2_weights": {
+          "m0_w3": 0.339,
+          "conf_w6": 0.201,
+          "chronos2": 0.245,
+          "timesfm25": 0.216
+        },
+        "rationale": "[v2 critic: up m0_w3 small] chronos2 is ranked 1st (CRPS\u202f3.758) and conf_w6 4th (CRPS\u202f4.581), a gap of\u202f0.823. The baseline weights follow the ranking (chronos2\u202f0.274, m0_w3\u202f0.259). In a steady\u2011market scenario, m0_w3\u2019s sharp intervals and strong performance in stable regimes (despite a modest 0.228 CRPS gap from the leader) justify a small upward tweak to its weight.",
+        "eq_crps": 2.507,
+        "inv_crps": 2.884,
+        "v2_crps": 2.563
+      },
+      {
+        "scenario": "s_shift_up_1",
+        "type": "shift",
+        "llm_ok": true,
+        "v2_weights": {
+          "m0_w3": 0.112,
+          "conf_w6": 0.283,
+          "chronos2": 0.363,
+          "timesfm25": 0.242
+        },
+        "rationale": "[v2 critic: up conf_w6 small] Chronos2 is ranked 1st (CRPS\u202f4.179) and m0_w3 4th (CRPS\u202f13.551), with gaps of +2.110 (timesfm25), +4.144 (conf_w6) versus the best. Baseline weights follow this ranking, but the current sudden 200bp hike creates high uncertainty and volatile regime \u2013 exactly the situation where the conf_w6 model is documented to excel. Given its modest CRPS gap, a small upward tweak is justified.",
+        "eq_crps": 4.017,
+        "inv_crps": 2.887,
+        "v2_crps": 3.93
+      },
+      {
+        "scenario": "s_shift_dn_1",
+        "type": "shift",
+        "llm_ok": true,
+        "v2_weights": {
+          "m0_w3": 0.139,
+          "conf_w6": 0.213,
+          "chronos2": 0.376,
+          "timesfm25": 0.272
+        },
+        "rationale": "[v2 critic: agree] chronos2 is ranked 1st (CRPS\u202f5.574) and m0_w3 4th (CRPS\u202f15.089), a gap of +9.515. The baseline weights (chronos2\u202f0.376, timesfm25\u202f0.272, conf_w6\u202f0.213, m0_w3\u202f0.139) follow this ranking, giving the highest weight to the best CRPS and the lowest to the worst. No specific, quantitative evidence overrides this ordering for the current sudden\u2011rate\u2011cut scenario.",
+        "eq_crps": 1.14,
+        "inv_crps": 1.31,
+        "v2_crps": 1.31
+      },
+      {
+        "scenario": "s_vol_1",
+        "type": "volatile",
+        "llm_ok": true,
+        "v2_weights": {
+          "m0_w3": 0.236,
+          "conf_w6": 0.273,
+          "chronos2": 0.25,
+          "timesfm25": 0.241
+        },
+        "rationale": "[v2 critic: up conf_w6 small] Chronos2 leads CRPS (3.758), timesfm25 is +0.144, m0_w3 +0.228, and conf_w6 is +1.644 worse. Baseline weights follow this ranking, but the current high\u2011uncertainty scenario matches conf_w6\u2019s strength (best when uncertainty is high or regimes are volatile), a condition not reflected in the trailing CRPS. Hence a modest upward adjustment for conf_w6 is warranted.",
+        "eq_crps": 2.665,
+        "inv_crps": 2.207,
+        "v2_crps": 2.147
+      }
+    ],
+    "means": {
+      "eq_crps": 2.582,
+      "inv_crps": 2.322,
+      "v2_crps": 2.488
+    },
+    "groq_calls": 4
+  },
+  "elapsed_s": 12.8
+}
