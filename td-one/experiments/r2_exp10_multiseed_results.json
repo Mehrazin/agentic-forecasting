@@ -1,0 +1,313 @@
+{
+  "experiment": "r2_exp10_multiseed",
+  "config": {
+    "n_customers": 2000,
+    "n_months": 66,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "beta_macro": 0.6,
+    "models": [
+      "m0_w3",
+      "m0_w6",
+      "macro_m0_w6",
+      "macro_m0_w3"
+    ],
+    "pit_safe": true,
+    "dgp_z": "full-history (ground truth)",
+    "model_z": "per-origin load_fred_z(asof=origin)"
+  },
+  "per_seed": {
+    "0": {
+      "m0_w3": {
+        "mean_crps": 1.4603,
+        "se_crps": 0.4676,
+        "n_origins": 5,
+        "per_origin_crps": [
+          3.213,
+          1.13443,
+          1.57005,
+          0.72117,
+          0.6629
+        ]
+      },
+      "m0_w6": {
+        "mean_crps": 2.2626,
+        "se_crps": 0.6947,
+        "n_origins": 5,
+        "per_origin_crps": [
+          4.61474,
+          1.62235,
+          3.01669,
+          1.25248,
+          0.80664
+        ]
+      },
+      "macro_m0_w6": {
+        "mean_crps": 1.9121,
+        "se_crps": 0.5108,
+        "n_origins": 5,
+        "per_origin_crps": [
+          3.33995,
+          2.32025,
+          2.41858,
+          0.81978,
+          0.6621
+        ]
+      },
+      "macro_m0_w3": {
+        "mean_crps": 1.742,
+        "se_crps": 0.4214,
+        "n_origins": 5,
+        "per_origin_crps": [
+          2.28737,
+          3.08581,
+          1.1993,
+          1.42084,
+          0.71668
+        ]
+      }
+    },
+    "1": {
+      "m0_w3": {
+        "mean_crps": 1.2292,
+        "se_crps": 0.1104,
+        "n_origins": 5,
+        "per_origin_crps": [
+          1.5785,
+          1.02588,
+          1.13401,
+          1.01673,
+          1.39099
+        ]
+      },
+      "m0_w6": {
+        "mean_crps": 1.546,
+        "se_crps": 0.3308,
+        "n_origins": 5,
+        "per_origin_crps": [
+          2.72696,
+          0.96118,
+          1.41853,
+          0.90772,
+          1.71556
+        ]
+      },
+      "macro_m0_w6": {
+        "mean_crps": 1.7465,
+        "se_crps": 0.2291,
+        "n_origins": 5,
+        "per_origin_crps": [
+          2.17814,
+          2.38441,
+          1.22666,
+          1.60478,
+          1.33872
+        ]
+      },
+      "macro_m0_w3": {
+        "mean_crps": 1.6569,
+        "se_crps": 0.3361,
+        "n_origins": 5,
+        "per_origin_crps": [
+          1.26641,
+          2.83454,
+          1.10744,
+          1.97947,
+          1.0965
+        ]
+      }
+    },
+    "2": {
+      "m0_w3": {
+        "mean_crps": 1.2133,
+        "se_crps": 0.1866,
+        "n_origins": 5,
+        "per_origin_crps": [
+          1.91028,
+          1.24245,
+          0.86839,
+          1.11745,
+          0.92785
+        ]
+      },
+      "m0_w6": {
+        "mean_crps": 1.53,
+        "se_crps": 0.3062,
+        "n_origins": 5,
+        "per_origin_crps": [
+          2.52959,
+          1.89522,
+          1.22234,
+          0.78947,
+          1.21357
+        ]
+      },
+      "macro_m0_w6": {
+        "mean_crps": 1.4917,
+        "se_crps": 0.2509,
+        "n_origins": 5,
+        "per_origin_crps": [
+          2.31216,
+          1.79514,
+          1.2655,
+          0.90245,
+          1.18349
+        ]
+      },
+      "macro_m0_w3": {
+        "mean_crps": 1.2827,
+        "se_crps": 0.167,
+        "n_origins": 5,
+        "per_origin_crps": [
+          1.78411,
+          1.48337,
+          0.94079,
+          1.30738,
+          0.89762
+        ]
+      }
+    },
+    "3": {
+      "m0_w3": {
+        "mean_crps": 1.2288,
+        "se_crps": 0.2236,
+        "n_origins": 5,
+        "per_origin_crps": [
+          1.03189,
+          1.64461,
+          1.86723,
+          0.88266,
+          0.71781
+        ]
+      },
+      "m0_w6": {
+        "mean_crps": 1.8099,
+        "se_crps": 0.448,
+        "n_origins": 5,
+        "per_origin_crps": [
+          1.62708,
+          3.10505,
+          2.56001,
+          0.8279,
+          0.92922
+        ]
+      },
+      "macro_m0_w6": {
+        "mean_crps": 1.6196,
+        "se_crps": 0.3606,
+        "n_origins": 5,
+        "per_origin_crps": [
+          1.27916,
+          2.67415,
+          2.22248,
+          1.22778,
+          0.69442
+        ]
+      },
+      "macro_m0_w3": {
+        "mean_crps": 1.2729,
+        "se_crps": 0.2333,
+        "n_origins": 5,
+        "per_origin_crps": [
+          0.94018,
+          1.89029,
+          1.62339,
+          1.32392,
+          0.58675
+        ]
+      }
+    },
+    "4": {
+      "m0_w3": {
+        "mean_crps": 1.2704,
+        "se_crps": 0.3123,
+        "n_origins": 5,
+        "per_origin_crps": [
+          2.49962,
+          0.87882,
+          1.14138,
+          1.0122,
+          0.82008
+        ]
+      },
+      "m0_w6": {
+        "mean_crps": 1.704,
+        "se_crps": 0.4384,
+        "n_origins": 5,
+        "per_origin_crps": [
+          3.3779,
+          1.20896,
+          1.78063,
+          1.11544,
+          1.03715
+        ]
+      },
+      "macro_m0_w6": {
+        "mean_crps": 1.4677,
+        "se_crps": 0.3723,
+        "n_origins": 5,
+        "per_origin_crps": [
+          2.88253,
+          0.94362,
+          1.5114,
+          1.16906,
+          0.83201
+        ]
+      },
+      "macro_m0_w3": {
+        "mean_crps": 1.3778,
+        "se_crps": 0.2145,
+        "n_origins": 5,
+        "per_origin_crps": [
+          2.07268,
+          1.13997,
+          0.99387,
+          1.68083,
+          1.00181
+        ]
+      }
+    }
+  },
+  "aggregate": {
+    "m0_w3": {
+      "mean_crps": 1.2804,
+      "se_crps": 0.046,
+      "n_seeds": 5
+    },
+    "m0_w6": {
+      "mean_crps": 1.7705,
+      "se_crps": 0.1335,
+      "n_seeds": 5
+    },
+    "macro_m0_w6": {
+      "mean_crps": 1.6475,
+      "se_crps": 0.0828,
+      "n_seeds": 5
+    },
+    "macro_m0_w3": {
+      "mean_crps": 1.4665,
+      "se_crps": 0.0978,
+      "n_seeds": 5
+    }
+  },
+  "tests": {
+    "macro_m0_w3_vs_m0_w3": {
+      "delta": 0.1861,
+      "t_stat": 2.538,
+      "p_value": 0.0641,
+      "n": 5
+    },
+    "macro_m0_w6_vs_m0_w6": {
+      "delta": -0.123,
+      "t_stat": -1.293,
+      "p_value": 0.2657,
+      "n": 5
+    }
+  },
+  "elapsed_s": 148.1
+}

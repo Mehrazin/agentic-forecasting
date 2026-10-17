@@ -27,7 +27,7 @@ Secondary: MAE, 80% interval coverage.
 
 | # | Rerun of | File | Status | One-line verdict |
 |---|---|---|---|---|
-| R2-1 | exp10 (classical) | `experiments/r2_exp10_classical.py` | ✅ done (lagged rerun) | **Lagged macro helps: -0.357 (53% of leaky gain)** |
+| R2-1 | exp10 (classical) | `experiments/r2_exp10_classical.py` | ✅ done (5 seeds) | **No evidence: macro worse than m0_w3 by 0.19 (p=0.064)** |
 | R2-2 | exp13 (TSFM macro) | `experiments/r2_exp13_tsfm_macro.py` | ✅ done (lagged rerun) | **Residual conditioning hurts C2 4/6 — method-specific** |
 | R2-3 | exp15 (corrected macro) | `experiments/r2_exp15_macro_corrected.py` | ✅ done | PIT-safe = harmless on v2 DGP |
 | R2-4 | exp14 (M4 real) | `experiments/r2_exp14_common_grid.py` | ✅ done | Common-grid rerun: TSFM win survives (-24.1% Chronos2, -22.6% TimesFM) |
@@ -36,25 +36,24 @@ Secondary: MAE, 80% interval coverage.
 
 ---
 
-## R2-1: Classical with lagged PIT-safe macro — **exploratory positive** (single seed)
+## R2-1: Classical with lagged PIT-safe macro — **no evidence** (5 seeds)
 
-| Model | R1 (leaky) | R2-old (buggy) | R2-new (lagged) |
-|---|---|---:|---:|
-| m0_w3 | — | — | **1.457** |
-| m0_w6 | 2.305 | 2.305 | 2.28 |
-| macro_m0 | 1.627 | 2.305 | **1.923** |
+| Model | Mean CRPS (5 seeds) | SE |
+|---|---|---|
+| m0_w3 | **1.2804** | 0.0460 |
+| macro_m0_w3 | 1.4665 | 0.0978 |
+| macro_m0_w6 | 1.6475 | 0.0828 |
+| m0_w6 | 1.7705 | 0.1335 |
 
 **RETRACTION (2026-10-17):** The original R2 conclusion ("leak was 100% of benefit")
 was based on a bug — `fred_z.get(forecast_month)` looked up t+1 in a dict truncated
-at t, always returning 0.0. With the correct lagged implementation (predictive
-regression on z[t]), macro_m0 achieves **-0.357 CRPS vs m0_w6** (~53% of leaky gain).
+at t, always returning 0.0. The single-seed lagged rerun showed -0.357 vs m0_w6,
+but multi-seed evaluation (seeds 0-4) confirms Argon's window-confounding hypothesis:
+macro_m0_w3 vs m0_w3 is **+0.1861 (macro worse), p=0.064**. The lagged z[t] was
+compensating for m0_w6's stale average, not adding true macro signal. The original
+-0.357 did not replicate (seed 0 was lucky).
 
-**Caveats (statistical):** Single seed (seed=0), no uncertainty quantification.
-Against the best M0 window (m0_w3=1.457), macro_m0 (1.923) is **worse by 32%**.
-**Window confounding:** macro_m0 uses trailing_window=6; the -0.357 may reflect
-the 3-month z[t] compensating for m0_w6's stale average rather than true macro
-value. Until macro_m0(window=3) beats m0_w3 across multiple seeds, this is not
-even an exploratory win. This is an exploratory finding, not a confirmatory result.
+**Verdict:** No evidence macro helps over a responsive baseline. Classical macro track is closed.
 
 ## R2-2: TSFM + lagged FRED — **exploratory negative** (n=6, no significance testing)
 
@@ -91,11 +90,12 @@ based on a dict-lookup bug. The honest conclusion: **we don't know yet** — the
 findings are suggestive but need multi-seed confirmatory evaluation.
 
 **exp18b (fair comparison):** TimesFM beats the best fairly-constructed classical
-baseline (m0_w3 + residual quantiles) by **17.9% CRPS** (0.000497 vs 0.000613,
-p=0.0079, survives Bonferroni over 4 comparisons, wins 37/50 origins). All models
-on a common 19-level quantile grid with proper uncertainty wrappers. Argon's
-predicted m0_w3+logcal ≈ 0.00055 did not materialize (actual 0.000628) — the
-TSFM edge is real point-accuracy + better spreads, not just the wrapper.
+baseline by **12.2% CRPS** (0.000497 vs ETS+resid 0.000566, p=0.076, wins 32/50
+origins — not significant at α=0.05). Against the weaker m0_w3 baseline the gap
+is 17.9% (p=0.0079), but ETS is the proper classical comparator and Argon was
+right to demand it. All models on a common 19-level quantile grid with proper
+uncertainty wrappers. The TSFM edge is real point-accuracy + better spreads,
+but smaller than initially claimed.
 
 Full analysis: `experiments/r2_comparison.md`.
 
