@@ -1,0 +1,355 @@
+{
+  "experiment": "exp17_news_regime",
+  "description": "End-to-end news-augmented regime reader: RAG retrieval + v2 regime classification, 4 months of 2026, qualitative.",
+  "n_months": 4,
+  "groq_calls_used": 12,
+  "results": [
+    {
+      "month": "2026-02",
+      "cutoff": "2026-03-01",
+      "searches": [
+        {
+          "query": "Bank of Canada",
+          "n_hits": 2,
+          "titles": [
+            "Bank of Canada holds key rate steady as CUSMA talks loom over its outlook",
+            "FinancialContent - The Blue Chip Powerhouse : Royal Bank of Canada ( RY ) Shatters Expectations in Q1 2026 Earnings Anal"
+          ]
+        },
+        {
+          "query": "mortgage rates",
+          "n_hits": 5,
+          "titles": [
+            "With spring home buying approaching , will lower mortgage rates provide boost ? ",
+            "Could mortgage interest rates ever be 3 % again ? 3 things to know this March",
+            "5 % Mortgage Rates Are Here . Will They Last ? ",
+            "US Mortgage Rates Reach Lowest Since 2022 , Spurs Refinancing",
+            "Mortgage rates fall below 6 % for first time since 2022"
+          ]
+        }
+      ],
+      "n_articles": 7,
+      "articles": [
+        {
+          "date": "2026-02-27",
+          "title": "With spring home buying approaching , will lower mortgage rates provide boost ? ",
+          "url": "https://www.baltimoresun.com/2026/02/27/mortgage-rates-lowest-in-more-than-three-years-is-that-a-game-changer-for-home-buyers/"
+        },
+        {
+          "date": "2026-02-27",
+          "title": "Could mortgage interest rates ever be 3 % again ? 3 things to know this March",
+          "url": "https://www.cbsnews.com/news/could-mortgage-interest-rates-3-again-what-to-know-march-2026/"
+        },
+        {
+          "date": "2026-02-27",
+          "title": "5 % Mortgage Rates Are Here . Will They Last ? ",
+          "url": "https://www.nerdwallet.com/mortgages/news/weekly-mortgage-rates-2-26-26"
+        },
+        {
+          "date": "2026-02-27",
+          "title": "US Mortgage Rates Reach Lowest Since 2022 , Spurs Refinancing",
+          "url": "https://finance.yahoo.com/news/us-mortgage-rates-reach-lowest-120000080.html"
+        },
+        {
+          "date": "2026-02-27",
+          "title": "Mortgage rates fall below 6 % for first time since 2022",
+          "url": "https://www.fox35orlando.com/news/mortgage-rates-fall-below-6-percent-first-time-2022"
+        },
+        {
+          "date": "2026-02-26",
+          "title": "FinancialContent - The Blue Chip Powerhouse : Royal Bank of Canada ( RY ) Shatters Expectations in Q1 2026 Earnings Analysis",
+          "url": "https://markets.financialcontent.com/stocks/article/finterra-2026-2-26-the-blue-chip-powerhouse-royal-bank-of-canada-ry-shatters-expectations-in-q1-2026-earnings-analysis"
+        },
+        {
+          "date": "2026-01-28",
+          "title": "Bank of Canada holds key rate steady as CUSMA talks loom over its outlook",
+          "url": "https://www.bnnbloomberg.ca/business/economics/2026/01/28/bank-of-canada-holds-key-interest-rate-at-225/"
+        }
+      ],
+      "reading": {
+        "regime": "UP",
+        "confidence": 0.6,
+        "reason": "Lower mortgage rates increase incentive to switch (mechanism) but limited further decline and switching costs may dampen moves (counterargument)"
+      },
+      "error": null,
+      "ground_truth": {
+        "next_month": "2026-03",
+        "rate_move_pp": 0.4,
+        "expected_switching": "DOWN",
+        "rationale": "Mar rate jumped +0.40pp (5.98->6.38): sharp rise should suppress switching"
+      },
+      "score": "wrong"
+    },
+    {
+      "month": "2026-03",
+      "cutoff": "2026-04-01",
+      "searches": [
+        {
+          "query": "Bank of Canada",
+          "n_hits": 3,
+          "titles": [
+            "Bank of Canada maintains policy rate at 2\u00bc%",
+            "Bank of Canada holds key rate steady as CUSMA talks loom over its outlook",
+            "FinancialContent - The Blue Chip Powerhouse : Royal Bank of Canada ( RY ) Shatters Expectations in Q1 2026 Earnings Anal"
+          ]
+        },
+        {
+          "query": "mortgage rates",
+          "n_hits": 5,
+          "titles": [
+            "Mortgage and refinance interest rates today , March 1 , 2026 : Looking for a rate in the 5s ? ( How 5 . 81 % or 5 . 32 %",
+            "Mortgage rates fall below 6 % for first time since 2022",
+            "Mortgage rates at 3 . 5 - year low ; Is that a game changer for home buyers ? ",
+            "Mortgage rates at 3 . 5 - year low ; Is that a game changer for home buyers ? ",
+            "Mortgage rates at 3 . 5 - year low ; Is that a game changer for home buyers ? "
+          ]
+        }
+      ],
+      "n_articles": 8,
+      "articles": [
+        {
+          "date": "2026-03-18",
+          "title": "Bank of Canada maintains policy rate at 2\u00bc%",
+          "url": "https://www.bankofcanada.ca/2026/03/fad-press-release-2026-03-18/"
+        },
+        {
+          "date": "2026-03-01",
+          "title": "Mortgage and refinance interest rates today , March 1 , 2026 : Looking for a rate in the 5s ? ( How 5 . 81 % or 5 . 32 %?) ",
+          "url": "https://finance.yahoo.com/personal-finance/mortgages/article/mortgage-refinance-interest-rates-today-sunday-march-1-2026-110036998.html"
+        },
+        {
+          "date": "2026-02-27",
+          "title": "Mortgage rates fall below 6 % for first time since 2022",
+          "url": "https://www.fox35orlando.com/news/mortgage-rates-fall-below-6-percent-first-time-2022"
+        },
+        {
+          "date": "2026-02-27",
+          "title": "Mortgage rates at 3 . 5 - year low ; Is that a game changer for home buyers ? ",
+          "url": "https://foxreno.com/news/nation-world/mortgage-rates-at-35-year-low-is-that-a-game-changer-for-home-buyers-housing-market-freddie-mac-national-association-of-realtors-bankrate"
+        },
+        {
+          "date": "2026-02-27",
+          "title": "Mortgage rates at 3 . 5 - year low ; Is that a game changer for home buyers ? ",
+          "url": "https://cbs2iowa.com/news/nation-world/mortgage-rates-at-35-year-low-is-that-a-game-changer-for-home-buyers-housing-market-freddie-mac-national-association-of-realtors-bankrate"
+        },
+        {
+          "date": "2026-02-27",
+          "title": "Mortgage rates at 3 . 5 - year low ; Is that a game changer for home buyers ? ",
+          "url": "https://myfox28columbus.com/news/nation-world/mortgage-rates-at-35-year-low-is-that-a-game-changer-for-home-buyers-housing-market-freddie-mac-national-association-of-realtors-bankrate"
+        },
+        {
+          "date": "2026-02-26",
+          "title": "FinancialContent - The Blue Chip Powerhouse : Royal Bank of Canada ( RY ) Shatters Expectations in Q1 2026 Earnings Analysis",
+          "url": "https://markets.financialcontent.com/stocks/article/finterra-2026-2-26-the-blue-chip-powerhouse-royal-bank-of-canada-ry-shatters-expectations-in-q1-2026-earnings-analysis"
+        },
+        {
+          "date": "2026-01-28",
+          "title": "Bank of Canada holds key rate steady as CUSMA talks loom over its outlook",
+          "url": "https://www.bnnbloomberg.ca/business/economics/2026/01/28/bank-of-canada-holds-key-interest-rate-at-225/"
+        }
+      ],
+      "reading": {
+        "regime": "UP",
+        "confidence": 0.7,
+        "reason": "Falling mortgage rates make switching more attractive, but high prepayment penalties and a steady policy rate temper the incentive"
+      },
+      "error": null,
+      "ground_truth": {
+        "next_month": "2026-04",
+        "rate_move_pp": -0.08,
+        "expected_switching": "UP",
+        "rationale": "Apr rate eased -0.08pp (6.38->6.30): slight relief should nudge switching up"
+      },
+      "score": "correct"
+    },
+    {
+      "month": "2026-06",
+      "cutoff": "2026-07-01",
+      "searches": [
+        {
+          "query": "Bank of Canada",
+          "n_hits": 5,
+          "titles": [
+            "Gas prices drive inflation spike as Bank of Canada stays cautious",
+            "Text of the Bank of Canada latest interest rate decision",
+            "Live updates : Bank of Canada expected to keep interest rate on hold as it eyes oil shock impact",
+            "Bank of Canada maintains policy rate at 2\u00bc%",
+            "Bank of Canada holds key rate steady as CUSMA talks loom over its outlook"
+          ]
+        },
+        {
+          "query": "mortgage rates",
+          "n_hits": 5,
+          "titles": [
+            "The week best fixed and variable mortgage rates",
+            "How the Middle East war is already impacting mortgage rates in Canada",
+            "Mortgage and refinance interest rates today , March 1 , 2026 : Looking for a rate in the 5s ? ( How 5 . 81 % or 5 . 32 %",
+            "Will war with Iran send mortgage rates higher or lower ? ",
+            "Mortgage rates fall below 6 % for first time since 2022"
+          ]
+        }
+      ],
+      "n_articles": 10,
+      "articles": [
+        {
+          "date": "2026-06-26",
+          "title": "Gas prices drive inflation spike as Bank of Canada stays cautious",
+          "url": "https://www.midnorthmonitor.com:443/business-economy/gas-prices-drive-inflation-spike-as-bank-of-canada-stays-cautious"
+        },
+        {
+          "date": "2026-04-29",
+          "title": "Text of the Bank of Canada latest interest rate decision",
+          "url": "https://www.investmentexecutive.com/uncategorized/text-of-the-bank-of-canadas-latest-interest-rate-decision-6/"
+        },
+        {
+          "date": "2026-04-29",
+          "title": "Live updates : Bank of Canada expected to keep interest rate on hold as it eyes oil shock impact",
+          "url": "https://www.theglobeandmail.com/business/article-bank-of-canada-interest-rate-april-29-oil-prices-live/"
+        },
+        {
+          "date": "2026-04-23",
+          "title": "The week best fixed and variable mortgage rates",
+          "url": "https://www.theglobeandmail.com/investing/personal-finance/article-the-weeks-best-fixed-and-variable-mortgage-rates-4/"
+        },
+        {
+          "date": "2026-04-04",
+          "title": "How the Middle East war is already impacting mortgage rates in Canada",
+          "url": "https://www.cbc.ca/news/canada/iran-war-mortgage-rates-canada-9.7152182"
+        },
+        {
+          "date": "2026-03-18",
+          "title": "Bank of Canada maintains policy rate at 2\u00bc%",
+          "url": "https://www.bankofcanada.ca/2026/03/fad-press-release-2026-03-18/"
+        },
+        {
+          "date": "2026-03-01",
+          "title": "Mortgage and refinance interest rates today , March 1 , 2026 : Looking for a rate in the 5s ? ( How 5 . 81 % or 5 . 32 %?) ",
+          "url": "https://finance.yahoo.com/personal-finance/mortgages/article/mortgage-refinance-interest-rates-today-sunday-march-1-2026-110036998.html"
+        },
+        {
+          "date": "2026-03-01",
+          "title": "Will war with Iran send mortgage rates higher or lower ? ",
+          "url": "https://www.housingwire.com/articles/will-war-with-iran-send-mortgage-rates-higher-or-lower/"
+        },
+        {
+          "date": "2026-02-27",
+          "title": "Mortgage rates fall below 6 % for first time since 2022",
+          "url": "https://www.fox35orlando.com/news/mortgage-rates-fall-below-6-percent-first-time-2022"
+        },
+        {
+          "date": "2026-01-28",
+          "title": "Bank of Canada holds key rate steady as CUSMA talks loom over its outlook",
+          "url": "https://www.bnnbloomberg.ca/business/economics/2026/01/28/bank-of-canada-holds-key-interest-rate-at-225/"
+        }
+      ],
+      "reading": {
+        "regime": "DOWN",
+        "confidence": 0.4,
+        "reason": "Higher rates and inflation spikes reduce incentive to switch (costs outweigh benefits); counterargument: borrowers may chase marginally better rates before further hikes"
+      },
+      "error": null,
+      "ground_truth": {
+        "next_month": "2026-07",
+        "rate_move_pp": 0.17,
+        "expected_switching": "DOWN",
+        "rationale": "Jul rate rose +0.17pp (6.49->6.66): continued climb should suppress switching"
+      },
+      "score": "correct"
+    },
+    {
+      "month": "2026-08",
+      "cutoff": "2026-09-01",
+      "searches": [
+        {
+          "query": "Bank of Canada",
+          "n_hits": 5,
+          "titles": [
+            "Bank of Canada interest rate : What to expect on September 2",
+            "Bank of Canada holds key interest rate at 2.25% as economic growth rebounds",
+            "Gas prices drive inflation spike as Bank of Canada stays cautious",
+            "Gas prices drive inflation spike as Bank of Canada stays cautious",
+            "Gas prices drive inflation spike as Bank of Canada stays cautious"
+          ]
+        },
+        {
+          "query": "mortgage rates",
+          "n_hits": 5,
+          "titles": [
+            "Weekly survey of mortgage lenders with the lowest rates : Minor pricing changes",
+            "Mortgage and refinance interest rates today , Friday , August 28 , 2026 : Rates down ahead of Warsh speech at Jackson Ho",
+            "Mortgage rates flat in quieter month : Moneyfacts",
+            "The week best fixed and variable mortgage rates",
+            "Mortgage and refinance interest rates today , March 1 , 2026 : Looking for a rate in the 5s ? ( How 5 . 81 % or 5 . 32 %"
+          ]
+        }
+      ],
+      "n_articles": 10,
+      "articles": [
+        {
+          "date": "2026-08-31",
+          "title": "Weekly survey of mortgage lenders with the lowest rates : Minor pricing changes",
+          "url": "https://finance.yahoo.com/personal-finance/mortgages/article/weekly-survey-mortgage-lenders-with-the-best-lowest-rates-august-31-170834159.html"
+        },
+        {
+          "date": "2026-08-28",
+          "title": "Mortgage and refinance interest rates today , Friday , August 28 , 2026 : Rates down ahead of Warsh speech at Jackson Hole",
+          "url": "https://finance.yahoo.com/personal-finance/mortgages/article/mortgage-and-refinance-interest-rates-today-friday-august-28-2026-rates-down-ahead-of-warsh-speech-at-jackson-hole-100000635.html"
+        },
+        {
+          "date": "2026-08-28",
+          "title": "Mortgage rates flat in quieter month : Moneyfacts",
+          "url": "https://www.mortgagestrategy.co.uk/news/mortgage-rates-flat-in-quieter-month-moneyfacts/"
+        },
+        {
+          "date": "2026-08-27",
+          "title": "Bank of Canada interest rate : What to expect on September 2",
+          "url": "https://www.moneysense.ca/news/bank-of-canada-interest-rate-forecast-september-2026/"
+        },
+        {
+          "date": "2026-07-15",
+          "title": "Bank of Canada holds key interest rate at 2.25% as economic growth rebounds",
+          "url": "https://www.cbc.ca/news/business/bank-of-canada-interest-july-2026-9.7270689"
+        },
+        {
+          "date": "2026-06-26",
+          "title": "Gas prices drive inflation spike as Bank of Canada stays cautious",
+          "url": "https://www.midnorthmonitor.com:443/business-economy/gas-prices-drive-inflation-spike-as-bank-of-canada-stays-cautious"
+        },
+        {
+          "date": "2026-06-26",
+          "title": "Gas prices drive inflation spike as Bank of Canada stays cautious",
+          "url": "https://www.thesudburystar.com:443/business-economy/gas-prices-drive-inflation-spike-as-bank-of-canada-stays-cautious"
+        },
+        {
+          "date": "2026-06-26",
+          "title": "Gas prices drive inflation spike as Bank of Canada stays cautious",
+          "url": "https://www.northernnews.ca:443/business-economy/gas-prices-drive-inflation-spike-as-bank-of-canada-stays-cautious"
+        },
+        {
+          "date": "2026-04-23",
+          "title": "The week best fixed and variable mortgage rates",
+          "url": "https://www.theglobeandmail.com/investing/personal-finance/article-the-weeks-best-fixed-and-variable-mortgage-rates-4/"
+        },
+        {
+          "date": "2026-03-01",
+          "title": "Mortgage and refinance interest rates today , March 1 , 2026 : Looking for a rate in the 5s ? ( How 5 . 81 % or 5 . 32 %?) ",
+          "url": "https://finance.yahoo.com/personal-finance/mortgages/article/mortgage-refinance-interest-rates-today-sunday-march-1-2026-110036998.html"
+        }
+      ],
+      "reading": {
+        "regime": "DOWN",
+        "confidence": 0.45,
+        "reason": "Stable or only minor rate changes make switching less attractive, but high absolute rates could still motivate some borrowers to switch"
+      },
+      "error": null,
+      "ground_truth": {
+        "next_month": "2026-09",
+        "rate_move_pp": 0.37,
+        "expected_switching": "DOWN",
+        "rationale": "Sep rate jumped +0.37pp (6.66->7.03): sharp rise should suppress switching"
+      },
+      "score": "correct"
+    }
+  ],
+  "elapsed_s": 104.7
+}

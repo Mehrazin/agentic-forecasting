@@ -31,6 +31,7 @@ Secondary: MAE, 80% interval coverage.
 | R2-2 | exp13 (TSFM macro) | `experiments/r2_exp13_tsfm_macro.py` | ✅ done | **Benefit reversed to penalty** |
 | R2-3 | exp15 (corrected macro) | `experiments/r2_exp15_macro_corrected.py` | ✅ done | PIT-safe = harmless |
 | R2-4 | exp14 (M4 real) | — | 📝 planned | Soundness-fix rerun |
+| exp17 | — (new) | `experiments/exp17_news_regime.py` | ✅ done | **News+RAG+regime reader end-to-end: 3/4 correct** |
 
 ---
 
@@ -75,11 +76,35 @@ These results were **not** affected by the P0 leaks:
 
 ---
 
+## exp17: News-augmented regime reader (end-to-end)
+
+First run wiring RAG retrieval → v2 regime classification together.
+4 months of 2026, 2 RAG searches each, real Groq (12 calls total).
+
+| Month | Predicted | Expected | Truth (rate move) | Score |
+|---|---|---|---|---|
+| 2026-02 | UP @ 0.60 | DOWN | +0.40pp | ❌ wrong |
+| 2026-03 | UP @ 0.70 | UP | −0.08pp | ✅ correct |
+| 2026-06 | DOWN @ 0.40 | DOWN | +0.17pp | ✅ correct |
+| 2026-08 | DOWN @ 0.45 | DOWN | +0.37pp | ✅ correct |
+
+**3/4 correct.** No hallucinations; all reasons cite actual article content.
+Confidences appropriately modest (0.40–0.70). The Feb miss is instructive:
+news was celebrating falling rates (backward-looking) while March reversed
+sharply — a news-lag problem, not a prompt failure. Counterarguments present
+in all 4 readings (v2 prompt working). No ABSTAINs triggered; the ambiguous
+cases got low confidence instead, which is acceptable calibration behavior.
+
+Full results: `experiments/exp17_news_regime_results.json`.
+
+---
+
 ## 4. Artifact map
 
 | Artifact | Location |
 |---|---|
 | R2 scripts | `experiments/r2_*.py` |
 | R2 comparison | `experiments/r2_comparison.md` (when complete) |
+| exp17 | `experiments/exp17_news_regime.py` → `exp17_news_regime_results.json` |
 | Archive | `docs/RESULTS_ARCHIVE.md` |
 | Audit | `docs/DATA_AUDIT.md` |
