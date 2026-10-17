@@ -98,3 +98,28 @@ have the reranker score them, pick the threshold maximizing F1 against
 human relevant/irrelevant labels. Lower → more recall, more noise;
 higher → cleaner context, more abstentions. Log the abstention rate per
 experiment — a sudden jump means the KB is thin for that period.
+
+## Evaluation: recall@k / precision@k
+
+Evaluated on 100 labeled queries (`experiments/rag_eval_labels.json`) covering
+Bank of Canada, mortgage rates, housing, and inflation topics with PIT-safe
+cutoffs across 2026. BM25-only mode (deterministic, no Groq).
+
+| k | Recall@k | Precision@k |
+|---|----------|-------------|
+| 1 | 0.156 | 0.750 |
+| 3 | 0.373 | 0.628 |
+| 5 | 0.486 | 0.515 |
+| 10 | 0.528 | 0.327 |
+
+![RAG recall/precision](plots/rag_recall_precision.png)
+
+**Interpretation:** Precision@1 of 0.75 means when the system returns a single
+article, it's usually relevant. Recall@10 of 0.53 means we find about half the
+relevant articles in the top 10. The KB has heavy duplication (syndicated
+articles), which hurts recall — deduping by story would help.
+
+**Query preprocessing note:** Natural language queries must be converted to
+FTS5 keywords (the eval does this via `to_fts_query`). Raw sentences with
+FTS5's AND semantics return zero results. The `NEWS_SYSTEM_PROMPT` instructs
+agents to write keyword queries.
