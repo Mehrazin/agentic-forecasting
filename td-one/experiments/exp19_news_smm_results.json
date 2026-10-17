@@ -1,0 +1,2440 @@
+{
+  "experiment": "exp19_news_smm",
+  "config": {
+    "series": "Freddie Mac monthly SMM, 2021-01..2026-03 (63 months)",
+    "origins": 50,
+    "origin_range": [
+      "2022-01",
+      "2026-02"
+    ],
+    "min_history_months": 12,
+    "models": [
+      "m0_w3",
+      "m0_w3_regime",
+      "m0_conformal",
+      "m0_conformal_regime"
+    ],
+    "rag": "BM25-only (groq=None), queries=['mortgage rates','refinance'], 5 articles/query, PIT cutoff = first day of forecast month",
+    "regime_reader": "read_regime_with_news v2 prompt, 1 Groq call/origin",
+    "adjustment": "shift = sign * trailing-12m MoM std * shrunk_conf; applied iff regime in {UP,DOWN} and shrunk_conf >= 0.6; NONE/ABSTAIN/ERROR -> no adjustment",
+    "pit_note": "train months <= origin; news pub_date < forecast-month start (asserted per article); RAG enforces in SQL + client-side",
+    "crps_method": "point: CRPS=MAE; quantiles: pinball estimator (same as exp18)"
+  },
+  "summary": {
+    "m0_w3": {
+      "mean_crps": 0.0007397603284455333,
+      "mean_mae": 0.0007397603284455333,
+      "coverage_80": NaN,
+      "n_origins": 50
+    },
+    "m0_w3_regime": {
+      "mean_crps": 0.0007326616940318594,
+      "mean_mae": 0.0007326616940318594,
+      "coverage_80": NaN,
+      "n_origins": 50
+    },
+    "m0_conformal": {
+      "mean_crps": 0.0007775729668662659,
+      "mean_mae": 0.0010157079199826257,
+      "coverage_80": 0.5,
+      "n_origins": 50
+    },
+    "m0_conformal_regime": {
+      "mean_crps": 0.0007370412876436133,
+      "mean_mae": 0.0009692009148950739,
+      "coverage_80": 0.52,
+      "n_origins": 50
+    }
+  },
+  "comparison": {
+    "m0_w3_regime_vs_m0_w3": {
+      "mean_delta_crps": -7.098634413673947e-06,
+      "std_delta_crps": 0.0002703049681899137,
+      "t_stat": -0.18569738339202083,
+      "p_two_sided_normal_approx": 0.8527,
+      "wins": 6,
+      "losses": 5,
+      "ties": 39,
+      "n": 50
+    },
+    "m0_conformal_regime_vs_m0_conformal": {
+      "mean_delta_crps": -4.053167922265257e-05,
+      "std_delta_crps": 0.00019509000116492198,
+      "t_stat": -1.4690770957034962,
+      "p_two_sided_normal_approx": 0.1418,
+      "wins": 7,
+      "losses": 4,
+      "ties": 39,
+      "n": 50
+    }
+  },
+  "regime_audit": {
+    "regime_counts": {
+      "DOWN": 25,
+      "UP": 14,
+      "ABSTAIN": 11
+    },
+    "n_acted": 11,
+    "n_abstained": 11,
+    "mean_delta_when_acted": -3.2266520062154303e-05,
+    "groq_calls_used": 50
+  },
+  "per_origin": [
+    {
+      "origin": "2022-01",
+      "forecast_month": "2022-02",
+      "cutoff": "2022-02-01",
+      "actual": 0.0041807648362949,
+      "mom_scale": 0.0007506401794862463,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.6,
+        "shrunk_confidence": 0.57,
+        "reason": "Rising mortgage rates dampen refinancing incentive (DOWN) vs. potential home sales sustaining prepayments (counterargument)",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 9,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0007177972860387665,
+          "mae": 0.0007177972860387665,
+          "pred": 0.004898562122333666
+        },
+        "m0_w3_regime": {
+          "crps": 0.0007177972860387665,
+          "mae": 0.0007177972860387665,
+          "pred": 0.004898562122333666
+        },
+        "m0_conformal": {
+          "crps": 0.0006399373018769847,
+          "mae": 0.0010482012956660254,
+          "coverage_80": 1.0,
+          "pred_median": 0.0031325635406288742,
+          "q10": 0.0014563115850650616,
+          "q90": 0.004808815496192687
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0006399373018769847,
+          "mae": 0.0010482012956660254,
+          "coverage_80": 1.0,
+          "pred_median": 0.0031325635406288742,
+          "q10": 0.0014563115850650616,
+          "q90": 0.004808815496192687
+        }
+      }
+    },
+    {
+      "origin": "2022-02",
+      "forecast_month": "2022-03",
+      "cutoff": "2022-03-01",
+      "actual": 0.0051829728667382,
+      "mom_scale": 0.0005536019976240126,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.6,
+        "shrunk_confidence": 0.57,
+        "reason": "Rising rates reduce refinancing attractiveness; counterargument: home sales could sustain prepayments",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 9,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0006144438924510004,
+          "mae": 0.0006144438924510004,
+          "pred": 0.0045685289742872
+        },
+        "m0_w3_regime": {
+          "crps": 0.0006144438924510004,
+          "mae": 0.0006144438924510004,
+          "pred": 0.0045685289742872
+        },
+        "m0_conformal": {
+          "crps": 0.001159402800739652,
+          "mae": 0.001717423227925726,
+          "coverage_80": 0.0,
+          "pred_median": 0.0034655496388124743,
+          "q10": 0.001977495166316279,
+          "q90": 0.004953604111308671
+        },
+        "m0_conformal_regime": {
+          "crps": 0.001159402800739652,
+          "mae": 0.001717423227925726,
+          "coverage_80": 0.0,
+          "pred_median": 0.0034655496388124743,
+          "q10": 0.001977495166316279,
+          "q90": 0.004953604111308671
+        }
+      }
+    },
+    {
+      "origin": "2022-03",
+      "forecast_month": "2022-04",
+      "cutoff": "2022-04-01",
+      "actual": 0.0046912313213749,
+      "mom_scale": 0.0005850977403037838,
+      "shift": -0.0003539841328837892,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.65,
+        "shrunk_confidence": 0.605,
+        "reason": "Rising mortgage rates lower refinancing incentive (DOWN) but possible future rate cuts or home\u2011sale activity could keep prepayments stable (counterargument)",
+        "sign": -1.0,
+        "applied": true,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.00014113027956103377,
+          "mae": 0.00014113027956103377,
+          "pred": 0.004550101041813867
+        },
+        "m0_w3_regime": {
+          "crps": 0.0004951144124448227,
+          "mae": 0.0004951144124448227,
+          "pred": 0.004196116908930078
+        },
+        "m0_conformal": {
+          "crps": 0.0005168247828892982,
+          "mae": 0.0008522243279120425,
+          "coverage_80": 1.0,
+          "pred_median": 0.003839006993462858,
+          "q10": 0.0027196777597207423,
+          "q90": 0.004958336227204974
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0007920428325808586,
+          "mae": 0.001206208460795832,
+          "coverage_80": 0.0,
+          "pred_median": 0.0034850228605790685,
+          "q10": 0.002365693626836953,
+          "q90": 0.004604352094321185
+        }
+      }
+    },
+    {
+      "origin": "2022-04",
+      "forecast_month": "2022-05",
+      "cutoff": "2022-05-01",
+      "actual": 0.0046311518506436,
+      "mom_scale": 0.000635511109030124,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.55,
+        "shrunk_confidence": 0.535,
+        "reason": "Rising rates make refinancing less attractive (down) but selling activity could sustain prepayments (counterargument)",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 5.383782415906667e-05,
+          "mae": 5.383782415906667e-05,
+          "pred": 0.0046849896748026665
+        },
+        "m0_w3_regime": {
+          "crps": 5.383782415906667e-05,
+          "mae": 5.383782415906667e-05,
+          "pred": 0.0046849896748026665
+        },
+        "m0_conformal": {
+          "crps": 0.00032365108542847695,
+          "mae": 0.0004947489705918245,
+          "coverage_80": 1.0,
+          "pred_median": 0.004136402880051775,
+          "q10": 0.003113116088052427,
+          "q90": 0.005159689672051123
+        },
+        "m0_conformal_regime": {
+          "crps": 0.00032365108542847695,
+          "mae": 0.0004947489705918245,
+          "coverage_80": 1.0,
+          "pred_median": 0.004136402880051775,
+          "q10": 0.003113116088052427,
+          "q90": 0.005159689672051123
+        }
+      }
+    },
+    {
+      "origin": "2022-05",
+      "forecast_month": "2022-06",
+      "cutoff": "2022-06-01",
+      "actual": 0.004811595176232,
+      "mom_scale": 0.0006410890508517702,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.58,
+        "shrunk_confidence": 0.556,
+        "reason": "Rising mortgage rates make refinancing less attractive (lower SMM); counterargument that imminent rate cuts could revive refinancing",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 2.352350335356728e-05,
+          "mae": 2.352350335356728e-05,
+          "pred": 0.004835118679585567
+        },
+        "m0_w3_regime": {
+          "crps": 2.352350335356728e-05,
+          "mae": 2.352350335356728e-05,
+          "pred": 0.004835118679585567
+        },
+        "m0_conformal": {
+          "crps": 0.0002570957273982604,
+          "mae": 0.0004212330821160579,
+          "coverage_80": 1.0,
+          "pred_median": 0.004390362094115942,
+          "q10": 0.003720348981341783,
+          "q90": 0.0050603752068901
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0002570957273982604,
+          "mae": 0.0004212330821160579,
+          "coverage_80": 1.0,
+          "pred_median": 0.004390362094115942,
+          "q10": 0.003720348981341783,
+          "q90": 0.0050603752068901
+        }
+      }
+    },
+    {
+      "origin": "2022-06",
+      "forecast_month": "2022-07",
+      "cutoff": "2022-07-01",
+      "actual": 0.004033091762296,
+      "mom_scale": 0.0006123823561966937,
+      "shift": -0.0004133580904327683,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.75,
+        "shrunk_confidence": 0.675,
+        "reason": "Rising mortgage rates make refinancing less attractive (down) but potential home\u2011sale\u2011driven prepayments could push it up",
+        "sign": -1.0,
+        "applied": true,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0006782343537874999,
+          "mae": 0.0006782343537874999,
+          "pred": 0.0047113261160835
+        },
+        "m0_w3_regime": {
+          "crps": 0.00026487626335473195,
+          "mae": 0.00026487626335473195,
+          "pred": 0.004297968025650732
+        },
+        "m0_conformal": {
+          "crps": 0.0003755741680535036,
+          "mae": 0.0005548867660596091,
+          "coverage_80": 0.0,
+          "pred_median": 0.004587978528355609,
+          "q10": 0.004109811600339327,
+          "q90": 0.00506614545637189
+        },
+        "m0_conformal_regime": {
+          "crps": 0.00012218193474679767,
+          "mae": 0.00014152867562684107,
+          "coverage_80": 1.0,
+          "pred_median": 0.004174620437922841,
+          "q10": 0.003696453509906559,
+          "q90": 0.004652787365939122
+        }
+      }
+    },
+    {
+      "origin": "2022-07",
+      "forecast_month": "2022-08",
+      "cutoff": "2022-08-01",
+      "actual": 0.004304645912069,
+      "mom_scale": 0.0006699257344756877,
+      "shift": -0.000405305069357791,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.65,
+        "shrunk_confidence": 0.605,
+        "reason": "Rising rates reduce refinancing attractiveness (down) vs possible lingering low\u2011rate lock\u2011ins",
+        "sign": -1.0,
+        "applied": true,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.00018730035098819993,
+          "mae": 0.00018730035098819993,
+          "pred": 0.0044919462630572
+        },
+        "m0_w3_regime": {
+          "crps": 0.00021800471836959118,
+          "mae": 0.00021800471836959118,
+          "pred": 0.004086641193699409
+        },
+        "m0_conformal": {
+          "crps": 0.00023850582934592637,
+          "mae": 0.0003850085370129923,
+          "coverage_80": 1.0,
+          "pred_median": 0.004689654449081993,
+          "q10": 0.004257126693387285,
+          "q90": 0.0051221822047767
+        },
+        "m0_conformal_regime": {
+          "crps": 9.497229076765615e-05,
+          "mae": 2.0296532344798827e-05,
+          "coverage_80": 1.0,
+          "pred_median": 0.0042843493797242015,
+          "q10": 0.003851821624029494,
+          "q90": 0.004716877135418909
+        }
+      }
+    },
+    {
+      "origin": "2022-08",
+      "forecast_month": "2022-09",
+      "cutoff": "2022-09-01",
+      "actual": 0.0037635510937691,
+      "mom_scale": 0.0005738895229681878,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.47,
+        "shrunk_confidence": 0.479,
+        "reason": "Rising rates make refinancing less attractive (down) but potential rate stabilization or home sales could counteract",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0006195598564298992,
+          "mae": 0.0006195598564298992,
+          "pred": 0.004383110950198999
+        },
+        "m0_w3_regime": {
+          "crps": 0.0006195598564298992,
+          "mae": 0.0006195598564298992,
+          "pred": 0.004383110950198999
+        },
+        "m0_conformal": {
+          "crps": 0.0007932904243623725,
+          "mae": 0.0009481451090436418,
+          "coverage_80": 0.0,
+          "pred_median": 0.004711696202812742,
+          "q10": 0.004298750376996023,
+          "q90": 0.00512464202862946
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0007932904243623725,
+          "mae": 0.0009481451090436418,
+          "coverage_80": 0.0,
+          "pred_median": 0.004711696202812742,
+          "q10": 0.004298750376996023,
+          "q90": 0.00512464202862946
+        }
+      }
+    },
+    {
+      "origin": "2022-09",
+      "forecast_month": "2022-10",
+      "cutoff": "2022-10-01",
+      "actual": 0.0032169007275552,
+      "mom_scale": 0.0005406494703253128,
+      "shift": -0.0003460156610082002,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.7,
+        "shrunk_confidence": 0.64,
+        "reason": "Rising rates reduce refinancing incentive (DOWN) vs. potential lock\u2011in demand could sustain some activity (counterargument)",
+        "sign": -1.0,
+        "applied": true,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0008168621951561662,
+          "mae": 0.0008168621951561662,
+          "pred": 0.004033762922711366
+        },
+        "m0_w3_regime": {
+          "crps": 0.0004708465341479659,
+          "mae": 0.0004708465341479659,
+          "pred": 0.003687747261703166
+        },
+        "m0_conformal": {
+          "crps": 0.0012310649078743293,
+          "mae": 0.001406520685378475,
+          "coverage_80": 0.0,
+          "pred_median": 0.004623421412933675,
+          "q10": 0.004155539339589287,
+          "q90": 0.005091303486278063
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0008850492468661293,
+          "mae": 0.0010605050243702747,
+          "coverage_80": 0.0,
+          "pred_median": 0.004277405751925475,
+          "q10": 0.0038095236785810867,
+          "q90": 0.004745287825269863
+        }
+      }
+    },
+    {
+      "origin": "2022-10",
+      "forecast_month": "2022-11",
+      "cutoff": "2022-11-01",
+      "actual": 0.0026165118222897,
+      "mom_scale": 0.0005353230773094215,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.55,
+        "shrunk_confidence": 0.535,
+        "reason": "Rising interest rates reduce refinancing incentive (DOWN) vs. possible continued refinancing to lock in before further hikes (UP)",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0011451874221747333,
+          "mae": 0.0011451874221747333,
+          "pred": 0.0037616992444644334
+        },
+        "m0_w3_regime": {
+          "crps": 0.0011451874221747333,
+          "mae": 0.0011451874221747333,
+          "pred": 0.0037616992444644334
+        },
+        "m0_conformal": {
+          "crps": 0.0016264119568809123,
+          "mae": 0.001842787503874791,
+          "coverage_80": 0.0,
+          "pred_median": 0.004459299326164491,
+          "q10": 0.003882297867514148,
+          "q90": 0.005036300784814834
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0016264119568809123,
+          "mae": 0.001842787503874791,
+          "coverage_80": 0.0,
+          "pred_median": 0.004459299326164491,
+          "q10": 0.003882297867514148,
+          "q90": 0.005036300784814834
+        }
+      }
+    },
+    {
+      "origin": "2022-11",
+      "forecast_month": "2022-12",
+      "cutoff": "2022-12-01",
+      "actual": 0.0025313740577568,
+      "mom_scale": 0.0005470592163843515,
+      "shift": 0.0,
+      "regime": {
+        "regime": "UP",
+        "confidence": 0.55,
+        "shrunk_confidence": 0.535,
+        "reason": "Falling policy rates in Dec 2022 should spur refinancing (UP) but high absolute mortgage rates and recent articles about rising rates argue for lock\u2011in (DOWN)",
+        "sign": 1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0006676138234478668,
+          "mae": 0.0006676138234478668,
+          "pred": 0.003198987881204667
+        },
+        "m0_w3_regime": {
+          "crps": 0.0006676138234478668,
+          "mae": 0.0006676138234478668,
+          "pred": 0.003198987881204667
+        },
+        "m0_conformal": {
+          "crps": 0.0014208335785557797,
+          "mae": 0.0017150625635623073,
+          "coverage_80": 0.0,
+          "pred_median": 0.004246436621319107,
+          "q10": 0.003461825994635033,
+          "q90": 0.005031047248003182
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0014208335785557797,
+          "mae": 0.0017150625635623073,
+          "coverage_80": 0.0,
+          "pred_median": 0.004246436621319107,
+          "q10": 0.003461825994635033,
+          "q90": 0.005031047248003182
+        }
+      }
+    },
+    {
+      "origin": "2022-12",
+      "forecast_month": "2023-01",
+      "cutoff": "2023-01-01",
+      "actual": 0.002091907671551,
+      "mom_scale": 0.0005417013272235447,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.55,
+        "shrunk_confidence": 0.535,
+        "reason": "High rates suppress refinancing (down) vs possible rate\u2011cut optimism that could spur refinancing (up)",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0006963545309829002,
+          "mae": 0.0006963545309829002,
+          "pred": 0.0027882622025339004
+        },
+        "m0_w3_regime": {
+          "crps": 0.0006963545309829002,
+          "mae": 0.0006963545309829002,
+          "pred": 0.0027882622025339004
+        },
+        "m0_conformal": {
+          "crps": 0.0016018113076122203,
+          "mae": 0.001928955399234658,
+          "coverage_80": 0.0,
+          "pred_median": 0.004020863070785658,
+          "q10": 0.0031484788264591577,
+          "q90": 0.0048932473151121585
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0016018113076122203,
+          "mae": 0.001928955399234658,
+          "coverage_80": 0.0,
+          "pred_median": 0.004020863070785658,
+          "q10": 0.0031484788264591577,
+          "q90": 0.0048932473151121585
+        }
+      }
+    },
+    {
+      "origin": "2023-01",
+      "forecast_month": "2023-02",
+      "cutoff": "2023-02-01",
+      "actual": 0.0024032664357598,
+      "mom_scale": 0.0004976748048774824,
+      "shift": 0.0,
+      "regime": {
+        "regime": "ABSTAIN",
+        "confidence": 0.0,
+        "shrunk_confidence": 0.15,
+        "reason": "No relevant US rate data; Canadian articles are outdated and unrelated, leaving direction unclear",
+        "sign": 0.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 9.998081439366747e-06,
+          "mae": 9.998081439366747e-06,
+          "pred": 0.0024132645171991668
+        },
+        "m0_w3_regime": {
+          "crps": 9.998081439366747e-06,
+          "mae": 9.998081439366747e-06,
+          "pred": 0.0024132645171991668
+        },
+        "m0_conformal": {
+          "crps": 0.001047836494855821,
+          "mae": 0.0014347084891210672,
+          "coverage_80": 0.0,
+          "pred_median": 0.0038379749248808673,
+          "q10": 0.0028063162735068774,
+          "q90": 0.004869633576254857
+        },
+        "m0_conformal_regime": {
+          "crps": 0.001047836494855821,
+          "mae": 0.0014347084891210672,
+          "coverage_80": 0.0,
+          "pred_median": 0.0038379749248808673,
+          "q10": 0.0028063162735068774,
+          "q90": 0.004869633576254857
+        }
+      }
+    },
+    {
+      "origin": "2023-02",
+      "forecast_month": "2023-03",
+      "cutoff": "2023-03-01",
+      "actual": 0.0034637945077038,
+      "mom_scale": 0.0005177150861611277,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.4,
+        "shrunk_confidence": 0.43,
+        "reason": "Rising mortgage rates make refinancing less attractive (down) versus possible home\u2011sale activity that could sustain or lift prepayments (up)",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0011216117860146,
+          "mae": 0.0011216117860146,
+          "pred": 0.0023421827216892
+        },
+        "m0_w3_regime": {
+          "crps": 0.0011216117860146,
+          "mae": 0.0011216117860146,
+          "pred": 0.0023421827216892
+        },
+        "m0_conformal": {
+          "crps": 0.0002414289029068256,
+          "mae": 0.00022605555046580766,
+          "coverage_80": 1.0,
+          "pred_median": 0.0036898500581696077,
+          "q10": 0.002681080379761281,
+          "q90": 0.004698619736577934
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0002414289029068256,
+          "mae": 0.00022605555046580766,
+          "coverage_80": 1.0,
+          "pred_median": 0.0036898500581696077,
+          "q10": 0.002681080379761281,
+          "q90": 0.004698619736577934
+        }
+      }
+    },
+    {
+      "origin": "2023-03",
+      "forecast_month": "2023-04",
+      "cutoff": "2023-04-01",
+      "actual": 0.0032432734082765,
+      "mom_scale": 0.0005296320104192126,
+      "shift": 0.0,
+      "regime": {
+        "regime": "UP",
+        "confidence": 0.35,
+        "shrunk_confidence": 0.395,
+        "reason": "Falling rates could boost refinancing (UP) but persistent high or rising rates may limit prepayments (DOWN)",
+        "sign": 1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0005902838699382998,
+          "mae": 0.0005902838699382998,
+          "pred": 0.0026529895383382
+        },
+        "m0_w3_regime": {
+          "crps": 0.0005902838699382998,
+          "mae": 0.0005902838699382998,
+          "pred": 0.0026529895383382
+        },
+        "m0_conformal": {
+          "crps": 0.00024244140506818836,
+          "mae": 0.00030331178664024135,
+          "coverage_80": 1.0,
+          "pred_median": 0.0035465851949167413,
+          "q10": 0.0026310806725184095,
+          "q90": 0.004462089717315074
+        },
+        "m0_conformal_regime": {
+          "crps": 0.00024244140506818836,
+          "mae": 0.00030331178664024135,
+          "coverage_80": 1.0,
+          "pred_median": 0.0035465851949167413,
+          "q10": 0.0026310806725184095,
+          "q90": 0.004462089717315074
+        }
+      }
+    },
+    {
+      "origin": "2023-04",
+      "forecast_month": "2023-05",
+      "cutoff": "2023-05-01",
+      "actual": 0.0041047155169537,
+      "mom_scale": 0.0005190912702134258,
+      "shift": 0.0,
+      "regime": {
+        "regime": "UP",
+        "confidence": 0.35,
+        "shrunk_confidence": 0.395,
+        "reason": "Falling US rates would make refinancing more attractive, but potential for rates to stay high or rise could keep borrowers locked in",
+        "sign": 1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0010679373997070003,
+          "mae": 0.0010679373997070003,
+          "pred": 0.0030367781172467
+        },
+        "m0_w3_regime": {
+          "crps": 0.0010679373997070003,
+          "mae": 0.0010679373997070003,
+          "pred": 0.0030367781172467
+        },
+        "m0_conformal": {
+          "crps": 0.0004114390940894956,
+          "mae": 0.0006787934814618257,
+          "coverage_80": 1.0,
+          "pred_median": 0.0034259220354918747,
+          "q10": 0.002490950057837639,
+          "q90": 0.0043608940131461115
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0004114390940894956,
+          "mae": 0.0006787934814618257,
+          "coverage_80": 1.0,
+          "pred_median": 0.0034259220354918747,
+          "q10": 0.002490950057837639,
+          "q90": 0.0043608940131461115
+        }
+      }
+    },
+    {
+      "origin": "2023-05",
+      "forecast_month": "2023-06",
+      "cutoff": "2023-06-01",
+      "actual": 0.0043726690829746,
+      "mom_scale": 0.0005919234251856134,
+      "shift": 0.0,
+      "regime": {
+        "regime": "ABSTAIN",
+        "confidence": 0.3,
+        "shrunk_confidence": 0.36,
+        "reason": "SMM hinges on US mortgage\u2011rate movement; no clear US signal and Canadian articles are not directly relevant, leaving direction ambiguous",
+        "sign": 0.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0007687412719966005,
+          "mae": 0.0007687412719966005,
+          "pred": 0.003603927810978
+        },
+        "m0_w3_regime": {
+          "crps": 0.0007687412719966005,
+          "mae": 0.0007687412719966005,
+          "pred": 0.003603927810978
+        },
+        "m0_conformal": {
+          "crps": 0.0007003525104319073,
+          "mae": 0.000990616741956884,
+          "coverage_80": 0.0,
+          "pred_median": 0.003382052341017716,
+          "q10": 0.002608014390284444,
+          "q90": 0.004156090291750988
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0007003525104319073,
+          "mae": 0.000990616741956884,
+          "coverage_80": 0.0,
+          "pred_median": 0.003382052341017716,
+          "q10": 0.002608014390284444,
+          "q90": 0.004156090291750988
+        }
+      }
+    },
+    {
+      "origin": "2023-06",
+      "forecast_month": "2023-07",
+      "cutoff": "2023-07-01",
+      "actual": 0.0038620540364263,
+      "mom_scale": 0.0005954666618217578,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.6,
+        "shrunk_confidence": 0.57,
+        "reason": "Rising mortgage rates reduce refinancing incentive (down) vs possible US rate decline counterargument",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 4.483196630863289e-05,
+          "mae": 4.483196630863289e-05,
+          "pred": 0.003906886002734933
+        },
+        "m0_w3_regime": {
+          "crps": 4.483196630863289e-05,
+          "mae": 4.483196630863289e-05,
+          "pred": 0.003906886002734933
+        },
+        "m0_conformal": {
+          "crps": 0.00031416321426738596,
+          "mae": 0.0005165788698466992,
+          "coverage_80": 1.0,
+          "pred_median": 0.003345475166579601,
+          "q10": 0.0025808524925352173,
+          "q90": 0.004110097840623985
+        },
+        "m0_conformal_regime": {
+          "crps": 0.00031416321426738596,
+          "mae": 0.0005165788698466992,
+          "coverage_80": 1.0,
+          "pred_median": 0.003345475166579601,
+          "q10": 0.0025808524925352173,
+          "q90": 0.004110097840623985
+        }
+      }
+    },
+    {
+      "origin": "2023-07",
+      "forecast_month": "2023-08",
+      "cutoff": "2023-08-01",
+      "actual": 0.0042061715054017,
+      "mom_scale": 0.0005695822240887508,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.35,
+        "shrunk_confidence": 0.395,
+        "reason": "Rising mortgage rates (per recent Canadian articles) dampen refinancing (DOWN) but possible US rate cuts or strong home\u2011sale activity could boost prepayments (UP)",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 9.302529328349997e-05,
+          "mae": 9.302529328349997e-05,
+          "pred": 0.0041131462121182
+        },
+        "m0_w3_regime": {
+          "crps": 9.302529328349997e-05,
+          "mae": 9.302529328349997e-05,
+          "pred": 0.0041131462121182
+        },
+        "m0_conformal": {
+          "crps": 0.0005856504139898853,
+          "mae": 0.0008749494826445748,
+          "coverage_80": 0.0,
+          "pred_median": 0.0033312220227571256,
+          "q10": 0.0025597578396779536,
+          "q90": 0.004102686205836297
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0005856504139898853,
+          "mae": 0.0008749494826445748,
+          "coverage_80": 0.0,
+          "pred_median": 0.0033312220227571256,
+          "q10": 0.0025597578396779536,
+          "q90": 0.004102686205836297
+        }
+      }
+    },
+    {
+      "origin": "2023-08",
+      "forecast_month": "2023-09",
+      "cutoff": "2023-09-01",
+      "actual": 0.0034870974477651,
+      "mom_scale": 0.0005732655985069659,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.4,
+        "shrunk_confidence": 0.43,
+        "reason": "Rising mortgage rates (as indicated by recent Canadian articles) make refinancing less attractive (down) vs possible rate stabilization that could keep SMM up",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0006598674271691002,
+          "mae": 0.0006598674271691002,
+          "pred": 0.0041469648749342
+        },
+        "m0_w3_regime": {
+          "crps": 0.0006598674271691002,
+          "mae": 0.0006598674271691002,
+          "pred": 0.0041469648749342
+        },
+        "m0_conformal": {
+          "crps": 0.00017477788835001688,
+          "mae": 0.00016408162556358265,
+          "coverage_80": 1.0,
+          "pred_median": 0.0033230158222015173,
+          "q10": 0.0025930713055667886,
+          "q90": 0.004052960338836246
+        },
+        "m0_conformal_regime": {
+          "crps": 0.00017477788835001688,
+          "mae": 0.00016408162556358265,
+          "coverage_80": 1.0,
+          "pred_median": 0.0033230158222015173,
+          "q10": 0.0025930713055667886,
+          "q90": 0.004052960338836246
+        }
+      }
+    },
+    {
+      "origin": "2023-09",
+      "forecast_month": "2023-10",
+      "cutoff": "2023-10-01",
+      "actual": 0.0034122527900134,
+      "mom_scale": 0.0005903535939346379,
+      "shift": -0.0003778263001181682,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.7,
+        "shrunk_confidence": 0.64,
+        "reason": "Rising mortgage rates reduce refinancing incentive (down) but home sales could still generate prepayments",
+        "sign": -1.0,
+        "applied": true,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0004395215398509673,
+          "mae": 0.0004395215398509673,
+          "pred": 0.0038517743298643672
+        },
+        "m0_w3_regime": {
+          "crps": 6.169523973279922e-05,
+          "mae": 6.169523973279922e-05,
+          "pred": 0.003473948029746199
+        },
+        "m0_conformal": {
+          "crps": 0.00016527080757882035,
+          "mae": 0.00011227477164554942,
+          "coverage_80": 1.0,
+          "pred_median": 0.0032999780183678505,
+          "q10": 0.0025765403334488983,
+          "q90": 0.004023415703286803
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0002980211011181843,
+          "mae": 0.0004901010717637175,
+          "coverage_80": 1.0,
+          "pred_median": 0.0029221517182496824,
+          "q10": 0.00219871403333073,
+          "q90": 0.0036455894031686346
+        }
+      }
+    },
+    {
+      "origin": "2023-10",
+      "forecast_month": "2023-11",
+      "cutoff": "2023-11-01",
+      "actual": 0.002864128360302,
+      "mom_scale": 0.000567582978075053,
+      "shift": -0.00034338770173540704,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.65,
+        "shrunk_confidence": 0.605,
+        "reason": "Rising mortgage rates dampen refinancing incentives (down) versus possible near\u2011term rate stabilization or seasonal home\u2011sale activity that could boost prepayments (up)",
+        "sign": -1.0,
+        "applied": true,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0008377122207580663,
+          "mae": 0.0008377122207580663,
+          "pred": 0.0037018405810600665
+        },
+        "m0_w3_regime": {
+          "crps": 0.0004943245190226595,
+          "mae": 0.0004943245190226595,
+          "pred": 0.0033584528793246596
+        },
+        "m0_conformal": {
+          "crps": 0.0002763183792651187,
+          "mae": 0.00045212899660403323,
+          "coverage_80": 1.0,
+          "pred_median": 0.0033162573569060333,
+          "q10": 0.0025895569036131372,
+          "q90": 0.0040429578101989294
+        },
+        "m0_conformal_regime": {
+          "crps": 0.00016537832321662384,
+          "mae": 0.00010874129486862635,
+          "coverage_80": 1.0,
+          "pred_median": 0.0029728696551706265,
+          "q10": 0.0022461692018777304,
+          "q90": 0.0036995701084635226
+        }
+      }
+    },
+    {
+      "origin": "2023-11",
+      "forecast_month": "2023-12",
+      "cutoff": "2023-12-01",
+      "actual": 0.0028667997869452,
+      "mom_scale": 0.0005625994107243037,
+      "shift": 0.0,
+      "regime": {
+        "regime": "UP",
+        "confidence": 0.35,
+        "shrunk_confidence": 0.395,
+        "reason": "Falling mortgage rates boost refinancing (UP) but Canadian-focused news may not reflect US rates, creating uncertainty",
+        "sign": 1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0003876930790816333,
+          "mae": 0.0003876930790816333,
+          "pred": 0.0032544928660268335
+        },
+        "m0_w3_regime": {
+          "crps": 0.0003876930790816333,
+          "mae": 0.0003876930790816333,
+          "pred": 0.0032544928660268335
+        },
+        "m0_conformal": {
+          "crps": 0.00028669694811239265,
+          "mae": 0.00047009228146185824,
+          "coverage_80": 1.0,
+          "pred_median": 0.0033368920684070584,
+          "q10": 0.00260028695359367,
+          "q90": 0.004073497183220446
+        },
+        "m0_conformal_regime": {
+          "crps": 0.00028669694811239265,
+          "mae": 0.00047009228146185824,
+          "coverage_80": 1.0,
+          "pred_median": 0.0033368920684070584,
+          "q10": 0.00260028695359367,
+          "q90": 0.004073497183220446
+        }
+      }
+    },
+    {
+      "origin": "2023-12",
+      "forecast_month": "2024-01",
+      "cutoff": "2024-01-01",
+      "actual": 0.0028482571311971,
+      "mom_scale": 0.0005616688923927991,
+      "shift": 0.0,
+      "regime": {
+        "regime": "UP",
+        "confidence": 0.45,
+        "shrunk_confidence": 0.465,
+        "reason": "Falling mortgage rates (as per recent articles) make refinancing more attractive, but the evidence is mixed and Canadian-focused, creating uncertainty about US rate trends",
+        "sign": 1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0001994698478897665,
+          "mae": 0.0001994698478897665,
+          "pred": 0.0030477269790868664
+        },
+        "m0_w3_regime": {
+          "crps": 0.0001994698478897665,
+          "mae": 0.0001994698478897665,
+          "pred": 0.0030477269790868664
+        },
+        "m0_conformal": {
+          "crps": 0.0003138797999153557,
+          "mae": 0.0005165870813089919,
+          "coverage_80": 1.0,
+          "pred_median": 0.003364844212506092,
+          "q10": 0.0026148220685251675,
+          "q90": 0.004114866356487016
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0003138797999153557,
+          "mae": 0.0005165870813089919,
+          "coverage_80": 1.0,
+          "pred_median": 0.003364844212506092,
+          "q10": 0.0026148220685251675,
+          "q90": 0.004114866356487016
+        }
+      }
+    },
+    {
+      "origin": "2024-01",
+      "forecast_month": "2024-02",
+      "cutoff": "2024-02-01",
+      "actual": 0.0031170855891117,
+      "mom_scale": 0.0005426457360345489,
+      "shift": 0.0,
+      "regime": {
+        "regime": "ABSTAIN",
+        "confidence": 0.0,
+        "shrunk_confidence": 0.15,
+        "reason": "Mixed rate signals: recent bond\u2011yield rise suggests higher mortgage rates (downward SMM) but other articles indicate declining rates (upward SMM)",
+        "sign": 0.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0002573571629635998,
+          "mae": 0.0002573571629635998,
+          "pred": 0.0028597284261481
+        },
+        "m0_w3_regime": {
+          "crps": 0.0002573571629635998,
+          "mae": 0.0002573571629635998,
+          "pred": 0.0028597284261481
+        },
+        "m0_conformal": {
+          "crps": 0.0001990788826801886,
+          "mae": 0.0003107877450315667,
+          "coverage_80": 1.0,
+          "pred_median": 0.0034278733341432666,
+          "q10": 0.0028214677552881994,
+          "q90": 0.004034278912998334
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0001990788826801886,
+          "mae": 0.0003107877450315667,
+          "coverage_80": 1.0,
+          "pred_median": 0.0034278733341432666,
+          "q10": 0.0028214677552881994,
+          "q90": 0.004034278912998334
+        }
+      }
+    },
+    {
+      "origin": "2024-02",
+      "forecast_month": "2024-03",
+      "cutoff": "2024-03-01",
+      "actual": 0.0038933595738139,
+      "mom_scale": 0.0005410128013150446,
+      "shift": 0.0,
+      "regime": {
+        "regime": "ABSTAIN",
+        "confidence": 0.3,
+        "shrunk_confidence": 0.36,
+        "reason": "Mechanism: falling rates would boost refinancing (UP) vs counterargument: rising bond yields could lift rates, suppress refinancing (DOWN)",
+        "sign": 0.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0009493120713958999,
+          "mae": 0.0009493120713958999,
+          "pred": 0.002944047502418
+        },
+        "m0_w3_regime": {
+          "crps": 0.0009493120713958999,
+          "mae": 0.0009493120713958999,
+          "pred": 0.002944047502418
+        },
+        "m0_conformal": {
+          "crps": 0.0002476675176319092,
+          "mae": 0.00040600131022464113,
+          "coverage_80": 1.0,
+          "pred_median": 0.003487358263589259,
+          "q10": 0.0029786167543323157,
+          "q90": 0.003996099772846202
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0002476675176319092,
+          "mae": 0.00040600131022464113,
+          "coverage_80": 1.0,
+          "pred_median": 0.003487358263589259,
+          "q10": 0.0029786167543323157,
+          "q90": 0.003996099772846202
+        }
+      }
+    },
+    {
+      "origin": "2024-03",
+      "forecast_month": "2024-04",
+      "cutoff": "2024-04-01",
+      "actual": 0.0043577060552373,
+      "mom_scale": 0.0004976863903136372,
+      "shift": 0.0,
+      "regime": {
+        "regime": "ABSTAIN",
+        "confidence": 0.3,
+        "shrunk_confidence": 0.36,
+        "reason": "Mixed rate outlook: rising bond yields could lift mortgage rates (reducing refinancing) vs reports of declining rates encouraging refinancing",
+        "sign": 0.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0010714719571964008,
+          "mae": 0.0010714719571964008,
+          "pred": 0.0032862340980408995
+        },
+        "m0_w3_regime": {
+          "crps": 0.0010714719571964008,
+          "mae": 0.0010714719571964008,
+          "pred": 0.0032862340980408995
+        },
+        "m0_conformal": {
+          "crps": 0.0006330335101814276,
+          "mae": 0.0008345507028055337,
+          "coverage_80": 0.0,
+          "pred_median": 0.0035231553524317665,
+          "q10": 0.002985776172100817,
+          "q90": 0.004060534532762716
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0006330335101814276,
+          "mae": 0.0008345507028055337,
+          "coverage_80": 0.0,
+          "pred_median": 0.0035231553524317665,
+          "q10": 0.002985776172100817,
+          "q90": 0.004060534532762716
+        }
+      }
+    },
+    {
+      "origin": "2024-04",
+      "forecast_month": "2024-05",
+      "cutoff": "2024-05-01",
+      "actual": 0.0047222511784843,
+      "mom_scale": 0.0005048382076953369,
+      "shift": 0.0,
+      "regime": {
+        "regime": "UP",
+        "confidence": 0.4,
+        "shrunk_confidence": 0.43,
+        "reason": "Falling rates boost refinancing (UP) vs possible rate rise/lock\u2011in (DOWN)",
+        "sign": 1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0009328674390966661,
+          "mae": 0.0009328674390966661,
+          "pred": 0.0037893837393876335
+        },
+        "m0_w3_regime": {
+          "crps": 0.0009328674390966661,
+          "mae": 0.0009328674390966661,
+          "pred": 0.0037893837393876335
+        },
+        "m0_conformal": {
+          "crps": 0.0008808178105914416,
+          "mae": 0.0011062264388057995,
+          "coverage_80": 0.0,
+          "pred_median": 0.0036160247396785,
+          "q10": 0.003014935064440212,
+          "q90": 0.004217114414916788
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0008808178105914416,
+          "mae": 0.0011062264388057995,
+          "coverage_80": 0.0,
+          "pred_median": 0.0036160247396785,
+          "q10": 0.003014935064440212,
+          "q90": 0.004217114414916788
+        }
+      }
+    },
+    {
+      "origin": "2024-05",
+      "forecast_month": "2024-06",
+      "cutoff": "2024-06-01",
+      "actual": 0.0044231936142678,
+      "mom_scale": 0.0004538728197580368,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.4,
+        "shrunk_confidence": 0.43,
+        "reason": "High interest rates deter refinancing (lowering SMM) but recent signs of rate declines offer a counterargument for higher prepayments",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 9.875467842263442e-05,
+          "mae": 9.875467842263442e-05,
+          "pred": 0.004324438935845166
+        },
+        "m0_w3_regime": {
+          "crps": 9.875467842263442e-05,
+          "mae": 9.875467842263442e-05,
+          "pred": 0.004324438935845166
+        },
+        "m0_conformal": {
+          "crps": 0.0005148605497091266,
+          "mae": 0.0007557075694617499,
+          "coverage_80": 0.0,
+          "pred_median": 0.0036674860448060505,
+          "q10": 0.003025227325465722,
+          "q90": 0.004309744764146379
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0005148605497091266,
+          "mae": 0.0007557075694617499,
+          "coverage_80": 0.0,
+          "pred_median": 0.0036674860448060505,
+          "q10": 0.003025227325465722,
+          "q90": 0.004309744764146379
+        }
+      }
+    },
+    {
+      "origin": "2024-06",
+      "forecast_month": "2024-07",
+      "cutoff": "2024-07-01",
+      "actual": 0.0049855273581795,
+      "mom_scale": 0.0004587739271528748,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.45,
+        "shrunk_confidence": 0.465,
+        "reason": "Rising rates make refinancing less attractive (SMM down) \u2013 but potential US rate easing could spur refinancing, countering the lock\u2011in effect",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.00048447707551636625,
+          "mae": 0.00048447707551636625,
+          "pred": 0.004501050282663134
+        },
+        "m0_w3_regime": {
+          "crps": 0.00048447707551636625,
+          "mae": 0.00048447707551636625,
+          "pred": 0.004501050282663134
+        },
+        "m0_conformal": {
+          "crps": 0.0010717208027307306,
+          "mae": 0.0013138309357656835,
+          "coverage_80": 0.0,
+          "pred_median": 0.0036716964224138165,
+          "q10": 0.0030260694009872752,
+          "q90": 0.004317323443840357
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0010717208027307306,
+          "mae": 0.0013138309357656835,
+          "coverage_80": 0.0,
+          "pred_median": 0.0036716964224138165,
+          "q10": 0.0030260694009872752,
+          "q90": 0.004317323443840357
+        }
+      }
+    },
+    {
+      "origin": "2024-07",
+      "forecast_month": "2024-08",
+      "cutoff": "2024-08-01",
+      "actual": 0.0050569417587163,
+      "mom_scale": 0.00045384521066366514,
+      "shift": 0.0,
+      "regime": {
+        "regime": "ABSTAIN",
+        "confidence": 0.3,
+        "shrunk_confidence": 0.36,
+        "reason": "Potential US rate drop could increase refinancing (UP) but absence of US evidence and Canadian\u2011only trends make direction uncertain (DOWN).",
+        "sign": 0.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.00034661770840576766,
+          "mae": 0.00034661770840576766,
+          "pred": 0.004710324050310533
+        },
+        "m0_w3_regime": {
+          "crps": 0.00034661770840576766,
+          "mae": 0.00034661770840576766,
+          "pred": 0.004710324050310533
+        },
+        "m0_conformal": {
+          "crps": 0.0010174562128271666,
+          "mae": 0.0012916225594897177,
+          "coverage_80": 0.0,
+          "pred_median": 0.0037653191992265828,
+          "q10": 0.0030342089414597804,
+          "q90": 0.0044964294569933855
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0010174562128271666,
+          "mae": 0.0012916225594897177,
+          "coverage_80": 0.0,
+          "pred_median": 0.0037653191992265828,
+          "q10": 0.0030342089414597804,
+          "q90": 0.0044964294569933855
+        }
+      }
+    },
+    {
+      "origin": "2024-08",
+      "forecast_month": "2024-09",
+      "cutoff": "2024-09-01",
+      "actual": 0.0050953299430166,
+      "mom_scale": 0.00044693690849031227,
+      "shift": 0.0,
+      "regime": {
+        "regime": "ABSTAIN",
+        "confidence": 0.0,
+        "shrunk_confidence": 0.15,
+        "reason": "Insufficient US rate evidence; Canadian trends not directly applicable",
+        "sign": 0.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0002734423659620658,
+          "mae": 0.0002734423659620658,
+          "pred": 0.004821887577054534
+        },
+        "m0_w3_regime": {
+          "crps": 0.0002734423659620658,
+          "mae": 0.0002734423659620658,
+          "pred": 0.004821887577054534
+        },
+        "m0_conformal": {
+          "crps": 0.0009636776196850494,
+          "mae": 0.0012591132226804662,
+          "coverage_80": 0.0,
+          "pred_median": 0.0038362167203361336,
+          "q10": 0.0030483884456816907,
+          "q90": 0.004624044994990578
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0009636776196850494,
+          "mae": 0.0012591132226804662,
+          "coverage_80": 0.0,
+          "pred_median": 0.0038362167203361336,
+          "q10": 0.0030483884456816907,
+          "q90": 0.004624044994990578
+        }
+      }
+    },
+    {
+      "origin": "2024-09",
+      "forecast_month": "2024-10",
+      "cutoff": "2024-10-01",
+      "actual": 0.0071610337814581,
+      "mom_scale": 0.0003725182049205366,
+      "shift": 0.0,
+      "regime": {
+        "regime": "ABSTAIN",
+        "confidence": 0.3,
+        "shrunk_confidence": 0.36,
+        "reason": "Falling rates would boost SMM, but only Canadian rate news is available\u2014no US data, making direction uncertain",
+        "sign": 0.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0021151007614873003,
+          "mae": 0.0021151007614873003,
+          "pred": 0.0050459330199708
+        },
+        "m0_w3_regime": {
+          "crps": 0.0021151007614873003,
+          "mae": 0.0021151007614873003,
+          "pred": 0.0050459330199708
+        },
+        "m0_conformal": {
+          "crps": 0.0028591256517247385,
+          "mae": 0.0031907976865176747,
+          "coverage_80": 0.0,
+          "pred_median": 0.0039702360949404256,
+          "q10": 0.0030857773354925973,
+          "q90": 0.004854694854388254
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0028591256517247385,
+          "mae": 0.0031907976865176747,
+          "coverage_80": 0.0,
+          "pred_median": 0.0039702360949404256,
+          "q10": 0.0030857773354925973,
+          "q90": 0.004854694854388254
+        }
+      }
+    },
+    {
+      "origin": "2024-10",
+      "forecast_month": "2024-11",
+      "cutoff": "2024-11-01",
+      "actual": 0.0050552450318727,
+      "mom_scale": 0.0006628053079061709,
+      "shift": 0.0,
+      "regime": {
+        "regime": "ABSTAIN",
+        "confidence": 0.0,
+        "shrunk_confidence": 0.15,
+        "reason": "Falling rates could spur refinancing (UP) but US rate outlook is unclear and Canadian articles may not reflect US conditions (DOWN)",
+        "sign": 0.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0007158567958576341,
+          "mae": 0.0007158567958576341,
+          "pred": 0.005771101827730334
+        },
+        "m0_w3_regime": {
+          "crps": 0.0007158567958576341,
+          "mae": 0.0007158567958576341,
+          "pred": 0.005771101827730334
+        },
+        "m0_conformal": {
+          "crps": 0.0004696898573864786,
+          "mae": 0.0007726105209785493,
+          "coverage_80": 1.0,
+          "pred_median": 0.00428263451089415,
+          "q10": 0.003148257018683342,
+          "q90": 0.005417012003104959
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0004696898573864786,
+          "mae": 0.0007726105209785493,
+          "coverage_80": 1.0,
+          "pred_median": 0.00428263451089415,
+          "q10": 0.003148257018683342,
+          "q90": 0.005417012003104959
+        }
+      }
+    },
+    {
+      "origin": "2024-11",
+      "forecast_month": "2024-12",
+      "cutoff": "2024-12-01",
+      "actual": 0.0045772096250244,
+      "mom_scale": 0.000940858218473337,
+      "shift": 0.0,
+      "regime": {
+        "regime": "ABSTAIN",
+        "confidence": 0.2,
+        "shrunk_confidence": 0.29,
+        "reason": "Insufficient US rate data; Canadian articles suggest falling rates but may not apply to US, making direction indeterminate",
+        "sign": 0.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0011933266270914003,
+          "mae": 0.0011933266270914003,
+          "pred": 0.0057705362521158
+        },
+        "m0_w3_regime": {
+          "crps": 0.0011933266270914003,
+          "mae": 0.0011933266270914003,
+          "pred": 0.0057705362521158
+        },
+        "m0_conformal": {
+          "crps": 0.0002748213211815586,
+          "mae": 0.000111982058166025,
+          "coverage_80": 1.0,
+          "pred_median": 0.004465227566858375,
+          "q10": 0.003226531071274475,
+          "q90": 0.005703924062442274
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0002748213211815586,
+          "mae": 0.000111982058166025,
+          "coverage_80": 1.0,
+          "pred_median": 0.004465227566858375,
+          "q10": 0.003226531071274475,
+          "q90": 0.005703924062442274
+        }
+      }
+    },
+    {
+      "origin": "2024-12",
+      "forecast_month": "2025-01",
+      "cutoff": "2025-01-01",
+      "actual": 0.0037873451820309,
+      "mom_scale": 0.0009592685492235386,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.4,
+        "shrunk_confidence": 0.43,
+        "reason": "Stable or non\u2011falling rates make refinancing less attractive (lower SMM), but US rate cuts could still boost refinancing",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.001810484297420833,
+          "mae": 0.001810484297420833,
+          "pred": 0.005597829479451733
+        },
+        "m0_w3_regime": {
+          "crps": 0.001810484297420833,
+          "mae": 0.001810484297420833,
+          "pred": 0.005597829479451733
+        },
+        "m0_conformal": {
+          "crps": 0.0004980808312330571,
+          "mae": 0.0008204165380007412,
+          "coverage_80": 1.0,
+          "pred_median": 0.004607761720031641,
+          "q10": 0.0035394246528480397,
+          "q90": 0.005676098787215243
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0004980808312330571,
+          "mae": 0.0008204165380007412,
+          "coverage_80": 1.0,
+          "pred_median": 0.004607761720031641,
+          "q10": 0.0035394246528480397,
+          "q90": 0.005676098787215243
+        }
+      }
+    },
+    {
+      "origin": "2025-01",
+      "forecast_month": "2025-02",
+      "cutoff": "2025-02-01",
+      "actual": 0.0037368912923828,
+      "mom_scale": 0.0009961745438651927,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.45,
+        "shrunk_confidence": 0.465,
+        "reason": "High mortgage rates lock\u2011in borrowers (downward pressure) vs. occasional easing signals that could spur refinancing (upward counterargument)",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0007363753205932,
+          "mae": 0.0007363753205932,
+          "pred": 0.004473266612976
+        },
+        "m0_w3_regime": {
+          "crps": 0.0007363753205932,
+          "mae": 0.0007363753205932,
+          "pred": 0.004473266612976
+        },
+        "m0_conformal": {
+          "crps": 0.0006858864660542382,
+          "mae": 0.0009491277652183259,
+          "coverage_80": 0.0,
+          "pred_median": 0.004686019057601126,
+          "q10": 0.003984042259830225,
+          "q90": 0.005387995855372026
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0006858864660542382,
+          "mae": 0.0009491277652183259,
+          "coverage_80": 0.0,
+          "pred_median": 0.004686019057601126,
+          "q10": 0.003984042259830225,
+          "q90": 0.005387995855372026
+        }
+      }
+    },
+    {
+      "origin": "2025-02",
+      "forecast_month": "2025-03",
+      "cutoff": "2025-03-01",
+      "actual": 0.0050657517893274,
+      "mom_scale": 0.0009948848753381242,
+      "shift": -0.0006019053495795651,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.65,
+        "shrunk_confidence": 0.605,
+        "reason": "High US mortgage rates and declining refinance activity make prepayments less attractive, but recent bond-yield drops and bank rate cuts could lower rates and boost refinancing",
+        "sign": -1.0,
+        "applied": true,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0010319364228480333,
+          "mae": 0.0010319364228480333,
+          "pred": 0.0040338153664793664
+        },
+        "m0_w3_regime": {
+          "crps": 0.0016338417724275985,
+          "mae": 0.0016338417724275985,
+          "pred": 0.0034319100168998013
+        },
+        "m0_conformal": {
+          "crps": 0.00022356478354720196,
+          "mae": 0.0003280822564536833,
+          "coverage_80": 1.0,
+          "pred_median": 0.004737669532873716,
+          "q10": 0.0039943723548847435,
+          "q90": 0.00548096671086269
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0006512511642873831,
+          "mae": 0.0009299876060332481,
+          "coverage_80": 0.0,
+          "pred_median": 0.004135764183294152,
+          "q10": 0.0033924670053051783,
+          "q90": 0.0048790613612831255
+        }
+      }
+    },
+    {
+      "origin": "2025-03",
+      "forecast_month": "2025-04",
+      "cutoff": "2025-04-01",
+      "actual": 0.0060011851815542,
+      "mom_scale": 0.0010430939680580841,
+      "shift": 0.0006310718506751409,
+      "regime": {
+        "regime": "UP",
+        "confidence": 0.65,
+        "shrunk_confidence": 0.605,
+        "reason": "Rate cuts make refinancing more attractive; counterargument is that high rates and affordability constraints may limit refinancing",
+        "sign": 1.0,
+        "applied": true,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0018045224269738333,
+          "mae": 0.0018045224269738333,
+          "pred": 0.004196662754580366
+        },
+        "m0_w3_regime": {
+          "crps": 0.0011734505762986923,
+          "mae": 0.0011734505762986923,
+          "pred": 0.004827734605255507
+        },
+        "m0_conformal": {
+          "crps": 0.0008856308391393923,
+          "mae": 0.001165816297387691,
+          "coverage_80": 0.0,
+          "pred_median": 0.004835368884166509,
+          "q10": 0.004088207662171045,
+          "q90": 0.005582530106161972
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0003243354932677026,
+          "mae": 0.00053474444671255,
+          "coverage_80": 1.0,
+          "pred_median": 0.00546644073484165,
+          "q10": 0.004719279512846186,
+          "q90": 0.006213601956837113
+        }
+      }
+    },
+    {
+      "origin": "2025-04",
+      "forecast_month": "2025-05",
+      "cutoff": "2025-05-01",
+      "actual": 0.0058447899492848,
+      "mom_scale": 0.0010667439805471701,
+      "shift": 0.0,
+      "regime": {
+        "regime": "UP",
+        "confidence": 0.6,
+        "shrunk_confidence": 0.57,
+        "reason": "Falling rates spur refinancing (UP) vs potential refinancing saturation limiting further SMM rise (DOWN)",
+        "sign": 1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0009101805281966661,
+          "mae": 0.0009101805281966661,
+          "pred": 0.0049346094210881335
+        },
+        "m0_w3_regime": {
+          "crps": 0.0009101805281966661,
+          "mae": 0.0009101805281966661,
+          "pred": 0.0049346094210881335
+        },
+        "m0_conformal": {
+          "crps": 0.0005491225189802074,
+          "mae": 0.0008724644712585494,
+          "coverage_80": 1.0,
+          "pred_median": 0.00497232547802625,
+          "q10": 0.0040493205360247544,
+          "q90": 0.005895330420027746
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0005491225189802074,
+          "mae": 0.0008724644712585494,
+          "coverage_80": 1.0,
+          "pred_median": 0.00497232547802625,
+          "q10": 0.0040493205360247544,
+          "q90": 0.005895330420027746
+        }
+      }
+    },
+    {
+      "origin": "2025-05",
+      "forecast_month": "2025-06",
+      "cutoff": "2025-06-01",
+      "actual": 0.0056584163024782,
+      "mom_scale": 0.0010672400160760475,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.6,
+        "shrunk_confidence": 0.57,
+        "reason": "Rising mortgage rates make refinancing less attractive (DOWN) while recent dip in refinance rates offers a modest counterargument for higher SMM (UP)",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 2.1173995756066342e-05,
+          "mae": 2.1173995756066342e-05,
+          "pred": 0.005637242306722134
+        },
+        "m0_w3_regime": {
+          "crps": 2.1173995756066342e-05,
+          "mae": 2.1173995756066342e-05,
+          "pred": 0.005637242306722134
+        },
+        "m0_conformal": {
+          "crps": 0.0003634611259379808,
+          "mae": 0.0005925459268852412,
+          "coverage_80": 1.0,
+          "pred_median": 0.005065870375592959,
+          "q10": 0.004097963882759442,
+          "q90": 0.006033776868426476
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0003634611259379808,
+          "mae": 0.0005925459268852412,
+          "coverage_80": 1.0,
+          "pred_median": 0.005065870375592959,
+          "q10": 0.004097963882759442,
+          "q90": 0.006033776868426476
+        }
+      }
+    },
+    {
+      "origin": "2025-06",
+      "forecast_month": "2025-07",
+      "cutoff": "2025-07-01",
+      "actual": 0.0059830543217336,
+      "mom_scale": 0.001063962291316141,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.55,
+        "shrunk_confidence": 0.535,
+        "reason": "Rising mortgage rates reduce refinancing incentive (down) but recent rate dips and low state refinance rates argue for possible up",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 9,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.00014825717729453295,
+          "mae": 0.00014825717729453295,
+          "pred": 0.005834797144439067
+        },
+        "m0_w3_regime": {
+          "crps": 0.00014825717729453295,
+          "mae": 0.00014825717729453295,
+          "pred": 0.005834797144439067
+        },
+        "m0_conformal": {
+          "crps": 0.0004968817664312225,
+          "mae": 0.0008142487221231079,
+          "coverage_80": 1.0,
+          "pred_median": 0.005168805599610492,
+          "q10": 0.004151490199248559,
+          "q90": 0.006186120999972424
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0004968817664312225,
+          "mae": 0.0008142487221231079,
+          "coverage_80": 1.0,
+          "pred_median": 0.005168805599610492,
+          "q10": 0.004151490199248559,
+          "q90": 0.006186120999972424
+        }
+      }
+    },
+    {
+      "origin": "2025-07",
+      "forecast_month": "2025-08",
+      "cutoff": "2025-08-01",
+      "actual": 0.0057980838955087,
+      "mom_scale": 0.00105682071192305,
+      "shift": 0.0,
+      "regime": {
+        "regime": "ABSTAIN",
+        "confidence": 0.3,
+        "shrunk_confidence": 0.36,
+        "reason": "Falling rates would spur refinancing (UP) but recent US rate climbs and buyer uncertainty could dampen prepayments (DOWN)",
+        "sign": 0.0,
+        "applied": false,
+        "n_articles": 9,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 3.0669628990166904e-05,
+          "mae": 3.0669628990166904e-05,
+          "pred": 0.005828753524498867
+        },
+        "m0_w3_regime": {
+          "crps": 3.0669628990166904e-05,
+          "mae": 3.0669628990166904e-05,
+          "pred": 0.005828753524498867
+        },
+        "m0_conformal": {
+          "crps": 0.0003491229588756558,
+          "mae": 0.000546151048935367,
+          "coverage_80": 1.0,
+          "pred_median": 0.005251932846573333,
+          "q10": 0.0041947163676692364,
+          "q90": 0.00630914932547743
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0003491229588756558,
+          "mae": 0.000546151048935367,
+          "coverage_80": 1.0,
+          "pred_median": 0.005251932846573333,
+          "q10": 0.0041947163676692364,
+          "q90": 0.00630914932547743
+        }
+      }
+    },
+    {
+      "origin": "2025-08",
+      "forecast_month": "2025-09",
+      "cutoff": "2025-09-01",
+      "actual": 0.0065348701671468,
+      "mom_scale": 0.0010596668256533525,
+      "shift": 0.0,
+      "regime": {
+        "regime": "UP",
+        "confidence": 0.45,
+        "shrunk_confidence": 0.465,
+        "reason": "Falling US mortgage rates (e.g., June 30\u2011year drop) make refinancing more attractive, but stale data and possible rate stabilization present a down\u2011side counterargument",
+        "sign": 1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0007216853272399666,
+          "mae": 0.0007216853272399666,
+          "pred": 0.005813184839906833
+        },
+        "m0_w3_regime": {
+          "crps": 0.0007216853272399666,
+          "mae": 0.0007216853272399666,
+          "pred": 0.005813184839906833
+        },
+        "m0_conformal": {
+          "crps": 0.0008117533825607855,
+          "mae": 0.0012211754758407658,
+          "coverage_80": 0.0,
+          "pred_median": 0.005313694691306034,
+          "q10": 0.0042189933947648865,
+          "q90": 0.0064083959878471815
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0008117533825607855,
+          "mae": 0.0012211754758407658,
+          "coverage_80": 0.0,
+          "pred_median": 0.005313694691306034,
+          "q10": 0.0042189933947648865,
+          "q90": 0.0064083959878471815
+        }
+      }
+    },
+    {
+      "origin": "2025-09",
+      "forecast_month": "2025-10",
+      "cutoff": "2025-10-01",
+      "actual": 0.0096237696853497,
+      "mom_scale": 0.0010772986665664053,
+      "shift": 0.0,
+      "regime": {
+        "regime": "UP",
+        "confidence": 0.45,
+        "shrunk_confidence": 0.465,
+        "reason": "Low and falling mortgage rates make refinancing more attractive (UP) but possible upcoming rate hikes or a slowdown in refinance activity could dampen demand (DOWN)",
+        "sign": 1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.00351843355722,
+          "mae": 0.00351843355722,
+          "pred": 0.0061053361281297
+        },
+        "m0_w3_regime": {
+          "crps": 0.00351843355722,
+          "mae": 0.00351843355722,
+          "pred": 0.0061053361281297
+        },
+        "m0_conformal": {
+          "crps": 0.003728925794561052,
+          "mae": 0.004190113308699483,
+          "coverage_80": 0.0,
+          "pred_median": 0.0054336563766502165,
+          "q10": 0.0042038230056144,
+          "q90": 0.006663489747686033
+        },
+        "m0_conformal_regime": {
+          "crps": 0.003728925794561052,
+          "mae": 0.004190113308699483,
+          "coverage_80": 0.0,
+          "pred_median": 0.0054336563766502165,
+          "q10": 0.0042038230056144,
+          "q90": 0.006663489747686033
+        }
+      }
+    },
+    {
+      "origin": "2025-10",
+      "forecast_month": "2025-11",
+      "cutoff": "2025-11-01",
+      "actual": 0.0071389019787723,
+      "mom_scale": 0.0012687764972349304,
+      "shift": 0.0,
+      "regime": {
+        "regime": "DOWN",
+        "confidence": 0.55,
+        "shrunk_confidence": 0.535,
+        "reason": "Rising mortgage rates likely curb refinancing (DOWN), though recent articles note still\u2011low variable rates that could sustain demand (counterargument)",
+        "sign": -1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.00018000593722943253,
+          "mae": 0.00018000593722943253,
+          "pred": 0.007318907916001732
+        },
+        "m0_w3_regime": {
+          "crps": 0.00018000593722943253,
+          "mae": 0.00018000593722943253,
+          "pred": 0.007318907916001732
+        },
+        "m0_conformal": {
+          "crps": 0.0009944942531570423,
+          "mae": 0.0015000176101311168,
+          "coverage_80": 0.0,
+          "pred_median": 0.005638884368641183,
+          "q10": 0.004284031330231916,
+          "q90": 0.0069937374070504505
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0009944942531570423,
+          "mae": 0.0015000176101311168,
+          "coverage_80": 0.0,
+          "pred_median": 0.005638884368641183,
+          "q10": 0.004284031330231916,
+          "q90": 0.0069937374070504505
+        }
+      }
+    },
+    {
+      "origin": "2025-11",
+      "forecast_month": "2025-12",
+      "cutoff": "2025-12-01",
+      "actual": 0.0075013331294524,
+      "mom_scale": 0.0013345606432489672,
+      "shift": 0.000854118811679339,
+      "regime": {
+        "regime": "UP",
+        "confidence": 0.7,
+        "shrunk_confidence": 0.64,
+        "reason": "Falling mortgage rates boost refinancing incentives, but some outlooks warn of future rate rises",
+        "sign": 1.0,
+        "applied": true,
+        "n_articles": 7,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.00026451414763719976,
+          "mae": 0.00026451414763719976,
+          "pred": 0.0077658472770896
+        },
+        "m0_w3_regime": {
+          "crps": 0.0011186329593165381,
+          "mae": 0.0011186329593165381,
+          "pred": 0.008619966088768938
+        },
+        "m0_conformal": {
+          "crps": 0.001124034341556727,
+          "mae": 0.0016888106819029167,
+          "coverage_80": 0.0,
+          "pred_median": 0.005812522447549483,
+          "q10": 0.004304188272621939,
+          "q90": 0.007320856622477027
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0005243826245404977,
+          "mae": 0.0008346918702235775,
+          "coverage_80": 1.0,
+          "pred_median": 0.0066666412592288225,
+          "q10": 0.005158307084301279,
+          "q90": 0.008174975434156366
+        }
+      }
+    },
+    {
+      "origin": "2025-12",
+      "forecast_month": "2026-01",
+      "cutoff": "2026-01-01",
+      "actual": 0.0063674079755128,
+      "mom_scale": 0.0013192171360082983,
+      "shift": 0.0007981263672850205,
+      "regime": {
+        "regime": "UP",
+        "confidence": 0.65,
+        "shrunk_confidence": 0.605,
+        "reason": "Falling mortgage rates boost refinancing (UP) but risk of rates rising again creates lock\u2011in pressure (DOWN)",
+        "sign": 1.0,
+        "applied": true,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0017205936223453335,
+          "mae": 0.0017205936223453335,
+          "pred": 0.008088001597858134
+        },
+        "m0_w3_regime": {
+          "crps": 0.0025187199896303534,
+          "mae": 0.0025187199896303534,
+          "pred": 0.008886127965143154
+        },
+        "m0_conformal": {
+          "crps": 0.0003924403732755364,
+          "mae": 0.000311208569260985,
+          "coverage_80": 1.0,
+          "pred_median": 0.006056199406251815,
+          "q10": 0.004372911307038335,
+          "q90": 0.007739487505465297
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0004271413855245095,
+          "mae": 0.00048691779802403565,
+          "coverage_80": 1.0,
+          "pred_median": 0.006854325773536836,
+          "q10": 0.005171037674323356,
+          "q90": 0.008537613872750318
+        }
+      }
+    },
+    {
+      "origin": "2026-01",
+      "forecast_month": "2026-02",
+      "cutoff": "2026-02-01",
+      "actual": 0.0076563597479614,
+      "mom_scale": 0.0013471649459868083,
+      "shift": 0.0,
+      "regime": {
+        "regime": "UP",
+        "confidence": 0.6,
+        "shrunk_confidence": 0.57,
+        "reason": "Falling mortgage rates increase refinancing incentives (UP) versus the counterargument that rates could rebound or stabilize, limiting prepayments (DOWN)",
+        "sign": 1.0,
+        "applied": false,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.0006538120533822337,
+          "mae": 0.0006538120533822337,
+          "pred": 0.007002547694579166
+        },
+        "m0_w3_regime": {
+          "crps": 0.0006538120533822337,
+          "mae": 0.0006538120533822337,
+          "pred": 0.007002547694579166
+        },
+        "m0_conformal": {
+          "crps": 0.0010175971002380484,
+          "mae": 0.0013851551089194246,
+          "coverage_80": 0.0,
+          "pred_median": 0.006271204639041975,
+          "q10": 0.005291049949224971,
+          "q90": 0.00725135932885898
+        },
+        "m0_conformal_regime": {
+          "crps": 0.0010175971002380484,
+          "mae": 0.0013851551089194246,
+          "coverage_80": 0.0,
+          "pred_median": 0.006271204639041975,
+          "q10": 0.005291049949224971,
+          "q90": 0.00725135932885898
+        }
+      }
+    },
+    {
+      "origin": "2026-02",
+      "forecast_month": "2026-03",
+      "cutoff": "2026-03-01",
+      "actual": 0.0095892818514274,
+      "mom_scale": 0.0013782986648798704,
+      "shift": 0.0008821111455231171,
+      "regime": {
+        "regime": "UP",
+        "confidence": 0.7,
+        "shrunk_confidence": 0.64,
+        "reason": "Lower rates boost refinancing (up) vs possible lock\u2011in saturation",
+        "sign": 1.0,
+        "applied": true,
+        "n_articles": 10,
+        "error": null
+      },
+      "models": {
+        "m0_w3": {
+          "crps": 0.002414248233785201,
+          "mae": 0.002414248233785201,
+          "pred": 0.0071750336176421995
+        },
+        "m0_w3_regime": {
+          "crps": 0.0015321370882620845,
+          "mae": 0.0015321370882620845,
+          "pred": 0.008057144763165316
+        },
+        "m0_conformal": {
+          "crps": 0.002681042341586399,
+          "mae": 0.0029914548410872087,
+          "coverage_80": 0.0,
+          "pred_median": 0.006597827010340192,
+          "q10": 0.0057700603450047,
+          "q90": 0.007425593675675684
+        },
+        "m0_conformal_regime": {
+          "crps": 0.001798931196063282,
+          "mae": 0.002109343695564092,
+          "coverage_80": 0.0,
+          "pred_median": 0.007479938155863309,
+          "q10": 0.006652171490527816,
+          "q90": 0.0083077048211988
+        }
+      }
+    }
+  ],
+  "elapsed_s": 661.8,
+  "followup_analysis": {
+    "gate_sensitivity_m0_w3": {
+      "0.5": {
+        "n_acted": 24,
+        "mean_delta_crps": 7.784890706226408e-06,
+        "t_stat": 0.16,
+        "wins": 11,
+        "losses": 13
+      },
+      "0.55": {
+        "n_acted": 18,
+        "mean_delta_crps": -8.951005229162228e-06,
+        "t_stat": -0.197,
+        "wins": 9,
+        "losses": 9
+      },
+      "0.6": {
+        "n_acted": 11,
+        "mean_delta_crps": -7.098634413673947e-06,
+        "t_stat": -0.186,
+        "wins": 6,
+        "losses": 5
+      },
+      "0.65": {
+        "n_acted": 1,
+        "mean_delta_crps": -8.26716180865536e-06,
+        "t_stat": -1.0,
+        "wins": 1,
+        "losses": 0
+      }
+    },
+    "tsfm_median_shift": {
+      "chronos2_cal": {
+        "mean_delta_mae": -1.7503851944152887e-05,
+        "t_stat": -0.497,
+        "wins": 6,
+        "losses": 5,
+        "note": "median-only shift on stored exp18 medians; full quantile CRPS not recomputed"
+      },
+      "timesfm25_cal": {
+        "mean_delta_mae": -4.8381615418837855e-05,
+        "t_stat": -1.271,
+        "wins": 8,
+        "losses": 3,
+        "note": "median-only shift on stored exp18 medians; full quantile CRPS not recomputed"
+      }
+    },
+    "directional_accuracy": {
+      "correct": 25,
+      "wrong": 14,
+      "accuracy": 0.641,
+      "note": "UP/DOWN vs sign(actual - trailing-3m-mean); binomial p(n=39,k=25) ~= 0.11, n.s."
+    },
+    "verdict": "News regime signal does NOT improve SMM forecasts. No gate setting yields a significant CRPS gain on m0_w3 or m0_conformal; median-shift on TSFM medians is directionally favorable but n.s. (t=-0.50/-1.27). Directional accuracy 0.64 is suggestive but not significant. The reader mostly abstains or reports low confidence (Canadian-heavy KB for a US series; thin 2022-2024 coverage)."
+  }
+}

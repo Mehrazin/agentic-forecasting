@@ -30,7 +30,7 @@ Secondary: MAE, 80% interval coverage.
 | R2-1 | exp10 (classical) | `experiments/r2_exp10_classical.py` | ✅ done (lagged rerun) | **Lagged macro helps: -0.357 (53% of leaky gain)** |
 | R2-2 | exp13 (TSFM macro) | `experiments/r2_exp13_tsfm_macro.py` | ✅ done (lagged rerun) | **Residual conditioning hurts C2 4/6 — method-specific** |
 | R2-3 | exp15 (corrected macro) | `experiments/r2_exp15_macro_corrected.py` | ✅ done | PIT-safe = harmless on v2 DGP |
-| R2-4 | exp14 (M4 real) | — | 📝 planned | Soundness-fix rerun |
+| R2-4 | exp14 (M4 real) | `experiments/r2_exp14_common_grid.py` | ✅ done | Common-grid rerun: TSFM win survives (-24.1% Chronos2, -22.6% TimesFM) |
 | exp17 | — (new) | `experiments/exp17_news_regime.py` | ✅ done (pilot) | **News+RAG+regime reader end-to-end: 3/4 correct (n=6, n.s.)** |
 | exp18 | — (new) | `experiments/exp18_smm_full.py` | ✅ done | **Calibrated TSFMs beat m0 30% on 63-mo SMM (p=0.0012)** |
 
@@ -51,8 +51,10 @@ regression on z[t]), macro_m0 achieves **-0.357 CRPS vs m0_w6** (~53% of leaky g
 
 **Caveats (statistical):** Single seed (seed=0), no uncertainty quantification.
 Against the best M0 window (m0_w3=1.457), macro_m0 (1.923) is **worse by 32%**.
-Window tuning matters more than the macro overlay. This is an exploratory finding,
-not a confirmatory result.
+**Window confounding:** macro_m0 uses trailing_window=6; the -0.357 may reflect
+the 3-month z[t] compensating for m0_w6's stale average rather than true macro
+value. Until macro_m0(window=3) beats m0_w3 across multiple seeds, this is not
+even an exploratory win. This is an exploratory finding, not a confirmatory result.
 
 ## R2-2: TSFM + lagged FRED — **exploratory negative** (n=6, no significance testing)
 
@@ -61,7 +63,8 @@ The residual approach — subtracting β·z from training inputs then re-adding 
 forecast time — distorts the input distribution without adequate compensation.
 
 **Caveats (statistical):** n=6 with no p-values or confidence intervals — anecdotal,
-not established. A sign test gives p=0.11 (not significant). The pattern is
+not established. A sign test gives p=0.375 two-sided (1 win, 4 losses, 1 tie;
+n=5 non-tied). The pattern is
 suggestive (losses dwarf the single win) but needs larger evaluation. Also note
 `conf_m0` beats both Chronos2 variants in every seed/DGP — the relevant baseline
 isn't "plain Chronos2" but "best available model."
@@ -70,6 +73,13 @@ isn't "plain Chronos2" but "best available model."
 
 R1: estimated overlay hurt by 0.151. R2: m0=0.6092, oracle=0.6199 (-0.0107),
 est=0.692 (-0.0828). Even the oracle hurts on v2 DGP — DGP-specific, not harmless.
+
+## R2-4: exp14 rerun on a common 0.10–0.90 grid — **TSFM win survives** (done 2026-10-17)
+
+All models scored on the same 9-level quantile grid (classical residual quantiles
+computed directly; Chronos2 interpolated interior, no extrapolation; TimesFM exact):
+naive 462.84, timesfm25 358.13 (**−22.6%**), chronos2 351.18 (**−24.1%**).
+The TSFM edge is not a scoring artifact. `experiments/r2_exp14_common_grid_results.json`.
 
 ## Bottom line (updated 2026-10-17)
 
@@ -80,14 +90,12 @@ for TSFMs (n=6, no significance testing). The original "macro is dead" verdict w
 based on a dict-lookup bug. The honest conclusion: **we don't know yet** — the
 findings are suggestive but need multi-seed confirmatory evaluation.
 
-**exp18:** Calibrated TimesFM beats m0 by 30% on 63 months of real Freddie Mac SMM
-(p=0.0012, survives Bonferroni) — the first statistically robust TSFM win. Chronos2
-(p=0.011) is nominally significant but doesn't survive multiple-comparison correction.
-
-**Baseline caveat:** exp18 compares against trailing-window means (m0_w3/6/12) only.
-No ETS, ARIMA, or Theta baseline was run — "beats trailing mean" is not "beats
-classical." A competent ETS would likely erase much of the 30% gap. This is the
-strongest TSFM evidence in the project, but the baseline bar was low.
+**exp18b (fair comparison):** TimesFM beats the best fairly-constructed classical
+baseline (m0_w3 + residual quantiles) by **17.9% CRPS** (0.000497 vs 0.000613,
+p=0.0079, survives Bonferroni over 4 comparisons, wins 37/50 origins). All models
+on a common 19-level quantile grid with proper uncertainty wrappers. Argon's
+predicted m0_w3+logcal ≈ 0.00055 did not materialize (actual 0.000628) — the
+TSFM edge is real point-accuracy + better spreads, not just the wrapper.
 
 Full analysis: `experiments/r2_comparison.md`.
 
@@ -132,7 +140,7 @@ Full results: `experiments/exp17_news_regime_results.json`.
 | Artifact | Location |
 |---|---|
 | R2 scripts | `experiments/r2_*.py` |
-| R2 comparison | `experiments/r2_comparison.md` (when complete) |
+| R2 comparison | `experiments/r2_comparison.md` (lagged rerun, all 4 series) |
 | exp17 | `experiments/exp17_news_regime.py` → `exp17_news_regime_results.json` |
 | Archive | `docs/RESULTS_ARCHIVE.md` |
 | Audit | `docs/DATA_AUDIT.md` |

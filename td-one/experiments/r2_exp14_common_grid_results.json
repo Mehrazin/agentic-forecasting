@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "date": "2026-10-17",
+    "run_at_utc": "2026-10-17T06:14:47.640296+00:00",
+    "n_a": 2000,
+    "horizon": 6,
+    "seed": 0,
+    "grid": [
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9
+    ],
+    "framing_a_models": [
+      "naive",
+      "snaive",
+      "conf_naive",
+      "chronos2",
+      "timesfm25"
+    ],
+    "chronos_seeds": [
+      0,
+      1,
+      2
+    ],
+    "note": "R2-4 soundness rerun of exp14: ALL models scored on the same 0.10-0.90 quantile grid. Classical residual quantiles computed directly on GRID_09; Chronos2 interpolated (interior, no extrapolation); TimesFM exact.",
+    "elapsed_s": 1713.2
+  },
+  "framing_a": {
+    "naive": {
+      "crps": 462.8404683007225,
+      "coverage": 0.7401666666666666,
+      "n": 2000
+    },
+    "snaive": {
+      "crps": 563.8898404398517,
+      "coverage": 0.69175,
+      "n": 2000
+    },
+    "conf_naive": {
+      "crps": 463.64635339042104,
+      "coverage": 0.8324166666666667,
+      "n": 2000
+    },
+    "timesfm25": {
+      "crps": 358.1317818571983,
+      "coverage": 0.7713333333333334,
+      "n": 2000,
+      "seed": null
+    },
+    "chronos2_seeds": {
+      "0": {
+        "crps": 351.1843432978111,
+        "coverage": 0.77575,
+        "n": 2000,
+        "seed": 0
+      },
+      "1": {
+        "crps": 351.1843432978111,
+        "coverage": 0.77575,
+        "n": 2000,
+        "seed": 1
+      },
+      "2": {
+        "crps": 351.1843432978111,
+        "coverage": 0.77575,
+        "n": 2000,
+        "seed": 2
+      }
+    },
+    "chronos2": {
+      "crps": 351.18434329781104,
+      "crps_se": 4.019436694230464e-14,
+      "coverage": 0.77575,
+      "n": 2000,
+      "seeds": {
+        "0": 351.1843432978111,
+        "1": 351.1843432978111,
+        "2": 351.1843432978111
+      }
+    }
+  }
+}

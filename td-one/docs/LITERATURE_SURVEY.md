@@ -338,9 +338,9 @@ text below is preserved as the evidence record.*
    current DGP may be *too easy* for M0, which flatters classical
    methods.
 5. **TSFM + exogenous FRED.** ✅ done (exp13, `RESULTS.md` §2j) —
-   mechanism works (+13–18% vs plain TSFM, 3/3 seeds) but beats the
-   conformal baseline only 1/3 seeds; classical macro_m0 still best.
-   Chronos-2/TimesFM-2.5 support covariates
+   R1 mechanism (+13–18%, 3/3 seeds) was leaky; R2 lagged rerun shows
+   1/6 helps, 4/6 hurt (n=6, p=0.375, exploratory). Residual conditioning
+   not recommended. Classical macro_m0 (lagged) shows exploratory promise.
    in some configurations; test whether macro-conditioned TSFMs beat
    the conformal baseline. This is the fair rematch the TSFMs deserve.
 

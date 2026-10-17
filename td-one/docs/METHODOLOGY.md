@@ -257,7 +257,7 @@ unbounded adjustment destroys calibration.
 | exp10 | Promote better classical defaults? | 2 DGPs; conformal, ACI, macro, hierarchical | Conformal M0 now default; macro_m0 honest null on standard DGP; hierarchical niche on thin segments |
 | exp11 | Redesign the agent's role? | Regime-reader → gate, real Groq | Qualified positive: 3.59 vs M0 4.82 — first agentic win with real components |
 | exp12 | LLM as ensemble router? | 4 scenarios, real Groq | Clean negative: 2.60 vs inverse-CRPS 2.32 — the survey's top-ranked role fails here |
-| exp13 | TSFM + FRED rematch | Macro-conditioned TSFMs, 2 DGPs × 3 seeds | Mechanism works (+13–18% on macro DGP); hurts on standard DGP — conditioning needs a gate |
+| exp13 | TSFM + FRED rematch | Macro-conditioned TSFMs, 2 DGPs × 3 seeds | R1 leaky (+13–18%); R2 lagged: 1/6 helps, 4/6 hurt (exploratory, p=0.375) — residual conditioning not recommended |
 | exp14 | Real data? | M4 Monthly, 2000 series, real weights | TSFMs beat classical ~20% CRPS; "M0 beats everything" was a DGP artifact (§6.5) |
 
 ### 6.1 Experiment 2 (the one that matters for M1)
