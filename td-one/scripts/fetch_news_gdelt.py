@@ -60,8 +60,23 @@ def fetch_month(topic: str, year: int, month: int) -> list[dict]:
     }
     url = API + "?" + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"User-Agent": "TD-One research"})
-    with urllib.request.urlopen(req, timeout=90) as resp:
-        raw = resp.read().decode("utf-8", errors="replace")
+    # GDELT 429s are transient: back off and retry rather than skipping the
+    # month entirely (a skipped month is a permanent coverage gap).
+    raw = ""
+    for attempt in range(5):
+        try:
+            with urllib.request.urlopen(req, timeout=90) as resp:
+                raw = resp.read().decode("utf-8", errors="replace")
+            break
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and attempt < 4:
+                wait = 60 * (attempt + 1)
+                print(f"  !! 429, backing off {wait}s (attempt {attempt + 1}/5)...", flush=True)
+                time.sleep(wait)
+                continue
+            raise
+    if not raw:
+        return []
     try:
         data = json.loads(raw)
     except json.JSONDecodeError:
@@ -137,7 +152,7 @@ def main() -> None:
             n = store(db_path, arts)
             total += n
             print(f"  {len(arts)} articles, {n} new (total new: {total})", flush=True)
-            time.sleep(6)  # respect GDELT rate limit
+            time.sleep(10)  # respect GDELT rate limit (429s observed at 6s)
     print(f"Done. {total} new articles in {db_path}")
 
 
