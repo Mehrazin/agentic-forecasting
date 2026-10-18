@@ -1,0 +1,394 @@
+{
+ "experiment": "exp46_news_dense",
+ "date": "2026-10-18T05:16:38.699779+00:00",
+ "news_db": "/home/hatch/workspace/agentic-forecasting/td-one/data/news/news_2026.db",
+ "news_window_days": 30,
+ "pit_rule": "articles with pub_date in [D-30d, D) only; strictly before origin",
+ "method": "News-as-selector with DENSE news (123/143 BoC meetings covered). Primary BoC target is rule-surprise (rule != actual), not EASY/HARD. News variants handle the temporal confound (all vs boc-only vs rate-keyword-filtered). SMM adds a forecast-difficulty target.",
+ "boc_surprise": {
+  "dataset": "boc",
+  "target": "rule_surprise (rule != actual)",
+  "coverage": {
+   "all": 123,
+   "boc_only": 76,
+   "rate_kw": 87,
+   "n": 143
+  },
+  "base_features": [
+   "rate_momentum",
+   "inflation_gap",
+   "unemployment_momentum",
+   "yield_spread"
+  ],
+  "news_features": [
+   "news_n",
+   "news_hawk",
+   "news_dove",
+   "news_disagree",
+   "news_net"
+  ],
+  "classification": {
+   "n": 143,
+   "labels": [
+    "no_surprise",
+    "surprise"
+   ],
+   "pos_rate": 0.15384615384615385,
+   "skipped_folds": 0,
+   "per_set": {
+    "base": {
+     "acc_mean": 0.6949308755760368,
+     "auc_mean": 0.6657580514723371,
+     "acc_folds": [
+      0.35714285714285715,
+      0.9285714285714286,
+      0.75,
+      0.5357142857142857,
+      0.9032258064516129
+     ]
+    },
+    "news_all": {
+     "acc_mean": 0.6806451612903226,
+     "auc_mean": 0.6638183245326102,
+     "acc_folds": [
+      0.2857142857142857,
+      0.8928571428571429,
+      0.7857142857142857,
+      0.5357142857142857,
+      0.9032258064516129
+     ],
+     "vs_base": {
+      "mean_diff": -0.013986013986013986,
+      "t_stat": -0.7058651528692202,
+      "p_value": 0.481428426605999,
+      "win_rate": 0.02097902097902098
+     }
+    },
+    "news_boc": {
+     "acc_mean": 0.6813364055299539,
+     "auc_mean": 0.6511090100375816,
+     "acc_folds": [
+      0.2857142857142857,
+      0.9285714285714286,
+      0.7857142857142857,
+      0.5357142857142857,
+      0.8709677419354839
+     ],
+     "vs_base": {
+      "mean_diff": -0.013986013986013986,
+      "t_stat": -0.7058651528692202,
+      "p_value": 0.481428426605999,
+      "win_rate": 0.02097902097902098
+     }
+    },
+    "news_rate": {
+     "acc_mean": 0.6834101382488479,
+     "auc_mean": 0.6147331834831834,
+     "acc_folds": [
+      0.39285714285714285,
+      0.9285714285714286,
+      0.8214285714285714,
+      0.5,
+      0.7741935483870968
+     ],
+     "vs_base": {
+      "mean_diff": -0.013986013986013986,
+      "t_stat": -0.631123577872816,
+      "p_value": 0.5289742835988468,
+      "win_rate": 0.027972027972027972
+     }
+    },
+    "news_only": {
+     "acc_mean": 0.44792626728110596,
+     "auc_mean": 0.4630790340611769,
+     "acc_folds": [
+      0.21428571428571427,
+      0.75,
+      0.5357142857142857,
+      0.6428571428571429,
+      0.0967741935483871
+     ],
+     "vs_base": {
+      "mean_diff": -0.25874125874125875,
+      "t_stat": -4.558277803840132,
+      "p_value": 1.1030626074830494e-05,
+      "win_rate": 0.13286713286713286
+     }
+    }
+   }
+  },
+  "feature_importance_news_boc": [
+   {
+    "feature": "yield_spread",
+    "coef": 1.047455736570063
+   },
+   {
+    "feature": "news_hawk",
+    "coef": 0.5945303498490979
+   },
+   {
+    "feature": "unemployment_momentum",
+    "coef": 0.5446618121161004
+   },
+   {
+    "feature": "inflation_gap",
+    "coef": 0.5229682940536453
+   },
+   {
+    "feature": "news_disagree",
+    "coef": -0.2815766634541831
+   },
+   {
+    "feature": "news_dove",
+    "coef": -0.2095133068178861
+   },
+   {
+    "feature": "news_n",
+    "coef": -0.10734071664113709
+   },
+   {
+    "feature": "rate_momentum",
+    "coef": 0.08368325569974483
+   },
+   {
+    "feature": "news_net",
+    "coef": -0.07546531782331127
+   }
+  ]
+ },
+ "boc_regime": {
+  "dataset": "boc",
+  "target": "regime (EASY/HARD) -- exp44 replication with dense news",
+  "classification": {
+   "n": 143,
+   "labels": [
+    "EASY",
+    "HARD"
+   ],
+   "pos_rate": 0.5664335664335665,
+   "skipped_folds": 1,
+   "per_set": {
+    "base": {
+     "acc_mean": 0.5803571428571428,
+     "auc_mean": 0.3443858755623461,
+     "acc_folds": [
+      0.35714285714285715,
+      0.6428571428571429,
+      0.8928571428571429,
+      0.42857142857142855
+     ]
+    },
+    "news_all": {
+     "acc_mean": 0.5357142857142857,
+     "auc_mean": 0.29800399904778496,
+     "acc_folds": [
+      0.32142857142857145,
+      0.6785714285714286,
+      0.7142857142857143,
+      0.42857142857142855
+     ],
+     "vs_base": {
+      "mean_diff": -0.044642857142857144,
+      "t_stat": -1.5162745956931167,
+      "p_value": 0.1322926747966028,
+      "win_rate": 0.026785714285714284
+     }
+    },
+    "news_boc": {
+     "acc_mean": 0.5089285714285714,
+     "auc_mean": 0.3254203052831978,
+     "acc_folds": [
+      0.4642857142857143,
+      0.5714285714285714,
+      0.5357142857142857,
+      0.4642857142857143
+     ],
+     "vs_base": {
+      "mean_diff": -0.07142857142857142,
+      "t_stat": -1.8068497121656082,
+      "p_value": 0.07349475919886686,
+      "win_rate": 0.05357142857142857
+     }
+    }
+   }
+  }
+ },
+ "smm": {
+  "dataset": "smm",
+  "coverage": {
+   "all": 50,
+   "boc_only": 0,
+   "rate_kw": 50,
+   "n": 50
+  },
+  "ets_error_tercile_threshold": 0.3136472496065015,
+  "hard_rate": 0.34,
+  "target_hard": "top-tercile |ETS q50 error|",
+  "classification_hard": {
+   "n": 50,
+   "labels": [
+    "easy",
+    "hard"
+   ],
+   "pos_rate": 0.34,
+   "skipped_folds": 0,
+   "per_set": {
+    "base": {
+     "acc_mean": 0.62,
+     "auc_mean": 0.6414126984126984,
+     "acc_folds": [
+      0.6,
+      0.6,
+      0.9,
+      0.6,
+      0.4
+     ]
+    },
+    "news_all": {
+     "acc_mean": 0.58,
+     "auc_mean": 0.6126031746031746,
+     "acc_folds": [
+      0.6,
+      0.6,
+      0.7,
+      0.5,
+      0.5
+     ],
+     "vs_base": {
+      "mean_diff": -0.04,
+      "t_stat": -0.7035264706814485,
+      "p_value": 0.48505743127542666,
+      "win_rate": 0.06
+     }
+    },
+    "news_rate": {
+     "acc_mean": 0.58,
+     "auc_mean": 0.5704603174603174,
+     "acc_folds": [
+      0.5,
+      0.6,
+      0.9,
+      0.5,
+      0.4
+     ],
+     "vs_base": {
+      "mean_diff": -0.04,
+      "t_stat": -0.8137334712067349,
+      "p_value": 0.41973446400137016,
+      "win_rate": 0.04
+     }
+    }
+   }
+  },
+  "target_regime": "calm/stressed -- exp44 replication",
+  "classification_regime": {
+   "n": 50,
+   "labels": [
+    "calm",
+    "stressed"
+   ],
+   "pos_rate": 0.24,
+   "skipped_folds": 2,
+   "per_set": {
+    "base": {
+     "acc_mean": 0.9,
+     "auc_mean": 1.0,
+     "acc_folds": [
+      0.8,
+      1.0,
+      0.9
+     ]
+    },
+    "news_all": {
+     "acc_mean": 0.9,
+     "auc_mean": 0.9866666666666667,
+     "acc_folds": [
+      0.8,
+      1.0,
+      0.9
+     ],
+     "vs_base": {
+      "mean_diff": 0.0,
+      "t_stat": 0.0,
+      "p_value": 1.0,
+      "win_rate": 0.03333333333333333
+     }
+    },
+    "news_rate": {
+     "acc_mean": 0.9,
+     "auc_mean": 1.0,
+     "acc_folds": [
+      0.8,
+      1.0,
+      0.9
+     ],
+     "vs_base": {
+      "mean_diff": 0.0,
+      "t_stat": 0.0,
+      "p_value": 1.0,
+      "win_rate": 0.03333333333333333
+     }
+    }
+   }
+  },
+  "feature_importance_hard_news_all": [
+   {
+    "feature": "news_stress_share",
+    "coef": -1.1192235564576265
+   },
+   {
+    "feature": "news_stress",
+    "coef": 0.512290144875655
+   },
+   {
+    "feature": "acf1",
+    "coef": -0.4732990278641835
+   },
+   {
+    "feature": "spectral_entropy",
+    "coef": 0.4287098787395978
+   },
+   {
+    "feature": "news_n",
+    "coef": -0.24996594861680288
+   },
+   {
+    "feature": "news_rate",
+    "coef": -0.18469113859523428
+   },
+   {
+    "feature": "vol_ratio",
+    "coef": -0.05590698070472382
+   },
+   {
+    "feature": "n_changepoints",
+    "coef": 0.0
+   },
+   {
+    "feature": "is_nonstationary",
+    "coef": 0.0
+   },
+   {
+    "feature": "is_stationary",
+    "coef": 0.0
+   },
+   {
+    "feature": "trend_strength",
+    "coef": 0.0
+   },
+   {
+    "feature": "seasonal_strength",
+    "coef": 0.0
+   },
+   {
+    "feature": "n_recent_cps",
+    "coef": 0.0
+   },
+   {
+    "feature": "hurst",
+    "coef": 0.0
+   }
+  ]
+ },
+ "elapsed_s": 7.0
+}
