@@ -1,0 +1,562 @@
+{
+  "records": [
+    {
+      "task": "regime_diagnosis",
+      "level": "low",
+      "seed": 0,
+      "accuracy": 1.0,
+      "mean_latency_s": 1.91,
+      "detail": [
+        {
+          "kind": "seasonal",
+          "pred": "seasonal",
+          "correct": true,
+          "latency_s": 0.7,
+          "raw": "seasonal"
+        },
+        {
+          "kind": "trending",
+          "pred": "trending",
+          "correct": true,
+          "latency_s": 2.67,
+          "raw": "trending"
+        },
+        {
+          "kind": "noisy",
+          "pred": "noisy",
+          "correct": true,
+          "latency_s": 2.36,
+          "raw": "noisy"
+        }
+      ]
+    },
+    {
+      "task": "boc_discovery",
+      "level": "low",
+      "seed": 0,
+      "hit": true,
+      "latency_s": 2.76,
+      "raw": "FEATURE: inflation_gap_x_rate_momentum | REASON: This interaction captures cases where inflation is elevated (high inflation_gap) but rate momentum is weak or flat, flagging missed hike signals, and similarly flags missed cut signals when low inflation coincides with declining rate momentum."
+    },
+    {
+      "task": "changepoint_diagnosis",
+      "level": "low",
+      "seed": 0,
+      "rubric": {
+        "mentions_shift": true,
+        "recommends_model": true,
+        "states_uncertainty": true
+      },
+      "score": 1.0,
+      "latency_s": 2.63,
+      "raw": "- **Structural feature:** The series shows a strong upward trend (trend slope\u202f\u2248\u202f0.078) and very high first\u2011lag autocorrelation (\u2248\u202f0.89), while seasonality is weak (strength\u202f\u2248\u202f0.05). The large shift in mean between the first and second half (4.91 \u2192\u202f8.12) confirms a dominant deterministic trend rather than seasonal or irregular patterns.  \n\n- **Best forecasting model:** **ETS with additive trend (ET"
+    },
+    {
+      "task": "regime_diagnosis",
+      "level": "low",
+      "seed": 1,
+      "accuracy": 1.0,
+      "mean_latency_s": 2.35,
+      "detail": [
+        {
+          "kind": "seasonal",
+          "pred": "seasonal",
+          "correct": true,
+          "latency_s": 1.86,
+          "raw": "seasonal"
+        },
+        {
+          "kind": "trending",
+          "pred": "trending",
+          "correct": true,
+          "latency_s": 2.54,
+          "raw": "trending"
+        },
+        {
+          "kind": "noisy",
+          "pred": "noisy",
+          "correct": true,
+          "latency_s": 2.64,
+          "raw": "noisy"
+        }
+      ]
+    },
+    {
+      "task": "boc_discovery",
+      "level": "low",
+      "seed": 1,
+      "hit": true,
+      "latency_s": 2.84,
+      "raw": "FEATURE: rate_momentum_x_inflation_gap | REASON: It captures the mismatch where inflation is above target while policy momentum is flat, flagging missed hikes, and also highlights when inflation pressure eases alongside flat momentum, helping to detect missed cuts."
+    },
+    {
+      "task": "changepoint_diagnosis",
+      "level": "low",
+      "seed": 1,
+      "rubric": {
+        "mentions_shift": true,
+        "recommends_model": true,
+        "states_uncertainty": true
+      },
+      "score": 1.0,
+      "latency_s": 2.41,
+      "raw": "- **Structural feature:** A strong upward trend (high lag\u20111 autocorrelation\u202f\u2248\u202f0.85 and a steep increase from a first\u2011half mean of\u202f4.91 to a second\u2011half mean of\u202f7.99) with only a weak seasonal component (seasonal_strength\u202f\u2248\u202f0.06).  \n\n- **Best forecasting model:** **ETS (Exponential Smoothing) with an additive trend and no seasonality (ETS(A,Ad,N)).**  \n  *Why:* ETS can capture the dominant determin"
+    },
+    {
+      "task": "regime_diagnosis",
+      "level": "low",
+      "seed": 2,
+      "accuracy": 1.0,
+      "mean_latency_s": 2.39,
+      "detail": [
+        {
+          "kind": "seasonal",
+          "pred": "seasonal",
+          "correct": true,
+          "latency_s": 2.18,
+          "raw": "seasonal"
+        },
+        {
+          "kind": "trending",
+          "pred": "trending",
+          "correct": true,
+          "latency_s": 2.43,
+          "raw": "trending"
+        },
+        {
+          "kind": "noisy",
+          "pred": "noisy",
+          "correct": true,
+          "latency_s": 2.55,
+          "raw": "noisy"
+        }
+      ]
+    },
+    {
+      "task": "boc_discovery",
+      "level": "low",
+      "seed": 2,
+      "hit": true,
+      "latency_s": 3.08,
+      "raw": "**FEATURE:** rate_momentum\u202f\u00d7\u202finflation_gap | **REASON:** It captures the mismatch between monetary\u2011policy inertia (rate_momentum) and underlying pressure (inflation_gap), flagging missed hikes when inflation is high but momentum is flat and missed cuts when unemployment\u2011driven pressure rises while m"
+    },
+    {
+      "task": "changepoint_diagnosis",
+      "level": "low",
+      "seed": 2,
+      "rubric": {
+        "mentions_shift": true,
+        "recommends_model": true,
+        "states_uncertainty": true
+      },
+      "score": 1.0,
+      "latency_s": 2.32,
+      "raw": "- **Structural feature:** Strong upward trend with very high first\u2011lag autocorrelation (\u03c1\u2081\u22480.90) and a noticeable shift in level between the first and second half of the series (mean jumps from ~5.1 to ~7.9). Seasonality is negligible.\n\n- **Best forecasting model:** **ETS (trend\u2011only exponential smoothing, e.g., ETS(A,Ad,N) or Holt\u2019s linear method).**  \n  - Handles a smooth, deterministic trend wh"
+    },
+    {
+      "task": "regime_diagnosis",
+      "level": "medium",
+      "seed": 0,
+      "accuracy": 1.0,
+      "mean_latency_s": 2.39,
+      "detail": [
+        {
+          "kind": "seasonal",
+          "pred": "seasonal",
+          "correct": true,
+          "latency_s": 2.04,
+          "raw": "seasonal"
+        },
+        {
+          "kind": "trending",
+          "pred": "trending",
+          "correct": true,
+          "latency_s": 2.66,
+          "raw": "trending"
+        },
+        {
+          "kind": "noisy",
+          "pred": "noisy",
+          "correct": true,
+          "latency_s": 2.47,
+          "raw": "noisy"
+        }
+      ]
+    },
+    {
+      "task": "boc_discovery",
+      "level": "medium",
+      "seed": 0,
+      "hit": true,
+      "latency_s": 4.29,
+      "raw": "**FEATURE:** rate_momentum\u202f\u00d7\u202finflation_gap | **REASON:** This interaction ties the policy\u2011inertia signal (rate momentum) to the core driver of hikes (inflation gap), flagging high inflation with flat rates (missed hikes) and also low momentum with modest inflation when unemployment is rising (missed"
+    },
+    {
+      "task": "changepoint_diagnosis",
+      "level": "medium",
+      "seed": 0,
+      "rubric": {
+        "mentions_shift": true,
+        "recommends_model": true,
+        "states_uncertainty": true
+      },
+      "score": 1.0,
+      "latency_s": 1.49,
+      "raw": "- **Structural feature:** A pronounced upward trend (mean rising from\u202f4.98 to\u202f8.17) with very high first\u2011lag autocorrelation (\u2248\u202f0.9) and only weak seasonal component.  \n\n- **Best forecasting model:** **ETS with an additive trend (no seasonality)** \u2013 it directly models the strong, smooth trend while handling the high persistence, and the negligible seasonal strength makes a seasonal component unnec"
+    },
+    {
+      "task": "regime_diagnosis",
+      "level": "medium",
+      "seed": 1,
+      "accuracy": 1.0,
+      "mean_latency_s": 2.19,
+      "detail": [
+        {
+          "kind": "seasonal",
+          "pred": "seasonal",
+          "correct": true,
+          "latency_s": 2.05,
+          "raw": "seasonal"
+        },
+        {
+          "kind": "trending",
+          "pred": "trending",
+          "correct": true,
+          "latency_s": 2.3,
+          "raw": "trending"
+        },
+        {
+          "kind": "noisy",
+          "pred": "noisy",
+          "correct": true,
+          "latency_s": 2.22,
+          "raw": "noisy"
+        }
+      ]
+    },
+    {
+      "task": "boc_discovery",
+      "level": "medium",
+      "seed": 1,
+      "hit": true,
+      "latency_s": 4.51,
+      "raw": "**FEATURE:** inflation_gap\u202f\u00d7\u202frate_momentum | **REASON:** It highlights the mismatch between price\u2011pressure (inflation_gap) and recent policy inertia (rate_momentum), flagging missed hikes when inflation is high but momentum is flat and missed cuts when inflation is low (or falling) while momentum re"
+    },
+    {
+      "task": "changepoint_diagnosis",
+      "level": "medium",
+      "seed": 1,
+      "rubric": {
+        "mentions_shift": true,
+        "recommends_model": true,
+        "states_uncertainty": true
+      },
+      "score": 1.0,
+      "latency_s": 1.77,
+      "raw": "- **Structural feature:** A strong upward trend (first\u2011half mean\u202f5.05 \u2192 second\u2011half mean\u202f8.05) with very high persistence (lag\u20111\u202fACF\u202f\u2248\u202f0.87) and negligible seasonality (seasonal_strength\u202f\u2248\u202f0.04).  \n\n- **Best forecasting model:** **ETS (Holt\u2019s linear / ETS(A,Ad,N))** \u2013 it explicitly models a changing level and additive trend, captures the high autocorrelation through its smoothing parameters, and d"
+    },
+    {
+      "task": "regime_diagnosis",
+      "level": "medium",
+      "seed": 2,
+      "accuracy": 1.0,
+      "mean_latency_s": 2.23,
+      "detail": [
+        {
+          "kind": "seasonal",
+          "pred": "seasonal",
+          "correct": true,
+          "latency_s": 1.32,
+          "raw": "seasonal"
+        },
+        {
+          "kind": "trending",
+          "pred": "trending",
+          "correct": true,
+          "latency_s": 2.69,
+          "raw": "trending"
+        },
+        {
+          "kind": "noisy",
+          "pred": "noisy",
+          "correct": true,
+          "latency_s": 2.68,
+          "raw": "noisy"
+        }
+      ]
+    },
+    {
+      "task": "boc_discovery",
+      "level": "medium",
+      "seed": 2,
+      "hit": true,
+      "latency_s": 3.39,
+      "raw": "**FEATURE:** rate_momentum\u202f\u00d7\u202finflation_gap | **REASON:** This interaction flags the critical mismatch of high inflation (large inflation_gap) with stagnant rate momentum\u2014capturing missed hike signals\u2014and also yields low values when inflation pressure eases but rates remain flat, helping to surface m"
+    },
+    {
+      "task": "changepoint_diagnosis",
+      "level": "medium",
+      "seed": 2,
+      "rubric": {
+        "mentions_shift": true,
+        "recommends_model": true,
+        "states_uncertainty": true
+      },
+      "score": 1.0,
+      "latency_s": 1.94,
+      "raw": "- **Structural feature:** A pronounced upward trend (mean jumps from\u202f5.13 to\u202f7.90) with very high lag\u20111 autocorrelation (\u2248\u202f0.85) and virtually no seasonal pattern (seasonal\u202fstrength\u202f\u2248\u202f0.04); volatility slightly higher in the later half (diff_vol\u202f\u2248\u202f0.80).  \n- **Best forecasting model:** **ETS** with an additive (or damped) trend component (e.g., ETS(A,Ad,N)). It explicitly captures the strong deter"
+    },
+    {
+      "task": "regime_diagnosis",
+      "level": "high",
+      "seed": 0,
+      "accuracy": 1.0,
+      "mean_latency_s": 2.51,
+      "detail": [
+        {
+          "kind": "seasonal",
+          "pred": "seasonal",
+          "correct": true,
+          "latency_s": 2.18,
+          "raw": "seasonal"
+        },
+        {
+          "kind": "trending",
+          "pred": "trending",
+          "correct": true,
+          "latency_s": 2.49,
+          "raw": "trending"
+        },
+        {
+          "kind": "noisy",
+          "pred": "noisy",
+          "correct": true,
+          "latency_s": 2.85,
+          "raw": "noisy"
+        }
+      ]
+    },
+    {
+      "task": "boc_discovery",
+      "level": "high",
+      "seed": 0,
+      "hit": false,
+      "latency_s": -1,
+      "raw": "GroqEmptyContentError"
+    },
+    {
+      "task": "changepoint_diagnosis",
+      "level": "high",
+      "seed": 0,
+      "rubric": {
+        "mentions_shift": true,
+        "recommends_model": true,
+        "states_uncertainty": true
+      },
+      "score": 1.0,
+      "latency_s": 1.9,
+      "raw": "- **Structural feature:** A strong, persistent upward trend (first\u2011half mean\u202f\u2248\u202f4.8 \u2192 second\u2011half mean\u202f\u2248\u202f7.8) with high lag\u20111 autocorrelation (0.83) and essentially no seasonality (seasonal strength\u202f\u2248\u202f0.08).  \n\n- **Best model:** **ARIMA** (e.g., a random\u2011walk with drift or ARIMA(0,1,1) with drift). It explicitly models the non\u2011stationary trend and the high persistence captured by the lag\u20111 ACF, whe"
+    },
+    {
+      "task": "regime_diagnosis",
+      "level": "high",
+      "seed": 1,
+      "accuracy": 1.0,
+      "mean_latency_s": 2.26,
+      "detail": [
+        {
+          "kind": "seasonal",
+          "pred": "seasonal",
+          "correct": true,
+          "latency_s": 1.49,
+          "raw": "seasonal"
+        },
+        {
+          "kind": "trending",
+          "pred": "trending",
+          "correct": true,
+          "latency_s": 2.67,
+          "raw": "trending"
+        },
+        {
+          "kind": "noisy",
+          "pred": "noisy",
+          "correct": true,
+          "latency_s": 2.63,
+          "raw": "noisy"
+        }
+      ]
+    },
+    {
+      "task": "boc_discovery",
+      "level": "high",
+      "seed": 1,
+      "hit": true,
+      "latency_s": 30.21,
+      "raw": "**FEATURE:** rate_momentum\u202f\u00d7\u202fyield_spread | **REASON:** It flags a mismatch between market\u2011expected rate moves (captured by the yield\u2011curve spread) and the actual policy rate momentum, thereby highlighting both high\u2011inflation situations where rates should hike but are flat and rising\u2011unemployment pe"
+    },
+    {
+      "task": "changepoint_diagnosis",
+      "level": "high",
+      "seed": 1,
+      "rubric": {
+        "mentions_shift": true,
+        "recommends_model": true,
+        "states_uncertainty": true
+      },
+      "score": 1.0,
+      "latency_s": 3.05,
+      "raw": "- **Structural feature:** A pronounced upward trend with very high persistence (lag\u20111\u202fACF\u202f\u2248\u202f0.89) and virtually no seasonality (seasonal strength\u202f\u2248\u202f0.06); the mean jumps from ~5 in the first half to ~8 in the second half.  \n- **Best model:** ARIMA with a first difference and drift (e.g., ARIMA(0,1,0)+drift) \u2013 it handles the non\u2011stationary trend and strong autocorrelation directly, while ETS would "
+    },
+    {
+      "task": "regime_diagnosis",
+      "level": "high",
+      "seed": 2,
+      "accuracy": 1.0,
+      "mean_latency_s": 18.8,
+      "detail": [
+        {
+          "kind": "seasonal",
+          "pred": "seasonal",
+          "correct": true,
+          "latency_s": 52.91,
+          "raw": "seasonal"
+        },
+        {
+          "kind": "trending",
+          "pred": "trending",
+          "correct": true,
+          "latency_s": 1.11,
+          "raw": "trending"
+        },
+        {
+          "kind": "noisy",
+          "pred": "noisy",
+          "correct": true,
+          "latency_s": 2.38,
+          "raw": "noisy"
+        }
+      ]
+    },
+    {
+      "task": "boc_discovery",
+      "level": "high",
+      "seed": 2,
+      "hit": false,
+      "latency_s": 4.88,
+      "raw": "FEATURE: rate_momentum\u202f\u00d7\u202fyield_spread | REASON: This interaction captures the mismatch between market pressure (reflected in the yield spread) and the policy rate\u2019s inertia, flagging high\u2011spread/low\u2011momentum situations (missed hikes) and low\u2011spread/low\u2011momentum situations (missed cuts)."
+    },
+    {
+      "task": "changepoint_diagnosis",
+      "level": "high",
+      "seed": 2,
+      "rubric": {
+        "mentions_shift": true,
+        "recommends_model": true,
+        "states_uncertainty": true
+      },
+      "score": 1.0,
+      "latency_s": 9.03,
+      "raw": "- **Structural feature:** Strong upward trend (first\u2011half mean\u202f5.09 \u2192 second\u2011half mean\u202f7.86) with high persistence (lag\u20111\u202fACF\u202f\u2248\u202f0.86) and negligible seasonality.  \n- **Best model:** ARIMA with differencing and drift (e.g., ARIMA(0,1,1)+drift) \u2013 it removes the non\u2011stationary trend while capturing the strong autocorrelation, which a simple ETS or naive model would miss.  \n- **Confidence level:** **M"
+    }
+  ],
+  "summary": {
+    "regime_diagnosis": {
+      "low": {
+        "mean_accuracy": 1.0,
+        "vals": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mean_latency_s": 2.22,
+        "errors": 0
+      },
+      "medium": {
+        "mean_accuracy": 1.0,
+        "vals": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mean_latency_s": 2.27,
+        "errors": 0
+      },
+      "high": {
+        "mean_accuracy": 1.0,
+        "vals": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mean_latency_s": 7.86,
+        "errors": 0
+      }
+    },
+    "boc_discovery": {
+      "low": {
+        "mean_hit": 1.0,
+        "vals": [
+          true,
+          true,
+          true
+        ],
+        "mean_latency_s": 2.89,
+        "errors": 0
+      },
+      "medium": {
+        "mean_hit": 1.0,
+        "vals": [
+          true,
+          true,
+          true
+        ],
+        "mean_latency_s": 4.06,
+        "errors": 0
+      },
+      "high": {
+        "mean_hit": 0.333,
+        "vals": [
+          false,
+          true,
+          false
+        ],
+        "mean_latency_s": 17.55,
+        "errors": 1
+      }
+    },
+    "changepoint_diagnosis": {
+      "low": {
+        "mean_score": 1.0,
+        "vals": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mean_latency_s": 2.45,
+        "errors": 0
+      },
+      "medium": {
+        "mean_score": 1.0,
+        "vals": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mean_latency_s": 1.73,
+        "errors": 0
+      },
+      "high": {
+        "mean_score": 1.0,
+        "vals": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mean_latency_s": 4.66,
+        "errors": 0
+      }
+    }
+  },
+  "note": "27 LLM calls (3 tasks x 3 levels x 3 seeds); max_tokens=1500; gpt-oss-120b"
+}

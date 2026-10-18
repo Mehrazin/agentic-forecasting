@@ -27,6 +27,11 @@ logger = logging.getLogger(__name__)
 #: Verified default model (best on complex agentic tasks in prior testing).
 GROQ_MODEL_DEFAULT = "openai/gpt-oss-120b"
 
+#: Valid reasoning-effort levels for GPT-OSS models on Groq
+#: (per console.groq.com/docs/reasoning). Higher effort = deeper reasoning
+#: but more tokens consumed (the "reasoning tax" against the TPM budget).
+REASONING_EFFORT_LEVELS = ("low", "medium", "high")
+
 _GROQ_CHAT_URL = "https://api.groq.com/openai/v1/chat/completions"
 _BROWSER_UA = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
@@ -108,6 +113,7 @@ class GroqChatClient:
         model: str = GROQ_MODEL_DEFAULT,
         call_budget: int = 10,
         max_tokens: int = 4000,
+        reasoning_effort: str = "medium",
     ) -> None:
         """Initialize.
 
@@ -117,13 +123,22 @@ class GroqChatClient:
                 spend per experiment run.
             max_tokens: Per-call token cap. Kept under the ~8000 TPM
                 free-tier ceiling (8192 provoked HTTP 413 in the wild).
+            reasoning_effort: GPT-OSS reasoning depth — "low", "medium",
+                or "high". Higher effort improves complex-task quality but
+                consumes more of the TPM budget (the "reasoning tax").
 
         """
         if call_budget < 1:
             raise ValueError("call_budget must be >= 1")
+        if reasoning_effort not in REASONING_EFFORT_LEVELS:
+            raise ValueError(
+                f"reasoning_effort must be one of {REASONING_EFFORT_LEVELS}, "
+                f"got {reasoning_effort!r}"
+            )
         self.model = model
         self.call_budget = call_budget
         self.max_tokens = max_tokens
+        self.reasoning_effort = reasoning_effort
         self.calls = 0
 
     def complete(
@@ -166,6 +181,7 @@ class GroqChatClient:
                 {"role": "user", "content": prompt},
             ],
             "max_tokens": self.max_tokens,
+            "reasoning_effort": self.reasoning_effort,
         }
         if json_mode:
             body["response_format"] = {"type": "json_object"}
