@@ -152,3 +152,46 @@ def test_predict_requires_fit():
     fc = ProposedForecaster()
     with pytest.raises(AssertionError):
         fc.predict(np.zeros(30), {}, {}, FEATURE_NAMES)
+
+
+def test_boc_forecaster_easy_uses_rule():
+    from td_one.agent.proposed_method import BoCForecaster
+
+    recs = [{"regime": "EASY", "rule_pred": "HIKE", "actual": "HIKE"} for _ in range(10)]
+    recs += [{"regime": "HARD", "rule_pred": "HIKE", "actual": "HOLD"} for _ in range(10)]
+    bf = BoCForecaster().fit(recs)
+    out = bf.predict("EASY", "HIKE")
+    assert out.prediction == "HIKE"
+    assert out.regime == "EASY"
+
+
+def test_boc_forecaster_hard_uses_climatology():
+    from td_one.agent.proposed_method import BoCForecaster
+
+    recs = [{"regime": "EASY", "rule_pred": "HIKE", "actual": "HIKE"} for _ in range(5)]
+    recs += [{"regime": "HARD", "rule_pred": "HIKE", "actual": "HOLD"} for _ in range(15)]
+    bf = BoCForecaster().fit(recs)
+    assert bf._climatology_class == "HOLD"
+    out = bf.predict("HARD", "HIKE")
+    assert out.prediction == "HOLD"
+
+
+def test_gate_thresholds_tunable():
+    from td_one.agent.proposed_method import GATE_SHIFT, GATE_T_STAT, GATE_TOP_P
+
+    assert GATE_TOP_P == 0.6
+    assert GATE_T_STAT == 3.5
+    assert GATE_SHIFT == 0.03
+
+
+def test_loss_regime_spec():
+    from td_one.agent.tools.regimes import loss_regime_spec
+
+    rng = np.random.default_rng(0)
+    recs = []
+    for _ in range(30):
+        crps = {m: float(rng.uniform(0.1, 0.3)) for m in ["naive", "m0", "ets", "arima"]}
+        recs.append({"crps": crps})
+    spec = loss_regime_spec(recs, ["naive", "m0", "ets", "arima"], n_regimes=3)
+    assert len(spec["winner_per_regime"]) == 3
+    assert all(w in ["naive", "m0", "ets", "arima"] for w in spec["winner_per_regime"])

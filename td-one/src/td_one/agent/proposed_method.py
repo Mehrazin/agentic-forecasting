@@ -59,6 +59,11 @@ MIN_REGIME_N = 10
 NEWS_DENSITY_GATE = 0.5
 #: Trust flag: regimes where the best expert beats the global best by >= this.
 TRUST_MARGIN = 0.02
+#: Gate thresholds (exp50: tunable via learn_gate_thresholds).
+#: Defaults are the hand-picked values from exp6/decision_policy.
+GATE_TOP_P = 0.6
+GATE_T_STAT = 3.5
+GATE_SHIFT = 0.03
 
 
 @dataclass
@@ -137,6 +142,10 @@ class ProposedForecaster:
     use_llm: bool = False  # exp11 gated module; on only if sensor available
     news_weight: float = 0.3  # how much news shifts P(regime) (0..1)
     conformal_alpha: float = 0.2  # 80% intervals (exp5)
+    # exp50: tunable gate thresholds (defaults = hand-picked values)
+    gate_top_p: float = GATE_TOP_P
+    gate_t_stat: float = GATE_T_STAT
+    gate_shift: float = GATE_SHIFT
 
     # fitted state
     _router: LogisticRegression | None = None
@@ -296,9 +305,15 @@ class ProposedForecaster:
         # "Do nothing" prior (exp6 + decision_policy.corroboration_gate):
         # if the router is uncertain AND evidence is weak, fall back to
         # the global best single instead of the soft combination.
+        # Thresholds are tunable (exp50); defaults are hand-picked values.
         top_p = max(probs.values())
         gated, gate_reason = False, ""
-        if top_p < 0.6 and abs(t_stat) < 3.5 and abs(shift) < 0.03:
+        weak = (
+            top_p < self.gate_top_p
+            and abs(t_stat) < self.gate_t_stat
+            and abs(shift) < self.gate_shift
+        )
+        if weak:
             gated, gate_reason = True, "uncertain_router_weak_evidence"
 
         # combine: soft regime weighting (exp43)
@@ -354,3 +369,169 @@ class ProposedForecaster:
             news_used=news_used,
             llm_used=llm_used,
         )
+
+
+# ---------------------------------------------------------------------------
+# exp50 extension 2: BoC discrete variant
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class DiscreteOutput:
+    """Output of the discrete BoC forecaster."""
+
+    prediction: str  # "CUT" | "HOLD" | "HIKE"
+    regime: str  # "EASY" | "HARD"
+    regime_probs: dict[str, float]
+    trust: str
+    explanation: str
+
+
+@dataclass
+class BoCForecaster:
+    """Discrete BoC forecaster: EASY/HARD regime -> rule / climatology.
+
+    exp32 showed: EASY (signals agree) -> simple rule wins (0.887);
+    HARD (signals disagree) -> climatology wins (0.827).
+    This wires that finding into the proposed method as a discrete path.
+
+    The "rule" predicts the class implied by the majority signal direction;
+    "climatology" predicts the most common historical class ("HOLD").
+    """
+
+    # fitted state
+    _rule_accuracy: dict[str, float] = field(default_factory=dict)
+    _climatology_class: str = "HOLD"
+    _fitted: bool = False
+
+    def fit(self, records: list[dict]) -> BoCForecaster:
+        """Fit on BoC meeting records.
+
+        Each record: {"regime": "EASY"|"HARD", "rule_pred": str,
+                      "actual": str}.
+        """
+        from collections import Counter
+
+        actuals = [r["actual"] for r in records]
+        self._climatology_class = Counter(actuals).most_common(1)[0][0]
+        for reg in ("EASY", "HARD"):
+            idx = [r for r in records if r["regime"] == reg]
+            if idx:
+                acc = float(np.mean([r["rule_pred"] == r["actual"] for r in idx]))
+                self._rule_accuracy[reg] = acc
+        self._fitted = True
+        return self
+
+    def predict(self, regime: str, rule_pred: str) -> DiscreteOutput:
+        """Predict one meeting.
+
+        EASY -> trust the rule. HARD -> fall back to climatology.
+        """
+        assert self._fitted, "call fit() first"
+        if regime == "EASY":
+            prediction = rule_pred
+            reason = "EASY regime: signals agree, rule is trustworthy (exp32)"
+        else:
+            prediction = self._climatology_class
+            reason = "HARD regime: signals disagree, fall back to climatology (exp32)"
+        trust = "EASY" if regime == "EASY" else "HARD"
+        return DiscreteOutput(
+            prediction=prediction,
+            regime=regime,
+            regime_probs={regime: 1.0},
+            trust=trust,
+            explanation=f"BoC discrete: {reason} -> {prediction}",
+        )
+
+
+# ---------------------------------------------------------------------------
+# exp50 extension 4: learned gate thresholds
+# ---------------------------------------------------------------------------
+
+
+def learn_gate_thresholds(
+    records: list[dict],
+    feature_names: list[str],
+    regime_spec: RegimeSpec | None = None,
+    top_p_grid: tuple[float, ...] = (0.5, 0.6, 0.7),
+    t_stat_grid: tuple[float, ...] = (2.5, 3.0, 3.5, 4.0),
+    shift_grid: tuple[float, ...] = (0.02, 0.03, 0.04, 0.05),
+) -> dict[str, float]:
+    """Grid-search gate thresholds to minimize mean CRPS on train records.
+
+    Each record needs: features, quantiles {model: (9,H)}, crps {model: float},
+    actual, plus "t_stat" and "shift" for the gate. Uses 2-fold CV over
+    records (first half trains router, second half validates gates, then
+    swap) to avoid overfitting the thresholds to the router fit.
+
+    Returns {"gate_top_p": ..., "gate_t_stat": ..., "gate_shift": ...}.
+    """
+    from sklearn.model_selection import KFold
+
+    if regime_spec is None:
+        regime_spec = m4_regime_spec()
+    models = ["naive", "m0", "ets", "arima"]
+
+    kf = KFold(n_splits=2, shuffle=True, random_state=42)
+    idx = np.arange(len(records))
+    best = None
+    best_score = float("inf")
+
+    for top_p in top_p_grid:
+        for t_thr in t_stat_grid:
+            for s_thr in shift_grid:
+                fold_scores = []
+                for tr, va in kf.split(idx):
+                    f = ProposedForecaster(
+                        regime_spec=regime_spec,
+                        models=models,
+                        gate_top_p=top_p,
+                        gate_t_stat=t_thr,
+                        gate_shift=s_thr,
+                    )
+                    f.fit([records[i] for i in tr], feature_names)
+                    scores = []
+                    for i in va:
+                        r = records[i]
+                        out = f.predict(
+                            train=np.asarray(r.get("train", [0.0])),
+                            model_quantiles=r["quantiles"],
+                            feats=dict(zip(feature_names, r["features"], strict=True)),
+                            feature_names=feature_names,
+                            t_stat=float(r.get("t_stat", 0.0)),
+                            shift=float(r.get("shift", 0.0)),
+                        )
+                        # score the combined forecast vs actual
+                        q = out.quantiles
+                        actual = np.asarray(r["actual"], dtype=float)
+                        crps = float(
+                            np.mean([_crps_quantile(q[:, h], actual[h]) for h in range(q.shape[1])])
+                        )
+                        scores.append(crps)
+                fold_scores.append(float(np.mean(scores)))
+                mean_score = float(np.mean(fold_scores))
+                if mean_score < best_score:
+                    best_score = mean_score
+                    best = {
+                        "gate_top_p": top_p,
+                        "gate_t_stat": t_thr,
+                        "gate_shift": s_thr,
+                        "cv_crps": best_score,
+                    }
+    return best or {
+        "gate_top_p": GATE_TOP_P,
+        "gate_t_stat": GATE_T_STAT,
+        "gate_shift": GATE_SHIFT,
+        "cv_crps": float("inf"),
+    }
+
+
+def _crps_quantile(q: np.ndarray, y: float) -> float:
+    """CRPS via 2*mean pinball (matches exp42._crps_quantile)."""
+    q = np.asarray(q, dtype=float)
+    losses = np.where(
+        y >= q,
+        (y - q) * LEVELS,
+        (q - y) * (1.0 - LEVELS),
+    )
+    return 2.0 * float(np.mean(losses))

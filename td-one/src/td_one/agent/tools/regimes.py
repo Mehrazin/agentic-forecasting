@@ -289,7 +289,78 @@ def regime_probabilities(
     regimes, label_fn = _REGIME_SPECS[spec]
     label = label_fn(dict(features))
     n = len(regimes)
-    probs = {
-        r: (1.0 - smooth) if r == label else smooth / (n - 1) for r in regimes
-    }
+    probs = {r: (1.0 - smooth) if r == label else smooth / (n - 1) for r in regimes}
     return RegimeProbs(regimes=regimes, probabilities=probs, label=label, spec=spec)
+
+
+# ---------------------------------------------------------------------------
+# exp50 extension 3: semi-supervised regimes (cluster LOSS, not features)
+# ---------------------------------------------------------------------------
+
+
+def loss_regime_spec(
+    records: list[dict],
+    models: list[str],
+    n_regimes: int = 3,
+    seed: int = 42,
+) -> dict:
+    """Learn regimes by clustering per-model LOSS vectors (exp50).
+
+    exp45 failed because GMM clustered *feature* density — statistically
+    coherent groups that weren't *model-relevant*. This clusters the loss
+    vectors instead: regime = "the set of series where ARIMA wins".
+
+    Args:
+        records: each {"crps": {model: float}}.
+        models: ordered model names (defines loss-vector columns).
+        n_regimes: number of loss clusters.
+        seed: random seed.
+
+    Returns:
+        {"labels": [...], "centers": (n_regimes, n_models),
+         "winner_per_regime": [...], "model": KMeans}
+        where winner_per_regime[r] is the model with lowest center loss.
+
+    """
+    from sklearn.cluster import KMeans
+
+    loss_mat = np.array([[float(r["crps"][m]) for m in models] for r in records], dtype=float)
+    # normalize per-record so clustering sees *relative* model strength,
+    # not absolute difficulty
+    row_min = loss_mat.min(axis=1, keepdims=True)
+    row_max = loss_mat.max(axis=1, keepdims=True)
+    denom = np.maximum(row_max - row_min, 1e-12)
+    normed = (loss_mat - row_min) / denom
+
+    km = KMeans(n_clusters=n_regimes, n_init=10, random_state=seed)
+    labels = km.fit_predict(normed)
+    centers = km.cluster_centers_
+    winner_per_regime = [models[int(np.argmin(centers[r]))] for r in range(n_regimes)]
+    return {
+        "labels": labels.tolist(),
+        "centers": centers,
+        "winner_per_regime": winner_per_regime,
+        "model": km,
+        "models": list(models),
+    }
+
+
+def loss_regime_classifier(
+    records: list[dict],
+    feature_names: list[str],
+    loss_spec: dict,
+    seed: int = 42,
+) -> Any:
+    """Train features -> loss-regime classifier (exp50).
+
+    Maps diagnostic features to the loss-cluster labels from
+    :func:`loss_regime_spec`, so at predict time we can assign a new
+    series to a model-relevant regime from features alone.
+    """
+    from sklearn.linear_model import LogisticRegression
+
+    x_mat = np.array([r["features"] for r in records], dtype=float)
+    y = np.array(loss_spec["labels"])
+    clf = LogisticRegression(max_iter=1000, random_state=seed)
+    clf.fit(x_mat, y)
+    return clf

@@ -147,14 +147,15 @@ print(out.explanation)
 #  active: ets | trust: EASY"
 ```
 
-## 6. Open extensions (not yet implemented)
+## 6. Open extensions (exp50: all tested)
 
-1. **TSFM expert:** add calibrated TimesFM/Chronos-2 to the expert zoo
-   (exp14: −24%, exp18b: −12.2%).
-2. **BoC discrete variant:** EASY/HARD → rule/climatology for CUT/HOLD/HIKE.
-3. **Semi-supervised regimes:** cluster to predict model loss, not feature
-   density (exp45's suggested direction).
-4. **Learned gate threshold:** tune the 0.6/3.5/0.03 gate parameters.
+1. **TSFM expert:** ❌ Tested — 0% expert selection rate on M4, doesn't improve router.
+   Keep as standalone (exp18b: −12.2% on SMM), not as regime expert.
+2. **BoC discrete variant:** ✅ Implemented — `BoCForecaster`: EASY→rule, HARD→climatology.
+3. **Semi-supervised regimes:** ❌ Tested — loss-clustering (p=0.44) can't beat hand rules.
+   The domain prior ("seasonal→ARIMA") is doing real work.
+4. **Learned gate threshold:** ❌ Tested — learned (0.5/2.5/0.02) ties hand (0.6/3.5/0.03),
+   p=0.32. Keep hand-picked; `learn_gate_thresholds()` available for future.
 
 ---
 

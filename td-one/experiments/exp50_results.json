@@ -1,0 +1,52 @@
+{
+  "started_utc": "2026-10-18T07:12:11.714921+00:00",
+  "ext1_tsfm": {
+    "tsfm_real_weights": true,
+    "n": 120,
+    "mean_without_tsfm": 0.11655460289262663,
+    "mean_with_tsfm": 0.11655460289262663,
+    "p_value": NaN,
+    "helps": false,
+    "tsfm_expert_rate": 0.0
+  },
+  "ext2_boc": {
+    "easy_n": 62,
+    "easy_rule_acc": 0.887,
+    "hard_n": 81,
+    "hard_clim_acc": 0.827,
+    "easy_uses_rule": true,
+    "hard_uses_climatology": true,
+    "wired_correctly": true
+  },
+  "ext3_loss_regimes": {
+    "winner_per_regime": [
+      "m0",
+      "arima",
+      "arima"
+    ],
+    "n": 120,
+    "mean_hand": 0.11698236449733682,
+    "mean_loss_regime": 0.11897717508600443,
+    "p_value": 0.4437904439183494,
+    "helps": false
+  },
+  "ext4_gates": {
+    "learned": {
+      "gate_top_p": 0.5,
+      "gate_t_stat": 2.5,
+      "gate_shift": 0.02,
+      "cv_crps": 0.13179135823966462
+    },
+    "hand": {
+      "gate_top_p": 0.6,
+      "gate_t_stat": 3.5,
+      "gate_shift": 0.03
+    },
+    "n": 120,
+    "mean_hand": 0.11698236449733682,
+    "mean_learned": 0.11699439627054857,
+    "p_value": 0.31916057877043064,
+    "helps": false
+  },
+  "elapsed_s": 59.5
+}
