@@ -1,0 +1,9 @@
+{
+  "n_origins": 59,
+  "proposed_mean_crps": 1.0661821921871042,
+  "vector_lastvalue_mean_crps": 1.209101694915255,
+  "diff": -0.1429195027281508,
+  "t_stat": -3.5753320472789993,
+  "p_value": 0.0007131357574261634,
+  "proposed_wins": 50
+}
