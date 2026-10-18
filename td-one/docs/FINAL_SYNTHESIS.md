@@ -99,7 +99,34 @@ We built agentic forecasting infrastructure (event simulator, sandbox, 10 tools,
 
 ---
 
-## 5. Next Steps
+## 5. The Combination Trilogy (exp42-44)
+
+After selection failed, we tested three combination approaches:
+
+### exp42: FFORMA-lite (learned weights)
+**Honest negative.** Learned combination doesn't beat equal weights (p=0.156). Forecast combination puzzle confirmed at our scale.
+
+### exp43: Regime-probability router
+**Partial positive.** First method to significantly beat equal weights (M4 0.1282 vs 0.1295, p=0.018). Constrained structural priors beat flexible learning at small-n.
+
+### exp44: News-as-selector
+**Partial positive.** News-as-feature is dead, but news-as-selector mechanism proven on synthetic (p=0.0068). Real-data blocked by sparsity — needs live news API.
+
+**Lesson:** Structure beats flexibility. Regimes > weights. News selects, doesn't predict.
+
+---
+
+### exp45: Learned regimes (unsupervised)
+**Honest negative.** Hand-written rules significantly beat unsupervised discovery (M4: 0.1282 vs 0.1302, p=0.00046). The prior encodes domain knowledge that clustering can't find.
+
+### exp46: News dense (definitive)
+**Definitive negative.** With 86% BoC coverage (123/143 meetings), news still doesn't help regime classification. Sparsity was never the constraint. **News track closed for monthly forecasting.**
+
+**Final verdict on news:** Mechanism works on synthetic, fails on real data. Real markets don't give news the monopoly on latent-state info that the DGP did. Reallocate to regime router.
+
+---
+
+## 6. Next Steps
 
 1. **Literature survey:** How do others do agentic forecasting? What selection methods work?
 2. **Synthetic re-runs:** Test exp21-style discovery on calibrated DGP
