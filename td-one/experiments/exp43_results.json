@@ -1,0 +1,986 @@
+{
+ "experiment": "exp43_regime_router",
+ "date": "2026-10-18T00:19:14.796576+00:00",
+ "models": [
+  "naive",
+  "m0",
+  "ets",
+  "arima"
+ ],
+ "features": [
+  "n_changepoints",
+  "n_recent_cps",
+  "trend_strength",
+  "seasonal_strength",
+  "vol_ratio",
+  "is_stationary",
+  "is_nonstationary",
+  "acf1",
+  "spectral_entropy",
+  "hurst"
+ ],
+ "method": "Regime-probability router: LogisticRegression maps 10 PIT-safe train-window features -> P(regime). Per-regime expert = model with lowest mean CRPS on training records of that regime (fallback: global best single if <10 records). Test forecast = sum_r P(r|x) * expert_r quantiles (Vincentized). Baselines: equal weights, best single (hindsight), hard router (argmax), oracle.",
+ "m4": {
+  "dataset": "m4",
+  "regimes": [
+   "seasonal",
+   "trending",
+   "noisy"
+  ],
+  "regime_distribution": {
+   "seasonal": 172,
+   "trending": 198,
+   "noisy": 159
+  },
+  "folds": [
+   {
+    "n": 105,
+    "mean_crps": {
+     "router_soft": 0.11153794352155495,
+     "router_hard": 0.11151066800972982,
+     "equal_weights": 0.11354609797299645,
+     "best_single": 0.10479203738170632,
+     "best_single_name": "ets",
+     "per_model": {
+      "naive": 0.11633411720297539,
+      "m0": 0.11941566581509104,
+      "ets": 0.11328515482964206,
+      "arima": 0.1144465210832078
+     },
+     "oracle": 0.10479203738170632
+    },
+    "experts": {
+     "seasonal": "arima",
+     "trending": "ets",
+     "noisy": "ets"
+    },
+    "router_regime_accuracy": 0.8952380952380953,
+    "router_vs_equal": {
+     "mean_diff": -0.0020081544514415155,
+     "t_stat": -1.4675959177264024,
+     "p_value": 0.1452318038144734,
+     "win_rate": 0.6666666666666666
+    },
+    "router_vs_hard": {
+     "mean_diff": 2.7275511825115245e-05,
+     "win_rate": 0.45714285714285713
+    },
+    "gap_closed_vs_equal": 0.22939691021096112,
+    "gap_closed_vs_best": 0.0,
+    "fold": 0,
+    "train_regime_counts": {
+     "seasonal": 142,
+     "trending": 147,
+     "noisy": 135
+    }
+   },
+   {
+    "n": 112,
+    "mean_crps": {
+     "router_soft": 0.16190516831175872,
+     "router_hard": 0.16184318547145565,
+     "equal_weights": 0.16290447054159943,
+     "best_single": 0.14686163741269276,
+     "best_single_name": "arima",
+     "per_model": {
+      "naive": 0.16410267862806935,
+      "m0": 0.1700540843176254,
+      "ets": 0.16425238499256328,
+      "arima": 0.1623702079267805
+     },
+     "oracle": 0.14686163741269276
+    },
+    "experts": {
+     "seasonal": "arima",
+     "trending": "ets",
+     "noisy": "ets"
+    },
+    "router_regime_accuracy": 0.9464285714285714,
+    "router_vs_equal": {
+     "mean_diff": -0.0009993022298406958,
+     "t_stat": -0.5499839221722351,
+     "p_value": 0.5834353863962138,
+     "win_rate": 0.5446428571428571
+    },
+    "router_vs_hard": {
+     "mean_diff": 6.198284030306258e-05,
+     "win_rate": 0.49107142857142855
+    },
+    "gap_closed_vs_equal": 0.06228963561555244,
+    "gap_closed_vs_best": 0.0,
+    "fold": 1,
+    "train_regime_counts": {
+     "seasonal": 131,
+     "trending": 168,
+     "noisy": 118
+    }
+   },
+   {
+    "n": 110,
+    "mean_crps": {
+     "router_soft": 0.14169835571083553,
+     "router_hard": 0.14215437305384804,
+     "equal_weights": 0.1418710069927295,
+     "best_single": 0.1315227719420021,
+     "best_single_name": "arima",
+     "per_model": {
+      "naive": 0.14442902599957333,
+      "m0": 0.14799526597918367,
+      "ets": 0.14190659158137772,
+      "arima": 0.1404531391696599
+     },
+     "oracle": 0.1315227719420021
+    },
+    "experts": {
+     "seasonal": "arima",
+     "trending": "naive",
+     "noisy": "ets"
+    },
+    "router_regime_accuracy": 0.8909090909090909,
+    "router_vs_equal": {
+     "mean_diff": -0.0001726512818939938,
+     "t_stat": -0.20426748407043627,
+     "p_value": 0.8385253917253249,
+     "win_rate": 0.5545454545454546
+    },
+    "router_vs_hard": {
+     "mean_diff": -0.0004560173430124905,
+     "win_rate": 0.5454545454545454
+    },
+    "gap_closed_vs_equal": 0.016684128360791355,
+    "gap_closed_vs_best": 0.0,
+    "fold": 2,
+    "train_regime_counts": {
+     "seasonal": 127,
+     "trending": 161,
+     "noisy": 131
+    }
+   },
+   {
+    "n": 104,
+    "mean_crps": {
+     "router_soft": 0.10636076740066616,
+     "router_hard": 0.10653110422182771,
+     "equal_weights": 0.1082734110226487,
+     "best_single": 0.09871451284183283,
+     "best_single_name": "arima",
+     "per_model": {
+      "naive": 0.11414097671430742,
+      "m0": 0.11314427132386279,
+      "ets": 0.10770234419657891,
+      "arima": 0.10735517659133478
+     },
+     "oracle": 0.09871451284183283
+    },
+    "experts": {
+     "seasonal": "arima",
+     "trending": "ets",
+     "noisy": "ets"
+    },
+    "router_regime_accuracy": 0.9134615384615384,
+    "router_vs_equal": {
+     "mean_diff": -0.0019126436219825379,
+     "t_stat": -2.4267105858282902,
+     "p_value": 0.016973343420768665,
+     "win_rate": 0.7211538461538461
+    },
+    "router_vs_hard": {
+     "mean_diff": -0.00017033682116155538,
+     "win_rate": 0.5576923076923077
+    },
+    "gap_closed_vs_equal": 0.20009038550291286,
+    "gap_closed_vs_best": 0.0,
+    "fold": 3,
+    "train_regime_counts": {
+     "seasonal": 141,
+     "trending": 151,
+     "noisy": 133
+    }
+   },
+   {
+    "n": 98,
+    "mean_crps": {
+     "router_soft": 0.1155685836902906,
+     "router_hard": 0.11514483061068079,
+     "equal_weights": 0.11721969380022937,
+     "best_single": 0.10645038595940565,
+     "best_single_name": "ets",
+     "per_model": {
+      "naive": 0.12336727101436858,
+      "m0": 0.1215347095592844,
+      "ets": 0.1168319712657799,
+      "arima": 0.11933179995310408
+     },
+     "oracle": 0.10645038595940565
+    },
+    "experts": {
+     "seasonal": "arima",
+     "trending": "ets",
+     "noisy": "ets"
+    },
+    "router_regime_accuracy": 0.8775510204081632,
+    "router_vs_equal": {
+     "mean_diff": -0.0016511101099387759,
+     "t_stat": -1.5349321058071583,
+     "p_value": 0.12805593050277408,
+     "win_rate": 0.673469387755102
+    },
+    "router_vs_hard": {
+     "mean_diff": 0.00042375307960978683,
+     "win_rate": 0.3673469387755102
+    },
+    "gap_closed_vs_equal": 0.1533162701208914,
+    "gap_closed_vs_best": 0.0,
+    "fold": 4,
+    "train_regime_counts": {
+     "seasonal": 147,
+     "trending": 165,
+     "noisy": 119
+    }
+   }
+  ],
+  "pooled": {
+   "n": 529,
+   "mean_router": 0.1282021229871265,
+   "mean_equal": 0.12953008789376552,
+   "mean_diff": -0.0013279649066390174,
+   "t_stat": -2.366388887865105,
+   "p_value": 0.018322569962116512,
+   "win_rate": 0.6294896030245747
+  },
+  "n_records": 529
+ },
+ "synthetic": {
+  "dataset": "synthetic",
+  "regimes": [
+   "trending",
+   "seasonal",
+   "rw"
+  ],
+  "regime_distribution": {
+   "trending": 40,
+   "seasonal": 40,
+   "rw": 40
+  },
+  "folds": [
+   {
+    "n": 24,
+    "mean_crps": {
+     "router_soft": 0.06533660966495783,
+     "router_hard": 0.06533660966495781,
+     "equal_weights": 0.07127708116711365,
+     "best_single": 0.055503433449852,
+     "best_single_name": "arima",
+     "per_model": {
+      "naive": 0.06533660966495781,
+      "m0": 0.10581615075107531,
+      "ets": 0.0665317497590001,
+      "arima": 0.06324802529124068
+     },
+     "oracle": 0.055503433449852
+    },
+    "experts": {
+     "trending": "naive",
+     "seasonal": "naive",
+     "rw": "naive"
+    },
+    "router_regime_accuracy": 0.8333333333333334,
+    "router_vs_equal": {
+     "mean_diff": -0.005940471502155815,
+     "t_stat": -1.9344925642903184,
+     "p_value": 0.06544680913779614,
+     "win_rate": 0.75
+    },
+    "router_vs_hard": {
+     "mean_diff": 1.2721305490496585e-17,
+     "win_rate": 0.375
+    },
+    "gap_closed_vs_equal": 0.3766073395727582,
+    "gap_closed_vs_best": 0.0,
+    "fold": 0,
+    "train_regime_counts": {
+     "trending": 28,
+     "seasonal": 32,
+     "rw": 36
+    }
+   },
+   {
+    "n": 24,
+    "mean_crps": {
+     "router_soft": 0.0958098459861663,
+     "router_hard": 0.0969433944588937,
+     "equal_weights": 0.09953872931817258,
+     "best_single": 0.06855814361939612,
+     "best_single_name": "naive",
+     "per_model": {
+      "naive": 0.09644875961363054,
+      "m0": 0.14524120792799305,
+      "ets": 0.09725176118053419,
+      "arima": 0.09710836218883451
+     },
+     "oracle": 0.06855814361939612
+    },
+    "experts": {
+     "trending": "naive",
+     "seasonal": "arima",
+     "rw": "naive"
+    },
+    "router_regime_accuracy": 0.9166666666666666,
+    "router_vs_equal": {
+     "mean_diff": -0.0037288833320062594,
+     "t_stat": -0.3138680971545294,
+     "p_value": 0.7564502662949885,
+     "win_rate": 0.5833333333333334
+    },
+    "router_vs_hard": {
+     "mean_diff": -0.0011335484727274007,
+     "win_rate": 0.5416666666666666
+    },
+    "gap_closed_vs_equal": 0.1203619379007912,
+    "gap_closed_vs_best": 0.0,
+    "fold": 1,
+    "train_regime_counts": {
+     "trending": 40,
+     "seasonal": 28,
+     "rw": 28
+    }
+   },
+   {
+    "n": 24,
+    "mean_crps": {
+     "router_soft": 0.06786164721914352,
+     "router_hard": 0.06831815368375788,
+     "equal_weights": 0.0719400168651217,
+     "best_single": 0.055725681717482246,
+     "best_single_name": "naive",
+     "per_model": {
+      "naive": 0.06774685611965607,
+      "m0": 0.09215295016923607,
+      "ets": 0.07118640197739445,
+      "arima": 0.0679625786166393
+     },
+     "oracle": 0.055725681717482246
+    },
+    "experts": {
+     "trending": "naive",
+     "seasonal": "arima",
+     "rw": "naive"
+    },
+    "router_regime_accuracy": 0.7083333333333334,
+    "router_vs_equal": {
+     "mean_diff": -0.004078369645978185,
+     "t_stat": -0.8130232288869106,
+     "p_value": 0.42454125524515646,
+     "win_rate": 0.6666666666666666
+    },
+    "router_vs_hard": {
+     "mean_diff": -0.00045650646461435586,
+     "win_rate": 0.4166666666666667
+    },
+    "gap_closed_vs_equal": 0.2515286386301155,
+    "gap_closed_vs_best": 0.0,
+    "fold": 2,
+    "train_regime_counts": {
+     "trending": 32,
+     "seasonal": 36,
+     "rw": 28
+    }
+   },
+   {
+    "n": 24,
+    "mean_crps": {
+     "router_soft": 0.12796439507076282,
+     "router_hard": 0.12762644684378047,
+     "equal_weights": 0.13403694356702903,
+     "best_single": 0.10099262202803527,
+     "best_single_name": "naive",
+     "per_model": {
+      "naive": 0.1291023920113538,
+      "m0": 0.16495325959119922,
+      "ets": 0.13093430728781152,
+      "arima": 0.13178663505669974
+     },
+     "oracle": 0.10099262202803527
+    },
+    "experts": {
+     "trending": "naive",
+     "seasonal": "arima",
+     "rw": "naive"
+    },
+    "router_regime_accuracy": 0.9166666666666666,
+    "router_vs_equal": {
+     "mean_diff": -0.0060725484962662205,
+     "t_stat": -0.8679594937016466,
+     "p_value": 0.3943828268882735,
+     "win_rate": 0.6666666666666666
+    },
+    "router_vs_hard": {
+     "mean_diff": 0.00033794822698234576,
+     "win_rate": 0.3333333333333333
+    },
+    "gap_closed_vs_equal": 0.18376980411294966,
+    "gap_closed_vs_best": 0.0,
+    "fold": 3,
+    "train_regime_counts": {
+     "trending": 24,
+     "seasonal": 32,
+     "rw": 40
+    }
+   },
+   {
+    "n": 24,
+    "mean_crps": {
+     "router_soft": 0.07048533815447018,
+     "router_hard": 0.07072253333182235,
+     "equal_weights": 0.0722979242803975,
+     "best_single": 0.056652018255318765,
+     "best_single_name": "naive",
+     "per_model": {
+      "naive": 0.06923520828343117,
+      "m0": 0.10023647440548111,
+      "ets": 0.07088840623535288,
+      "arima": 0.07470962776217348
+     },
+     "oracle": 0.056652018255318765
+    },
+    "experts": {
+     "trending": "naive",
+     "seasonal": "arima",
+     "rw": "naive"
+    },
+    "router_regime_accuracy": 0.875,
+    "router_vs_equal": {
+     "mean_diff": -0.001812586125927291,
+     "t_stat": -0.2370985440461279,
+     "p_value": 0.814679465092524,
+     "win_rate": 0.625
+    },
+    "router_vs_hard": {
+     "mean_diff": -0.0002371951773521624,
+     "win_rate": 0.3333333333333333
+    },
+    "gap_closed_vs_equal": 0.11585050575031777,
+    "gap_closed_vs_best": 0.0,
+    "fold": 4,
+    "train_regime_counts": {
+     "trending": 36,
+     "seasonal": 32,
+     "rw": 28
+    }
+   }
+  ],
+  "pooled": {
+   "n": 120,
+   "mean_router": 0.08549156721910013,
+   "mean_equal": 0.0898181390395669,
+   "mean_diff": -0.004326571820466755,
+   "t_stat": -1.306569335820542,
+   "p_value": 0.19387854075190597,
+   "win_rate": 0.6583333333333333
+  },
+  "n_records": 120
+ },
+ "smm": {
+  "dataset": "smm",
+  "regimes": [
+   "calm",
+   "stressed"
+  ],
+  "regime_distribution": {
+   "calm": 38,
+   "stressed": 12
+  },
+  "folds": [
+   {
+    "n": 10,
+    "mean_crps": {
+     "router_soft": 0.18013101825906175,
+     "router_hard": 0.18013101825906175,
+     "equal_weights": 0.1933064832471836,
+     "best_single": 0.16345077532342128,
+     "best_single_name": "naive",
+     "per_model": {
+      "naive": 0.18013101825906175,
+      "m0": 0.20269943713725042,
+      "ets": 0.20850769388123974,
+      "arima": 0.21355044250503358
+     },
+     "oracle": 0.16345077532342128
+    },
+    "experts": {
+     "calm": "naive",
+     "stressed": "naive"
+    },
+    "router_regime_accuracy": 0.9,
+    "router_vs_equal": {
+     "mean_diff": -0.01317546498812185,
+     "t_stat": -1.1190003137325109,
+     "p_value": 0.29211513206320305,
+     "win_rate": 0.5
+    },
+    "router_vs_hard": {
+     "mean_diff": 3.469446951953614e-18,
+     "win_rate": 0.2
+    },
+    "gap_closed_vs_equal": 0.44130472544030463,
+    "gap_closed_vs_best": 0.0,
+    "fold": 0,
+    "train_regime_counts": {
+     "calm": 31,
+     "stressed": 9
+    }
+   },
+   {
+    "n": 10,
+    "mean_crps": {
+     "router_soft": 0.13958917955087255,
+     "router_hard": 0.13958917955087255,
+     "equal_weights": 0.14029486122757734,
+     "best_single": 0.1191501853996654,
+     "best_single_name": "naive",
+     "per_model": {
+      "naive": 0.13958917955087255,
+      "m0": 0.17179590443454035,
+      "ets": 0.14042593942318396,
+      "arima": 0.14123674609788645
+     },
+     "oracle": 0.1191501853996654
+    },
+    "experts": {
+     "calm": "naive",
+     "stressed": "naive"
+    },
+    "router_regime_accuracy": 1.0,
+    "router_vs_equal": {
+     "mean_diff": -0.0007056816767048314,
+     "t_stat": -0.10648018647698719,
+     "p_value": 0.9175370540482767,
+     "win_rate": 0.3
+    },
+    "router_vs_hard": {
+     "mean_diff": -5.551115123125783e-18,
+     "win_rate": 0.2
+    },
+    "gap_closed_vs_equal": 0.03337396526899018,
+    "gap_closed_vs_best": 0.0,
+    "fold": 1,
+    "train_regime_counts": {
+     "calm": 28,
+     "stressed": 12
+    }
+   },
+   {
+    "n": 10,
+    "mean_crps": {
+     "router_soft": 0.16109926790253543,
+     "router_hard": 0.16109926790253543,
+     "equal_weights": 0.18378518368292557,
+     "best_single": 0.15833012894910733,
+     "best_single_name": "naive",
+     "per_model": {
+      "naive": 0.16109926790253543,
+      "m0": 0.25006504995038775,
+      "ets": 0.16571323256457843,
+      "arima": 0.1709379926461692
+     },
+     "oracle": 0.15833012894910733
+    },
+    "experts": {
+     "calm": "naive",
+     "stressed": "naive"
+    },
+    "router_regime_accuracy": 1.0,
+    "router_vs_equal": {
+     "mean_diff": -0.022685915780390177,
+     "t_stat": -2.213468205262425,
+     "p_value": 0.05413803375422425,
+     "win_rate": 0.7
+    },
+    "router_vs_hard": {
+     "mean_diff": 0.0,
+     "win_rate": 0.0
+    },
+    "gap_closed_vs_equal": 0.8912145747716991,
+    "gap_closed_vs_best": 0.0,
+    "fold": 2,
+    "train_regime_counts": {
+     "calm": 28,
+     "stressed": 12
+    }
+   },
+   {
+    "n": 10,
+    "mean_crps": {
+     "router_soft": 0.22058558135412953,
+     "router_hard": 0.22058558135412953,
+     "equal_weights": 0.24671659188788836,
+     "best_single": 0.18240091324396657,
+     "best_single_name": "naive",
+     "per_model": {
+      "naive": 0.22058558135412953,
+      "m0": 0.27076122106537137,
+      "ets": 0.25803820857422377,
+      "arima": 0.26161239371776385
+     },
+     "oracle": 0.18240091324396657
+    },
+    "experts": {
+     "calm": "naive",
+     "stressed": "naive"
+    },
+    "router_regime_accuracy": 0.6,
+    "router_vs_equal": {
+     "mean_diff": -0.026131010533758808,
+     "t_stat": -1.575508143467297,
+     "p_value": 0.14959256105592858,
+     "win_rate": 0.8
+    },
+    "router_vs_hard": {
+     "mean_diff": 4.163336342344337e-18,
+     "win_rate": 0.0
+    },
+    "gap_closed_vs_equal": 0.40629300793716117,
+    "gap_closed_vs_best": 0.0,
+    "fold": 3,
+    "train_regime_counts": {
+     "calm": 32,
+     "stressed": 8
+    }
+   },
+   {
+    "n": 10,
+    "mean_crps": {
+     "router_soft": 0.21999065331505568,
+     "router_hard": 0.21999065331505568,
+     "equal_weights": 0.22315589890605964,
+     "best_single": 0.17502199183631445,
+     "best_single_name": "m0",
+     "per_model": {
+      "naive": 0.21999065331505568,
+      "m0": 0.21391215038007177,
+      "ets": 0.2588875591332406,
+      "arima": 0.23211850836384196
+     },
+     "oracle": 0.17502199183631445
+    },
+    "experts": {
+     "calm": "naive",
+     "stressed": "naive"
+    },
+    "router_regime_accuracy": 0.5,
+    "router_vs_equal": {
+     "mean_diff": -0.0031652455910039603,
+     "t_stat": -0.23493109018191505,
+     "p_value": 0.8195202058897166,
+     "win_rate": 0.6
+    },
+    "router_vs_hard": {
+     "mean_diff": -4.163336342344337e-18,
+     "win_rate": 0.2
+    },
+    "gap_closed_vs_equal": 0.06575916611999866,
+    "gap_closed_vs_best": 0.0,
+    "fold": 4,
+    "train_regime_counts": {
+     "calm": 33,
+     "stressed": 7
+    }
+   }
+  ],
+  "pooled": {
+   "n": 50,
+   "mean_router": 0.18427914007633095,
+   "mean_equal": 0.19745180379032692,
+   "mean_diff": -0.013172663713995924,
+   "t_stat": -2.4279071762355002,
+   "p_value": 0.01890491093169907,
+   "win_rate": 0.58
+  },
+  "n_records": 50
+ },
+ "food_cpi": {
+  "dataset": "food_cpi",
+  "regimes": [
+   "calm",
+   "volatile"
+  ],
+  "regime_distribution": {
+   "calm": 14,
+   "volatile": 10
+  },
+  "folds": [
+   {
+    "n": 6,
+    "mean_crps": {
+     "router_soft": 0.012252105001814402,
+     "router_hard": 0.012252105001814402,
+     "equal_weights": 0.01496564452432061,
+     "best_single": 0.012252105001814402,
+     "best_single_name": "arima",
+     "per_model": {
+      "naive": 0.013895671353041953,
+      "m0": 0.019819130313421127,
+      "ets": 0.01389567142900495,
+      "arima": 0.012252105001814402
+     },
+     "oracle": 0.012252105001814402
+    },
+    "experts": {
+     "calm": "arima",
+     "volatile": "arima"
+    },
+    "router_regime_accuracy": 0.6666666666666666,
+    "router_vs_equal": {
+     "mean_diff": -0.0027135395225062094,
+     "t_stat": -21.02303458372602,
+     "p_value": 4.51186204554793e-06,
+     "win_rate": 1.0
+    },
+    "router_vs_hard": {
+     "mean_diff": 2.8912057932946783e-19,
+     "win_rate": 0.0
+    },
+    "gap_closed_vs_equal": 1.0,
+    "gap_closed_vs_best": 0.0,
+    "fold": 0,
+    "train_regime_counts": {
+     "calm": 9,
+     "volatile": 9
+    }
+   },
+   {
+    "n": 6,
+    "mean_crps": {
+     "router_soft": 0.01235940444757186,
+     "router_hard": 0.01235940444757186,
+     "equal_weights": 0.014998854926312434,
+     "best_single": 0.01235940444757186,
+     "best_single_name": "arima",
+     "per_model": {
+      "naive": 0.01396780566231167,
+      "m0": 0.019700403862181026,
+      "ets": 0.01396780573318517,
+      "arima": 0.01235940444757186
+     },
+     "oracle": 0.01235940444757186
+    },
+    "experts": {
+     "calm": "arima",
+     "volatile": "arima"
+    },
+    "router_regime_accuracy": 0.3333333333333333,
+    "router_vs_equal": {
+     "mean_diff": -0.0026394504787405717,
+     "t_stat": -17.317820343885547,
+     "p_value": 1.176105421833823e-05,
+     "win_rate": 1.0
+    },
+    "router_vs_hard": {
+     "mean_diff": 0.0,
+     "win_rate": 0.0
+    },
+    "gap_closed_vs_equal": 1.0,
+    "gap_closed_vs_best": 0.0,
+    "fold": 1,
+    "train_regime_counts": {
+     "calm": 9,
+     "volatile": 9
+    }
+   },
+   {
+    "n": 6,
+    "mean_crps": {
+     "router_soft": 0.012131230384353597,
+     "router_hard": 0.012131230384353597,
+     "equal_weights": 0.01517651681159206,
+     "best_single": 0.012131230384353597,
+     "best_single_name": "arima",
+     "per_model": {
+      "naive": 0.013587793016946471,
+      "m0": 0.021520906494063723,
+      "ets": 0.01358779310060266,
+      "arima": 0.012131230384353597
+     },
+     "oracle": 0.012131230384353597
+    },
+    "experts": {
+     "calm": "arima",
+     "volatile": "arima"
+    },
+    "router_regime_accuracy": 0.5,
+    "router_vs_equal": {
+     "mean_diff": -0.003045286427238464,
+     "t_stat": -9.871985662855876,
+     "p_value": 0.00018183709616823412,
+     "win_rate": 1.0
+    },
+    "router_vs_hard": {
+     "mean_diff": 0.0,
+     "win_rate": 0.0
+    },
+    "gap_closed_vs_equal": 1.0,
+    "gap_closed_vs_best": 0.0,
+    "fold": 2,
+    "train_regime_counts": {
+     "calm": 9,
+     "volatile": 9
+    }
+   },
+   {
+    "n": 6,
+    "mean_crps": {
+     "router_soft": 0.008669622503092046,
+     "router_hard": 0.008669622503092046,
+     "equal_weights": 0.01097546362104449,
+     "best_single": 0.008669622503092046,
+     "best_single_name": "arima",
+     "per_model": {
+      "naive": 0.010139922317853205,
+      "m0": 0.014952387288804117,
+      "ets": 0.010139922374428583,
+      "arima": 0.008669622503092046
+     },
+     "oracle": 0.008669622503092046
+    },
+    "experts": {
+     "calm": "arima",
+     "volatile": "arima"
+    },
+    "router_regime_accuracy": 0.5,
+    "router_vs_equal": {
+     "mean_diff": -0.0023058411179524433,
+     "t_stat": -10.523948966781585,
+     "p_value": 0.00013374835324838879,
+     "win_rate": 1.0
+    },
+    "router_vs_hard": {
+     "mean_diff": 0.0,
+     "win_rate": 0.0
+    },
+    "gap_closed_vs_equal": 1.0,
+    "gap_closed_vs_best": 0.0,
+    "fold": 3,
+    "train_regime_counts": {
+     "calm": 9,
+     "volatile": 9
+    }
+   }
+  ],
+  "pooled": {
+   "n": 24,
+   "mean_router": 0.011353090584207975,
+   "mean_equal": 0.014029119970817397,
+   "mean_diff": -0.002676029386609422,
+   "t_stat": -23.51550330699478,
+   "p_value": 1.3793699721054822e-17,
+   "win_rate": 1.0
+  },
+  "n_records": 24
+ },
+ "boc": {
+  "dataset": "boc",
+  "regimes": [
+   "EASY",
+   "HARD"
+  ],
+  "regime_distribution": {
+   "EASY": 62,
+   "HARD": 81
+  },
+  "features": [
+   "rate_momentum",
+   "inflation_gap",
+   "unemployment_momentum",
+   "yield_spread"
+  ],
+  "folds": [
+   {
+    "fold": 0,
+    "n_test": 28,
+    "experts": {
+     "EASY": "rule",
+     "HARD": "climatology"
+    },
+    "acc": {
+     "router_soft": 0.8571428571428571,
+     "router_hard": 0.8571428571428571,
+     "rule": 0.8571428571428571,
+     "climatology": 0.8214285714285714
+    },
+    "regime_accuracy": 0.32142857142857145
+   },
+   {
+    "fold": 1,
+    "n_test": 28,
+    "experts": {
+     "EASY": "rule",
+     "HARD": "climatology"
+    },
+    "acc": {
+     "router_soft": 0.9285714285714286,
+     "router_hard": 0.9285714285714286,
+     "rule": 0.9285714285714286,
+     "climatology": 0.9285714285714286
+    },
+    "regime_accuracy": 0.32142857142857145
+   },
+   {
+    "fold": 2,
+    "n_test": 28,
+    "experts": {
+     "EASY": "rule",
+     "HARD": "rule"
+    },
+    "acc": {
+     "router_soft": 0.7857142857142857,
+     "router_hard": 0.7857142857142857,
+     "rule": 0.7857142857142857,
+     "climatology": 0.8214285714285714
+    },
+    "regime_accuracy": 0.17857142857142858
+   },
+   {
+    "fold": 3,
+    "n_test": 28,
+    "experts": {
+     "EASY": "rule",
+     "HARD": "rule"
+    },
+    "acc": {
+     "router_soft": 0.75,
+     "router_hard": 0.75,
+     "rule": 0.75,
+     "climatology": 0.7142857142857143
+    },
+    "regime_accuracy": 0.35714285714285715
+   },
+   {
+    "fold": 4,
+    "n_test": 31,
+    "experts": {
+     "EASY": "rule",
+     "HARD": "climatology"
+    },
+    "acc": {
+     "router_soft": 0.9032258064516129,
+     "router_hard": 0.9032258064516129,
+     "rule": 0.9032258064516129,
+     "climatology": 0.9032258064516129
+    },
+    "regime_accuracy": 0.0
+   }
+  ],
+  "pooled": {
+   "n": 143,
+   "mean_soft": 0.8461538461538461,
+   "mean_rule": 0.8461538461538461,
+   "mean_hard": 0.8461538461538461,
+   "mean_diff_soft_vs_rule": 0.0,
+   "t_stat": NaN,
+   "p_value": NaN,
+   "win_rate": 0.0
+  },
+  "n_records": 143
+ },
+ "elapsed_s": 72.2
+}

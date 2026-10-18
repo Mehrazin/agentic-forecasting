@@ -1,0 +1,189 @@
+{
+ "experiment": "exp44_news_selector",
+ "date": "2026-10-18T00:59:42.632468+00:00",
+ "news_db": "/home/hatch/workspace/agentic-forecasting/td-one/data/news/news_2026.db",
+ "news_window_days": 30,
+ "pit_rule": "articles with pub_date in [D-30d, D) only; strictly before origin",
+ "method": "News-as-selector: LogisticRegression maps backward features vs backward+news features -> P(regime). Compares regime classification accuracy (primary) and, for SMM, full router CRPS (secondary). News never touches the forecast value -- only the regime weights.",
+ "boc": {
+  "dataset": "boc",
+  "regimes": [
+   "EASY",
+   "HARD"
+  ],
+  "base_features": [
+   "rate_momentum",
+   "inflation_gap",
+   "unemployment_momentum",
+   "yield_spread"
+  ],
+  "news_features": [
+   "news_n",
+   "news_hawk",
+   "news_dove",
+   "news_disagree",
+   "news_net"
+  ],
+  "meetings_with_news": 47,
+  "regime_classification": {
+   "n": 143,
+   "acc_base_mean": 0.2642857142857143,
+   "acc_news_mean": 0.29516129032258065,
+   "acc_base_folds": [
+    0.35714285714285715,
+    0.39285714285714285,
+    0.17857142857142858,
+    0.39285714285714285,
+    0.0
+   ],
+   "acc_news_folds": [
+    0.2857142857142857,
+    0.35714285714285715,
+    0.17857142857142858,
+    0.42857142857142855,
+    0.22580645161290322
+   ],
+   "mean_diff": 0.03496503496503497,
+   "t_stat": 1.294035664843436,
+   "p_value": 0.1977537746020344,
+   "win_rate": 0.06993006993006994,
+   "skipped_folds": 0
+  }
+ },
+ "smm": {
+  "dataset": "smm",
+  "regimes": [
+   "calm",
+   "stressed"
+  ],
+  "base_features": [
+   "n_changepoints",
+   "n_recent_cps",
+   "trend_strength",
+   "seasonal_strength",
+   "vol_ratio",
+   "is_stationary",
+   "is_nonstationary",
+   "acf1",
+   "spectral_entropy",
+   "hurst"
+  ],
+  "news_features": [
+   "news_n",
+   "news_rate",
+   "news_stress",
+   "news_stress_share"
+  ],
+  "origins_with_news": 50,
+  "regime_classification": {
+   "n": 50,
+   "acc_base_mean": 0.96,
+   "acc_news_mean": 0.96,
+   "acc_base_folds": [
+    0.8,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "acc_news_folds": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.8
+   ],
+   "mean_diff": 0.0,
+   "t_stat": 0.0,
+   "p_value": 1.0,
+   "win_rate": 0.04,
+   "skipped_folds": 0
+  },
+  "router_crps": {
+   "n": 50,
+   "mean_crps_base": 0.18427914007633095,
+   "mean_crps_news": 0.18427914007633095,
+   "mean_diff": 0.0,
+   "t_stat": 0.0,
+   "p_value": 1.0,
+   "win_rate": 0.2,
+   "skipped_folds": 0
+  }
+ },
+ "synthetic": {
+  "dataset": "synthetic",
+  "regimes": [
+   "calm",
+   "stressed"
+  ],
+  "base_features": [
+   "n_changepoints",
+   "n_recent_cps",
+   "trend_strength",
+   "seasonal_strength",
+   "vol_ratio",
+   "is_stationary",
+   "is_nonstationary",
+   "acf1",
+   "spectral_entropy",
+   "hurst"
+  ],
+  "news_features": [
+   "news_n",
+   "news_event_kw",
+   "news_event_share"
+  ],
+  "n_events": 13,
+  "n_articles": 77,
+  "origins_with_news": 5,
+  "regime_classification_backward_labels": {
+   "n": 48,
+   "acc_base_mean": 0.8722222222222223,
+   "acc_news_mean": 0.85,
+   "acc_base_folds": [
+    0.8888888888888888,
+    1.0,
+    1.0,
+    0.5555555555555556,
+    0.9166666666666666
+   ],
+   "acc_news_folds": [
+    0.7777777777777778,
+    1.0,
+    1.0,
+    0.5555555555555556,
+    0.9166666666666666
+   ],
+   "mean_diff": -0.020833333333333332,
+   "t_stat": -1.0,
+   "p_value": 0.3224313400159669,
+   "win_rate": 0.0,
+   "skipped_folds": 0
+  },
+  "regime_classification_true_labels": {
+   "n": 48,
+   "acc_base_mean": 0.36666666666666664,
+   "acc_news_mean": 0.5222222222222223,
+   "acc_base_folds": [
+    0.2222222222222222,
+    0.3333333333333333,
+    0.4444444444444444,
+    0.3333333333333333,
+    0.5
+   ],
+   "acc_news_folds": [
+    0.4444444444444444,
+    0.6666666666666666,
+    0.6666666666666666,
+    0.3333333333333333,
+    0.5
+   ],
+   "mean_diff": 0.14583333333333334,
+   "t_stat": 2.8327354701599723,
+   "p_value": 0.0067767637300181535,
+   "win_rate": 0.14583333333333334,
+   "skipped_folds": 0
+  }
+ },
+ "elapsed_s": 5.3
+}
