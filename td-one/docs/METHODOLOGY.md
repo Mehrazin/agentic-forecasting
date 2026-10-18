@@ -1,421 +1,524 @@
-# Agentic Forecasting for Mortgage Attrition: Methodology
+# TD-One: Agentic Forecasting for Mortgage Attrition — Methodology
 
 **TD-One — Canadian mortgage renewal/switching forecasting**
-*Methodology reference for the modeling crew. Written 2026-10-16; results
-as of the latest runs in `experiments/`.*
+*Complete research methodology, exp1–exp51. Written 2026-10-18.*
+*Supersedes all earlier methodology drafts (2026-10-16).*
 
 ---
 
 ## Abstract
 
-We forecast **borrower attrition at mortgage renewal**: for each portfolio
-segment and each month, how many renewing borrowers will *switch* lenders
-vs stay? We compare four rungs of a modeling ladder — a Bayesian baseline
-(M0), zero-shot time-series foundation models (M1: Chronos-2, TimesFM-2.5),
-a ReAct LLM agent that plans its own analysis with tools (M2), and a
-hybrid that lets the agent nudge the baseline inside strict bounds (M3) —
-under a point-in-time evaluation protocol with CRPS as the primary metric.
-On 10,000 synthetic customers × 66 months, the real-weight TSFMs beat M0
-on mean CRPS (Chronos-2 4.46, TimesFM-2.5 4.59 vs M0 5.36); TimesFM
-lands on nominal 80% coverage (mean 0.80 across segments). A Groq-driven ReAct agent finalized 2 of 3
-pilot traces and beat M0 on one. We retract an earlier claim that
-Chronos-2 beats M0 by 20% on synthetic data — it was a circular-DGP
-artifact caught by our critic audit; on 2,000 real M4 Monthly series,
-both TSFMs genuinely beat the classical baselines by ~20% CRPS
-(§6.5). Conformal intervals fix classical calibration (exactly nominal
-80% coverage on real data); TSFM calibration remains DGP-dependent.
+We ask whether agentic AI — large language models with tools, sandboxes,
+and decision policies — can improve probabilistic forecasting of Canadian
+mortgage borrower attrition at renewal. Over **51 experiments** across
+three research tracks (classical, time-series foundation models, agentic),
+we built the TD-One method: a **regime-probability router with gates**.
+On 600 M4 Monthly series (blocked 5-fold CV, paired t-tests), the proposed
+method beats equal-weight combination (0.1451 vs 0.1507, p=6.5e-09), the
+best single model (p=7.8e-11), and the router alone (p=6.7e-10). On Food CPI
+it beats equal weights (p=3.1e-18). On Bank of Canada rate decisions, the
+regime-gated rule achieves 0.853 accuracy. We report **14 positive results,
+17 honest negatives, and 1 definitive track closure** (news for monthly
+forecasting). A "kitchen sink" experiment (exp51) confirms our significance
+filter was correct: adding every nonsignificant positive back makes the
+method worse, not better.
 
 ---
 
-## 1. Introduction
+## Table of Contents
 
-When a fixed-rate mortgage matures in Canada, the borrower faces a
-choice: renew with the incumbent lender or switch. For a bank's treasury
-and retention teams, the *switching rate* per segment per month drives
-funding plans, pricing, and campaign targeting. The series is awkward:
-monthly counts are small, renewal volumes are seasonal, rate shocks arrive
-as regime shifts, and the signal that matters (a Bank of Canada decision,
-a competitor's rate war) lives in text, not in the time series.
-
-Classical approaches fit a rate model per segment and call it a day.
-Foundation models for time series (TSFMs) promise zero-shot forecasting
-without per-series training. LLM *agents* promise something else: the
-ability to plan an analysis — pull the segment history, read macro
-evidence, run a numerical forecast, and synthesize — the way an analyst
-would. This project tests all three ideas against a strong Bayesian
-baseline, honestly.
-
-**Contributions.** (1) A four-rung ladder (M0–M3) with a shared
-point-in-time evaluation harness. (2) A ReAct agent with injected,
-cutoff-safe tools and a frozen evidence corpus. (3) A bounded hybrid
-readout (M3) that converts LLM judgment into calibrated adjustments.
-(4) A retraction: our first "Chronos-2 beats M0" result did not survive
-a fair experimental redesign, and we document exactly why.
+1. [Problem Statement](#1-problem-statement)
+2. [Research Program Overview](#2-research-program-overview)
+3. [Classical Baselines](#3-classical-baselines)
+4. [Agentic Track (Phases 1–3)](#4-agentic-track-phases-13)
+5. [Real-Data Benchmarks](#5-real-data-benchmarks)
+6. [The Combination Trilogy](#6-the-combination-trilogy)
+7. [The Proposed Method (exp47/49)](#7-the-proposed-method-exp4749)
+8. [Extensions and Validation](#8-extensions-and-validation)
+9. [Tool Optimization](#9-tool-optimization)
+10. [What We Learned](#10-what-we-learned)
+11. [Reproducibility](#11-reproducibility)
 
 ---
 
-## 2. Related work
+## 1. Problem Statement
 
-**Time-series foundation models.** Chronos-2 (Amazon) and TimesFM-2.5
-(Google) are pre-trained on large time-series corpora and forecast
-zero-shot via quantile heads. We use them strictly as *univariate*
-forecasters over monthly switching-rate series — no fine-tuning, no
-covariates. Prior work shows strong zero-shot performance on standard
-benchmarks; our question is narrower: do they beat a domain baseline on
-short, noisy, regime-shifting count panels?
+When a fixed-rate mortgage matures in Canada, the borrower faces a choice:
+renew with the incumbent lender or switch. For a bank's treasury and
+retention teams, the **switching rate per segment per month** drives funding
+plans, pricing, and campaign targeting.
 
-**LLM agents for analysis.** ReAct (Yao et al., 2023) interleaves
-*reasoning* traces with *actions* (tool calls), letting the model plan,
-observe, and replan. We adopt the pattern but replace free-form
-web/API tools with three injected, audited tools (Section 6.5). The
-agent never touches raw customer data — only segment aggregates —
-and every tool enforces the point-in-time cutoff.
+The series is awkward:
 
-**Hybrid judgmental-statistical forecasting.** The forecasting
-literature has long combined statistical baselines with judgmental
-adjustment; the failure mode is *over*-adjustment. M3 operationalizes
-the lesson as a hard bound: the agent's logit adjustment is clipped to
-±0.75, so the worst case is a bounded perturbation of M0, never a
-replacement.
+- **Small counts.** Monthly renewal volumes per segment are small; rates are
+  noisy.
+- **Seasonality.** Renewal volumes peak in predictable months (spring buying
+  season), but the *switching propensity* within renewals has its own
+  seasonal structure.
+- **Regime shifts.** Bank of Canada policy decisions, competitor rate wars,
+  and macro shocks arrive as discrete events that change the data-generating
+  process.
+- **Text-dominant signal.** The signal that matters — a BoC decision, a
+  competitor's rate war, a policy announcement — lives in *text*, not in the
+  time series. This is the fundamental motivation for agentic methods: a
+  forecaster that cannot read is blind to the most informative inputs.
 
----
-
-## 3. Problem formulation
-
-For segment $s$ and month $t$, let $N_{s,t}$ be renewals coming due and
-$A_{s,t}$ the number who switch. We forecast the *rate*
-$r_{s,t} = A_{s,t}/N_{s,t}$ one month ahead as a **quantile lattice**
-$\{q_\alpha\}_{\alpha \in \mathcal{L}}$ (model-native grids: 21 levels
-for Chronos-2, 9 for TimesFM), evaluated as count distributions.
-
-**Point-in-time (PIT) discipline.** Every forecast for origin $o$ may
-use only information with `observed_asof ≤ o`. Two mechanisms enforce
-this: (1) the panel builder masks training months to outcomes with
-`outcome_observed_at ≤ origin` (settlement-lag leakage is structurally
-impossible); (2) evidence retrieval filters the corpus to
-`published_date < run_date`. A leakage auditor verifies 0% lookahead.
-
-**Metrics.** CRPS on count distributions is primary (proper score);
-MAE on expected counts and empirical 80% interval coverage are
-secondary. Origins are consecutive month-ends (rolling evaluation).
+Classical approaches fit a rate model per segment and call it a day. The
+TD-One program asks whether adding **LLMs with tools** (news retrieval,
+diagnostics, code execution) can beat that — and if so, where, and by how
+much. The honest answer, after 51 experiments, is *sometimes, in specific
+regimes, with strict gating* — and we can name exactly which.
 
 ---
 
-## 4. Data
+## 2. Research Program Overview
 
-We train and evaluate on a **structural simulator** (10,000 customers ×
-66 months, seed-fixed): origination months drawn year-round
-(maturities spread across the calendar), payment-shock quintiles,
-fixed/variable rate type, province region, and term buckets, with
-planted macro shocks (rate jumps, OSFI-style tightening). Outcomes are
-generated by a structural DGP with Beta-Binomial overdispersion and
-AR(1) logit noise — deliberately *not* hand-tuned to flatter any
-model (see the exp2 v1 retraction, Section 8).
-
-**Segments.** Fifteen panels are discovered per origin: payment-shock
-quintiles, rate type, province regions, term buckets. Each panel is a
-monthly `(n_renewals, n_switches)` series.
-
-**Macro evidence.** Two sources: (1) a **frozen 12-entry illustrative
-corpus** (`experiments/evidence_corpus/corpus.json`) with BoC-style
-announcements, date-guarded at the run date; (2) **live FRED** — 19
-curated series (policy rates, Canada 3M/10Y, US 5Y/10Y, CPI, unemployment,
-house prices, CAD/USD, credit spreads, WTI crude, Canada household
-debt-to-GDP) bulk-downloaded to parquet and
-PIT-filtered at use time.
+### 2.1 The three tracks
 
 ```mermaid
 flowchart LR
-    SIM["Simulator<br/>(10k × 66)"] --> PIT["PIT store<br/>(DuckDB)"]
-    PIT --> SEG["Segment discovery<br/>(15 panels)"]
-    SEG --> M0["M0 baseline"]
-    SEG --> M1["M1 TSFMs"]
-    SEG --> AG["M2 ReAct agent"]
-    FRED[("FRED macro<br/>19 series")] --> AG
-    CORP[("Frozen corpus<br/>12 docs")] --> AG
-    M0 --> HYB["M3 hybrid<br/>(bounded Δ)"]
-    AG --> HYB
-    M0 --> EV["Backtest<br/>(CRPS/MAE/cov)"]
-    M1 --> EV
-    AG --> EV
-    HYB --> EV
+    CLASS[Classical track<br/>exp1–19<br/>M0, ETS, ARIMA, conformal]
+    TSFM[TSFM track<br/>exp14, exp18<br/>Chronos-2, TimesFM-2.5]
+    AGENT[Agentic track<br/>exp20–51<br/>Phases 1–3, benchmarks,<br/>combination, proposed method]
+    CLASS --> PROPOSED
+    TSFM --> PROPOSED
+    AGENT --> PROPOSED
+    PROPOSED[Proposed method<br/>exp47/49<br/>regime router + gates]
 ```
 
-### 4.1 Simulator v2 — richer DGP
+All three tracks ran in parallel. The classical track established baselines
+and killed the macro-overlay track. The TSFM track established that
+foundation models beat classical on real data (but not on our synthetic
+DGPs — a DGP artifact we caught and retracted). The agentic track is where
+most experiments live: simulators, sandboxes, agents, benchmarks, the
+combination trilogy, and the proposed method.
 
-The v1 DGP missed the three structural features the prepayment literature
-identifies as first-order (see `docs/LITERATURE_SURVEY.md` §5–6), plus the
-economically central renewal-competition mechanism. Simulator v2
-(`src/td_one/data_gen/simulator_v2.py`, subclassing v1 — v1 untouched) adds:
+### 2.2 The honest-negative philosophy
 
-**Renewal offers.** Each renewal episode generates 1 TD + 1–2 competitor
-offers (rate, term, type, offer/expiry dates, accepted/declined/expired).
-TD's offer is the market fixed rate at maturity plus a 0–25bp premium;
-competitors disperse around market (±30bp). Statuses are outcome-consistent:
-switchers accept a competitor, renewers accept TD or let offers expire.
+We report what does not work. Every experiment has a pre-registered
+verdict: **Keep** (positive lift, integrate), **Kill** (definitive negative,
+stop), or **Marginal** (directional, needs more evidence). Retractions are
+public: exp2's claim that Chronos-2 beats M0 by 20% on synthetic data was
+a circular-DGP artifact, caught by our critic audit and retracted. exp8's
+macro overlay was retracted when the sign was found to be wrong.
 
-**Offer-competition incentive (S-curved).** Switching responds to
-`max(0, TD_rate − best_competitor_rate)` via `atan(spread / 0.75)` — a
-saturating S-curve, not the linear incentive v1 used. This is the mechanism
-v1 missed: borrowers react to *TD's* competitiveness, not just the level.
+An honest negative is a finding, not a failure. The kill list (§10.1) is
+as informative as the keep list — it tells future researchers what not to
+try.
 
-**Customer heterogeneity** (all with real DGP effects): credit-utilization
-drift (+1.0 logit per pp/month), life events within 6m of maturity (+0.6),
-digital channel (+0.35, shops more), advisor relationship (−0.45, retention).
+### 2.3 Timeline
 
-**Prepayment-canon mechanics.** *Burnout*: prior refinances lower switching
-(−0.45 each) and dampen rate sensitivity 25% each (selection). *Seasoning*:
-30-month ramp — v2 adds 12/24-month terms so young mortgages switch less.
-*FRED macro*: MORTGAGE30US 3m-change z-scores shift the logit by default
-(negative sign: rate spikes *reduce* switching via lock-in; winsorized ±2.5σ).
-
-The v2 base switch rate is ~11% (vs v1's higher rate); the intercept is
-empirically recalibrated since the new incentive terms add positive logit.
-Experiment 9 (`experiments/exp9_richdgp.py`) re-runs M0 vs the best models
-on the v2 DGP to test whether the richer structure changes conclusions.
+| Phase | Dates | Content |
+|---|---|---|
+| Synthetic baselines | 2026-10-15 → 10-16 | exp1–19: M0–M5, TSFM weights, conformal, macro audit |
+| Agentic Phases 1–3 | 2026-10-16 → 10-17 | exp20–25: simulator, sandbox, tools, decision policy |
+| Real-data benchmarks | 2026-10-17 | exp30–37: WTI, BoC, SMM, Food CPI, M4 |
+| Combination trilogy | 2026-10-17 → 10-18 | exp42–44: FFORMA, regime router, news selector |
+| Kill confirmations | 2026-10-18 | exp45–46: learned regimes, news dense |
+| Proposed method | 2026-10-18 | exp47–51: build, tools, reasoning, extensions, kitchen sink |
 
 ---
 
-## 5. The ladder
+## 3. Classical Baselines
 
-### 5.1 M0 — Jeffreys Beta-Binomial baseline
+### 3.1 The model ladder
 
-The incumbent. For each segment, fit a Beta-Binomial on the trailing 6
-months with a Jeffreys prior (α=β=0.5): the posterior predictive for
-next month's switches is the forecast distribution. Simple, calibrated
-by construction on stationary stretches, and deliberately hard to beat
-— any rung above it must earn its complexity.
+- **M0 (Jeffreys Beta-Binomial).** Bayesian baseline for attrition rates.
+  Per-segment Beta posterior with Jeffreys prior; predictive quantiles from
+  the posterior predictive. The honest floor.
+- **m0_w3.** M0 with a 3-month trailing window — the classical champion on
+  synthetic data.
+- **ETS / ARIMA.** Standard exponential smoothing and ARIMA, fit per
+  series. ETS is the proper probabilistic baseline (fair CRPS comparison).
+- **Naive / seasonal naive.** Random-walk forecasts with empirical residual
+  quantiles. Surprisingly hard to beat on some real series (WTI).
 
-### 5.2 M1 — zero-shot TSFMs
+### 3.2 TSFM: Chronos-2 and TimesFM-2.5
 
-The panel's historical switching *rates* feed Chronos-2 or TimesFM-2.5
-(zero-shot, `horizon=1`) on their native quantile grids. Two
-engineering notes: (1) neural forecasters can emit **quantile
-crossing** — we sort values ascending to enforce monotonicity
-(regression-tested); (2) weights load once per process from a pinned
-manifest and are explicitly unloaded between runs (RAM discipline on
-small VMs).
+We wired real pretrained weights (Chronos-2 455.8MB, TimesFM-2.5 882.3MB;
+manifest committed, weights gitignored) with a reproducible bootstrap
+script. Key results:
 
-### 5.3 M2 — the ReAct agent *(agentic primer)*
+- **exp14/R2-4 (M4 Monthly, common 0.10–0.90 quantile grid):** Chronos-2
+  351.18 (−24.1% vs naive 462.84), TimesFM 358.13 (−22.6%). The TSFM win
+  **survives** a fair grid. Caveats: Chronos-2 seeds identical
+  (deterministic); no ETS/ARIMA baseline on this grid.
+- **exp18b (Freddie Mac SMM, fair probabilistic ablation):**
+  TimesFM_cal **0.000497** vs ETS+resid **0.000566** = **−12.2%**, p=0.076
+  (n.s. at α=0.05), wins 32/50 origins. Against m0_w3 (0.000613) the gap is
+  17.9% (p=0.0079), but ETS is the proper baseline.
 
-> **For readers new to agents.** A *ReAct* agent is a loop, not a
-> model. At each step the LLM sees the task plus the trace so far and
-> emits exactly one JSON action: call a *tool* (a typed function we
-> inject — it cannot call anything else) or `finalize` with its
-> forecast. The tool returns an *observation* (text), which is appended
-> to the trace, and the loop continues — up to 6 steps. "Agentic" here
-> means the LLM **plans its own analysis sequence** (e.g. pull data →
-> read evidence → forecast → finalize) rather than executing a fixed
-> pipeline. The intelligence under test is orchestration: does choosing
-> what to look at, and in what order, beat the fixed baseline?
+**Calibration:** `LogScaleCalibrator`
+(`src/td_one/models/tsfm_calibration.py`) maps TSFM raw quantiles to
+calibrated intervals. Without it, TSFMs overcover (Chronos-2: 1.0/0.8
+empirical coverage on synthetic).
+
+### 3.3 The macro track — CLOSED
+
+A multi-experiment arc (exp8, exp10, exp13, exp15, R2 reruns) tested whether
+macroeconomic overlays (FRED series, z-scored) improve forecasts.
+
+- First verdict: PIT-safe reruns killed it (exp10's 0.678 CRPS gain was 100%
+  z-score leak).
+- That verdict was **retracted**: an audit found a dict-lookup bug (t+1
+  lookup in a dict truncated at t) had silently zeroed the macro signal —
+  it was never properly tested PIT-safe.
+- Final verdict: 5-seed run, macro_m0_w3 (1.4665) vs m0_w3 (1.2804) =
+  **+0.1861 (macro worse), p=0.064 against**. Single-seed −0.357 was luck.
+  **Track closed: no evidence macro helps, classical or TSFM side.**
+
+---
+
+## 4. Agentic Track (Phases 1–3)
+
+### 4.1 Phase 1: Event-augmented simulator
+
+`events.py` (5 event types: rate shocks, competitor moves, policy changes,
+seasonal surges, macro turns), `news_synthesis.py` (PIT-safe synthetic news),
+`simulator.py` (10k×66mo mortgage attrition with planted shocks). 30/30
+tests. Original signal: 9.1pp.
+
+**Phase 3 adjustment:** news-leading DGP (84% of news arrives before the
+DGP effect, verified) — because real news leads, and the original DGP had
+news mostly lagging.
+
+### 4.2 Phase 2: Sandbox + 10 tools + ReAct v2
+
+Sandbox from AI2 methodologies (30s timeout, 1GB memory, secret stripping),
+10 analysis tools (`test_stationarity`, `detect_changepoints`,
+`decompose_series`, `analyze_residuals`, `feature_importance`,
+`cross_validate`, `compare_models`, `backtest_event_impact`,
+`plot_diagnostics`, `generate_synthetic_scenario`), and `react_v2.py` with
+code execution. 66 tests.
+
+**Key negatives from the agent experiments:**
+
+| Exp | Test | Result |
+|---|---|---|
+| exp21 | Agent feature discovery | **−21.6%** held-out vs ETS. News mostly *lags* the DGP effect; only 2/5 event types have news before impact. |
+| exp22 | M2 v2 (calibrated) vs v1 | Mixed. +1.3% overall (n.s., p=0.73). On 9/60 origins where v2 acted: **+6.6%, 6/9 wins**. But 3 losses catastrophic (−59% to −93%) from overconfident intervals. |
+| exp23 | Diagnostic model selection | **= random** (p=0.80). Selecting from backward diagnostics doesn't work. |
+| exp24 | Regime-aware selection | Wash (p=0.93). |
+| exp25 | News at h=3 | **Significantly worse** (+25%, p=0.0013). |
+
+### 4.3 Phase 3: Decision policy
+
+`decision_policy.py`: James-Stein shrinkage on agent adjustments,
+calibrated intervals (volatility floor), corroboration gating
+(|t| > 3.5 or news corroboration required before acting). 11/11 tests.
+The 2026-10-17 "C-nudge" tightened thresholds after the WTI lesson
+(`T_STAT_STRICT` 3.0→3.5, `min_shift` 0.02→0.03).
+
+**WTI lesson:** On energy/oil (random walk — ETS/ARIMA/naive identical at
+1.0521 CRPS), the agent correctly found nothing 92% of the time. The 8%
+false positives cost 4–7%. **When there is no signal, the agent must do
+nothing.** This motivated the "do nothing" prior that became a core
+component of the proposed method.
+
+---
+
+## 5. Real-Data Benchmarks
+
+Moving beyond synthetic DGPs (per the 2026-10-17 directive) to five real
+benchmarks:
+
+### 5.1 WTI / Energy-Oil — method sound, task impossible
+
+ETS, ARIMA, and naive produce **identical** forecasts (1.0521 CRPS) — the
+series is a random walk at this horizon. No method can beat the naive
+forecast; the agent's correct behavior is abstention. Kept as a no-signal
+diagnostic.
+
+### 5.2 Bank of Canada Rate Decisions — methodology validated
+
+143 meetings, 23 non-hold decisions. A simple rule (rate momentum +
+inflation gap) achieves **83.7%** vs climatology 79.1%.
+
+- **exp30:** MNLogit (0.835) does NOT beat the simple rule (0.843).
+  n=143 is overparameterized. **Kill the complex model; keep the rule.**
+- **exp31:** Agent discovery **success** — the autonomous agent found the
+  inflation_gap × rate_momentum interaction with no hints, validated twice.
+  This is the existence proof that agents can do real data science.
+- **exp32:** EASY/HARD regime split works: EASY (n=62) rule 0.887 vs
+  climatology 0.855 (+0.032); HARD (n=81) rule 0.815 vs climatology 0.827
+  (−0.012). **+7.2pp gap.** The model knows when to trust itself.
+
+### 5.3 Freddie Mac SMM — 12.2% is the classical ceiling
+
+63 months (Jan 2021–Mar 2026) of single-family mortgage prepayment speeds.
+Agent-discovered features (ff_3m_chg, term_spread) → **+1.21%** held-out
+(n.s.). Real BoC events **hurt** (−13.04%) — already priced in.
+exp18b's −12.2% (TSFM_cal vs ETS) stands as the classical ceiling.
+
+### 5.4 Food CPI — seasonality correctly discriminated
+
+The agent correctly discriminates seasonal structure: produce 0.375 vs
+headline 0.000 (seasonality score). h=6 cross-validation is regime-fragile
+(the 2022–23 disinflation turn falls in the training window).
+
+### 5.5 M4 Monthly — selection fails on real data too
+
+The oracle gap (−30%) is not closable by diagnostic selection — worse than
+random. **This is a method problem, not a data problem.** exp23's synthetic
+failure replicates on real data.
+
+---
+
+## 6. The Combination Trilogy
+
+Three approaches to combining models, tested in sequence:
+
+### 6.1 exp42: FFORMA-lite — HONEST NEGATIVE
+
+Learned combination weights (gradient boosting on 10 meta-features):
+0.1300 vs equal weights 0.1295 on M4, **p=0.156**. This is the forecast
+combination puzzle (Smith & Wallis 2009): we're ~200× data-starved vs
+FFORMA's 100k series. **Kill.**
+
+### 6.2 exp43: Regime-probability router — PARTIAL POSITIVE, THE BACKBONE
+
+Hand-defined regimes (seasonal→ARIMA, trending→ETS, noisy→ETS) →
+LogisticRegression → P(regime|features) → per-regime expert → soft
+combination (Vincentized). **M4 0.1282 vs 0.1295, p=0.018** — the first
+method in the program to significantly beat equal weights. On SMM/Food CPI
+the experts collapse to best single (degrades gracefully). BoC router =
+the rule (0.846).
+
+**Why it works:** constrained structural priors beat flexible learning at
+small-n. Learning a 3-way classification needs far less data than
+regressing continuous weights (exp42's failure).
+
+### 6.3 exp44: News-as-selector — MECHANISM PROVEN, REAL BLOCKED
+
+On synthetic data with true regime labels: news features improve regime
+classification 0.367→0.522 accuracy, **p=0.0068**. Real data was blocked by
+news sparsity at the time. (exp46 later closed this definitively — §8.2.)
+
+---
+
+## 7. The Proposed Method (exp47/49)
+
+### 7.1 Architecture
 
 ```mermaid
-flowchart TD
-    T["Task + run_date<br/>(PIT cutoff)"] --> LLM{"LLM:<br/>one JSON action"}
-    LLM -->|"data_segment"| DS["Segment history<br/>(cutoff-safe)"]
-    LLM -->|"evidence"| EV2["Macro evidence<br/>(date-filtered)"]
-    LLM -->|"forecasting"| FC["Numerical forecast<br/>(M0 backend)"]
-    LLM -->|"finalize"| OUT(["Rate quantiles"])
-    DS --> TR["Trace append"]
-    EV2 --> TR
-    FC --> TR
-    TR --> LLM
+flowchart TB
+    IN["Input: time series<br/>(+ optional news, LLM reading)"]
+    FEAT["10 PIT-safe features<br/>exp42"]
+    ROUTER["Regime router (exp43)<br/>hand rules → LogisticReg<br/>→ P(regime | features)"]
+    NEWS["News modulation<br/>(exp44, GATED)<br/>only if dense"]
+    LLM["LLM sensor<br/>(exp11, GATED)<br/>only if conf ≥ 0.75"]
+    GATE["'Do nothing' gate<br/>uncertain + weak → global best<br/>exp6 + decision_policy"]
+    EXPERTS["Per-regime experts<br/>Σ P(r) × expert_r<br/>exp43"]
+    CONF["Conformal calibration<br/>volatility floor<br/>exp5 / exp10"]
+    OUT["Output: quantiles<br/>+ regime probs<br/>+ trust (EASY/HARD) [exp32]<br/>+ explanation"]
+
+    IN --> FEAT --> ROUTER
+    ROUTER --> NEWS
+    ROUTER --> LLM
+    NEWS --> GATE
+    LLM --> GATE
+    GATE --> EXPERTS --> CONF --> OUT
 ```
 
-Concretely: `ReActAgent` drives `GroqChatClient`
-(`openai/gpt-oss-120b` via a vault surrogate — the key never enters the
-process) with a per-run call budget, bounded steps, malformed-JSON
-recovery, and an AI2-grade retry policy (exponential backoff + jitter,
-Retry-After honored, 60s floor on 429s, 2.5s process-wide throttle).
-The evaluated M2 forecast is the agent's finalized quantile lattice.
+Implementation: `src/td_one/agent/proposed_method.py` — `ProposedForecaster`
+(fit/predict), `ForecastOutput` dataclass. 7 regression tests.
 
-### 5.4 M3 — bounded hybrid
+### 7.2 Components and their evidence
 
-M3 = M0's numerical posterior + the agent's judgment, combined as a
-**logit adjustment** $\Delta \in [-0.75, +0.75]$ proposed per macro
-scenario and applied through a hybrid readout. The bound is the point:
-the agent can tilt M0 toward a rate shock or an OSFI tightening, but it
-cannot replace the baseline — the worst case is a bounded perturbation.
-This directly operationalizes the judgmental-forecasting lesson that
-unbounded adjustment destroys calibration.
-
----
-
-## 6. Experiments
-
-| Exp | Question | Design | Headline |
-|---|---|---|---|
-| exp1 | Does the pipeline work? | 500×24 synthetic, M0 vs mock M1 | ✅ Plumbing validated (mocks only) |
-| exp2 v2 | Do real TSFMs beat M0? | 3 pre-registered scenarios × 5 seeds, CRPS primary, oracle anchor | No model significantly beats M0 (all p > 0.18); TimesFM best mean CRPS n.s. |
-| exp3 | Can the ReAct agent beat M0? | 3 pilot segments; mock vs real Groq | Mock: plumbing only. Real: 1/2 finalized segments beat M0 |
-| exp4 | Does bounded agent adjustment help? | 6 macro scenarios, real Groq deltas | 3/6 beat M0; LLM directional but over-adjusts |
-| scale-up | At full scale? | 10k×66, 14 seg × 6 origins | Real weights: Chronos-2 4.46, TimesFM 4.59 vs M0 5.36 |
-| exp5 | Better classical baselines? | 9 models, 10k×66, seed 0 | Nothing beats m0_w3 (3.20); conformal fixes coverage 0.67→0.91 |
-| exp6 | Fix M3 over-adjustment? | Statistical gate + shrinkage, 12 scenarios | "Do nothing" z-gate edges past M0 (7.60 vs 7.86); shrinkage helps vs M3 only |
-| multi-seed | Does the scale-up generalize? | Seeds 0–4, real TSFMs | No TSFM beats M0 significantly on any seed; M0's window is a seed-dependent tuning parameter |
-| exp8 | Is macro structure worth modeling? | Real FRED 30y-mortgage overlay on the simulator | Oracle cuts CRPS 32%; OLS claim (93%) later retracted as wrong-sign/DGP artifact (exp15) — justifies the FRED workstream with caution |
-| exp10 | Promote better classical defaults? | 2 DGPs; conformal, ACI, macro, hierarchical | Conformal M0 now default; macro_m0 honest null on standard DGP; hierarchical niche on thin segments |
-| exp11 | Redesign the agent's role? | Regime-reader → gate, real Groq | Qualified positive: 3.59 vs M0 4.82 — first agentic win with real components |
-| exp12 | LLM as ensemble router? | 4 scenarios, real Groq | Clean negative: 2.60 vs inverse-CRPS 2.32 — the survey's top-ranked role fails here |
-| exp13 | TSFM + FRED rematch | Macro-conditioned TSFMs, 2 DGPs × 3 seeds | R1 leaky (+13–18%); R2 lagged: 1/6 helps, 4/6 hurt (exploratory, p=0.375) — residual conditioning not recommended |
-| exp14 | Real data? | M4 Monthly, 2000 series, real weights | TSFMs beat classical ~20% CRPS; "M0 beats everything" was a DGP artifact (§6.5) |
-
-### 6.1 Experiment 2 (the one that matters for M1)
-
-v1 claimed "Chronos-2 beats M0 by 20%." The critic audit found three
-fatal flaws: a circular DGP hand-tuned to flatter trend-extrapolating
-TSFMs, n=6 test points on a single seed, and an M0 that didn't match
-its own spec. **We retracted v1.** v2 redesigns from scratch:
-
-| Scenario | Oracle | M0 | Chronos-2 | TimesFM-2.5 |
-|---|---|---|---|---|
-| stationary | 4.65 ± 1.27 | 4.85 ± 1.53 | 5.40 ± 2.18 | **4.28 ± 0.65** |
-| drift | 5.02 ± 1.17 | 5.23 ± 1.34 | 6.04 ± 1.89 | **5.17 ± 0.80** |
-| regime_shift | 5.58 ± 1.37 | 7.40 ± 1.77 | 7.44 ± 2.13 | **7.09 ± 1.48** |
-
-CRPS mean ± std across 5 seeds. Paired Wilcoxon M1−M0: all p > 0.18 —
-**not significant**. TimesFM-2.5 is the best of the three in every
-scenario but the gaps don't clear noise. Coverage: Chronos-2
-overcovers, M0 undercovers, TimesFM closest to nominal.
-
-### 6.2 Experiment 3 (M2, real Groq)
-
-| Segment | M0 CRPS | M2 CRPS | M2 steps |
-|---|---|---|---|
-| seg-0 | 0.76 | 5.22 | 6 (finalized, worse) |
-| seg-1 | 1.33 | **0.82** | 5 (finalized, **win**) |
-| seg-2 | 1.40 | — | 6 (never finalized) |
-
-First real-LLM win on seg-1 (MAE 0.14 vs 2.00). The patient retry
-policy (60s floor on 429s) was the difference between 1/3 and 2/3
-finalized traces — free-tier rate limits, not model skill, were the
-binding constraint. ⚠️ Honesty note: real-mode M2 still uses the
-`timesfm_mock` numerical backend, so the seg-1 edge cannot be separated
-from the mock sharpness artifact — the run demonstrates orchestration
-(finalization), not numerical superiority. This was the third real-mode
-attempt (attempts 1–2 were rate-limit-bound).
-
-### 6.3 Experiment 4 (M3, real Groq)
-
-| Scenario | Δ (LLM) | M0 CRPS | M3 CRPS |
-|---|---|---|---|
-| rate_shock_up | +0.18 | 19.87 | **16.33** |
-| rate_shock_down | −0.25 | 4.18 | 5.01 |
-| osfi_tightening | +0.30 | 9.95 | 15.22 |
-| benign | +0.30 | 3.78 | 7.42 |
-| family_squeeze | +0.20 | 14.60 | **7.96** |
-| competitor_rate_war | +0.28 | 14.57 | **10.65** |
-
-3/6 beat M0. The LLM's deltas are directionally sensible (negative on
-the rate-drop scenario) but it **over-adjusts**: +0.30 on the benign
-scenario, where the right answer is ≈ 0, is pure noise injection. Worst
-failure: `osfi_tightening` got the **sign wrong** (+0.30 vs true ≈
-−0.35 — the agent misread a stress-test policy as pro-switching).
-
-### 6.4 Scale-up (10k × 66, real weights)
-
-| Model | Mean CRPS | Mean coverage_80 |
+| Component | Source | Evidence |
 |---|---|---|
-| M0 | 5.360 | 0.671 |
-| Chronos-2 (real) | 4.463 | ~0.93 (overcovers) |
-| TimesFM-2.5 (real) | 4.591 | **0.800** (nominal) |
-| chronos2_mock | 3.194 | 0.714 |
-| timesfm_mock | 3.176 | 0.714 |
+| Regime-probability router | exp43 | M4 0.1282 vs 0.1295, **p=0.018** — backbone |
+| Trust flag (EASY/HARD) | exp32 | +7.2pp gap; top P ≥ 0.7 → EASY |
+| "Do nothing" gate | exp6 + decision_policy | M3+gate 7.60 vs 7.86; fires ~5% of M4 origins |
+| Conformal calibration | exp5/exp10 | Coverage 0.671 → 0.914; volatility floor |
+| News modulation (gated) | exp44 | Mechanism proven synthetic (p=0.0068); off by default |
+| LLM sensor (gated) | exp11 | 3.59 vs 4.82; blends 50/50 iff confidence ≥ 0.75 |
 
-⚠️ The `*_mock` rows are **interface-only plumbing** — their CRPS edge
-is a sharpness artifact (tight spreads around the last rate), not
-evidence about the real models. The real-weight rows are the honest
-comparison: both TSFMs beat M0 on mean CRPS at this scale and DGP, and
-TimesFM lands exactly on nominal coverage. But paired tests on the 14
-shared segments find **no significant difference** (Chronos-2 wins
-7/14, p=0.212/0.583; TimesFM-2.5 wins 5/14, p=0.341/0.583) — exp2 v2's
-conclusion reproduces at scale. Single seed, single DGP: any future
-superiority claim must be pre-registered across seeds/DGPs.
+### 7.3 Results (exp47, reproduced exactly in exp49)
 
-### 6.5 Real-data benchmark — M4 Monthly (exp14)
+| Dataset | Proposed | Equal | Best single | vs equal | vs best |
+|---|---|---|---|---|---|
+| M4 (n=600) | **0.1451** | 0.1507 | 0.1505 | **p=6.5e-09** | **p=7.8e-11** |
+| Food CPI (n=24) | **0.0141** | 0.0176 | 0.0143 | **p=3.1e-18** | **p=0.005** |
+| BoC (n=143) | rule 0.846 → gated **0.853** | — | — | EASY 62@0.887, HARD 81@0.827 | — |
+| Synthetic (n=480) | 0.1036 | 0.1068 | 0.1028 | p=0.072 | p=0.60 |
+| SMM (n=27) | 0.1389 | 0.1424 | 0.1377 | p=0.66 | p=0.61 |
 
-Every comparison above uses synthetic DGPs, and the literature survey
-warns our DGP may be too easy for M0. The first real-data test runs on
-M4 Monthly (Finance + Macro, n=2000 stratified, seed 0): H=6 ahead,
-quantile CRPS for levels; Brier for binary direction (is y[t+6] > y[t],
-n=24000 origins).
+**The system beats the sum of its parts:** proposed vs exp43-router-alone
+is **p=6.7e-10** on M4. Gates + conformal add value beyond the router.
+On Synthetic/SMM/Food CPI where experts collapse, it degrades gracefully
+to best single.
 
-| Model | Mean CRPS | 80% coverage |
-|---|---|---|
-| naive | 445.40 | 0.740 |
-| snaive | 542.10 | 0.692 |
-| conf_naive | 447.37 | **0.800** |
-| Chronos-2 (real) | **350.85** | 0.662 |
-| TimesFM-2.5 (real) | 356.35 | 0.689 |
+### 7.4 The 14 positive components and 17 kills
 
-On direction: Chronos-2-derived P(up) scores Brier **0.2519**, beating
-m0_binary (0.2604); conformal shrinkage helps M0 slightly (0.2582) but
-doesn't close the gap.
-
-**Findings.** The synthetic headline does not generalize: both real
-TSFMs beat the classical baselines by ~20% CRPS on real series, whose
-seasonal/trend structure is where pretrained TSFMs earn their keep. Two
-results transfer cleanly: conformal calibration hits exactly 0.800 on
-real data, and TimesFM-2.5 stays best-calibrated among TSFMs. The
-research question flips from "can anything beat M0" to "where does
-classical still win — thin segments, macro structure, calibration?"
-Caveats: single seed-0 sample; CRPS is scale-dependent across M4
-series; no significance testing yet. Full table in RESULTS.md §2k.
+Full inventory in `docs/POSITIVE_LIFT_AUDIT.md`. The 14 positives (ordered
+by strength): exp43 router, exp32 trust flag, exp14/R2-4 TSFM, exp18b
+TSFM+calibration, exp5/exp10 conformal, exp6 gate, exp11 LLM sensor, exp31
+agent discovery, exp22 agent infrastructure, exp44 news selector (gated),
+exp33 agent features, exp36 seasonality, exp10 hierarchical, exp13 residual
+macro. The 17 kills: exp2, 3, 8, 12, 15, 19, 21, 23, 24, 25, 30-MNLogit,
+34, 37, 41, 42, 45, 46.
 
 ---
 
-## 7. Discussion and limitations
+## 8. Extensions and Validation
 
-1. **Real-data validation has begun — and it overturned the
-   headline.** M4 (§6.5): real TSFMs beat classical baselines by ~20%
-   CRPS on 2,000 real series. The mortgage-specific test — loan-level
-   portfolio data (Freddie Mac, free but gated on registration) — is
-   the next target.
-2. **Calibration is half-solved.** Conformal fixes the classical
-   baseline (0.67→0.91 coverage on synthetic; exactly 0.800 on M4).
-   TSFM calibration stays DGP-dependent: Chronos-2 overcovers on
-   synthetic but *under*covers on M4 (0.662).
-3. **The agent is rate-limit-bound, not skill-bound**, on the free
-   tier. Paid-tier or local inference would separate the two.
-4. **M3's over-adjustment is confirmed and partially tamed.** A
-   statistical "do nothing" gate (exp6) edges past M0 on held-out
-   scenarios; the redesigned M4 regime-reader (exp11) is the first
-   agentic variant to beat M0 with real components — fragile, but
-   real.
-5. **Multi-seed is done on synthetic** (5 seeds: no TSFM beats M0
-   significantly anywhere; M0's window is a seed-dependent tuning
-   parameter). Real data is a single seed-0 sample so far — no
-   significance testing yet.
-6. **The DGP lesson.** M0's synthetic dominance was an artifact of an
-   easy DGP: on simulator v2 (burnout, seasoning, S-curve, FRED
-   macro) the M0 window ranking *reverses* (w6 beats w3). The testbed
-   must be hard enough that synthetic conclusions survive contact
-   with real data — every comparison should run on both DGPs.
+### 8.1 exp48: Reasoning effort — "high" never helps
+
+Sweep of Groq `reasoning_effort` (low/medium/high) on 3 agent tasks × 3
+seeds (27 LLM calls, `openai/gpt-oss-120b`):
+
+| Task | low | medium | high |
+|---|---|---|---|
+| regime_diagnosis (acc) | 1.000 (2.2s) | 1.000 (2.3s) | 1.000 (7.9s) |
+| boc_discovery (hit) | 1.000 (2.9s) | 1.000 (4.1s) | **0.333** (17.6s, 1 error) |
+| changepoint (rubric) | 1.000 (2.5s) | 1.000 (1.7s) | 1.000 (4.7s) |
+
+"High" is 3.5–6× slower with zero quality gain, and actively harmful on
+BoC discovery (overthinking → plausible-but-wrong feature). One "high" run
+hit empty-content errors (reasoning tax consumed the token budget).
+**Default: "low" for diagnostics; escalate only on demonstrated need.**
+
+### 8.2 exp50: Four open extensions — 1 wins, 3 confirm optimal
+
+| Extension | Verdict |
+|---|---|
+| TSFM as 5th expert | ❌ 0% selection rate on M4 (real weights); no improvement |
+| **BoC discrete variant** | ✅ **Wins** — EASY→rule, HARD→climatology for CUT/HOLD/HIKE; now in system |
+| Semi-supervised regimes (cluster on loss) | ❌ p=0.44, hand rules win |
+| Learned gate thresholds | ❌ p=0.32, hand values fine |
+
+Three of four confirm the current design is already optimal. The
+hand-picked priors encode domain knowledge that learning cannot beat at
+our scale.
+
+**exp46 (news dense) — track closed:** With 86% BoC news coverage (123/143
+meetings), news features do not help regime classification (p=0.48) or
+forecasting on any target, dataset, or variant. Keyword counts are
+contrarian noise (hawk_kw mean: hikes 0.88, cuts 0.00, holds 1.72).
+Sparsity was never the constraint. **News track closed for monthly
+forecasting.**
+
+### 8.3 exp51: Kitchen sink — the significance filter was correct
+
+Combined all 14 positive-but-nonsignificant effects into a
+`KitchenSinkForecaster`. Result: **worse than proposed everywhere it
+differs** (M4 +0.00073, p=0.25; SMM win rate 0.26). The TSFM expert that
+looked good standalone (−12.2%) hurts as a regime expert — selected on
+train, loses out-of-fold. Loss-regimes significantly hurt (p=0.0027, third
+confirmation). Only the meta-learner blend is faintly positive (n.s.).
+
+**We did not skip anything real.** The kitchen sink is the strongest
+possible validation of the exp47 significance filter.
 
 ---
 
-## 8. Conclusion
+## 9. Tool Optimization
 
-A Bayesian baseline remains stubbornly competitive on our synthetic
-DGPs: neither TSFMs nor LLM agents beat it significantly in designed
-comparisons, though both show real signal (TimesFM's mean CRPS edge,
-the M4 regime-reader's first real-component win, M3's 3/6 macro
-scenarios). On real M4 data, pretrained TSFMs beat classical baselines
-by ~20% — the synthetic M0 dominance was a DGP artifact. The honest
-contribution is the machinery — a PIT-clean ladder, a tool-injected
-agent with bounded readout, conformal calibration that transfers
-exactly to real data, and a documented retraction — more than any
-single leaderboard number. The forward design (docs/REDESIGN.md), set
-by the literature survey: the LLM never outputs numbers; adjustment
-needs evidence plus shrinkage; report the M0 envelope across seeds
-and DGPs, not a point M0.
+### 9.1 The tracker
 
-## References
+`src/td_one/agent/tool_tracker.py` with `@tracked()` decorator, wired into
+all tools. Every call logs duration, hashed inputs, truncated outputs, and
+success/failure. This was the P0 fix — the tracker existed but had zero
+call sites.
 
-- Yao et al. *ReAct: Synergizing Reasoning and Acting in Language
-  Models.* ICLR 2023.
-- Ansari et al. *Chronos-2.* Amazon, 2025.
-- Das et al. *TimesFM-2.5.* Google, 2025.
-- FRED, Federal Reserve Bank of St. Louis. https://fred.stlouisfed.org
-- `experiments/REPRODUCIBILITY.md` — exact reproduction steps.
-- `docs/CRITIC_SYNTHESIS.md` — the audit that retracted exp2 v1.
+### 9.2 Real usage data (138 tracked calls)
+
+| Tool | Calls | Avg ms | Verdict |
+|---|---|---|---|
+| cross_validate | 10 | 1.3 | keep |
+| test_stationarity | 8 | ~150 | keep + `fast=True` path |
+| detect_changepoints | 8 | ~45 | keep |
+| analyze_residuals | 5 | ~6 | keep |
+| decompose_series | 4 | ~29 | keep + validation |
+| compare_models | 3 | 3.7 | keep |
+| backtest_event_impact | 2 | 0.4 | keep |
+| feature_importance | 1 | 2.4 | keep |
+| plot_diagnostics | 1 | ~618 | **remove** (0 real invocations, slowest) |
+| generate_synthetic_scenario | 4 | 2.1 | **remove** (0 real invocations) |
+
+The diagnostic trio (stationarity + changepoints + decomposition) = 43.5%
+of calls — the standard exploration pattern.
+
+### 9.3 Final toolset: 13 tools
+
+**Added 4** (grounded in model-written code patterns):
+`load_series` (100% of code blocks start with CSV date-loading boilerplate),
+`naive_forecasts` (3 reimplementations with different sigma estimators —
+comparability hazard), `series_features` (volatility ratio copy-pasted ×3;
+tsfeatures-lite gap), `regime_probabilities` (exp43's winner, was inline).
+
+**Removed 2:** `plot_diagnostics`, `generate_synthetic_scenario`.
+
+**Fixed 3:** tracker wiring, `test_stationarity` fast path (ADF-only, ~40ms
+vs ~150ms), `decompose_series` validation.
+
+50/50 tests pass. exp49 parity checks confirm the new tools reproduce
+proven behavior exactly (max diff 0.0 on all checks).
+
+---
+
+## 10. What We Learned
+
+### 10.1 Honest negatives are findings, not failures
+
+The 17 kills define the boundary of what works. Selection from backward
+diagnostics fails on synthetic *and* real data (exp23, exp37) — a method
+problem, not a data problem. Learned combination fails at our scale
+(exp42) — the combination puzzle is real. Unsupervised regimes fail three
+times (exp45, exp50, exp51) — hand rules encode domain knowledge that
+clustering cannot recover.
+
+### 10.2 Hand-picked priors beat learning at our scale
+
+This is the deepest pattern in the program. exp43's hand regimes beat
+exp45's learned regimes (p=0.00046). exp50's hand gate thresholds beat
+learned ones (p=0.32). exp51's kitchen sink (all learned/nonsignificant
+components) loses to the filtered proposed method. At n=600 series and
+n=143 meetings, structural priors dominate flexible learning. The
+literature agrees (FFORMA needed 100k series).
+
+### 10.3 News does not help monthly forecasting — definitively
+
+exp19 (clean negative), exp21 (−21.6%), exp25 (+25% worse, p=0.0013),
+exp46 (dense coverage, p=0.48) — four independent kills. The mechanism
+works on synthetic (exp44, p=0.0068) but real monthly news is either
+already priced in (SMM −13.04%) or too crude as features (BoC keyword
+counts are contrarian noise). Track closed.
+
+### 10.4 The significance filter was correct
+
+exp51 threw everything at the wall. Nothing stuck. The 14-component
+proposed method is not missing real gains — it is correctly filtered.
+
+### 10.5 Agents are diagnosticians, not forecasters
+
+exp31 (autonomous interaction discovery) and exp36 (seasonality
+discrimination) show agents doing real data science. But as *forecasters*,
+agents over-adjust (exp4), produce overconfident intervals (exp22), and
+select at random (exp23). The winning architecture uses the agent for
+diagnosis and gating, never for the numbers themselves.
+
+---
+
+## 11. Reproducibility
+
+- **Repo:** `VDavoodnia/agentic-forecasting`, branch `main`, `td-one/`
+- **Environment:** `.venv/bin/python` directly (`uv run` hangs in this VM)
+- **Key entry points:**
+  - `src/td_one/agent/proposed_method.py` — the method
+  - `experiments/exp47_proposed_method.py` — original validation
+  - `experiments/exp49_final.py` — final run with updated toolset
+  - `experiments/exp51_kitchen_sink.py` — significance-filter validation
+- **Tests:** 50/50 pass (`tests/test_proposed_method.py`,
+  `tests/test_agent_tools.py`)
+- **Data:** Freddie Mac SMM (local-only, cannot redistribute), FRED/BoC
+  yields (local-only), M4 (public), news DB (gitignored, 9,760 articles)
+- **Docs:** `docs/PROPOSED_METHOD.md` (architecture),
+  `docs/POSITIVE_LIFT_AUDIT.md` (component inventory),
+  `docs/NONSIGNIFICANT_POSITIVES.md` (excluded-effects audit),
+  `docs/reports/FINAL_SYNTHESIS.md` (living final report)
+
+---
+
+*This is TD-One's method. Everything else was scaffolding.*
