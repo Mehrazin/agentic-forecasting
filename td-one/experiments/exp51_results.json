@@ -1,0 +1,241 @@
+{
+  "date": "2026-10-18T07:45:19.556817+00:00",
+  "quick": false,
+  "elapsed_s": 677.3472759723663,
+  "components": {
+    "tsfm": "exp18b TimesFM-2.5 5th expert (SMM only)",
+    "macro": "exp33 ff_3m_chg + term_spread (SMM only)",
+    "meta": "exp41 meta-learner blend",
+    "gates": "exp50 learned gate thresholds",
+    "lossreg": "exp50 loss-vector regimes",
+    "sink": "all applicable combined"
+  },
+  "results": {
+    "m4": {
+      "proposed": {
+        "mean_crps": 0.14500577011557497,
+        "gate_fire_rate": 0.04666666666666667,
+        "n": 600
+      },
+      "meta": {
+        "mean_crps": 0.14483000810660737,
+        "vs_proposed": {
+          "mean_diff": -0.00017576200896763183,
+          "t": -0.4879884951152265,
+          "p": 0.6257365604320579,
+          "win_rate": 0.46166666666666667
+        },
+        "gate_fire_rate": 0.04666666666666667,
+        "n": 600
+      },
+      "gates": {
+        "mean_crps": 0.14495617862170931,
+        "vs_proposed": {
+          "mean_diff": -4.9591493865664245e-05,
+          "t": -1.1406324875541431,
+          "p": 0.2544787316519819,
+          "win_rate": 0.02
+        },
+        "gate_fire_rate": 0.016666666666666666,
+        "n": 600
+      },
+      "lossreg": {
+        "mean_crps": 0.14727903641887416,
+        "vs_proposed": {
+          "mean_diff": 0.0022732663032991912,
+          "t": 3.007578819360669,
+          "p": 0.002743839927673554,
+          "win_rate": 0.43166666666666664
+        },
+        "gate_fire_rate": 0.058333333333333334,
+        "n": 600
+      },
+      "sink": {
+        "mean_crps": 0.1457372685383963,
+        "vs_proposed": {
+          "mean_diff": 0.0007314984228213299,
+          "t": 1.1441806235816903,
+          "p": 0.25300574935121667,
+          "win_rate": 0.4766666666666667
+        },
+        "gate_fire_rate": 0.035,
+        "n": 600
+      }
+    },
+    "synthetic": {
+      "proposed": {
+        "mean_crps": 0.10328079838400092,
+        "gate_fire_rate": 0.05416666666666667,
+        "n": 480
+      },
+      "meta": {
+        "mean_crps": 0.10253273926772051,
+        "vs_proposed": {
+          "mean_diff": -0.0007480591162804015,
+          "t": -1.1970070763416787,
+          "p": 0.23189586794725622,
+          "win_rate": 0.4583333333333333
+        },
+        "gate_fire_rate": 0.05416666666666667,
+        "n": 480
+      },
+      "gates": {
+        "mean_crps": 0.10313271223628484,
+        "vs_proposed": {
+          "mean_diff": -0.00014808614771607274,
+          "t": -1.3705606732274351,
+          "p": 0.17115386238359556,
+          "win_rate": 0.014583333333333334
+        },
+        "gate_fire_rate": 0.027083333333333334,
+        "n": 480
+      },
+      "lossreg": {
+        "mean_crps": 0.10384685840056021,
+        "vs_proposed": {
+          "mean_diff": 0.0005660600165592912,
+          "t": 0.41238264452259876,
+          "p": 0.6802434810988368,
+          "win_rate": 0.41875
+        },
+        "gate_fire_rate": 0.0,
+        "n": 480
+      },
+      "sink": {
+        "mean_crps": 0.10284921431193146,
+        "vs_proposed": {
+          "mean_diff": -0.0004315840720694615,
+          "t": -0.36168221788770194,
+          "p": 0.7177490058294953,
+          "win_rate": 0.5020833333333333
+        },
+        "gate_fire_rate": 0.0,
+        "n": 480
+      }
+    },
+    "food_cpi": {
+      "proposed": {
+        "mean_crps": 0.01222170439158541,
+        "gate_fire_rate": 0.0,
+        "n": 24
+      },
+      "meta": {
+        "mean_crps": 0.01222170439158541,
+        "vs_proposed": {
+          "mean_diff": 0.0,
+          "t": NaN,
+          "p": NaN,
+          "win_rate": 0.0
+        },
+        "gate_fire_rate": 0.0,
+        "n": 24
+      },
+      "gates": {
+        "mean_crps": 0.01222170439158541,
+        "vs_proposed": {
+          "mean_diff": 0.0,
+          "t": NaN,
+          "p": NaN,
+          "win_rate": 0.0
+        },
+        "gate_fire_rate": 0.0,
+        "n": 24
+      },
+      "lossreg": {
+        "mean_crps": 0.012221704391585438,
+        "vs_proposed": {
+          "mean_diff": 2.667137344314341e-17,
+          "t": 2.4079037563563523,
+          "p": 0.02446145130207797,
+          "win_rate": 0.0
+        },
+        "gate_fire_rate": 0.0,
+        "n": 24
+      },
+      "sink": {
+        "mean_crps": 0.012221704391585438,
+        "vs_proposed": {
+          "mean_diff": 2.667137344314341e-17,
+          "t": 2.4079037563563523,
+          "p": 0.02446145130207797,
+          "win_rate": 0.0
+        },
+        "gate_fire_rate": 0.0,
+        "n": 24
+      }
+    },
+    "smm": {
+      "proposed": {
+        "mean_crps": 0.13890674706633796,
+        "gate_fire_rate": 0.0,
+        "n": 27
+      },
+      "meta": {
+        "mean_crps": 0.14022667109322248,
+        "vs_proposed": {
+          "mean_diff": 0.0013199240268845077,
+          "t": 0.3779890403849281,
+          "p": 0.7085072002352945,
+          "win_rate": 0.37037037037037035
+        },
+        "gate_fire_rate": 0.0,
+        "n": 27
+      },
+      "gates": {
+        "mean_crps": 0.13890674706633796,
+        "vs_proposed": {
+          "mean_diff": 0.0,
+          "t": NaN,
+          "p": NaN,
+          "win_rate": 0.0
+        },
+        "gate_fire_rate": 0.0,
+        "n": 27
+      },
+      "lossreg": {
+        "mean_crps": 0.1404200976657156,
+        "vs_proposed": {
+          "mean_diff": 0.001513350599377609,
+          "t": 1.1777282236914635,
+          "p": 0.2495731572448545,
+          "win_rate": 0.0
+        },
+        "gate_fire_rate": 0.07407407407407407,
+        "n": 27
+      },
+      "tsfm": {
+        "mean_crps": 0.1453791239384764,
+        "vs_proposed": {
+          "mean_diff": 0.00647237687213844,
+          "t": 0.5060226587644606,
+          "p": 0.6171045548402296,
+          "win_rate": 0.1111111111111111
+        },
+        "gate_fire_rate": 0.0,
+        "n": 27
+      },
+      "macro": {
+        "mean_crps": 0.13890674706633796,
+        "vs_proposed": {
+          "mean_diff": 0.0,
+          "t": NaN,
+          "p": NaN,
+          "win_rate": 0.0
+        },
+        "gate_fire_rate": 0.0,
+        "n": 27
+      },
+      "sink": {
+        "mean_crps": 0.14056797934586085,
+        "vs_proposed": {
+          "mean_diff": 0.0016612322795228967,
+          "t": 0.14003200864959722,
+          "p": 0.8897138701750957,
+          "win_rate": 0.25925925925925924
+        },
+        "gate_fire_rate": 0.0,
+        "n": 27
+      }
+    }
+  }
+}

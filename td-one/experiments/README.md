@@ -60,6 +60,9 @@ Numbering jumps from exp25 to exp40 (exp26–exp39 were never assigned).
 | exp46 | Dense-news regime/selection | ❌ definitive negative — dense news doesn't help | [report](exp46_report.md) |
 | exp47 | Proposed method (exp43 + exp44 combined) | ✅ beats equal weights (0.1451 vs 0.1507, p=6.5e-09), best single, and exp43 alone | [report](exp47_report.md) |
 | exp48 | Reasoning-effort sweep (low/med/high × 3 tasks × 3 seeds) | ❌ "high" never helps: 3.5–6× slower, sometimes hurts (1.000→0.333 on BoC discovery). Default to "low" for diagnostics | [report](exp48_report.md) |
+| exp49 | Final model run with updated toolset (13 tools) | ✅ reproduces exp47 exactly (0.1451/0.1507/0.1505) — toolset refactor changed nothing | [report](exp49_report.md) |
+| exp50 | 4 open extensions (TSFM expert, BoC discrete, loss regimes, learned gates) | ⚖️ 1/4 helps (BoC discrete ✅); 3 honest negatives | [report](exp50_report.md) |
+| exp51 | Kitchen sink: all nonsignificant positives combined | ❌ sink worse than proposed on M4 (+0.00073, p=0.25) and SMM (+0.00166, win 0.26); validates the significance filter | [report](exp51_report.md) |
 
 ## Supporting reports
 
@@ -83,7 +86,9 @@ labeled evidence used by the news-track experiments — see its
 
 Killed tracks stay killed only with evidence. The closed ones: R2 macro
 (5-seed, no signal), M2/M3/M5 output-wrapper agents, FFORMA (exp42), flexible
-regimes (exp45), dense news (exp46), news-for-SMM (exp19), h=3 news (exp25).
+regimes (exp45), dense news (exp46), news-for-SMM (exp19), h=3 news (exp25),
+kitchen-sink combination (exp51: nonsignificant positives combined are
+directionally worse — validates the significance filter).
 See [REDESIGN.md](../docs/REDESIGN.md) for what each kill taught us and
 [POSITIVE_LIFT_AUDIT.md](../docs/POSITIVE_LIFT_AUDIT.md) for what survived
 into the proposed method.

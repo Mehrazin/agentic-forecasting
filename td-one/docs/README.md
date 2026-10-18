@@ -25,8 +25,9 @@ Start here. This page maps every document in `td-one/docs/` — what it is, who 
 | [RESULTS.md](RESULTS.md) | Current results: R2 series + agentic track (exp42–exp48). Primary metric CRPS. |
 | [RESULTS_ARCHIVE.md](RESULTS_ARCHIVE.md) | exp1–exp15 (superseded by R2, preserved for provenance). |
 | [POSITIVE_LIFT_AUDIT.md](POSITIVE_LIFT_AUDIT.md) | Inventory of every positive result (exp1–exp46 + benchmarks) used to design the proposed method. |
+| [NONSIGNIFICANT_POSITIVES.md](NONSIGNIFICANT_POSITIVES.md) | Audit of every positive-but-nonsignificant effect (exp1–exp50) with combinability verdicts; evidence base for exp51. |
 | [DIAGRAMS.md](DIAGRAMS.md) | Architecture and experiment diagrams (mermaid — renders on GitHub). |
-| [../experiments/README.md](../experiments/README.md) | Full experiment index, exp1–exp48, with verdicts and report links. |
+| [../experiments/README.md](../experiments/README.md) | Full experiment index, exp1–exp51, with verdicts and report links. |
 
 ## The agentic track
 
