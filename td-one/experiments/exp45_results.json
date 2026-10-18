@@ -1,0 +1,546 @@
+{
+ "experiment": "exp45_learned_regimes",
+ "date": "2026-10-18T01:19:52.213335+00:00",
+ "models": [
+  "naive",
+  "m0",
+  "ets",
+  "arima"
+ ],
+ "features": [
+  "n_changepoints",
+  "n_recent_cps",
+  "trend_strength",
+  "seasonal_strength",
+  "vol_ratio",
+  "is_stationary",
+  "is_nonstationary",
+  "acf1",
+  "spectral_entropy",
+  "hurst"
+ ],
+ "seed": 42,
+ "method": "Unsupervised regime discovery replaces exp43's hand-written rules. Per fold (fit on TRAIN records only, PIT-safe): (a) GMM(K) on standardized features -> posterior P(regime|x) used directly as the router; (b) KMeans(K) -> hard clusters -> LogisticRegression router. Per-regime experts = best model on train records of that regime. Soft combination: sum_r P(r|x) * expert_r quantiles. exp43's hand-rule router re-run on the same folds for paired head-to-head comparison.",
+ "m4": {
+  "dataset": "m4",
+  "k": 3,
+  "n_records": 529,
+  "means": {
+   "hand_router": 0.12820212488828747,
+   "gmm_router": 0.13021234719803115,
+   "kmeans_router": 0.13021234719803115,
+   "equal_weights": 0.12953008789376552
+  },
+  "gmm_vs_equal": {
+   "mean_a": 0.13021234719803115,
+   "mean_b": 0.12953008789376552,
+   "mean_diff": 0.0006822593042656308,
+   "t_stat": 1.1963219359113864,
+   "p_value": 0.23210787583298031,
+   "win_rate": 0.5746691871455577
+  },
+  "gmm_vs_hand": {
+   "mean_a": 0.13021234719803115,
+   "mean_b": 0.12820212488828747,
+   "mean_diff": 0.0020102223097436555,
+   "t_stat": 3.5256364138492997,
+   "p_value": 0.0004592024351411607,
+   "win_rate": 0.47448015122873344
+  },
+  "kmeans_vs_equal": {
+   "mean_a": 0.13021234719803115,
+   "mean_b": 0.12953008789376552,
+   "mean_diff": 0.0006822593042656376,
+   "t_stat": 1.196321935911398,
+   "p_value": 0.2321078758329758,
+   "win_rate": 0.5746691871455577
+  },
+  "kmeans_vs_hand": {
+   "mean_a": 0.13021234719803115,
+   "mean_b": 0.12820212488828747,
+   "mean_diff": 0.002010222309743663,
+   "t_stat": 3.5256364138493153,
+   "p_value": 0.0004592024351411347,
+   "win_rate": 0.47448015122873344
+  },
+  "hand_vs_equal": {
+   "mean_a": 0.12820212488828747,
+   "mean_b": 0.12953008789376552,
+   "mean_diff": -0.0013279630054780244,
+   "t_stat": -2.3663854703815517,
+   "p_value": 0.018322737292312832,
+   "win_rate": 0.6294896030245747
+  },
+  "silhouette": {
+   "gmm_mean": 0.2745830673315482,
+   "kmeans_mean": 0.34172357604382786
+  },
+  "ari_vs_hand": {
+   "gmm_mean": 0.1620801837189541
+  },
+  "hand_regime_accuracy": 0.9047176632890919,
+  "hand_experts_per_fold": [
+   {
+    "noisy": "ets",
+    "seasonal": "arima",
+    "trending": "ets"
+   },
+   {
+    "noisy": "ets",
+    "seasonal": "arima",
+    "trending": "ets"
+   },
+   {
+    "noisy": "ets",
+    "seasonal": "arima",
+    "trending": "naive"
+   },
+   {
+    "noisy": "ets",
+    "seasonal": "arima",
+    "trending": "ets"
+   },
+   {
+    "noisy": "ets",
+    "seasonal": "arima",
+    "trending": "ets"
+   }
+  ],
+  "gmm_experts_per_fold": [
+   {
+    "L0": "arima",
+    "L1": "arima",
+    "L2": "arima"
+   },
+   {
+    "L0": "ets",
+    "L1": "ets",
+    "L2": "ets"
+   },
+   {
+    "L0": "ets",
+    "L1": "ets",
+    "L2": "ets"
+   },
+   {
+    "L0": "arima",
+    "L1": "arima",
+    "L2": "arima"
+   },
+   {
+    "L0": "arima",
+    "L1": "arima",
+    "L2": "arima"
+   }
+  ],
+  "kmeans_experts_per_fold": [
+   {
+    "L0": "arima",
+    "L1": "arima",
+    "L2": "arima"
+   },
+   {
+    "L0": "ets",
+    "L1": "ets",
+    "L2": "ets"
+   },
+   {
+    "L0": "ets",
+    "L1": "ets",
+    "L2": "ets"
+   },
+   {
+    "L0": "arima",
+    "L1": "arima",
+    "L2": "arima"
+   },
+   {
+    "L0": "arima",
+    "L1": "arima",
+    "L2": "arima"
+   }
+  ]
+ },
+ "synthetic": {
+  "dataset": "synthetic",
+  "k": 3,
+  "n_records": 120,
+  "means": {
+   "hand_router": 0.08549156721010283,
+   "gmm_router": 0.08557396513860586,
+   "kmeans_router": 0.08557396513860588,
+   "equal_weights": 0.0898181390395669
+  },
+  "gmm_vs_equal": {
+   "mean_a": 0.08557396513860586,
+   "mean_b": 0.0898181390395669,
+   "mean_diff": -0.0042441739009610145,
+   "t_stat": -2.5965768084312306,
+   "p_value": 0.010602440466709686,
+   "win_rate": 0.7166666666666667
+  },
+  "gmm_vs_hand": {
+   "mean_a": 0.08557396513860586,
+   "mean_b": 0.08549156721010283,
+   "mean_diff": 8.239792850305202e-05,
+   "t_stat": 0.0355039210756338,
+   "p_value": 0.9717374066639063,
+   "win_rate": 0.575
+  },
+  "kmeans_vs_equal": {
+   "mean_a": 0.08557396513860588,
+   "mean_b": 0.0898181390395669,
+   "mean_diff": -0.004244173900961007,
+   "t_stat": -2.5965768084312257,
+   "p_value": 0.010602440466709832,
+   "win_rate": 0.7166666666666667
+  },
+  "kmeans_vs_hand": {
+   "mean_a": 0.08557396513860588,
+   "mean_b": 0.08549156721010283,
+   "mean_diff": 8.239792850305988e-05,
+   "t_stat": 0.03550392107563719,
+   "p_value": 0.9717374066639036,
+   "win_rate": 0.5583333333333333
+  },
+  "hand_vs_equal": {
+   "mean_a": 0.08549156721010283,
+   "mean_b": 0.0898181390395669,
+   "mean_diff": -0.004326571829464066,
+   "t_stat": -1.3065693398209237,
+   "p_value": 0.19387853939680152,
+   "win_rate": 0.6583333333333333
+  },
+  "silhouette": {
+   "gmm_mean": 0.3471119383927842,
+   "kmeans_mean": 0.40232994684084733
+  },
+  "ari_vs_hand": {
+   "gmm_mean": 0.581372189750043
+  },
+  "hand_regime_accuracy": 0.85,
+  "hand_experts_per_fold": [
+   {
+    "rw": "naive",
+    "seasonal": "naive",
+    "trending": "naive"
+   },
+   {
+    "rw": "naive",
+    "seasonal": "arima",
+    "trending": "naive"
+   },
+   {
+    "rw": "naive",
+    "seasonal": "arima",
+    "trending": "naive"
+   },
+   {
+    "rw": "naive",
+    "seasonal": "arima",
+    "trending": "naive"
+   },
+   {
+    "rw": "naive",
+    "seasonal": "arima",
+    "trending": "naive"
+   }
+  ],
+  "gmm_experts_per_fold": [
+   {
+    "L0": "naive",
+    "L1": "naive",
+    "L2": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive",
+    "L2": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive",
+    "L2": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive",
+    "L2": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive",
+    "L2": "naive"
+   }
+  ],
+  "kmeans_experts_per_fold": [
+   {
+    "L0": "naive",
+    "L1": "naive",
+    "L2": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive",
+    "L2": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive",
+    "L2": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive",
+    "L2": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive",
+    "L2": "naive"
+   }
+  ],
+  "ari_vs_truth": {
+   "gmm_mean": 0.581372189750043
+  }
+ },
+ "smm": {
+  "dataset": "smm",
+  "k": 2,
+  "n_records": 50,
+  "means": {
+   "hand_router": 0.18427914007633095,
+   "gmm_router": 0.18427914007633078,
+   "kmeans_router": 0.18427914007633095,
+   "equal_weights": 0.19745180379032692
+  },
+  "gmm_vs_equal": {
+   "mean_a": 0.18427914007633078,
+   "mean_b": 0.19745180379032692,
+   "mean_diff": -0.01317266371399612,
+   "t_stat": -2.4279071762355344,
+   "p_value": 0.01890491093169748,
+   "win_rate": 0.58
+  },
+  "gmm_vs_hand": {
+   "mean_a": 0.18427914007633078,
+   "mean_b": 0.18427914007633095,
+   "mean_diff": -1.930400284066991e-16,
+   "t_stat": -1.3571029067508429,
+   "p_value": 0.18096720452869147,
+   "win_rate": 0.56
+  },
+  "kmeans_vs_equal": {
+   "mean_a": 0.18427914007633095,
+   "mean_b": 0.19745180379032692,
+   "mean_diff": -0.013172663713995924,
+   "t_stat": -2.4279071762355002,
+   "p_value": 0.01890491093169907,
+   "win_rate": 0.58
+  },
+  "kmeans_vs_hand": {
+   "mean_a": 0.18427914007633095,
+   "mean_b": 0.18427914007633095,
+   "mean_diff": 6.938893903907229e-19,
+   "t_stat": 0.2557744333346544,
+   "p_value": 0.7991957088977211,
+   "win_rate": 0.2
+  },
+  "hand_vs_equal": {
+   "mean_a": 0.18427914007633095,
+   "mean_b": 0.19745180379032692,
+   "mean_diff": -0.013172663713995924,
+   "t_stat": -2.4279071762355002,
+   "p_value": 0.01890491093169907,
+   "win_rate": 0.58
+  },
+  "silhouette": {
+   "gmm_mean": 0.5170769289151605,
+   "kmeans_mean": 0.5327668420369435
+  },
+  "ari_vs_hand": {
+   "gmm_mean": 0.25896518427548454
+  },
+  "hand_regime_accuracy": 0.8,
+  "hand_experts_per_fold": [
+   {
+    "calm": "naive",
+    "stressed": "naive"
+   },
+   {
+    "calm": "naive",
+    "stressed": "naive"
+   },
+   {
+    "calm": "naive",
+    "stressed": "naive"
+   },
+   {
+    "calm": "naive",
+    "stressed": "naive"
+   },
+   {
+    "calm": "naive",
+    "stressed": "naive"
+   }
+  ],
+  "gmm_experts_per_fold": [
+   {
+    "L0": "naive",
+    "L1": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive"
+   }
+  ],
+  "kmeans_experts_per_fold": [
+   {
+    "L0": "naive",
+    "L1": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive"
+   },
+   {
+    "L0": "naive",
+    "L1": "naive"
+   }
+  ]
+ },
+ "food_cpi": {
+  "dataset": "food_cpi",
+  "k": 2,
+  "n_records": 24,
+  "means": {
+   "hand_router": 0.011353090584207975,
+   "gmm_router": 0.011353090584207975,
+   "kmeans_router": 0.011353090584207975,
+   "equal_weights": 0.014029119970817397
+  },
+  "gmm_vs_equal": {
+   "mean_a": 0.011353090584207975,
+   "mean_b": 0.014029119970817397,
+   "mean_diff": -0.002676029386609422,
+   "t_stat": -23.51550330699478,
+   "p_value": 1.3793699721054822e-17,
+   "win_rate": 1.0
+  },
+  "gmm_vs_hand": {
+   "mean_a": 0.011353090584207975,
+   "mean_b": 0.011353090584207975,
+   "mean_diff": -7.228014483236696e-20,
+   "t_stat": -0.9999999999999999,
+   "p_value": 0.32771580614285867,
+   "win_rate": 0.041666666666666664
+  },
+  "kmeans_vs_equal": {
+   "mean_a": 0.011353090584207975,
+   "mean_b": 0.014029119970817397,
+   "mean_diff": -0.002676029386609422,
+   "t_stat": -23.51550330699478,
+   "p_value": 1.3793699721054822e-17,
+   "win_rate": 1.0
+  },
+  "kmeans_vs_hand": {
+   "mean_a": 0.011353090584207975,
+   "mean_b": 0.011353090584207975,
+   "mean_diff": -1.4456028966473392e-19,
+   "t_stat": -0.6243640832675886,
+   "p_value": 0.538533142125714,
+   "win_rate": 0.041666666666666664
+  },
+  "hand_vs_equal": {
+   "mean_a": 0.011353090584207975,
+   "mean_b": 0.014029119970817397,
+   "mean_diff": -0.002676029386609422,
+   "t_stat": -23.51550330699478,
+   "p_value": 1.3793699721054822e-17,
+   "win_rate": 1.0
+  },
+  "silhouette": {
+   "gmm_mean": 0.3182007501008746,
+   "kmeans_mean": 0.3325489038824641
+  },
+  "ari_vs_hand": {
+   "gmm_mean": 0.34190799587004606
+  },
+  "hand_regime_accuracy": 0.5,
+  "hand_experts_per_fold": [
+   {
+    "calm": "arima",
+    "volatile": "arima"
+   },
+   {
+    "calm": "arima",
+    "volatile": "arima"
+   },
+   {
+    "calm": "arima",
+    "volatile": "arima"
+   },
+   {
+    "calm": "arima",
+    "volatile": "arima"
+   }
+  ],
+  "gmm_experts_per_fold": [
+   {
+    "L0": "arima",
+    "L1": "arima"
+   },
+   {
+    "L0": "arima",
+    "L1": "arima"
+   },
+   {
+    "L0": "arima",
+    "L1": "arima"
+   },
+   {
+    "L0": "arima",
+    "L1": "arima"
+   }
+  ],
+  "kmeans_experts_per_fold": [
+   {
+    "L0": "arima",
+    "L1": "arima"
+   },
+   {
+    "L0": "arima",
+    "L1": "arima"
+   },
+   {
+    "L0": "arima",
+    "L1": "arima"
+   },
+   {
+    "L0": "arima",
+    "L1": "arima"
+   }
+  ]
+ },
+ "elapsed_s": 81.7
+}

@@ -34,8 +34,10 @@ Start here. This page maps every document in `td-one/docs/` — what it is, who 
 |---|---|
 | [RAG_DESIGN.md](RAG_DESIGN.md) | News RAG: offline-first KB, BM25 → Groq rerank → abstain. Includes recall@k/precision@k eval. |
 | [LITERATURE_SURVEY.md](LITERATURE_SURVEY.md) | TSFM + agentic forecasting literature with verified citations. |
+| [LITERATURE_SURVEY_AGENTIC.md](LITERATURE_SURVEY_AGENTIC.md) | Methodology-improvement survey targeting our failures: selection under instability, regime detection, leakage-safe feature discovery, regime-fragile CV. |
 | [REAL_DATA_SURVEY.md](REAL_DATA_SURVEY.md) | Real dataset candidates for validation. |
 | [SCALE_UP_RUNBOOK.md](SCALE_UP_RUNBOOK.md) | End-to-end pipeline: simulate → PIT → segments → backtest. |
+| [SYNTHETIC_CALIBRATION.md](SYNTHETIC_CALIBRATION.md) | Phase-4 event DGP calibration: 9.1pp → 2-3pp effects, decay, interactions. |
 
 ## Data
 
