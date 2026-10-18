@@ -1,0 +1,200 @@
+{
+  "date": "2026-10-18T06:52:50.938890+00:00",
+  "quick": false,
+  "elapsed_s": 273.99442052841187,
+  "models": [
+    "naive",
+    "m0",
+    "ets",
+    "arima"
+  ],
+  "features": [
+    "n_changepoints",
+    "n_recent_cps",
+    "trend_strength",
+    "seasonal_strength",
+    "vol_ratio",
+    "is_stationary",
+    "is_nonstationary",
+    "acf1",
+    "spectral_entropy",
+    "hurst"
+  ],
+  "toolset": [
+    "load_series",
+    "naive_forecasts",
+    "series_features",
+    "regime_probabilities",
+    "combine_quantiles"
+  ],
+  "part_a_parity": {
+    "series_features_max_abs_diff": 0.0,
+    "series_features_parity": true,
+    "naive_point_max_abs_diff": 0.0,
+    "naive_point_parity": true,
+    "regime_label_agreement": 1.0,
+    "regime_label_n": 50,
+    "combine_max_abs_diff": 0.0,
+    "combine_parity": true
+  },
+  "results": {
+    "m4": {
+      "dataset": "m4",
+      "n": 600,
+      "proposed_vs_equal": {
+        "mean_a": 0.14505659994210743,
+        "mean_b": 0.15069387058543654,
+        "mean_diff": -0.005637270643329091,
+        "t": -5.88864706214581,
+        "p": 6.491193911535403e-09,
+        "win_rate": 0.6933333333333334
+      },
+      "proposed_vs_best": {
+        "mean_a": 0.14505659994210743,
+        "mean_b": 0.15049490462523973,
+        "mean_diff": -0.005438304683132293,
+        "t": -6.624824858942283,
+        "p": 7.750393926007082e-11,
+        "win_rate": 0.7216666666666667
+      },
+      "proposed_vs_router_only": {
+        "mean_a": 0.14505659994210743,
+        "mean_b": 0.14902478471946357,
+        "mean_diff": -0.003968184777356125,
+        "t": -6.275014604082216,
+        "p": 6.707195109474753e-10,
+        "win_rate": 0.7166666666666667
+      },
+      "gate_fire_rate": 0.04666666666666667,
+      "trust_easy_rate": 0.905,
+      "mean_crps": {
+        "proposed": 0.14505659994210743,
+        "equal": 0.15069387058543654,
+        "best_single": 0.15049490462523973,
+        "router_only": 0.14902478471946357
+      }
+    },
+    "synthetic": {
+      "dataset": "synthetic",
+      "n": 480,
+      "proposed_vs_equal": {
+        "mean_a": 0.10357085357132956,
+        "mean_b": 0.10679730793843904,
+        "mean_diff": -0.003226454367109489,
+        "t": -1.8055657697608598,
+        "p": 0.07161388886963883,
+        "win_rate": 0.5854166666666667
+      },
+      "proposed_vs_best": {
+        "mean_a": 0.10357085357132956,
+        "mean_b": 0.1027825303874096,
+        "mean_diff": 0.000788323183919974,
+        "t": 0.5275337616187498,
+        "p": 0.5980672364427504,
+        "win_rate": 0.4479166666666667
+      },
+      "proposed_vs_router_only": {
+        "mean_a": 0.10357085357132956,
+        "mean_b": 0.10283005802086548,
+        "mean_diff": 0.0007407955504640883,
+        "t": 1.0752466334740596,
+        "p": 0.282805624613333,
+        "win_rate": 0.45416666666666666
+      },
+      "gate_fire_rate": 0.05416666666666667,
+      "trust_easy_rate": 0.8791666666666667,
+      "mean_crps": {
+        "proposed": 0.10357085357132956,
+        "equal": 0.10679730793843904,
+        "best_single": 0.1027825303874096,
+        "router_only": 0.10283005802086548
+      }
+    },
+    "smm": {
+      "dataset": "smm",
+      "n": 27,
+      "proposed_vs_equal": {
+        "mean_a": 0.13890674706633796,
+        "mean_b": 0.1424166177292452,
+        "mean_diff": -0.003509870662907203,
+        "t": -0.4483673773454057,
+        "p": 0.6576024052399105,
+        "win_rate": 0.6666666666666666
+      },
+      "proposed_vs_best": {
+        "mean_a": 0.13890674706633796,
+        "mean_b": 0.1377493100021094,
+        "mean_diff": 0.0011574370642285833,
+        "t": 0.5104607674037667,
+        "p": 0.6140355207344201,
+        "win_rate": 0.2222222222222222
+      },
+      "proposed_vs_router_only": {
+        "mean_a": 0.13890674706633796,
+        "mean_b": 0.1377493100021094,
+        "mean_diff": 0.0011574370642285833,
+        "t": 0.5104607674037667,
+        "p": 0.6140355207344201,
+        "win_rate": 0.2222222222222222
+      },
+      "gate_fire_rate": 0.0,
+      "trust_easy_rate": 1.0,
+      "mean_crps": {
+        "proposed": 0.13890674706633796,
+        "equal": 0.1424166177292452,
+        "best_single": 0.1377493100021094,
+        "router_only": 0.1377493100021094
+      }
+    },
+    "food_cpi": {
+      "dataset": "food_cpi",
+      "n": 24,
+      "proposed_vs_equal": {
+        "mean_a": 0.014126883236886205,
+        "mean_b": 0.017648940249208017,
+        "mean_diff": -0.0035220570123218106,
+        "t": -25.15202565638185,
+        "p": 3.1032626533062878e-18,
+        "win_rate": 1.0
+      },
+      "proposed_vs_best": {
+        "mean_a": 0.014126883236886205,
+        "mean_b": 0.014315932022366274,
+        "mean_diff": -0.000189048785480068,
+        "t": -3.10183166122286,
+        "p": 0.005025726226169081,
+        "win_rate": 1.0
+      },
+      "proposed_vs_router_only": {
+        "mean_a": 0.014126883236886205,
+        "mean_b": 0.014315932022366274,
+        "mean_diff": -0.000189048785480068,
+        "t": -3.10183166122286,
+        "p": 0.005025726226169081,
+        "win_rate": 1.0
+      },
+      "gate_fire_rate": 0.0,
+      "trust_easy_rate": 1.0,
+      "mean_crps": {
+        "proposed": 0.014126883236886205,
+        "equal": 0.017648940249208017,
+        "best_single": 0.014315932022366274,
+        "router_only": 0.014315932022366274
+      }
+    },
+    "boc": {
+      "n": 143,
+      "tool_regime_agreement_with_exp43": 1.0,
+      "rule_accuracy": 0.8461538461538461,
+      "gated_accuracy": 0.8531468531468531,
+      "easy": {
+        "n": 62,
+        "acc": 0.8870967741935484
+      },
+      "hard": {
+        "n": 81,
+        "acc": 0.8271604938271605
+      }
+    }
+  }
+}

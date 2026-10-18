@@ -6,14 +6,14 @@ what a model is getting wrong and why.
 
 from __future__ import annotations
 
-from td_one.agent.tool_tracker import tracked
-
 import warnings
 from typing import Any
 
 import numpy as np
 import pandas as pd
 from pydantic import BaseModel, Field
+
+from td_one.agent.tool_tracker import tracked
 
 
 class ResidualAnalysis(BaseModel):
@@ -204,7 +204,7 @@ class StationarityResult(BaseModel):
 
 
 @tracked()
-def test_stationarity(series: Any) -> StationarityResult:
+def test_stationarity(series: Any, fast: bool = False) -> StationarityResult:
     """ADF + KPSS stationarity tests.
 
     The two tests have opposite nulls (ADF: unit root; KPSS: stationary),
@@ -213,25 +213,38 @@ def test_stationarity(series: Any) -> StationarityResult:
 
     Args:
         series: 1-D numeric series (min 20 observations).
+        fast: If True, run ADF only and skip KPSS (KPSS is the slow half;
+            ~40ms vs ~150ms). Verdict is ADF-based. Default False.
 
     Returns:
         StationarityResult with both statistics and a combined verdict.
+        In fast mode the KPSS fields are NaN.
 
     """
     x = _as_1d_float(series, "series", min_len=20)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         try:
-            from statsmodels.tsa.stattools import adfuller, kpss  # type: ignore[import-untyped]
+            from statsmodels.tsa.stattools import adfuller  # type: ignore[import-untyped]
 
             adf_stat, adf_p = adfuller(x, autolag="AIC")[:2]
-            kpss_stat, kpss_p, _, _ = kpss(x, regression="c", nlags="auto")
         except Exception as exc:  # pragma: no cover - degenerate input
             raise ValueError(f"stationarity tests failed: {exc}") from exc
+        if fast:
+            kpss_stat, kpss_p = float("nan"), float("nan")
+        else:
+            try:
+                from statsmodels.tsa.stattools import kpss  # type: ignore[import-untyped]
+
+                kpss_stat, kpss_p, _, _ = kpss(x, regression="c", nlags="auto")
+            except Exception as exc:  # pragma: no cover - degenerate input
+                raise ValueError(f"stationarity tests failed: {exc}") from exc
 
     adf_p = float(adf_p)
     kpss_p = float(kpss_p)
-    if adf_p < 0.05 and kpss_p >= 0.05:
+    if fast:
+        verdict = "stationary" if adf_p < 0.05 else "non_stationary"
+    elif adf_p < 0.05 and kpss_p >= 0.05:
         verdict = "stationary"
     elif adf_p >= 0.05 and kpss_p < 0.05:
         verdict = "non_stationary"
@@ -274,9 +287,10 @@ def decompose_series(series: Any, period: int = 12) -> DecompositionResult:
         DecompositionResult with components and strength metrics.
 
     """
-    x = _as_1d_float(series, "series", min_len=2 * period)
     if period < 2:
-        raise ValueError("period must be >= 2")
+        raise ValueError(f"period must be >= 2, got {period}")
+    # _as_1d_float enforces len >= 2*period with a clear message.
+    x = _as_1d_float(series, "series", min_len=2 * period)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         from statsmodels.tsa.seasonal import STL  # type: ignore[import-untyped]

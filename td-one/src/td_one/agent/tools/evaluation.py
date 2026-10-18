@@ -7,13 +7,13 @@ same splits and tests pairwise differences with the Diebold-Mariano test.
 
 from __future__ import annotations
 
-from td_one.agent.tool_tracker import tracked
-
 from collections.abc import Callable
 from typing import Any
 
 import numpy as np
 from pydantic import BaseModel, Field
+
+from td_one.agent.tool_tracker import tracked
 
 
 class FoldResult(BaseModel):
@@ -225,4 +225,86 @@ def compare_models(
         models=results,
         pairwise=pairwise,
         ranking=[r.model_name for r in ranking],
+    )
+
+
+# ---------------------------------------------------------------------------
+# combine_quantiles
+# ---------------------------------------------------------------------------
+
+
+class CombinedQuantiles(BaseModel):
+    """Structured output of :func:`combine_quantiles`."""
+
+    levels: list[float] = Field(description="Quantile levels, ascending")
+    values: list[float] = Field(description="Vincentized combined quantiles")
+    weights_used: dict[str, float] = Field(description="Normalized weights")
+
+
+@tracked()
+def combine_quantiles(
+    model_quantiles: dict[str, Any],
+    weights: dict[str, float] | None = None,
+    levels: list[float] | None = None,
+) -> CombinedQuantiles:
+    """Vincentized combination of per-model quantile forecasts.
+
+    Each model's forecast is a set of quantiles; the combined forecast
+    averages quantiles level-by-level (Vincentization). This is what
+    exp42 implemented manually — now one canonical implementation.
+
+    Args:
+        model_quantiles: Mapping model name -> quantiles, where each
+            value is either a ``{level: value}`` dict or a list aligned
+            with ``levels``.
+        weights: Optional mapping model name -> weight. Defaults to
+            equal weights. Normalized internally.
+        levels: Quantile levels, required when values are lists.
+
+    Returns:
+        CombinedQuantiles with the averaged lattice and weights used.
+
+    """
+    if not model_quantiles:
+        raise ValueError("model_quantiles is empty")
+
+    parsed: dict[str, dict[float, float]] = {}
+    ref_levels: list[float] | None = None
+    for name, qs in model_quantiles.items():
+        if isinstance(qs, dict):
+            d = {float(k): float(v) for k, v in qs.items()}
+        elif isinstance(qs, (list, tuple)):
+            if levels is None:
+                raise ValueError(
+                    f"levels required when quantiles for {name!r} are a list"
+                )
+            d = {float(k): float(v) for k, v in zip(levels, qs, strict=True)}
+        else:
+            raise ValueError(f"quantiles for {name!r} must be dict or list")
+        lvls = sorted(d)
+        if ref_levels is None:
+            ref_levels = lvls
+        elif lvls != ref_levels:
+            raise ValueError(
+                f"level mismatch for {name!r}: {lvls} vs {ref_levels}"
+            )
+        parsed[name] = d
+
+    assert ref_levels is not None
+    if weights is None:
+        w = {m: 1.0 / len(parsed) for m in parsed}
+    else:
+        missing = set(parsed) - set(weights)
+        if missing:
+            raise ValueError(f"weights missing for models: {sorted(missing)}")
+        total = float(sum(weights[m] for m in parsed))
+        if total <= 0:
+            raise ValueError("weights must sum to a positive value")
+        w = {m: float(weights[m]) / total for m in parsed}
+
+    combined = [
+        sum(w[m] * parsed[m][q] for m in parsed) for q in ref_levels
+    ]
+    return CombinedQuantiles(
+        levels=ref_levels, values=combined, weights_used=w
     )

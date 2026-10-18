@@ -7,10 +7,13 @@ results can flow back into the ReAct trace as observations.
 Tool inventory:
 - analysis: analyze_residuals, feature_importance, test_stationarity,
   decompose_series
-- regimes: detect_changepoints, backtest_event_impact
-- evaluation: cross_validate, compare_models
-- plotting: plot_diagnostics
-- scenarios: generate_synthetic_scenario
+- data: load_series, naive_forecasts, series_features
+- regimes: detect_changepoints, backtest_event_impact, regime_probabilities
+- evaluation: cross_validate, compare_models, combine_quantiles
+
+Retired from the agent namespace (modules kept for manual use):
+- plotting.plot_diagnostics — zero call sites, slowest tool
+- scenarios.generate_synthetic_scenario — zero call sites
 """
 
 from td_one.agent.tools.analysis import (
@@ -19,20 +22,30 @@ from td_one.agent.tools.analysis import (
     feature_importance,
     test_stationarity,
 )
-from td_one.agent.tools.evaluation import compare_models, cross_validate
-from td_one.agent.tools.plotting import plot_diagnostics
-from td_one.agent.tools.regimes import backtest_event_impact, detect_changepoints
-from td_one.agent.tools.scenarios import generate_synthetic_scenario
+from td_one.agent.tools.data import load_series, naive_forecasts, series_features
+from td_one.agent.tools.evaluation import (
+    combine_quantiles,
+    compare_models,
+    cross_validate,
+)
+from td_one.agent.tools.regimes import (
+    backtest_event_impact,
+    detect_changepoints,
+    regime_probabilities,
+)
 
 __all__ = [
     "analyze_residuals",
     "backtest_event_impact",
+    "combine_quantiles",
     "compare_models",
     "cross_validate",
     "decompose_series",
     "detect_changepoints",
     "feature_importance",
-    "generate_synthetic_scenario",
-    "plot_diagnostics",
+    "load_series",
+    "naive_forecasts",
+    "regime_probabilities",
+    "series_features",
     "test_stationarity",
 ]

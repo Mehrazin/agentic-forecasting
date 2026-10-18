@@ -7,13 +7,13 @@ series, using a pre-event baseline as the synthetic control.
 
 from __future__ import annotations
 
-from td_one.agent.tool_tracker import tracked
-
 from typing import Any
 
 import numpy as np
 import pandas as pd
 from pydantic import BaseModel, Field
+
+from td_one.agent.tool_tracker import tracked
 
 
 class ChangepointResult(BaseModel):
@@ -203,3 +203,93 @@ def backtest_event_impact(
         mean_ate=float(np.mean(ates)) if ates else 0.0,
         share_positive=float(np.mean([a > 0 for a in ates])) if ates else 0.0,
     )
+
+
+# ---------------------------------------------------------------------------
+# regime_probabilities
+# ---------------------------------------------------------------------------
+
+
+class RegimeProbs(BaseModel):
+    """Structured output of :func:`regime_probabilities`."""
+
+    regimes: list[str] = Field(description="Regime names for this spec")
+    probabilities: dict[str, float] = Field(description="P(regime), sums to 1")
+    label: str = Field(description="Argmax regime (hard label)")
+    spec: str = Field(description="Which hand-rule spec was applied")
+
+
+def _label_m4(feats: dict[str, float]) -> str:
+    """exp43 M4 regimes: seasonal / trending / noisy."""
+    if feats.get("seasonal_strength", 0.0) > 0.5:
+        return "seasonal"
+    if feats.get("trend_strength", 0.0) > 0.7:
+        return "trending"
+    return "noisy"
+
+
+def _label_generic(feats: dict[str, float]) -> str:
+    """exp43 SMM-style regimes: calm / stressed."""
+    if feats.get("n_recent_cps", 0.0) >= 1 or feats.get("vol_ratio", 0.0) > 1.0:
+        return "stressed"
+    return "calm"
+
+
+def _implied(value: float, lo: float, hi: float) -> int:
+    return -1 if value < lo else (1 if value > hi else 0)
+
+
+def _label_boc(feats: dict[str, float]) -> str:
+    """exp32 BoC regimes: EASY (all macro signals agree) / HARD.
+
+    Signals: rate_momentum (cut/hold/hike), inflation_gap, yield_spread.
+    """
+    implied = {
+        _implied(feats.get("rate_momentum", 0.0), -0.25, 0.25),
+        _implied(feats.get("inflation_gap", 0.0), -1.0, 1.0),
+        _implied(feats.get("yield_spread", 0.0), -0.5, 0.5),
+    }
+    return "EASY" if len(implied) == 1 else "HARD"
+
+
+_REGIME_SPECS: dict[str, tuple[list[str], Any]] = {
+    "m4": (["seasonal", "trending", "noisy"], _label_m4),
+    "generic": (["calm", "stressed"], _label_generic),
+    "boc": (["EASY", "HARD"], _label_boc),
+}
+
+
+@tracked()
+def regime_probabilities(
+    features: dict[str, float],
+    spec: str = "m4",
+    smooth: float = 0.1,
+) -> RegimeProbs:
+    """Map diagnostic features to soft regime probabilities.
+
+    This is exp43's winning hand-rule router as a reusable tool
+    (kept per exp45: hand rules beat unsupervised discovery).
+    The hard label comes from the rule; probabilities are eps-smoothed
+    so downstream combination never puts zero mass on a regime.
+
+    Args:
+        features: Feature dict, e.g. from :func:`series_features`.
+            m4 spec needs ``seasonal_strength`` / ``trend_strength``;
+            generic needs ``n_recent_cps`` / ``vol_ratio``;
+            boc needs ``rate_momentum`` / ``inflation_gap`` / ``yield_spread``.
+        spec: One of ``"m4"``, ``"generic"``, ``"boc"``.
+        smooth: Mass reserved for non-winning regimes (default 0.1).
+
+    Returns:
+        RegimeProbs with regimes, smoothed probabilities, and hard label.
+
+    """
+    if spec not in _REGIME_SPECS:
+        raise ValueError(f"spec must be one of {sorted(_REGIME_SPECS)}, got {spec!r}")
+    regimes, label_fn = _REGIME_SPECS[spec]
+    label = label_fn(dict(features))
+    n = len(regimes)
+    probs = {
+        r: (1.0 - smooth) if r == label else smooth / (n - 1) for r in regimes
+    }
+    return RegimeProbs(regimes=regimes, probabilities=probs, label=label, spec=spec)
