@@ -6,6 +6,8 @@ We forecast borrower attrition at Canadian mortgage renewal: for each portfolio 
 
 **Start here:** [docs/README.md](docs/README.md) (doc index) → [docs/METHODOLOGY.md](docs/METHODOLOGY.md) → [docs/RESULTS.md](docs/RESULTS.md)
 
+**Original plan:** [PLAN_SOLO.md](PLAN_SOLO.md) (the solo-build plan this implementation follows).
+
 ## Quickstart
 
 ```bash
@@ -57,12 +59,16 @@ See [experiments/REPRODUCIBILITY.md](experiments/REPRODUCIBILITY.md) for full re
 | [docs/RESULTS.md](docs/RESULTS.md) | Current experiment results (R2 series). |
 | [docs/REDESIGN.md](docs/REDESIGN.md) | Design decisions: what we keep/kill/try next. |
 | [docs/DIAGRAMS.md](docs/DIAGRAMS.md) | Architecture diagrams. |
-| [docs/plots/](docs/plots/) | Result plots (SMM series, RAG eval, agent comparison). |
-| [experiments/](experiments/) | All experiments. See [experiments/README.md](experiments/README.md). |
-| [src/td_one/](src/td_one/) | Main package (see structure below). |
+| [docs/plots/](docs/plots/) | Result plots — regenerate via `docs/plots/make_plots.py`. |
+| [experiments/](experiments/) | All experiments (exp1–exp48). See [experiments/README.md](experiments/README.md). |
+| [src/td_one/](src/td_one/) | Main package (see structure below; each subpackage has a README). |
 | [scripts/](scripts/) | Data fetchers, model bootstrap, pipelines. |
-| [configs/](configs/) | YAML configs for DGP, segments, models. |
+| [configs/](configs/) | Run configs (reserved). |
 | [tests/](tests/) | TDD test suite. |
+| [benchmarks/](benchmarks/) | Real-data benchmarks: BoC, WTI, food CPI, M4, SMM. |
+| [audits/](audits/) | News leakage + content audits. |
+| [models/](models/) | Weight manifest + weights dir (gitignored). |
+| [data/](data/) | Data dirs (gitignored) + per-dir READMEs. |
 
 ## Package structure
 
@@ -90,11 +96,14 @@ See [experiments/REPRODUCIBILITY.md](experiments/REPRODUCIBILITY.md) for full re
 
 | Track | Verdict |
 |---|---|
-| M4 regime reader + news RAG | ✅ Alive — 3.59 vs M0 4.82; 3/4 end-to-end |
+| Proposed method (exp47) | ✅ Alive — beats equal weights (0.1451 vs 0.1507, p=6.5e-09), best single, and exp43 router |
+| exp43 regime router | ✅ Partial positive — first to beat equal weights (M4 0.1282 vs 0.1295, p=0.018) |
 | Conformal M0 | ✅ Strong baseline — nothing beats it cleanly on synthetic |
 | TSFMs | ✅ Beat m0 30% on 63-mo real SMM (exp18, p=0.0012); beat classical ~20% on M4 |
-| Macro (FRED overlay) | ⚠️ Method-specific — lagged macro helps classical (-0.357), residual conditioning hurts TSFM |
+| Macro (FRED overlay) | ❌ Closed — 5-seed, no evidence macro helps (classical or TSFM) |
 | M5 router | ❌ Dead — loses to inverse-CRPS even constrained |
 | M2 ReAct / M3 hybrid | ❌ Dead — LLM numerical output is net-negative |
+| News as feature (monthly) | ❌ Dead — exp46 definitive negative; exp19 frozen |
+| Reasoning effort | ❌ "High" never helps — default to "low" for diagnostics (exp48) |
 
 See [docs/REDESIGN.md](docs/REDESIGN.md) for the full kill/keep list with evidence.

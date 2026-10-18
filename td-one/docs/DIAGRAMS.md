@@ -150,7 +150,10 @@ flowchart LR
     style R1 fill:#d5f9d5
 ```
 
-## Model ladder and verdicts
+## Model ladder and verdicts (2026-10-16 snapshot — superseded)
+
+Historical snapshot. Current verdicts: [`experiments/README.md`](../experiments/README.md)
+and [`PROPOSED_METHOD.md`](PROPOSED_METHOD.md) (exp47).
 
 | Rung | Model | Verdict |
 |------|-------|---------|
@@ -160,3 +163,90 @@ flowchart LR
 | M3 | Hybrid (LLM deltas + gate) | Gate helps; default-adjust killed |
 | M4 | Regime reader (LLM sensor → statistical gate) | Qualified positive (3.59 vs 4.82, real Groq) |
 | M5 | Ensemble router (REATS-style) | **Killed** — clean negative vs inverse-CRPS |
+
+## The agentic trilogy → proposed method (exp42–47)
+
+```mermaid
+flowchart TB
+    subgraph T42["exp42 · FFORMA meta-learner"]
+        F42["Learn combination weights<br/>from meta-features"]
+        V42["❌ honest negative<br/>p=0.156, loses to equal weights"]
+    end
+    subgraph T43["exp43 · Constrained regime router"]
+        F43["Hand rules → LogisticReg<br/>→ P(regime | features)<br/>Σ P(r) × expert_r"]
+        V43["✅ partial positive<br/>M4 0.1282 vs 0.1295, p=0.018"]
+    end
+    subgraph T44["exp44 · News as selector"]
+        F44["News stress → shift P(regime)<br/>toward stressed/noisy"]
+        V44["⚖️ mechanism proven synthetic<br/>(p=0.0068); real blocked<br/>by news sparsity"]
+    end
+    subgraph T45["exp45 · Learned regimes"]
+        F45["Unsupervised clustering<br/>instead of hand rules"]
+        V45["❌ honest negative<br/>hand rules win, p=0.00046"]
+    end
+
+    F42 --> V42
+    F43 --> V43
+    F44 --> V44
+    F45 --> V45
+
+    V43 --> P47["exp47 · Proposed method<br/>router + gates + conformal<br/>✅ 0.1451 vs 0.1507, p=6.5e-09"]
+    V44 -.->|"gated, off by default"| P47
+
+    style V42 fill:#f9d5d5
+    style V43 fill:#d5f9d5
+    style V45 fill:#f9d5d5
+    style P47 fill:#d5f9d5
+```
+
+Full architecture: [PROPOSED_METHOD.md](PROPOSED_METHOD.md).
+
+## Tool-tracking loop (agent infrastructure)
+
+```mermaid
+flowchart LR
+    TOOLS["10 agent tools<br/>src/td_one/agent/tools/"]
+    TRACK["@tracked() decorator<br/>src/td_one/agent/tool_tracker.py<br/>timing · hashed inputs<br/>outputs · success/fail"]
+    DATA["TOOL_USAGE_DATA.md<br/>runtime call log"]
+    AUDIT["TOOL_AUDIT.md<br/>frequency · patterns · failures"]
+    OPT["TOOL_OPTIMIZATION.md<br/>add / drop / fix<br/>before final report"]
+
+    TOOLS --> TRACK --> DATA --> AUDIT --> OPT
+    OPT -.->|"implement"| TOOLS
+```
+
+## News cache enrichment (live news track)
+
+```mermaid
+flowchart LR
+    GDELT["GDELT fetcher<br/>scripts/fetch_news_gdelt.py"]
+    PERP["Perplexity fetcher<br/>(credits: avoid)"]
+    CACHE[("news cache<br/>data/news/<br/>FTS5 SQLite")]
+    ENRICH["enrich on every hit"]
+    EXP["experiments<br/>news context<br/>before=cutoff"]
+
+    GDELT --> ENRICH --> CACHE
+    PERP --> ENRICH
+    CACHE --> EXP
+
+    style PERP fill:#fff3d5
+```
+
+## Experiment timeline, continued (Oct 17–18)
+
+```mermaid
+timeline
+    title TD-One experiments (Oct 17–18, 2026)
+    2026-10-17 : R2 PIT-safe reruns (macro track closed)
+               : exp16–18b Freddie SMM real-data benchmark
+               : exp19 news-SMM frozen
+               : exp20–25 event-augmented track
+               : exp40–41 calibration + meta-learning
+    2026-10-18 : exp42 FFORMA (negative)
+               : exp43 regime router (partial positive)
+               : exp44 news selector (partial positive)
+               : exp45 learned regimes (negative)
+               : exp46 dense news (definitive negative)
+               : exp47 proposed method (positive)
+               : exp48 reasoning sweep (running)
+```

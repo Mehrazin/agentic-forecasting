@@ -12,118 +12,78 @@ experiment is PIT-clean (no lookahead) and reproducible — see
 | M1 | Zero-shot TSFMs | Chronos-2 / TimesFM-2.5 on panel switching-rate series |
 | M2 | ReAct LLM agent | Groq-driven tool loop (data_segment → evidence → forecasting) |
 | M3 | Hybrid | M0 + bounded log-odds adjustment Δ ∈ [-0.75, +0.75] proposed by the agent |
+| M4 | Regime reader | LLM reads news → regime label → model selection |
+| M5 | Ensemble router | LLM routes among experts (REATS-style) |
 
 Primary metric everywhere is **CRPS** (proper score on count distributions);
 secondary: MAE and 80% interval coverage.
 
+Verdict key: ✅ positive · ⚖️ partial/mixed · ❌ honest negative · 🔨 build/scaffolding · ▶️ running
+
 ## Experiment index
 
-| Exp | Comparison | Scale | Mode | Report |
-|---|---|---|---|---|
-| exp1 | M0 vs M1 (mocks) | 500×24 synthetic | mock | `exp1_report.md` |
-| exp2 v2 | M0 vs M1 (real weights) | 3 scenarios × 5 seeds | real weights | `exp2_report.md` |
-| exp3 | M2 vs M0 | 3 pilot segments | mock + real Groq | `exp3_report.md` |
-| exp4 | M3 vs M0 | 6 macro scenarios | mock + real Groq | `exp4_report.md` |
-| exp6 | M3+shrinkage/gate vs M3/M0 | 12 scenarios (6 tune + 6 held-out) | mock (mechanism test) | `exp6_results.json` |
-| scale-up | M0 vs `*_mock` | 10k×66, 14 seg × 5 origins | mock (plumbing) | `scale_up_report.md` |
-| scale-up | M0 vs real Chronos-2 | 10k×66, 14 seg × 5 origins | real weights | `scale_up_report_real-chronos2.md` |
-| scale-up | M0 vs real TimesFM-2.5 | 10k×66, 14 seg × 5 origins | real weights | `scale_up_report_real-timesfm25.md` |
+Numbering jumps from exp25 to exp40 (exp26–exp39 were never assigned).
 
-Scale note: 15 segments are designed; `term_short` never scores (no
-observable training data at these origins), so all runs report **14
-segments**. Six origins are configured; one per segment is skipped for
-the same reason, leaving **5 scored origins per segment**.
+| Exp | Question | Verdict | Report |
+|---|---|---|---|
+| exp1 | M0 vs M1 (mock TSFMs), 500×24 synthetic | ✅ M1a 3.26 / M1b 3.32 vs M0 3.50 MAE | [report](exp1_report.md) |
+| exp2 | M0 vs M1 (real weights), 3 scenarios × 5 seeds | ✅ Chronos-2 MAE 4.00 (−20% vs M0); TimesFM-2.5 4.62 (−8%) | [report](exp2_report.md) |
+| exp3 | M2 vs M0, 3 pilot segments, mock + real Groq | ⚖️ seg-1 win (0.82 vs 1.33), seg-0 worse, seg-2 never finalized | [report](exp3_report.md) |
+| exp4 | M3 vs M0, 6 macro scenarios, mock + real Groq | ⚖️ 3/6 beat M0 — LLM directionally right but over-adjusts | [report](exp4_report.md) |
+| exp5 | Better classical baselines vs M0 | 🔨 classical-track scaffolding | `exp5_results.json` |
+| exp6 | M3 + shrinkage/gating vs M3/M0 | 🔨 decision policy built: James-Stein shrinkage + corroboration gate | `exp6_results.json` |
+| exp7/7b | Regime-classifier hybrid (M3c), prototype + real-LLM test | 🔨 prototype → fed M4 regime-reader design | — |
+| exp8 | Macro-grounded DGP: does macro structure reward macro-aware models? | ❌ macro track eventually closed (see exp10/13/15) | — |
+| exp9 | Richer DGP (simulator v2): do conclusions change? | 🔨 DGP robustness check | — |
+| exp10 | Classical track: promoted baselines under one roof | ❌ 0.678 CRPS gain was 100% z-score leak | `exp10_results.json` |
+| exp11 | M4 regime-reader agent vs M0 | 🔨 led to regime-reader hardening (see `../docs/AGENT_AUDIT_M4.md`) | `exp11_results.json` |
+| exp12/12b | M5 ensemble router v1, then critic-constrained v2 | ❌ v1 failed (see `../docs/AGENT_AUDIT_M5.md`); v2 tested | `exp12_results.json`, `exp12b_results.json` |
+| exp13 | TSFM + FRED rematch — the fair fight | ❌ PIT-safe rerun reversed macro benefit to penalty | `exp13_tsfm_macro_results.json` |
+| exp14 | M4 Monthly real-data benchmark | 🔨 real-data baseline for the agentic track | `exp14_m4_results.json` |
+| exp15 | Macro overlay with corrected sign (negative lock-in) | ❌ neutralized — no evidence macro helps | `exp15_macro_corrected_results.json` |
+| exp16 | Freddie Mac real-data SMM forecasting (PoC) | 🔨 real-data proof of concept | `exp16_freddie_smm_results.json` |
+| exp17 | News-augmented regime reader, end-to-end | ⚖️ mechanism probe | `exp17_news_regime_results.json` |
+| exp18/18b | Full 63-month Freddie SMM benchmark; fair ablation + ARIMA/ETS | 🔨 calibrated-TSFM real-data benchmark | `exp18_smm_full_results.json`, `exp18b_fair_smm_results.json` |
+| exp19 | News-regime-augmented SMM forecasting | ❌ frozen — news doesn't move SMM | `exp19_news_smm_results.json` |
+| exp20 | Event-augmented simulator validation | 🔨 build complete — 84% news-leading events (20 seeds) | [build summary](exp20_BUILD_SUMMARY.md) |
+| exp21 | LLM feature discovery on event DGP | ❌ −21.6%: discovered features lag the news | [report](exp21_report.md) |
+| exp22 | M2 v2 (decision policy) vs M0 | ⚖️ +6.6% when active, high variance | [report](exp22_report.md) |
+| exp23 | Rule-based model selection | ❌ = random (p=0.80) | [report](exp23_report.md) |
+| exp24 | Regime-aware selection (news-signal regimes) | ❌ honest wash | [report](exp24_report.md) |
+| exp25 | h=3 horizon: does news help further out? | ❌ news worse by +25% | [report](exp25_report.md) |
+| exp40 | Calibrated rerun of the event track | ⚖️ calibration cuts false discoveries; transfer problem remains | [report](exp40_report.md) |
+| exp41 | Meta-learning (FFORMA-style) for model selection | ⚖️ learned beats hand-written; both lose to ARIMA | [report](exp41_report.md) |
+| exp42 | FFORMA meta-learner vs equal weights | ❌ honest negative — doesn't beat equal weights | [report](exp42_report.md) |
+| exp43 | Constrained regime router (3 regimes + fixed experts) | ✅ first to beat equal weights: M4 CRPS 0.1282 vs 0.1295, p=0.018 | [report](exp43_report.md) |
+| exp44 | News as model selector (synthetic → real) | ⚖️ mechanism proven on synthetic (p=0.0068); real blocked by news sparsity | [report](exp44_report.md) |
+| exp45 | Learned regimes (flexible) | ❌ honest negative — flexibility loses to the constrained prior | [report](exp45_report.md) |
+| exp46 | Dense-news regime/selection | ❌ definitive negative — dense news doesn't help | [report](exp46_report.md) |
+| exp47 | Proposed method (exp43 + exp44 combined) | ✅ beats equal weights (0.1451 vs 0.1507, p=6.5e-09), best single, and exp43 alone | [report](exp47_report.md) |
+| exp48 | Reasoning-effort sweep (low/med/high × 3 tasks × 3 seeds) | ❌ "high" never helps: 3.5–6× slower, sometimes hurts (1.000→0.333 on BoC discovery). Default to "low" for diagnostics | [report](exp48_report.md) |
 
-## Key findings (read this first)
+## Supporting reports
 
-1. **exp2 v1's "Chronos-2 beats M0 by 20%" is retracted.** The critic
-   audit found a circular DGP hand-tuned to flatter trend-extrapolating
-   TSFMs, n=6 test points on one seed, and an off-spec M0. The redesigned
-   v2 (3 pre-registered scenarios, 5 seeds, CRPS primary, oracle anchor)
-   finds **no model significantly beats M0** (all paired p > 0.18).
-   TimesFM-2.5 has the best mean CRPS in all three scenarios but not
-   significantly. Chronos-2 overcovers; M0 undercovers; TimesFM is
-   closest to nominal.
+| Report | What it is |
+|---|---|
+| [multiseed_report.md](multiseed_report.md) | Multi-seed aggregation (macro track closure: 5-seed, no evidence macro helps) |
+| [r2_comparison.md](r2_comparison.md) | R2 PIT-safe rerun comparison |
+| [scale_up_report.md](scale_up_report.md) | Scale-up plumbing (10k×66, mock) |
+| [scale_up_report_real-chronos2.md](scale_up_report_real-chronos2.md) / [-timesfm25](scale_up_report_real-timesfm25.md) | Scale-up with real TSFM weights |
+| [scale_up_report_seed1…4-*.md](scale_up_report_seed1-chronos2.md) | Per-seed scale-up reports: [seed1](scale_up_report_seed1-chronos2.md) [seed2](scale_up_report_seed2-chronos2.md) [seed3](scale_up_report_seed3-chronos2.md) [seed4](scale_up_report_seed4-chronos2.md) (chronos2) · [seed1](scale_up_report_seed1-timesfm25.md) [seed2](scale_up_report_seed2-timesfm25.md) [seed3](scale_up_report_seed3-timesfm25.md) [seed4](scale_up_report_seed4-timesfm25.md) (timesfm25) · [seed1](scale_up_report_seed1-m0w3.md) [seed2](scale_up_report_seed2-m0w3.md) [seed3](scale_up_report_seed3-m0w3.md) [seed4](scale_up_report_seed4-m0w3.md) (m0w3) · [seed2](scale_up_report_seed2-m0w6.md) [seed3](scale_up_report_seed3-m0w6.md) [seed4](scale_up_report_seed4-m0w6.md) (m0w6) · [verify](scale_up_report_verify-m0w3.md) |
+| [PHASE3_SUMMARY.md](PHASE3_SUMMARY.md) | Phase-3 adjustments from exp21–23 learnings (news-leading DGP, decision policy) |
+| [exp21_BUILD_SUMMARY.md](exp21_BUILD_SUMMARY.md) | exp21 infrastructure build notes |
+| [REPRODUCIBILITY.md](REPRODUCIBILITY.md) | Environment, weights, and commands to reproduce any experiment |
 
-2. **Mock `*_mock` scale-up wins over M0 are a sharpness artifact, not
-   evidence.** The mocks center on the last observed rate with tight
-   spreads, so they score better on CRPS in stable-rate environments.
-   The real M0-vs-M1 comparison is exp2 v2.
+Ablations (`abl_m0_window.py`, `abl_m3_bound.py`) and `collect_multiseed.py` are
+utilities; their outputs feed the reports above. `evidence_corpus/` holds the
+labeled evidence used by the news-track experiments — see its
+[README](evidence_corpus/README.md).
 
-3. **Real Chronos-2 at scale overcovers** (coverage values {0.6, 0.8,
-   1.0} across segments, mean 0.914), matching exp2's finding. Paired
-   tests on the 14 shared segments (same seed, same DGP, same origins —
-   pairing valid): Chronos-2 wins 7/14 (paired-t p=0.212, Wilcoxon
-   p=0.583); TimesFM-2.5 wins 5/14 (p=0.341 / 0.583) — **not
-   significant**, reproducing exp2 v2's conclusion at scale. The mean
-   CRPS gaps (4.463 / 4.591 vs M0 5.360) are driven by a few segments;
-   the median picture is a coin flip. TimesFM mean coverage is 0.80
-   (nominal). ⚠️ Single seed, single DGP — any future superiority claim
-   must be pre-registered across seeds/DGP variants.
+## The honest-negatives ledger
 
-4. **Real-Groq M2 (exp3): first real-LLM win — with a caveat.** With
-   the patient retry policy (the third real-mode attempt; attempts 1–2
-   were rate-limit-bound), the agent finalized 2/3 traces; seg-1 M2 CRPS
-   0.82 vs M0 1.33. seg-0 finalized worse than M0; seg-2 never
-   finalized. **Honesty note:** real-mode M2 still uses the
-   `timesfm_mock` numerical backend
-   (`exp3_results.json: "forecast_model": "timesfm_mock"`), so the
-   seg-1 edge cannot be separated from the mock sharpness artifact
-   (finding #2). What the run demonstrates is orchestration — the agent
-   driving the tool loop to finalization — not numerical superiority.
-   Mock mode remains the plumbing validation (0/3 pilot segments beat
-   M0 — expected, the scripted LLM adds no skill).
-
-5. **Real-Groq M3 (exp4): 3/6 scenarios beat M0 (exploratory — n=6
-   hand-designed scenarios, no significance claimed).** The LLM's
-   deltas are directionally right 4/6 (e.g. −0.25 on the rate-drop
-   scenario) but: it got the **sign wrong** on `osfi_tightening` (+0.30
-   vs true ≈ −0.35, misread a stress-test policy as pro-switching), it
-   over-adjusts (+0.30 on the benign scenario where the right answer is
-   ~0), and it systematically undershoots magnitude (0.18–0.30 vs true
-   0.45–0.70). Direction doesn't predict the score: `rate_shock_down`
-   was a CRPS loss despite correct direction.
-
-6. **M3 over-adjustment fixes (exp6, mock mechanism test):** plain M3 is
-   worse than M0 (held-out mean CRPS 9.66 vs 7.86) — over-adjustment
-   hurts. A **regime gate** (two-proportion z-test on the panel; delta
-   forced to 0 unless |z| ≥ 1.25) restores M3 to 7.60, beating M0 by
-   killing catastrophic spurious adjustments on benign scenarios
-   (gate confusion on held-out: 3 TP / 0 FP / 3 TN / 0 FN).
-   **Shrinkage** (k*=0.5, tuned) helps vs plain M3 (8.62) but not vs M0;
-   gate+shrinkage (7.73) ≈ gate alone. The gate is a risk-management
-   device, not a win-rate device. Small-n (6+6 scenarios); mock deltas
-   replicate the real-Groq error model.
-
-7. **Calibration is the open work.** Coverage sits below the 80%
-   nominal for M0 and the mocks at scale; Chronos-2 overcovers.
-
-## Reproducing
-
-```bash
-cd td-one
-uv run python experiments/exp1_mvp1.py          # mock M0 vs M1
-uv run python experiments/exp2_real_weights.py  # real weights (needs models/weights/)
-TD_ONE_REAL_LLM=1 uv run python experiments/exp3_m2.py   # real-Groq ReAct (≤20 calls)
-TD_ONE_REAL_LLM=1 uv run python experiments/exp4_m3.py   # real-Groq M3 (≤10 calls)
-uv run python scripts/scale_up.py --n-customers 10000 --n-months 66 --models m0
-# real-weight scale-ups, one model per invocation (RAM):
-uv run --with torch --with chronos-forecasting \
-  python scripts/scale_up.py --models chronos2 --tag real-chronos2
-uv run --with torch --with timesfm \
-  python scripts/scale_up.py --models timesfm25 --tag real-timesfm25
-```
-
-Real-LLM modes go through the vault-surrogate Groq client
-(`src/td_one/agent/groq_client.py`): key never in process, per-run call
-budgets, 429 backoff with 60s floor, 2.5s process-wide throttle.
-
-## Artifacts
-
-- `exp{1,2,3,4}_report.md` + `exp{2,3,4}_results.json` — per-experiment reports and raw results
-- `exp6_m3plus.py` + `exp6_results.json` — M3 over-adjustment fixes (shrinkage + regime gate), 6 tune + 6 held-out scenarios
-- `scale_up_report*.md` + `scale_up_results*.json` — scale-up reports (mock, real-chronos2, real-timesfm25)
-- `evidence_corpus/corpus.json` — frozen 12-entry illustrative evidence corpus (PIT-filtered at `run_date`)
-- `REPRODUCIBILITY.md` — weights bootstrap, exact commands, pinned revisions
-- `../docs/CRITIC_SYNTHESIS.md` — the 2026-10-15 six-angle audit that retracted exp2 v1
-- `../docs/SCALE_UP_RUNBOOK.md` — pipeline runbook (prereqs, timings, troubleshooting)
+Killed tracks stay killed only with evidence. The closed ones: R2 macro
+(5-seed, no signal), M2/M3/M5 output-wrapper agents, FFORMA (exp42), flexible
+regimes (exp45), dense news (exp46), news-for-SMM (exp19), h=3 news (exp25).
+See [REDESIGN.md](../docs/REDESIGN.md) for what each kill taught us and
+[POSITIVE_LIFT_AUDIT.md](../docs/POSITIVE_LIFT_AUDIT.md) for what survived
+into the proposed method.

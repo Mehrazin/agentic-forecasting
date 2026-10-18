@@ -13,6 +13,8 @@
 | boc_discovery (hit) | 1.000 (2.9s) | 1.000 (4.1s) | **0.333 (17.6s, 1 error)** |
 | changepoint (rubric) | 1.000 (2.5s) | 1.000 (1.7s) | 1.000 (4.7s) |
 
+![Reasoning effort: accuracy and latency](../docs/plots/reasoning_sweep.png)
+
 ## Key findings
 
 1. **"high" never helps, sometimes hurts.** On boc_discovery it dropped from

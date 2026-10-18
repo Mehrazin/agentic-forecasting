@@ -151,6 +151,8 @@ Full results: `experiments/exp17_news_regime_results.json`.
 
 After M2/M3/M4/M5 failed as output-layer wrappers, we rebuilt the agentic track from first principles. See `docs/AGENTIC_ROADMAP.md` for the full plan.
 
+![M4 regime reader vs M5 ensemble router](plots/agent_m4_m5.png)
+
 **Phase 1: Event-augmented simulator** (`src/td_one/data_gen/events.py`, `news_synthesis.py`)
 - 5 event types with causal mechanisms, PIT-safe news feed, 84% news-leading
 - 30/30 tests pass
@@ -174,6 +176,24 @@ Full reports: `experiments/exp21_report.md`, `exp22_report.md`, `exp23_report.md
 
 ---
 
+## Agentic Track: exp42–48 (trilogy → proposed method)
+
+Per `docs/AGENTIC_ROADMAP.md`: three parallel tracks, then combine what survived.
+
+- **exp42 (FFORMA meta-learner):** ❌ honest negative — doesn't beat equal weights.
+- **exp43 (constrained regime router):** ✅ partial positive — first method to significantly beat equal weights (M4 CRPS 0.1282 vs 0.1295, p=0.018). The constrained structural prior (3 regimes + fixed experts) worked where flexible learning failed.
+- **exp44 (news as selector):** ⚖️ partial positive — mechanism proven on synthetic (p=0.0068); real-data application blocked by news sparsity.
+- **exp45 (learned regimes):** ❌ honest negative — hand rules beat clustering (p=0.00046).
+- **exp46 (dense news):** ❌ definitive negative — dense news doesn't help regime/selection.
+- **exp47 (proposed method):** ✅ beats equal weights (0.1451 vs 0.1507, p=6.5e-09), best single, and the exp43 router alone. See `docs/PROPOSED_METHOD.md`.
+- **exp48 (reasoning sweep):** ❌ "high" reasoning never helps — 3.5–6× slower, sometimes hurts (1.000→0.333 on BoC discovery). Default to "low" for diagnostics.
+
+![Agentic trilogy on M4](plots/trilogy_m4.png)
+
+![Reasoning effort sweep](plots/reasoning_sweep.png)
+
+---
+
 ## Real-Data Benchmarks
 
 **Energy/Oil (WTI):** `td-one/benchmarks/energy_oil/`
@@ -186,6 +206,10 @@ Full reports: `experiments/exp21_report.md`, `exp22_report.md`, `exp23_report.md
 - Our tools diagnosed the missing signal: inflation_gap × rate_momentum interaction
 - **Agent discovery test: SUCCESS.** Agent found the interaction autonomously with no hints.
 - **Methodology validated:** Works when signal exists (BoC), correctly reports nothing when it doesn't (WTI).
+
+**Freddie Mac SMM (63 months, 2021–2026):** calibrated TSFMs beat m0 by 30% (p=0.0012) — see exp18. News-regime augmentation (exp19) frozen: news doesn't move SMM.
+
+![Freddie Mac SMM 2021–2026](plots/smm_2021_2026.png)
 
 ---
 

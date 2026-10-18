@@ -23,6 +23,10 @@
 
 **Key finding:** `plot_diagnostics` and `generate_synthetic_scenario` are in the T-namespace and mentioned in experiment comments, but have **zero actual call sites**. They are dead weight.
 
+Runtime data (138 tracked calls) confirms the pattern — the diagnostic trio dominates call share, while `plot_diagnostics` is the slowest tool per call:
+
+![Tool frequency vs latency](../docs/plots/tool_usage.png)
+
 ---
 
 ## 2. Usage by Experiment
@@ -104,14 +108,25 @@ ra = T.analyze_residuals(yt, yp)
 
 ---
 
-## 5. The Tracker Gap
+## 5. The Tracker Gap — CLOSED 2026-10-18
 
-`src/td_one/agent/tool_tracker.py` (created 2026-10-17) is **fully implemented but never imported** by any tool or experiment. Zero call sites reference it.
+`src/td_one/agent/tool_tracker.py` (created 2026-10-17) was fully implemented
+but never imported — until 2026-10-18, when `@tracked()` was wired into all 10
+tools. Runtime data now exists: see `docs/TOOL_USAGE_DATA.md` (138 calls:
+timing, hashed inputs, outputs, success/fail) and the frequency/latency plot
+in `docs/plots/tool_usage.png`.
 
-**Impact:** We have no data on:
-- Actual wall-clock time per tool call
-- Failure rates in production
-- Which tools correlate with good outcomes
-- Input patterns (what arguments are actually passed)
+**Remaining:** the optimization recommendations in `docs/TOOL_OPTIMIZATION.md`
+(add `load_series`/`naive_forecasts`/`combine_quantiles`/`regime_probabilities`;
+drop `plot_diagnostics`/`generate_synthetic_scenario`; fix
+`test_stationarity`/`decompose_series`) are still proposed, not implemented —
+that's the gate before the final report.
 
-**This audit is static-only as a result.**
+<details>
+<summary>Original static-only audit (2026-10-18, pre-wiring)</summary>
+
+The sections above were written from static analysis (grep over call sites)
+because no runtime logs existed at the time. They remain valid as the static
+baseline; the runtime numbers in `TOOL_USAGE_DATA.md` now complement them.
+
+</details>

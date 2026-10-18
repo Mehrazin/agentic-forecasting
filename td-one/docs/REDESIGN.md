@@ -49,12 +49,18 @@ full rationale). This document keeps only the decisions.*
 
 ## 3. Architecture going forward
 
-```
-FRED series ──┐
-              ├─→ MacroM0 ──┐
-Evidence ──→ LLM router ─→ weights ─→ Ensemble ─→ Conformalized ─→ Forecast
-Corpus ──┘         │                      │
-                   └─→ regime ─→ Gate ────┘
+```mermaid
+flowchart LR
+    FRED["FRED series"] --> MAC["MacroM0"]
+    EV["Evidence"] --> ROUTER["LLM router"]
+    CORP["Corpus"] --> ROUTER
+    ROUTER --> W["weights"]
+    ROUTER --> REG["regime"]
+    REG --> GATE["Gate"]
+    MAC --> ENS["Ensemble"]
+    W --> ENS
+    GATE --> ENS
+    ENS --> CONF["Conformalized"] --> FC["Forecast"]
 ```
 
 - **Baseline:** conformalized M0 with tuned window (the default M0).

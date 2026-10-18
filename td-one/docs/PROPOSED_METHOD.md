@@ -13,57 +13,24 @@ distillation of 47 experiments into a single system. Every component earned
 its place through a positive result; every exclusion was killed by a
 definitive negative (see `docs/POSITIVE_LIFT_AUDIT.md`).
 
-```
-                    ┌─────────────────────┐
-                    │   Input: time series │
-                    │   (+ optional news,  │
-                    │    LLM reading)      │
-                    └─────────┬───────────┘
-                              ▼
-                    ┌─────────────────────┐
-                    │  10 PIT-safe        │  exp42
-                    │  features           │
-                    └─────────┬───────────┘
-                              ▼
-              ┌───────────────────────────────┐
-              │  Regime router (exp43)         │
-              │  hand rules → LogisticReg     │
-              │  → P(regime | features)       │
-              └───────┬───────────┬───────────┘
-                      │           │
-         ┌────────────┘           └────────────┐
-         ▼                                     ▼
-┌──────────────────┐               ┌──────────────────┐
-│ News modulation  │               │ LLM sensor       │
-│ (exp44, GATED)   │               │ (exp11, GATED)   │
-│ only if dense    │               │ only if conf≥0.75│
-└────────┬─────────┘               └────────┬─────────┘
-         │                                    │
-         └────────────┬───────────────────────┘
-                      ▼
-              ┌───────────────────┐
-              │ "Do nothing" gate │  exp6 + decision_policy
-              │ uncertain + weak  │
-              │ → global best     │
-              └─────────┬─────────┘
-                        ▼
-              ┌───────────────────┐
-              │ Per-regime experts│  exp43
-              │ Σ P(r) × expert_r │
-              └─────────┬─────────┘
-                        ▼
-              ┌───────────────────┐
-              │ Conformal calib.  │  exp5/exp10
-              │ volatility floor  │
-              └─────────┬─────────┘
-                        ▼
-              ┌───────────────────┐
-              │ Output: quantiles │
-              │ + regime probs    │
-              │ + trust (EASY/    │
-              │   HARD) [exp32]   │
-              │ + explanation     │
-              └───────────────────┘
+```mermaid
+flowchart TB
+    IN["Input: time series<br/>(+ optional news, LLM reading)"]
+    FEAT["10 PIT-safe features<br/>exp42"]
+    ROUTER["Regime router (exp43)<br/>hand rules → LogisticReg<br/>→ P(regime | features)"]
+    NEWS["News modulation<br/>(exp44, GATED)<br/>only if dense"]
+    LLM["LLM sensor<br/>(exp11, GATED)<br/>only if conf ≥ 0.75"]
+    GATE["'Do nothing' gate<br/>uncertain + weak → global best<br/>exp6 + decision_policy"]
+    EXPERTS["Per-regime experts<br/>Σ P(r) × expert_r<br/>exp43"]
+    CONF["Conformal calibration<br/>volatility floor<br/>exp5 / exp10"]
+    OUT["Output: quantiles<br/>+ regime probs<br/>+ trust (EASY/HARD) [exp32]<br/>+ explanation"]
+
+    IN --> FEAT --> ROUTER
+    ROUTER --> NEWS
+    ROUTER --> LLM
+    NEWS --> GATE
+    LLM --> GATE
+    GATE --> EXPERTS --> CONF --> OUT
 ```
 
 ## 2. Components and their evidence
