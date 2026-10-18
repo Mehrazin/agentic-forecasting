@@ -6,6 +6,8 @@ what a model is getting wrong and why.
 
 from __future__ import annotations
 
+from td_one.agent.tool_tracker import tracked
+
 import warnings
 from typing import Any
 
@@ -38,6 +40,7 @@ def _as_1d_float(values: Any, name: str, min_len: int = 10) -> np.ndarray:
     return arr
 
 
+@tracked()
 def analyze_residuals(
     y_true: Any,
     y_pred: Any,
@@ -119,6 +122,7 @@ class ImportanceResult(BaseModel):
     n_repeats: int
 
 
+@tracked()
 def feature_importance(
     predict_fn: Any,
     X: Any,  # noqa: N803 - X is the universal ML convention for feature matrices
@@ -199,6 +203,7 @@ class StationarityResult(BaseModel):
     )
 
 
+@tracked()
 def test_stationarity(series: Any) -> StationarityResult:
     """ADF + KPSS stationarity tests.
 
@@ -254,6 +259,7 @@ class DecompositionResult(BaseModel):
     period: int
 
 
+@tracked()
 def decompose_series(series: Any, period: int = 12) -> DecompositionResult:
     """STL decomposition into trend / seasonal / residual.
 

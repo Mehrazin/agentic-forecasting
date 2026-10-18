@@ -6,6 +6,8 @@ the agent can reason about causal impact without touching the real DGP.
 
 from __future__ import annotations
 
+from td_one.agent.tool_tracker import tracked
+
 from typing import Any, Literal
 
 import numpy as np
@@ -25,6 +27,7 @@ class ScenarioResult(BaseModel):
     mean_shift: float = Field(description="Mean(shocked) - mean(base) over the window")
 
 
+@tracked()
 def generate_synthetic_scenario(
     base_series: Any,
     shock_type: ShockType,

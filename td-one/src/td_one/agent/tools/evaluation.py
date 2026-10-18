@@ -7,6 +7,8 @@ same splits and tests pairwise differences with the Diebold-Mariano test.
 
 from __future__ import annotations
 
+from td_one.agent.tool_tracker import tracked
+
 from collections.abc import Callable
 from typing import Any
 
@@ -48,6 +50,7 @@ def _crps_from_quantiles(y: float, quantiles: dict[float, float]) -> float:
     return 2.0 * total / len(levels)
 
 
+@tracked()
 def cross_validate(
     model_fn: Callable[[np.ndarray, int], dict[float, float]],
     series: Any,
@@ -166,6 +169,7 @@ def _diebold_mariano(loss_a: np.ndarray, loss_b: np.ndarray) -> tuple[float, flo
     return float(dm_adj), p
 
 
+@tracked()
 def compare_models(
     model_fns: dict[str, Callable[[np.ndarray, int], dict[float, float]]],
     series: Any,

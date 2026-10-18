@@ -5,6 +5,8 @@ Returns a PNG path the agent (or a human reviewer) can inspect visually.
 
 from __future__ import annotations
 
+from td_one.agent.tool_tracker import tracked
+
 from typing import Any
 
 import matplotlib
@@ -22,6 +24,7 @@ class DiagnosticPlot(BaseModel):
     n: int
 
 
+@tracked()
 def plot_diagnostics(
     y_true: Any,
     y_pred: Any,

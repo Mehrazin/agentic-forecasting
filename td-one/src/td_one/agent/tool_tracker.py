@@ -16,7 +16,7 @@ import hashlib
 import json
 import logging
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 logger = logging.getLogger(__name__)
@@ -137,3 +137,59 @@ class ToolCallTracker:
 
 # Singleton instance
 tracker = ToolCallTracker()
+
+
+def tracked(tool_name: str | None = None):
+    """Decorator to automatically track tool calls.
+
+    Usage:
+        @tracked()
+        def my_tool(x, y):
+            ...
+
+        @tracked("custom_name")
+        def my_tool(x, y):
+            ...
+
+    Records duration, inputs (hashed), outputs (truncated), and success/failure.
+    """
+    import functools
+
+    def decorator(func):
+        name = tool_name or func.__name__
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            start = time.time()
+            # Build inputs dict from args/kwargs (truncated for safety)
+            try:
+                inputs = {"args": [str(a)[:100] for a in args], **{k: str(v)[:100] for k, v in kwargs.items()}}
+            except Exception:
+                inputs = {"error": "could not serialize inputs"}
+
+            try:
+                result = func(*args, **kwargs)
+                duration_ms = (time.time() - start) * 1000
+                tracker.record(
+                    tool_name=name,
+                    duration_ms=duration_ms,
+                    inputs=inputs,
+                    output=str(result)[:500],
+                    success=True,
+                )
+                return result
+            except Exception as e:
+                duration_ms = (time.time() - start) * 1000
+                tracker.record(
+                    tool_name=name,
+                    duration_ms=duration_ms,
+                    inputs=inputs,
+                    output=str(e)[:500],
+                    success=False,
+                    error_type=type(e).__name__,
+                )
+                raise
+
+        return wrapper
+
+    return decorator

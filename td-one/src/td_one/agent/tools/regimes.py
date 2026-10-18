@@ -7,6 +7,8 @@ series, using a pre-event baseline as the synthetic control.
 
 from __future__ import annotations
 
+from td_one.agent.tool_tracker import tracked
+
 from typing import Any
 
 import numpy as np
@@ -57,6 +59,7 @@ def _binary_segmentation(
         _binary_segmentation(x, best_cp, end, penalty, out)
 
 
+@tracked()
 def detect_changepoints(series: Any, min_distance: int = 6) -> ChangepointResult:
     """Detect mean-shifts via binary segmentation with a BIC penalty.
 
@@ -124,6 +127,7 @@ class EventImpactResult(BaseModel):
     share_positive: float = Field(description="Fraction of events with ate > 0")
 
 
+@tracked()
 def backtest_event_impact(
     event_dates: list[Any],
     series: Any,
