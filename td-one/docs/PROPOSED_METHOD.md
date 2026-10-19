@@ -2,11 +2,12 @@
 
 **Date:** 2026-10-19 (final)
 **Status:** Implemented (`src/td_one/agent/proposed_method_v2.py`), validated
-on M4, Tourism, M3, Food CPI, BoC (exp47/49/60/61/64)
+on M4, Tourism, M3, Food CPI, SMM, BoC (exp47/49/60/61/64/65)
 **Verdict:** Positive — beats equal weights, best single, and exp43 router
 on M4 (all p < 1e-8); beats equal weights and best single on Tourism
 (p=1.9e-68) and M3 (p=3.5e-35); v2 beats v1 and Vector's LLM on Food CPI
-(p=4.3e-06)
+(p=4.3e-06); on SMM the LLM expert is neutral (v2 vs v1 p=0.69) with LLM
+alone (0.000492) tying TimesFM-2.5 (0.000497)
 
 ---
 
@@ -156,7 +157,7 @@ method's classical experts (0.9661) decisively — and beats Vector's own LLM
 baseline (0.5688) by 20%. **But** the LLM does not generalize: on Tourism
 and M3 it is 36–64% worse than classical (exp59). The proposed method is
 the general solution; the LLM is a specialist for smooth, context-rich
-macro series. See `docs/LLM_INTEGRATION_LADDER.md` for the full 6-rung
+macro series. See [LLM_INTEGRATION_LADDER.md](LLM_INTEGRATION_LADDER.md) for the full 6-rung
 analysis.
 
 ## 5. Usage

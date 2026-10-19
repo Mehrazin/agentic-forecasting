@@ -64,6 +64,7 @@ Metric: CRPS (lower is better). All p-values from paired t-tests.
 | Dataset | Model | CRPS | vs Best classical |
 |---|---|---|---|
 | Freddie Mac SMM | TimesFM-2.5 (calibrated) | 0.000497 | −12.2% vs ETS, p=0.076 (not significant) |
+| Freddie Mac SMM | Gemini Flash (LLM expert) | 0.000492 | Ties TimesFM; v2 vs v1 p=0.69 (neutral) |
 | Tourism Monthly | TimesFM-2.5 | 0.0965 | −30% vs seasonal naive |
 | Tourism Monthly | Chronos-2 | 0.0972 | −30% vs seasonal naive |
 
@@ -90,6 +91,7 @@ with a gate: LLM on for macro-like series, off for seasonal data.
 |---|---|
 | Food CPI, v2 (gated LLM) | **0.5322** vs v1 0.9661 (p=4.3e-06); beats Vector's 0.5688 by 6.4% |
 | Food CPI, best single LLM prompt | 0.4262 — beats v2; router adds noise when one expert dominates |
+| Freddie Mac SMM, v2 (gated LLM) | 0.000508 vs v1 0.000512 (p=0.69, neutral); LLM alone 0.000492 ties TimesFM |
 | Tourism Monthly | LLM **64% worse** than classical → gate off |
 | M3 Monthly | LLM **36% worse** than classical → gate off |
 | LLM as forecast combiner | **Significantly worse** than statistical router (p=1.7e-08) |

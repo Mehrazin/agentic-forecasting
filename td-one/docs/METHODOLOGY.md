@@ -557,7 +557,16 @@ Tourism **64% worse** than classical (1691 vs 1030), M3 **36% worse**
 (199.5 vs 147.2). The Food CPI win was dataset-specific. On strongly
 seasonal multi-series data, classical methods dominate.
 
-### 11.6 Ladder verdict
+### 11.6 exp65: SMM with LLM — neutral
+
+The pending item from exp64: v2 with LLM expert on Freddie Mac SMM
+(50 origins, Gemini Flash, V1 prompts). **v2 0.000508 vs v1 0.000512
+(p=0.69)** — no significant difference. LLM alone 0.000492 ties
+TimesFM-2.5 (0.000497). The LLM doesn't hurt on macro-like SMM, but the
+router adds nothing here either. Honest neutral: the gate correctly
+allows the LLM, and the LLM is competitive, but combination gains are nil.
+
+### 11.7 Ladder verdict
 
 **LLMs are brilliant specialists, poor generalists.** They dominate on
 smooth, context-rich macro series and fail on seasonal multi-series
