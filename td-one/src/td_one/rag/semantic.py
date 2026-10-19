@@ -91,6 +91,15 @@ class EmbeddingClient:
     """Local sentence-transformer embeddings (no API calls)."""
 
     def __init__(self, model_dir: Path | None = None) -> None:
+        import os
+
+        # Threading guard: torch can deadlock on import without these
+        # (observed 2026-10-19 after SIGTERM'd embedding processes).
+        os.environ.setdefault("OMP_NUM_THREADS", "1")
+        os.environ.setdefault("MKL_NUM_THREADS", "1")
+        os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+        os.environ.setdefault("HF_HUB_OFFLINE", "1")
+
         from sentence_transformers import SentenceTransformer
 
         d = model_dir or _MODEL_DIR
@@ -99,9 +108,6 @@ class EmbeddingClient:
                 f"Embedding model not found at {d}. "
                 "Download all-MiniLM-L6-v2 first."
             )
-        import os
-
-        os.environ.setdefault("HF_HUB_OFFLINE", "1")
         self._model = SentenceTransformer(str(d))
 
     def encode(self, texts: list[str]) -> np.ndarray:

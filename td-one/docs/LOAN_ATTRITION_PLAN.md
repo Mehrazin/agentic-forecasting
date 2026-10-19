@@ -79,11 +79,16 @@ Two tracks, eventually combined:
   per-host throttle, `article_bodies` table keyed by URL). ~86% fetch success
   on the 500-article validation sample.
 - **Chunking ablation** (`src/td_one/rag/chunking.py`,
-  `scripts/tune_chunking.py`): fixed-512 / sentence / paragraph / semantic
-  compared on the 20-pair tuning set. Chunk embeddings cached to disk keyed
-  by chunk-text hash — never recomputed.
-- **Full-vs-chunk ablation** (`scripts/ablate_full_vs_chunk.py`): keyword
-  coverage of full-article vs chunk-only context; compression ratio reported.
+  `scripts/tune_chunking_v2.py`): title-as-query MRR on 30 bodies —
+  fixed-512 (MRR 0.731, 3.5 chunks/article) ≈ paragraph (MRR 0.715).
+  **Fixed wins** (simpler, deterministic). Sentence chunking too fragmented
+  (13/article); semantic chunking too slow on CPU. Chunk embeddings cached
+  to disk keyed by chunk-text hash — never recomputed.
+- **Full-vs-chunk ablation** (`scripts/ablate_fast.py`): chunk-only context
+  matches full-article keyword coverage (0.818 vs 0.824) at **1.9x fewer
+  characters**. **Verdict: pass chunks, not full articles**, to the LLM.
+- **Threading fix:** torch/sentence-transformers deadlocks without
+  `OMP_NUM_THREADS=1` etc. — set in `EmbeddingClient` and all RAG scripts.
 
 ### Evaluation (4-arm ablation)
 | Arm | Description |
