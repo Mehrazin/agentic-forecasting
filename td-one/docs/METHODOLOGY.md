@@ -1,7 +1,7 @@
-# TD-One: Agentic Forecasting for Mortgage Attrition — Methodology
+# Agentic Solutions for Loan Attrition Prediction — Methodology
 
 **TD-One — Canadian mortgage renewal/switching forecasting**
-*Complete research methodology, exp1–exp63 + LLM ladder. Written 2026-10-19.*
+*Complete research methodology, exp1–exp65 + LLM ladder. Written 2026-10-19.*
 *Supersedes all earlier methodology drafts.*
 
 ---
@@ -10,21 +10,31 @@
 
 We ask whether agentic AI — large language models with tools, sandboxes,
 and decision policies — can improve probabilistic forecasting of Canadian
-mortgage borrower attrition at renewal. Over **63+ experiments** across
-four research tracks (classical, time-series foundation models, agentic,
-LLM integration), we built the TD-One method: a **regime-probability router
-with gates**. On 600 M4 Monthly series (blocked 5-fold CV, paired t-tests),
-the proposed method beats equal-weight combination (0.1451 vs 0.1507,
-p=6.5e-09), the best single model (p=7.8e-11), and the router alone
-(p=6.7e-10). It also wins on Tourism Monthly (0.1282, p=1.9e-68) and M3
-Monthly (0.1476, p=2.7e-44). A 6-rung LLM integration ladder shows LLMs are
-brilliant specialists — beating Vector's LLM baseline by 20% on Food CPI —
-but do not generalize to seasonal multi-series data (36–64% worse than
-classical on Tourism/M3). We report **14 positive results, 20+ honest
-negatives, and 2 definitively closed tracks** (news for monthly
-forecasting, macro overlays). A "kitchen sink" experiment (exp51) confirms
-our significance filter was correct: adding every nonsignificant positive
-back makes the method worse, not better.
+mortgage borrower attrition at renewal. Over **65 experiments** across four
+research tracks (classical, time-series foundation models, agentic, LLM
+integration), we built the TD-One method: a **regime-probability router
+with gates**, extended in v2 with a **gated LLM expert** (Gemini Flash) that
+fires only on smooth macro-like series.
+
+On 600 M4 Monthly series (blocked 5-fold CV, paired t-tests), the proposed
+method beats equal-weight combination (0.1451 vs 0.1507, p=6.5e-09), the
+best single model (p=7.8e-11), and the router alone (p=6.7e-10). It also
+wins on Tourism Monthly (0.1282, p=2.6e-34) and M3 Monthly (0.1476,
+p=3.5e-35). A 6-rung LLM integration ladder shows LLMs are brilliant
+specialists — our best prompt beats Vector's LLM baseline by 25% on Food
+CPI — but do not generalize to seasonal multi-series data (36–64% worse
+than classical on Tourism/M3). The v2 gate is honest about this: the LLM
+earns its keep on exactly one benchmark (Food CPI); on Freddie Mac SMM it
+is competitive but neutral (p=0.69); everywhere else the gate keeps it out
+because it hurts.
+
+We report **14 positive results, 20+ honest negatives, and 2 definitively
+closed tracks** (news for monthly forecasting, macro overlays). A "kitchen
+sink" experiment (exp51) confirms our significance filter was correct:
+adding every nonsignificant positive back makes the method worse, not
+better. An independent audit round (Argon) caught a BoC evaluation data bug
+(forward-filled 2024–2026 rates) and number inconsistencies across the deck —
+both fixed before presentation, with regression tests added.
 
 ---
 
