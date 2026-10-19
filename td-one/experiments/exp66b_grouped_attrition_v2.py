@@ -145,7 +145,22 @@ def _rule_readability(groups: list[GroupDefinition]) -> dict:
 
 
 def _news_summaries(origin: str, llm_client) -> list[str]:
-    """Retrieve demographic-tagged news summaries, PIT-gated."""
+    """Retrieve demographic-tagged news summaries, PIT-gated.
+
+    Skips gracefully if the embedding cache isn't built yet (building
+    17k embeddings on CPU takes ~15 min; the cache build runs separately).
+    """
+    from pathlib import Path
+
+    cache = (
+        Path(__file__).resolve().parents[1]
+        / "data"
+        / "news"
+        / "news_embeddings_v1.npz"
+    )
+    if not cache.exists():
+        print("  news cache not ready; skipping news for grouper")
+        return []
     try:
         from td_one.rag.semantic import SemanticRAGTool
 

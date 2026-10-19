@@ -133,3 +133,15 @@ def test_discover_candidate_groups_filters_bad(df) -> None:
     assert "__catch_all__" in ids
     good = next(g for g in out if g.group_id == "good")
     assert good.rationale == "ok"
+
+
+def test_validate_rule_rejects_bare_column() -> None:
+    """Rules like 'age < 40 and income' (missing threshold) are rejected."""
+    from td_one.agent.grouping import validate_rule
+
+    cols = {"age", "income", "province"}
+    assert validate_rule("age < 40 and income", cols) is None
+    assert validate_rule("income", cols) is None
+    # Sanity: valid rules still pass
+    assert validate_rule("age < 40 and income > 50000", cols) is not None
+    assert validate_rule("province in ['ON', 'BC']", cols) is not None

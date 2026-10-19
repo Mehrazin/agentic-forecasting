@@ -95,6 +95,21 @@ def validate_rule(
     unknown = tokens - cols
     if unknown:
         return None
+    # Reject bare column references: each AND/OR clause must contain a
+    # comparison operator. Catches LLM slips like
+    # "age < 40 and other_debt_payment_monthly_cad" (missing threshold).
+    import re as _re
+
+    clauses = _re.split(r"\band\b|\bor\b", rule, flags=_re.IGNORECASE)
+    for clause in clauses:
+        c = clause.strip().strip("()")
+        if not c or c.lower() in ("not",):
+            continue
+        # 'not ( ... )' wraps a full clause — check inside the parens
+        if c.lower().startswith("not"):
+            c = c[3:].strip().strip("()")
+        if not _re.search(r"==|!=|<=|>=|<|>|\bin\b|\bis\b", c, flags=_re.IGNORECASE):
+            return None
     if df is not None:
         try:
             matched = df.query(rule)
