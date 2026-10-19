@@ -99,6 +99,21 @@ with a gate: LLM on for macro-like series, off for seasonal data.
 **Verdict:** LLMs are specialists, not generalists. v2's contribution is
 knowing when to use them.
 
+### What the LLM actually does on each benchmark
+
+| Benchmark | LLM role | Outcome |
+|---|---|---|
+| Food CPI | Direct forecaster (V1 prompts) | 0.4262 — wins decisively, earns its keep |
+| Freddie Mac SMM | Forecaster, gated on | 0.000492 — competitive, but neutral vs classical (p=0.69) |
+| Tourism Monthly | Gated off — never called | Was 64% worse than classical in testing |
+| M3 Monthly | Gated off — never called | Was 36% worse in testing |
+| M4 Monthly | Gated off — never called | No LLM runs at all |
+| BoC decisions | Not applicable | Discrete path; LLM doesn't fit |
+
+The LLM contributes on exactly one benchmark. Everywhere else the gate
+keeps it out because it hurts, or it's neutral. The architecture is
+honest about this: LLM as specialist forecaster + deterministic gating.
+
 ---
 
 ## News
