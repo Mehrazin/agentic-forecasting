@@ -1,5 +1,11 @@
 # `data_gen/` — simulator and synthetic data
 
+The synthetic world the early research ran in: a mortgage book with planted
+shocks, exogenous events, and template-generated news. Built so agents could be
+developed and debugged fast, then validated on real data. The simulator is
+calibrated (9.1pp → 2.2pp effects, realistic decay, BoC-style interactions)
+so lessons transfer — but real data is always the ground truth.
+
 | Module | What it is |
 |---|---|
 | `simulator.py` | Mortgage simulator v1: 10k loans × 66 months, planted shocks |

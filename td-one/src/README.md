@@ -1,6 +1,8 @@
 # `src/` — TD-One Python package
 
-The `td_one` package. Install in editable mode from `td-one/`:
+The `td_one` package: simulator, PIT-safe data store, model ladder, agent
+tools, evaluation, and the proposed method. Install in editable mode from
+`td-one/`:
 
 ```
 .venv/bin/pip install -e .
