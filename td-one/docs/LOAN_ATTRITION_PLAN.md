@@ -1,16 +1,25 @@
 # Loan Attrition: Grouped Forecasting + TSFM Red-Teaming — Build Plan
 
-**Status:** Track 1 built (2026-10-19); exp66 honest negative. Tracks the implementation of the two new
-loan-domain research directions. Updated 2026-10-19 with news-aware grouping
-and semantic RAG.
+**Status:** Track 1 built (2026-10-19); exp66 honest negative on CRPS.
+**Reframed 2026-10-19:** grouping is for *explainability*, not for beating
+CRPS. exp66b reruns with full v2 architecture to measure the explainability
+gain vs CRPS cost. Kill criterion is OFF — report cost/benefit honestly.
 
 ## exp66 verdict (2026-10-19)
 
-❌ **Honest negative.** LLM-discovered groups (CRPS 0.01705) did not beat
-random groups (0.00690); global (0.00227) won. Kill criterion triggered —
-do not iterate the prompt. Infrastructure (grouping, semantic RAG,
-risk reporter with citation enforcement) is solid and reusable. See
-`experiments/exp66_report.md`.
+❌ **Honest negative on CRPS.** LLM-discovered groups (CRPS 0.01705) did not
+beat random groups (0.00690); global (0.00227) won. **But:** the test was
+thin (140 episodes, stub forecaster). Reframed: the question is whether
+LLM groups are *explainable* without degrading forecast quality vs
+deterministic grouping. See `experiments/exp66_report.md` and exp66b below.
+
+## exp66b: grouping for explainability (in progress)
+
+Full v2 architecture per group. Prompt playground (base / +hints / +news /
++hints+news). Group-count sweep 3/5/8/12. Ensemble arm (LLM selects grouping
+per window). Metrics: CRPS (parity check vs hand-written), explanation
+quality (citation rate, rule readability), risk-bin calibration.
+**No kill criterion** — report "costs X CRPS for Y explainability gain."
 
 ## Direction
 
@@ -65,6 +74,16 @@ Two tracks, eventually combined:
   toward recall (0.818) since the reranker filters cheaply; final k=5
   for precision. See `src/td_one/rag/semantic.py` docstring.
 - News is PIT-gated via `articles_visible_asof(origin)` everywhere.
+- **Article bodies (2026-10-19):** the news DB had titles only — no bodies
+  to chunk. Built `scripts/fetch_article_bodies.py` (trafilatura extraction,
+  per-host throttle, `article_bodies` table keyed by URL). ~86% fetch success
+  on the 500-article validation sample.
+- **Chunking ablation** (`src/td_one/rag/chunking.py`,
+  `scripts/tune_chunking.py`): fixed-512 / sentence / paragraph / semantic
+  compared on the 20-pair tuning set. Chunk embeddings cached to disk keyed
+  by chunk-text hash — never recomputed.
+- **Full-vs-chunk ablation** (`scripts/ablate_full_vs_chunk.py`): keyword
+  coverage of full-article vs chunk-only context; compression ratio reported.
 
 ### Evaluation (4-arm ablation)
 | Arm | Description |
@@ -74,9 +93,9 @@ Two tracks, eventually combined:
 | C: Hand-written | Planted simulator cohorts |
 | D: LLM-discovered | This pipeline |
 
-**Kill criterion (pre-registered):** if D doesn't beat B significantly
-(paired t-test on member-weighted group CRPS), the LLM grouping is dead —
-honest negative, no prompt iteration.
+**No kill criterion** (reframed 2026-10-19): grouping is for explainability.
+Report CRPS cost vs explainability gain honestly. If the CRPS cost is large,
+say so — but don't kill grouping for losing on CRPS alone.
 
 ### Build order
 1. `src/td_one/agent/grouping.py` — `GroupDefinition`, `validate_rule()`,

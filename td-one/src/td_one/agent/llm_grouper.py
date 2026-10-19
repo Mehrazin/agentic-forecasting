@@ -47,6 +47,33 @@ class GrouperContext:
     max_groups: int = DEFAULT_MAX_GROUPS
 
 
+def _fmt_interval(iv) -> str:
+    """Format a pandas Interval with human-friendly rounded bounds.
+
+    Prevents the LLM from copying over-precise bin edges (e.g. 1661.546)
+    into rules that match too few rows. Rounds to 2 significant figures.
+    """
+    import math
+
+    def _round(x: float) -> str:
+        if x == 0 or not math.isfinite(x):
+            return "0"
+        mag = 10 ** math.floor(math.log10(abs(x)))
+        # 2 significant figures
+        r = round(x / mag, 1) * mag
+        # Format without trailing .0
+        if r == int(r):
+            return str(int(r))
+        return f"{r:.2f}".rstrip("0").rstrip(".")
+
+    left = _round(iv.left)
+    right = _round(iv.right)
+    lbr = "(" if iv.closed in ("neither", "right") else "["
+    rbr = "]" if iv.closed in ("neither", "left") else ")"
+    # pandas qcut uses right-closed by default: (left, right]
+    return f"{lbr}{left}, {right}{rbr}"
+
+
 def build_attribute_summaries(
     df: pd.DataFrame,
     attrition_col: str,
@@ -56,7 +83,9 @@ def build_attribute_summaries(
     """Summarize attributes: distribution + attrition rate per level.
 
     Categorical attributes get per-level rates; numeric attributes are
-    binned into ``numeric_bins`` quantiles first. Never exposes rows.
+    binned into ``numeric_bins`` quantiles first. Bin edges are rounded
+    to human-friendly values so the LLM doesn't overfit to precise
+    thresholds. Never exposes rows.
     """
     out: dict[str, str] = {}
     cat = set(categorical or [])
@@ -80,15 +109,31 @@ def build_attribute_summaries(
                 ["mean", "count"]
             )
             parts = [
-                f"{iv}: rate={r['mean']:.3f} (n={int(r['count'])})"
+                f"{_fmt_interval(iv)}: rate={r['mean']:.3f} (n={int(r['count'])})"
                 for iv, r in grp.iterrows()
             ]
             out[col] = "; ".join(parts)
     return out
 
 
-def build_grouper_prompt(ctx: GrouperContext) -> tuple[str, str]:
-    """Build (system, user) prompt for group proposal."""
+def build_grouper_prompt(
+    ctx: GrouperContext,
+    baseline_crps: float | None = None,
+    baseline_desc: str = "",
+) -> tuple[str, str]:
+    """Build (system, user) prompt for group proposal.
+
+    Parameters
+    ----------
+    ctx:
+        Grouper context with attribute summaries, news, origin.
+    baseline_crps:
+        CRPS of a hand-written baseline grouping (if known). The LLM is
+        told to beat it — gives the proposal a concrete target.
+    baseline_desc:
+        Human description of the baseline grouping.
+
+    """
     system = (
         "You propose borrower cohorts for attrition forecasting. "
         "Output STRICT JSON only: "
@@ -103,9 +148,31 @@ def build_grouper_prompt(ctx: GrouperContext) -> tuple[str, str]:
         "Borrower attribute summaries (training period only).",
         "Format: attribute: level: attrition_rate (n).",
         "",
+        "IMPORTANT: the strongest groups capture INTERACTIONS, not single",
+        "attributes. For example, consider combinations like:",
+        "- rate_type x income tier (variable-rate borrowers with low income",
+        "  may behave very differently from variable-rate high-income ones)",
+        "- credit utilization trend x province",
+        "- digital channel x advisor status (self-serve vs advised)",
+        "- life events x household size",
+        "Single-attribute splits (e.g. just rate_type) are usually too coarse.",
+        "",
+        "BUT: each group must cover a substantial share of borrowers.",
+        "Prefer 2-condition rules over 3-condition ones — a third condition",
+        "often slices the group too thin to be useful. Aim for groups that",
+        "each cover at least 10-15% of the borrower base.",
+        "",
     ]
     for attr, summary in ctx.attribute_summaries.items():
         lines.append(f"- {attr}: {summary}")
+    if baseline_crps is not None:
+        lines += [
+            "",
+            f"A hand-written baseline grouping ({baseline_desc}) achieved "
+            f"CRPS = {baseline_crps:.5f} on held-out data. Propose groups "
+            "that you expect to BEAT this baseline by finding sharper "
+            "risk differentiation.",
+        ]
     if ctx.news_summaries:
         lines += ["", "Relevant news (published before the forecast origin):"]
         lines += [f"- {s}" for s in ctx.news_summaries]
@@ -162,6 +229,8 @@ class LLMGrouper:
         news_summaries: list[str] | None = None,
         origin: str = "",
         min_group_n: int = 200,
+        baseline_crps: float | None = None,
+        baseline_desc: str = "",
     ) -> list[GroupDefinition]:
         """Propose, parse, and validate groups. Returns validated list."""
         summaries = build_attribute_summaries(df, attrition_col, categorical)
@@ -171,7 +240,9 @@ class LLMGrouper:
             origin=origin,
             max_groups=self.max_groups,
         )
-        system, user = build_grouper_prompt(ctx)
+        system, user = build_grouper_prompt(
+            ctx, baseline_crps=baseline_crps, baseline_desc=baseline_desc
+        )
         for attempt in range(self.max_retries + 1):
             text = self._llm.complete(user, system=system, json_mode=True)  # type: ignore[union-attr]
             proposals = parse_group_proposals(text)
