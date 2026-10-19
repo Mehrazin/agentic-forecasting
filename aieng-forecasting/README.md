@@ -1,8 +1,10 @@
 # aieng-forecasting
 
-The core library for Agentic Forecasting.
+The core library for Agentic Forecasting — the shared foundation every reference implementation builds on.
 
-This package provides the stable infrastructure used across all reference implementations:
+**Why it exists:** forecasting experiments need the same unglamorous machinery every time — loading series without leaking the future, running the same backtest loop, scoring predictions the same way. This package owns that machinery once, so each use case under `implementations/` only writes what's actually new: the task, the data, and the method being tested.
+
+It provides:
 
 - Data adapters, series storage, and cutoff-scoped forecast contexts.
 - Forecasting task and prediction payload models.

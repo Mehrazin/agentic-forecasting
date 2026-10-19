@@ -73,7 +73,9 @@ playground/energy_case_study/notebooks/02_energy_agentic_forecasting.ipynb
 The animation cell also exports a standalone HTML file —
 `notebooks/oil_forecast_animation.html` — that works in any browser without a running kernel.
 
-**Notebook 2 first run:** requires a `GEMINI_API_KEY` in your `.env`. Results are cached
+**Notebook 2 first run:** requires the Vector proxy keys (`OPENAI_API_KEY` /
+`OPENAI_BASE_URL`) in your environment — see the root README's
+[Setup](../../README.md#setup). Results are cached
 under `data/energy_agent_*.json`; re-running without deleting the cache is instant.
 
 ## Data notes

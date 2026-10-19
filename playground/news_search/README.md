@@ -1,6 +1,10 @@
 # News Search Grounding Playground
 
-Small Gemini + Google Search grounding playground for collecting date-scoped news summaries. It is useful scaffolding for the energy/oil 2026 information-session demo and the later interactive Forecasting Analyst Agent, but it is not yet integrated with the formal `Predictor` interface or evaluation harness.
+Small Gemini + Google Search grounding playground for collecting date-scoped news summaries. It was the original scaffolding for the energy/oil demo's news retrieval, but it is not wired into the formal `Predictor` interface or evaluation harness.
+
+## Relationship to the project
+
+This is exploration code, not a reference implementation. Its ideas have since been absorbed into the maintained stack: cutoff-aware `search_web` (with the leakage verifier) now lives in the shared agent factory (`aieng.forecasting.methods.agentic`), and the [energy/oil reference implementation](../implementations/energy_oil_forecasting/) is a fully scored backtest + protected eval that uses it. Start new work from there, not from this playground. For architecture principles and extension ideas, see `planning-docs/roadmap.md`.
 
 ## Setup
 
@@ -34,8 +38,4 @@ Configuration lives in `configs/default.yaml`. Outputs are written to `outputs/<
 
 Free-tier Gemini keys can hit 429s quickly. Increase `delay_between_requests_sec` in the config or start with `--max-dates 1`.
 
-## Relationship to the project
-
-This is exploration code, not a reference implementation. For architecture principles and extension ideas, see `planning-docs/roadmap.md`.
-
-For cohort 1, the energy/oil demo is a storytelling and interactive analyst surface, not a scored reference experiment. Code in this playground can inform that demo, but production agent architecture should separate retrieval, analysis, code execution, and Track 1 `Prediction` emission as described in the workplan.
+> **Prefer the maintained path.** For cutoff-aware news retrieval in a scored forecaster, use the `search_web` capability in `aieng.forecasting.methods.agentic` (see the [energy/oil reference](../implementations/energy_oil_forecasting/)) instead of extending this playground.

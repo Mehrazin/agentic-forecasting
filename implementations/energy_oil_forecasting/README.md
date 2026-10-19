@@ -122,7 +122,11 @@ notebook 05).
 
 We use Yahoo Finance `CL=F` — cached to `data/yfinance/` by `build_wti_service()`.
 
-Ensure your `.env` contains `GEMINI_API_KEY`. Agent notebook cells cache results under `data/`; delete cache files to force fresh runs.
+Agent notebooks call the Vector proxy, so the bootcamp LLM keys must be available
+(`OPENAI_API_KEY` / `OPENAI_BASE_URL` — in your shell on Coder workspaces, or in
+repo-root `.env` locally; see the root README's [Setup](../../README.md#setup)).
+Agent notebook cells cache results under `data/`; delete cache files to force
+fresh runs.
 
 ```bash
 uv sync
