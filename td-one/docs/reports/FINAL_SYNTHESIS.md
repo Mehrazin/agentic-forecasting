@@ -40,11 +40,11 @@ We built agentic forecasting infrastructure (event simulator, sandbox, 13 tools,
 ## 2. Benchmark Results
 
 ### BoC Rate Decisions ✅ VALIDATED
-- **Task:** CUT/HOLD/HIKE, 143 meetings, 28-day lead
-- **Baselines:** Climatology 79.1%, Rule 83.7%, MNLogit 83.5%
+- **Task:** CUT/HOLD/HIKE, 119 meetings (corrected 2026-10-19 from 143), 28-day lead
+- **Baselines:** Climatology 69.4%, Rule 72.2% (old 79.1%/83.7% inflated by stale post-2023 rows)
 - **Agent:** Discovered inflation_gap × rate_momentum interaction autonomously (no hints)
-- **Regime:** EASY/HARD split gives +7.2pp (know when to trust the model)
-- **Lesson:** Simple beats sophisticated on n=143. Agent does real data science.
+- **Regime:** EASY/HARD split gives +7.2pp on pre-fix data (know when to trust the model)
+- **Lesson:** Simple beats sophisticated on n=119. Agent does real data science.
 
 ### Freddie Mac SMM ✅ CEILING CONFIRMED
 - **Task:** 1-month SMM forecasting, 63 months
@@ -101,7 +101,7 @@ We built agentic forecasting infrastructure (event simulator, sandbox, 13 tools,
 1. **Selection:** Learned policy or drop? (M4 says hand-rules are dead)
 2. **CV fragility:** How to make model selection regime-robust? (Food CPI h=6 lesson)
 3. **News value:** Can live news beat priced-in expectations? (Untested — need news API)
-4. **Scale:** Do results hold with more data? (BoC n=143 is small)
+4. **Scale:** Do results hold with more data? (BoC n=119 is small)
 
 ---
 

@@ -39,7 +39,7 @@ the **gating**: it knows when to use the LLM and when not to.
 | Dataset | v2 (= v1) | Equal weights | Best single | v2 vs best single |
 |---|---|---|---|---|
 | M4 Monthly (600 origins) | 0.1451 | 0.1507 | 0.1505 | −3.6%, p=7.8e-11 |
-| Tourism Monthly (366 series) | 0.1288 | 0.1869 | 0.1387 | −7.6%, p=2.6e-34 |
+| Tourism Monthly (366 series) | 0.1282 | 0.1869 | 0.1387 | −7.6%, p=2.6e-34 |
 | M3 Monthly (1,428 series) | 0.1476 | 0.1641 | 0.1630 | −9.4%, p=3.5e-35 |
 
 Gate verification: `v2_for_dataset()` confirms `use_llm_expert=False` for
@@ -48,7 +48,7 @@ numbers stand (exp49/exp60/exp61).
 
 ### Bank of Canada rate decisions (discrete)
 
-Unchanged from v1: EASY→rule (83.7%), HARD→climatology. 143 meetings.
+Unchanged from v1: classical rate_momentum rule (72.2% on 119 meetings, corrected 2026-10-19). 143-meeting / 83.7% figures were inflated by stale data. LLM not applicable to the discrete path.
 LLM not applicable to the discrete path.
 
 ## The CVPR-style summary
@@ -56,10 +56,10 @@ LLM not applicable to the discrete path.
 | Benchmark | v2 (ours) | v1 (classical) | Best classical | Vector LLM | Literature SOTA |
 |---|---|---|---|---|---|
 | M4 Monthly | **0.1451** | 0.1451 | 0.1505 | — | — |
-| Tourism Monthly | **0.1288** | 0.1288 | 0.1387 | — | 1.409 MASE (DeepAR) |
+| Tourism Monthly | **0.1282** | 0.1282 | 0.1387 | — | 1.409 MASE (DeepAR) |
 | M3 Monthly | **0.1476** | 0.1476 | 0.1630 | — | — |
 | Food CPI | **0.5322** | 0.9661 | 0.9661 | 0.5688 | — |
-| BoC decisions | **83.7%** | 83.7% | 79.1% (clim.) | — | — |
+| BoC decisions | **72.2%** | 72.2% | 69.4% (clim.) | — | — |
 
 Bold = winner. v2 wins or ties everywhere. On Food CPI it beats both v1
 and Vector's LLM.

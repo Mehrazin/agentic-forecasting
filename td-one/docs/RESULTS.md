@@ -202,7 +202,7 @@ Per `docs/AGENTIC_ROADMAP.md`: three parallel tracks, then combine what survived
 - **Lesson:** Method is sound; task is impossible. Calibrate synthetic DGP to 2-3pp effects.
 
 **BoC Rate Decisions:** `td-one/benchmarks/boc_rates/`
-- Simple rule: 83.7% vs 79.1% climatology (143 meetings)
+- Simple rule: 72.2% vs 69.4% climatology (119 meetings; corrected 2026-10-19 — old 83.7%/79.1% was inflated by 24 stale post-2023 rows)
 - Our tools diagnosed the missing signal: inflation_gap × rate_momentum interaction
 - **Agent discovery test: SUCCESS.** Agent found the interaction autonomously with no hints.
 - **Methodology validated:** Works when signal exists (BoC), correctly reports nothing when it doesn't (WTI).

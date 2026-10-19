@@ -195,11 +195,11 @@ def run_boc() -> dict:
     """BoC rate decisions: discrete forecaster (unchanged from v1)."""
     return {
         "dataset": "boc_rates",
-        "method": "BoCForecaster (EASY->rule, HARD->climatology)",
-        "rule_accuracy": 0.837,
-        "climatology_accuracy": 0.791,
-        "n_meetings": 143,
-        "note": "Discrete path; LLM not applicable. See benchmarks/boc_rates/RESULTS.md.",
+        "method": "BoCForecaster (classical rate_momentum rule)",
+        "rule_accuracy": 0.722,
+        "climatology_accuracy": 0.694,
+        "n_meetings": 119,
+        "note": "Corrected 2026-10-19 (was 0.837/0.791 on 143; stale post-2023 rows removed). Discrete path; LLM not applicable. See benchmarks/boc_rates/RESULTS.md.",
     }
 
 

@@ -36,7 +36,7 @@ CRPS (lower is better), except BoC (accuracy, higher is better). Bold = winner.
 | Tourism Monthly | **0.1288** | 0.1288 | 0.1387 | — | 1.409 MASE (DeepAR) |
 | M3 Monthly | **0.1476** | 0.1476 | 0.1630 | — | — |
 | Food CPI | **0.5322** | 0.9661 | 0.9661 | 0.5688 | — |
-| BoC decisions | **83.7%** | 83.7% | 79.1% | — | — |
+| BoC decisions | **72.2%** | 72.2% | 69.4% | — | — |
 
 v2 wins or ties on every benchmark. The LLM expert fires only on Food CPI
 (where it helps); on seasonal data the gate keeps it off and v2 = v1.
@@ -89,12 +89,19 @@ with a gate: LLM on for macro-like series, off for seasonal data.
 
 | Setup | Result |
 |---|---|
-| Food CPI, v2 (gated LLM) | **0.5322** vs v1 0.9661 (p=4.3e-06); beats Vector's 0.5688 by 6.4% |
-| Food CPI, best single LLM prompt | 0.4262 — beats v2; router adds noise when one expert dominates |
+| Food CPI, v2 generic (gated LLM) | **0.5322** vs v1 0.9661 (p=4.3e-06); matches/edges Vector's 0.5688 by 6.4% directionally (likely n.s. — see caveat) |
+| Food CPI, prompt-V1 hybrid (exp58) | 0.4526 — beats Vector's 0.5688 by 20% (p=0.009) |
+| Food CPI, prompt-V1 alone | **0.4262** — beats both hybrids; router is a variance tax when one expert dominates |
 | Freddie Mac SMM, v2 (gated LLM) | 0.000508 vs v1 0.000512 (p=0.69, neutral); LLM alone 0.000492 ties TimesFM |
 | Tourism Monthly | LLM **64% worse** than classical → gate off |
 | M3 Monthly | LLM **36% worse** than classical → gate off |
 | LLM as forecast combiner | **Significantly worse** than statistical router (p=1.7e-08) |
+
+> **Significance caveat (2026-10-19):** The p=4.3e-06 is for v2 (0.5322)
+> vs v1/classical (0.9661), NOT for v2 vs Vector's LLM (0.5688). On N=59
+> origins, a 6.4% gap is likely non-significant — exp57's 17.4% improvement
+> on the same 59 origins only reached p=0.057. Frame the v2-vs-Vector
+> comparison as "matches/edges directionally" not "beats."
 
 **Verdict:** LLMs are specialists, not generalists. v2's contribution is
 knowing when to use them.
@@ -132,7 +139,7 @@ The news gate fires on 90–100% of origins but changes nothing. Real markets pr
 
 | Task | Result |
 |---|---|
-| Bank of Canada rate decisions | Simple rule: 83.7% vs climatology 79.1% (143 meetings). Agent autonomously discovered the inflation interaction. |
+| Bank of Canada rate decisions | Simple rule: 72.2% vs climatology 69.4% (119 meetings; corrected 2026-10-19). Agent autonomously discovered the inflation interaction. |
 | Reasoning effort | "High" never helps diagnostic tasks — 3.5–6× slower, sometimes harmful. Default to "low". |
 | Learned combination weights | Don't beat equal weights (forecast combination puzzle confirmed). |
 | Learned regimes | Hand-written regime rules beat unsupervised discovery (p=0.00046). |

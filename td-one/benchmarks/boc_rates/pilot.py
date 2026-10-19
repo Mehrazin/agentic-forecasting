@@ -141,8 +141,17 @@ def main() -> None:
     rates = load_rate_series()
     cpi = load_cpi()
     unemp = load_unemployment()
-    
-    print(f"Meetings: {len(meetings)}, Rate obs: {len(rates)}")
+
+    # DATA CUTOFF (2026-10-19 fix): the FRED monthly rate series
+    # (IRSTCB01CAM156N.parquet) ends in 2023. Meetings after 2023-12-31
+    # would get stale forward-filled rates (decision=0, rate_momentum=0.0
+    # for every 2024-2026 meeting — 7 real BoC cuts turned into fake holds).
+    # Truncate to meetings with observable rates. See benchmarks/smm/
+    # exp34_real_events.py for the 2024-2025 cut dates (not used here to
+    # keep this pilot strictly on the FRED series).
+    cutoff = date(2023, 12, 31)
+    meetings = [m for m in meetings if m <= cutoff]
+    print(f"Meetings (<= 2023-12-31): {len(meetings)}, Rate obs: {len(rates)}")
     
     decisions = derive_decisions(meetings, rates)
     print(f"Decisions derived: {len(decisions)}")

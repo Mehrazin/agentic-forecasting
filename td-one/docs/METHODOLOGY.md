@@ -257,8 +257,9 @@ diagnostic.
 
 ### 5.2 Bank of Canada Rate Decisions — methodology validated
 
-143 meetings, 23 non-hold decisions. A simple rule (rate momentum +
-inflation gap) achieves **83.7%** vs climatology 79.1%.
+119 meetings (2009-2023; corrected 2026-10-19 from 143 after removing 24
+stale post-2023 rows), 23 non-hold decisions. A simple rule (rate momentum +
+inflation gap) achieves **72.2%** vs climatology 69.4%.
 
 - **exp30:** MNLogit (0.835) does NOT beat the simple rule (0.843).
   n=143 is overparameterized. **Kill the complex model; keep the rule.**
@@ -637,7 +638,7 @@ This is the deepest pattern in the program. exp43's hand regimes beat
 exp45's learned regimes (p=0.00046). exp50's hand gate thresholds beat
 learned ones (p=0.32). exp51's kitchen sink (all learned/nonsignificant
 components) loses to the filtered proposed method. At n=600 series and
-n=143 meetings, structural priors dominate flexible learning. The
+n=119 meetings, structural priors dominate flexible learning. The
 literature agrees (FFORMA needed 100k series).
 
 ### 13.3 News does not help monthly forecasting — definitively

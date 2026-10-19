@@ -89,12 +89,16 @@ Everything else was killed by honest negatives.
 | Tourism Monthly (366 series) | **0.1282** | 0.1869 | 0.1387 | p=1.9e-68 vs equal |
 | M3 Monthly (1,428 series) | **0.1476** | 0.1641 | 0.1630 | p=2.7e-44 vs equal |
 | Food CPI (classical only) | **0.0141** | 0.0176 | 0.0143 | p=3.1e-18 vs equal |
-| BoC rate decisions (143) | **0.853** accuracy | — | 0.837 (rule) | EASY/HARD split |
+| BoC rate decisions (119; corrected 2026-10-19) | **0.722** accuracy (rule) | — | 0.694 (clim.) | pilot baseline |
 
 The M4 result is the headline: our method beats equal-weight combination,
 the best single model, *and* the router alone — all at p < 1e-8. The system
 is more than the sum of its parts (gates + conformal add value beyond the
 router, p=6.7e-10).
+
+> **2026-10-19 BoC correction:** The old 0.853/0.837 numbers were inflated
+> by 24 stale post-2023 rows (FRED rate series ends in 2023). Truncated at
+> 2023-12-31: 119 meetings, rule 72.2%, climatology 69.4%.
 
 ### 2. LLMs are powerful specialists (Food CPI)
 
@@ -156,6 +160,22 @@ flowchart TB
 **Bottom line:** the LLM is a brilliant specialist for smooth, context-rich
 series and a poor generalist for seasonal multi-series data. Use the right
 tool for the series type.
+
+### v2: gated LLM expert (exp64-65, 2026-10-19)
+
+Classical regime router + Gemini Flash behind a hand-written deterministic
+gate. The gate fires only on smooth macro series.
+
+| Benchmark | v2 | v1 | Note |
+|---|---|---|---|
+| Food CPI | 0.5322 | 0.9661 | −45%, p=4.3e-06 vs v1; matches/edges Vector's 0.5688 directionally (likely n.s. on N=59) |
+| SMM | 0.000508 | 0.000512 | p=0.69, neutral; LLM alone 0.000492 |
+| M4/Tourism/M3 | = v1 | — | gate off, architecturally identical |
+
+Three Food CPI numbers: v2 generic 0.5322, prompt-V1 hybrid 0.4526 (−20%
+vs Vector, p=0.009), prompt-V1 alone 0.4262 (beats both). The prompt does
+the work; the router is a variance tax for a unified system. The gate was
+written after observing exp59 — stated caveat, not a validation.
 
 ---
 
