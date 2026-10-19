@@ -146,6 +146,11 @@ class ProposedForecaster:
     gate_top_p: float = GATE_TOP_P
     gate_t_stat: float = GATE_T_STAT
     gate_shift: float = GATE_SHIFT
+    # rung 1 (llm_rungs/datasets.py): select a DATASET_SPECS entry. When
+    # given, the entry's regime_spec_fn and expert set take precedence over
+    # the regime_spec/models fields. None = legacy behavior (m4 spec +
+    # the four classical models), unchanged.
+    dataset: str | None = None
 
     # fitted state
     _router: LogisticRegression | None = None
@@ -155,6 +160,20 @@ class ProposedForecaster:
     _feature_stds: np.ndarray | None = None
     _conformal_q: float = 0.0  # additive quantile correction (exp5)
     _fitted: bool = False
+
+    def __post_init__(self) -> None:
+        """Resolve ``dataset`` against the registry (rung 1)."""
+        if self.dataset is None:
+            return
+        from td_one.llm_rungs.datasets import DATASET_SPECS  # lazy: datasets imports this module
+
+        if self.dataset not in DATASET_SPECS:
+            raise KeyError(
+                f"unknown dataset {self.dataset!r}; expected one of {sorted(DATASET_SPECS)}"
+            )
+        entry = DATASET_SPECS[self.dataset]
+        self.regime_spec = entry.regime_spec_fn()
+        self.models = list(entry.models)
 
     # -- fitting ---------------------------------------------------------
 

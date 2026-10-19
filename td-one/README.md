@@ -96,7 +96,8 @@ See [experiments/REPRODUCIBILITY.md](experiments/REPRODUCIBILITY.md) for full re
 
 | Track | Verdict |
 |---|---|
-| Proposed method (exp47) | ✅ Alive — beats equal weights (0.1451 vs 0.1507, p=6.5e-09), best single, and exp43 router |
+| Proposed method (exp47) | ✅ Alive — beats equal weights (0.1451 vs 0.1507, p=6.5e-09), best single, and exp43 router; confirmed on Tourism (exp60, p=1.9e-68) and M3 (exp61, p=2.7e-44) |
+| LLM integration ladder (exp54–58) | ⚠️ Partial — rung 5 hybrid 0.4289 beats Vector's LLM 0.5688 by 24.6% (paired p=0.009) on Food CPI, but loses to its own best LLM expert (llm-promptV1 0.4262, p=0.058); rung 3 calibrator ❌ killed; guardrails reproduce exp49 bit-exact |
 | exp43 regime router | ✅ Partial positive — first to beat equal weights (M4 0.1282 vs 0.1295, p=0.018) |
 | Conformal M0 | ✅ Strong baseline — nothing beats it cleanly on synthetic |
 | TSFMs | ✅ Beat m0 30% on 63-mo real SMM (exp18, p=0.0012); beat classical ~20% on M4 |

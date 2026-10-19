@@ -55,12 +55,39 @@ published baseline too.
 1. **Single dataset:** This test ran on Food CPI only. Vector's canonical
    benchmarks use StatCan data via their DataService (not run here due to
    network requirements).
-2. **Baseline strength:** `LastValuePredictor` is intentionally weak. A stronger
-   test would be against Vector's LLM-based predictors or their tuned statistical
-   models.
+2. **Baseline strength:** `LastValuePredictor` is intentionally weak. The
+   stronger test — against Vector's LLM predictor — is exp53. **Spoiler: the
+   LLM wins there** (0.5688 vs 1.0339, p=5.4e-05). See `exp53_report.md`.
 3. **Our experts:** The proposed method used 4 experts (naive, snaive, ets, arima)
    with regime routing. On Food CPI, the seasonal-naive expert likely dominates
    given the strong seasonality.
+
+## Follow-up: exp53 (vs their LLM predictor)
+
+exp53 ran Vector's actual `QuantileGridLLMPredictor` class (gpt-oss-120b via
+Groq) on the same 59 origins. Result: **LLM 0.5688 vs proposed 1.0339,
+p=5.4e-05, LLM wins 43/58**. The year-by-year pattern (worst in volatile
+2022, no training-cutoff step) indicates genuine forecasting skill, not
+memorization — likely via better calibration on this smooth series. Full
+writeup in `exp53_report.md`.
+
+## Methodological differences (summary)
+
+Full audit in `docs/VECTOR_METHODOLOGY_AUDIT.md`. Headlines:
+- **CRPS implementations differ** (theirs: `crps_ensemble` on quantiles;
+  ours: mean quantile score) but are ranking-equivalent (r=0.9998); absolute
+  values are NOT cross-comparable.
+- Their quantile grid is 11 levels (0.05–0.95); ours is 9 (0.10–0.90).
+- Their LLM stack is tuned for their Gemini proxy and needed 3 adaptations
+  to run on Groq (documented, none touch elicitation logic).
+- Their `temperature=1.0` default makes single-run LLM comparisons noisy.
+
+## Integrity
+
+See `docs/SELF_AUDIT.md` for the adversarial self-review (multiple
+comparisons, M4 development bias, BoC discrete downgrade, PIT re-verification,
+CRPS scorer verification). Headline results survive; marginal claims were
+downgraded where warranted.
 
 ## Files
 

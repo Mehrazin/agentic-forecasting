@@ -199,11 +199,11 @@ nothing beyond a dominant model (honest framing).
 
 | Rung | Experiment | Verdict |
 |---|---|---|
-| 1. Dataset registry | — | ✅ PIT-safe context per dataset |
-| 2. LLM as expert | exp55 | ✅ Works on Food CPI |
-| 3. LLM as calibrator | exp56 | ❌ 1.6729, worse than naive |
-| 4. Per-dataset prompts | exp57 | ✅ V1 (0.4262) beats V2 |
-| 5. Hybrid router | exp58 | ⚠️ 0.4526 beats Vector 20%, loses to llm-V1 |
+| 1. Dataset registry | exp54 | ✅ Expected null — reproduces exp49 exactly (M4 max diff 1.8e-15); value is the infrastructure |
+| 2. LLM as expert | exp55 | ✅ proposed+llm 0.5057 beats proposed 0.9661 (p=9.8e-07) and LLM alone 0.5158 (p=0.037); router picks llm in both regimes |
+| 3. LLM as calibrator | exp56 | ❌ Honest negative — calibrated grids 1.1391; proposed+calibrated 1.1432 vs proposed 0.9661 (p=0.32); router can't use them |
+| 4. Per-dataset prompts | exp57 | ✅ V1 (0.4262) directionally beats generic (p=0.057); V2's macro context adds nothing (p=0.20); mini-router adds nothing |
+| 5. Hybrid router | exp58 | ⚠️ 0.4289 beats Vector 0.5688 by 24.6% (paired p=0.009) but loses to llm-promptV1 alone (0.4262, p=0.058) — the overtake is the LLM's, not the router's; guardrails bit-exact |
 | 6. Generalizability | exp59 | ❌ 36–64% worse on Tourism/M3 |
 
 **Verdict:** LLMs are brilliant specialists for smooth, context-rich macro

@@ -83,5 +83,6 @@ def test_gate_weak_stat_no_news_rejected() -> None:
 
 
 def test_gate_constants_sane() -> None:
-    assert T_STAT_STRICT == 3.0
+    # Tightened 2026-10-17 per WTI lesson (commit eda6ab8): t>3.5, FP cost 4-7%.
+    assert T_STAT_STRICT == 3.5
     assert NEWS_WINDOW_DAYS == 30

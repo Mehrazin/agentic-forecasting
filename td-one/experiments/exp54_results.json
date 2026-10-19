@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-18T09:37:27.878119+00:00",
+  "quick": false,
+  "elapsed_s": 175.26638340950012,
+  "reference": "/home/hatch/workspace/agentic-forecasting/td-one/experiments/exp49_results.json",
+  "verdict": "PASS: registry reproduces exp49 exactly (rung 1 expected null confirmed)",
+  "results": {
+    "datasets": {
+      "m4": {
+        "n": 600,
+        "registry_vs_explicit_max_diff": 0.0,
+        "registry_vs_explicit_identical": true,
+        "mean_crps_proposed": 0.1450565999421074,
+        "vs_exp49": {
+          "max_abs_diff": 1.7763568394002505e-15,
+          "exact_zeros": 7,
+          "n_compared": 15,
+          "worst": "proposed_vs_best.t",
+          "diffs": {
+            "mean_crps.proposed": 2.7755575615628914e-17,
+            "mean_crps.equal": 2.7755575615628914e-17,
+            "mean_crps.best_single": 0.0,
+            "proposed_vs_equal.mean_a": 2.7755575615628914e-17,
+            "proposed_vs_equal.mean_b": 2.7755575615628914e-17,
+            "proposed_vs_equal.mean_diff": 0.0,
+            "proposed_vs_equal.t": 0.0,
+            "proposed_vs_equal.p": 0.0,
+            "proposed_vs_equal.win_rate": 0.0,
+            "proposed_vs_best.mean_a": 2.7755575615628914e-17,
+            "proposed_vs_best.mean_b": 0.0,
+            "proposed_vs_best.mean_diff": 8.673617379884035e-19,
+            "proposed_vs_best.t": 1.7763568394002505e-15,
+            "proposed_vs_best.p": 1.3183191012563879e-24,
+            "proposed_vs_best.win_rate": 0.0
+          }
+        }
+      },
+      "food_cpi": {
+        "n": 24,
+        "registry_vs_explicit_max_diff": 0.0,
+        "registry_vs_explicit_identical": true,
+        "mean_crps_proposed": 0.014126883236886205,
+        "vs_exp49": {
+          "max_abs_diff": 0.0,
+          "exact_zeros": 15,
+          "n_compared": 15,
+          "worst": "mean_crps.proposed",
+          "diffs": {
+            "mean_crps.proposed": 0.0,
+            "mean_crps.equal": 0.0,
+            "mean_crps.best_single": 0.0,
+            "proposed_vs_equal.mean_a": 0.0,
+            "proposed_vs_equal.mean_b": 0.0,
+            "proposed_vs_equal.mean_diff": 0.0,
+            "proposed_vs_equal.t": 0.0,
+            "proposed_vs_equal.p": 0.0,
+            "proposed_vs_equal.win_rate": 0.0,
+            "proposed_vs_best.mean_a": 0.0,
+            "proposed_vs_best.mean_b": 0.0,
+            "proposed_vs_best.mean_diff": 0.0,
+            "proposed_vs_best.t": 0.0,
+            "proposed_vs_best.p": 0.0,
+            "proposed_vs_best.win_rate": 0.0
+          }
+        }
+      }
+    }
+  }
+}
