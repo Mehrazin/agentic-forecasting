@@ -6,8 +6,8 @@ Start here. This page maps every document in `td-one/docs/` — what it is, who 
 
 | Doc | What you get |
 |---|---|
+| [FINAL_RESULTS.md](FINAL_RESULTS.md) | **Start here.** Final numbers only — no experiment codes, human-readable names, benchmarks in tables. |
 | [METHODOLOGY.md](METHODOLOGY.md) | The full methodology: problem, glossary, all tracks (exp1–exp63 + LLM ladder). The reference. |
-| [RESULTS.md](RESULTS.md) | Current experiment numbers. Every number links to a committed artifact. |
 | [REDESIGN.md](REDESIGN.md) | What we keep, what we kill, what we try next — with evidence. Governs future work. |
 
 ## The story (for new readers)
