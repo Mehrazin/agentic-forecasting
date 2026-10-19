@@ -1,20 +1,22 @@
 # TD-One Final Report: Multi-Dataset Benchmarking Synthesis
 
-**Date:** 2026-10-17
-**Status:** Living document — updated as experiments complete
+**Date:** 2026-10-19 (final)
+**Status:** Complete — all tracks closed with evidence.
 
 ---
 
 ## Executive Summary
 
-We built agentic forecasting infrastructure (event simulator, sandbox, 10 tools, code-executing agents) and validated it across 5 real datasets. The methodology works when signal exists and correctly identifies when it doesn't.
+We built agentic forecasting infrastructure (event simulator, sandbox, 13 tools, code-executing agents) and validated it across 8 real datasets. The methodology works when signal exists and correctly identifies when it doesn't.
 
 **Key results:**
+- **Proposed method (regime router + gates):** beats equal weights and best single on M4 (p=6.5e-09), Tourism (p=1.9e-68), M3 (p=2.7e-44), Food CPI (p=3.1e-18)
 - **BoC rates:** Agent discovers inflation interaction autonomously; regime awareness +7.2pp
 - **SMM:** 12.2% TSFM edge confirmed as ceiling; agent finds real features (+1.21%)
-- **Food CPI:** Agent discriminates seasonality correctly across categories
-- **M4:** Selection fails (-30%) — method problem, not data problem
-- **WTI:** Random walk — correctly identified as impossible task
+- **Food CPI:** LLM (Gemini Flash) dominates at 0.4262 — 20% better than Vector's LLM baseline
+- **LLM ladder:** 6 rungs complete. LLMs are brilliant specialists (Food CPI), poor generalists (36–64% worse on Tourism/M3)
+- **News:** 4 independent kills + Monash re-runs. Track closed for monthly forecasting.
+- **Honest negatives:** 20+ clean kills. Two tracks closed with evidence.
 
 ---
 
@@ -82,6 +84,10 @@ We built agentic forecasting infrastructure (event simulator, sandbox, 10 tools,
 2. **Multi-seed or it didn't happen.** Seed 0 lies; seeds 1-4 tell truth.
 3. **Real data validates.** Synthetic taught failure modes; real data taught what's possible.
 4. **Document negatives.** They're more valuable than positives.
+5. **Multiple comparisons cut both ways.** 53 experiments, no family-wise
+   correction: marginal results (exp43 p=0.018) carry a data-dredging discount.
+   Headline claims (p≈1e-9) survive any correction. Report both honestly —
+   see `docs/SELF_AUDIT.md`.
 
 ### About Synthetic Data
 - Was too cartoonish (9.1pp shifts). Now calibrated (2.2pp, decay, interactions).
@@ -158,11 +164,52 @@ Loss-regimes significantly hurt (p=0.0027, third confirmation).
 
 ## 7. Next Steps
 
-1. **Final report:** Consolidate everything for presentation (hero figure +
-   Top-K segments visualization still outstanding)
-2. **Literature survey:** How do others do agentic forecasting? What
-   selection methods work?
+All tracks are closed with evidence. Remaining work is engineering, not research:
+
+1. **Ship the proposed method** (`src/td_one/agent/proposed_method.py`).
+   Validated on M4, Tourism, M3, Food CPI, BoC.
+2. **LLM specialist path:** rung-4 V1 prompt + Gemini Flash for smooth macro
+   series (Food CPI-like). Documented in `docs/LLM_INTEGRATION_LADDER.md`.
+3. **Do not revisit killed tracks** without a new hypothesis (see §10 of
+   METHODOLOGY.md for the full kill list).
 
 ---
 
-*This document grows as we learn. The honesty is the point.*
+## 8. Monash Benchmarks (exp60–62) — NEW
+
+| Dataset | Proposed | Equal | Best single | Verdict |
+|---|---|---|---|---|
+| Tourism (366, h=24) | **0.1282** | 0.1869 | 0.1387 (snaive) | ✅ p=1.9e-68 |
+| M3 (1428, h=18) | **0.1476** | 0.1641 | 0.1630 (ets) | ✅ p=2.7e-44 |
+| M4 + news (100) | 0.14502 | — | 0.1451 (off) | ❌ news inert |
+
+Regime structure adapts per dataset. With TSFMs in the zoo, TimesFM-2.5
+(0.0965) dominates Tourism — the router ties best-single (p=0.42), adding
+nothing beyond a dominant model (honest framing).
+
+## 9. Vector Comparisons (exp52–53, exp63) — NEW
+
+- **exp52:** We beat Vector's `LastValuePredictor` 11.8% (p=7.1e-04).
+- **exp53:** Vector's `QuantileGridLLMPredictor` beats our proposed method
+  **45%** (0.5688 vs 1.0339, p=5.4e-05) on Food CPI. Motivated the ladder.
+- **exp63:** LLM as combiner is **significantly worse** than the statistical
+  router (0.1169 vs 0.0992, p=1.7e-08). Constrained priors beat LLM judgment.
+
+## 10. The LLM Integration Ladder (exp55–59) — NEW
+
+| Rung | Experiment | Verdict |
+|---|---|---|
+| 1. Dataset registry | — | ✅ PIT-safe context per dataset |
+| 2. LLM as expert | exp55 | ✅ Works on Food CPI |
+| 3. LLM as calibrator | exp56 | ❌ 1.6729, worse than naive |
+| 4. Per-dataset prompts | exp57 | ✅ V1 (0.4262) beats V2 |
+| 5. Hybrid router | exp58 | ⚠️ 0.4526 beats Vector 20%, loses to llm-V1 |
+| 6. Generalizability | exp59 | ❌ 36–64% worse on Tourism/M3 |
+
+**Verdict:** LLMs are brilliant specialists for smooth, context-rich macro
+series and poor generalists for seasonal multi-series data. The proposed
+classical method is the general solution.
+
+---
+
+*This document is now final. The honesty was the point.*

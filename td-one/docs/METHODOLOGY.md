@@ -1,8 +1,8 @@
 # TD-One: Agentic Forecasting for Mortgage Attrition — Methodology
 
 **TD-One — Canadian mortgage renewal/switching forecasting**
-*Complete research methodology, exp1–exp51. Written 2026-10-18.*
-*Supersedes all earlier methodology drafts (2026-10-16).*
+*Complete research methodology, exp1–exp63 + LLM ladder. Written 2026-10-19.*
+*Supersedes all earlier methodology drafts.*
 
 ---
 
@@ -10,34 +10,58 @@
 
 We ask whether agentic AI — large language models with tools, sandboxes,
 and decision policies — can improve probabilistic forecasting of Canadian
-mortgage borrower attrition at renewal. Over **51 experiments** across
-three research tracks (classical, time-series foundation models, agentic),
-we built the TD-One method: a **regime-probability router with gates**.
-On 600 M4 Monthly series (blocked 5-fold CV, paired t-tests), the proposed
-method beats equal-weight combination (0.1451 vs 0.1507, p=6.5e-09), the
-best single model (p=7.8e-11), and the router alone (p=6.7e-10). On Food CPI
-it beats equal weights (p=3.1e-18). On Bank of Canada rate decisions, the
-regime-gated rule achieves 0.853 accuracy. We report **14 positive results,
-17 honest negatives, and 1 definitive track closure** (news for monthly
-forecasting). A "kitchen sink" experiment (exp51) confirms our significance
-filter was correct: adding every nonsignificant positive back makes the
-method worse, not better.
+mortgage borrower attrition at renewal. Over **63+ experiments** across
+four research tracks (classical, time-series foundation models, agentic,
+LLM integration), we built the TD-One method: a **regime-probability router
+with gates**. On 600 M4 Monthly series (blocked 5-fold CV, paired t-tests),
+the proposed method beats equal-weight combination (0.1451 vs 0.1507,
+p=6.5e-09), the best single model (p=7.8e-11), and the router alone
+(p=6.7e-10). It also wins on Tourism Monthly (0.1282, p=1.9e-68) and M3
+Monthly (0.1476, p=2.7e-44). A 6-rung LLM integration ladder shows LLMs are
+brilliant specialists — beating Vector's LLM baseline by 20% on Food CPI —
+but do not generalize to seasonal multi-series data (36–64% worse than
+classical on Tourism/M3). We report **14 positive results, 20+ honest
+negatives, and 2 definitively closed tracks** (news for monthly
+forecasting, macro overlays). A "kitchen sink" experiment (exp51) confirms
+our significance filter was correct: adding every nonsignificant positive
+back makes the method worse, not better.
 
 ---
 
 ## Table of Contents
 
-1. [Problem Statement](#1-problem-statement)
-2. [Research Program Overview](#2-research-program-overview)
-3. [Classical Baselines](#3-classical-baselines)
-4. [Agentic Track (Phases 1–3)](#4-agentic-track-phases-13)
-5. [Real-Data Benchmarks](#5-real-data-benchmarks)
-6. [The Combination Trilogy](#6-the-combination-trilogy)
-7. [The Proposed Method (exp47/49)](#7-the-proposed-method-exp4749)
-8. [Extensions and Validation](#8-extensions-and-validation)
-9. [Tool Optimization](#9-tool-optimization)
-10. [What We Learned](#10-what-we-learned)
-11. [Reproducibility](#11-reproducibility)
+1. [Glossary](#0-glossary)
+2. [Problem Statement](#1-problem-statement)
+3. [Research Program Overview](#2-research-program-overview)
+4. [Classical Baselines](#3-classical-baselines)
+5. [Agentic Track (Phases 1–3)](#4-agentic-track-phases-13)
+6. [Real-Data Benchmarks](#5-real-data-benchmarks)
+7. [The Combination Trilogy](#6-the-combination-trilogy)
+8. [The Proposed Method (exp47/49)](#7-the-proposed-method-exp4749)
+9. [Extensions and Validation](#8-extensions-and-validation)
+10. [Monash Benchmarks (exp60–62)](#9-monash-benchmarks-exp6062)
+11. [Vector Comparisons (exp52–53, exp63)](#10-vector-comparisons-exp5253-exp63)
+12. [The LLM Integration Ladder (exp55–59)](#11-the-llm-integration-ladder-exp5559)
+13. [Tool Optimization](#12-tool-optimization)
+14. [What We Learned](#13-what-we-learned)
+15. [Reproducibility](#14-reproducibility)
+
+---
+
+## 0. Glossary
+
+| Term | Meaning |
+|---|---|
+| **CRPS** | Continuous Ranked Probability Score — primary accuracy metric. Lower is better. Rewards forecasts that are well-centered and honest about uncertainty. |
+| **Quantile forecast** | A set of percentiles (e.g., 10th/50th/90th) describing the predicted distribution, instead of a single point. |
+| **Regime** | A "mode" of the data (seasonal, trending, noisy). The router detects the regime and picks the best model for it. |
+| **Conformal calibration** | Widens forecast intervals until they honestly cover the stated fraction of outcomes. |
+| **PIT-safe** | "Point-in-time safe" — only data from before the forecast date is used. No lookahead. |
+| **Regime router** | Small classifier → P(regime \| features) → per-regime expert → probability-weighted blend. |
+| **Honest negative** | An experiment that cleanly disproves a hypothesis. A finding, not a failure. |
+| **TSFM** | Time-series foundation model (Chronos-2, TimesFM-2.5) — pretrained neural nets for time series. |
+| **Blocked CV** | Cross-validation with contiguous time blocks as folds. Respects the arrow of time. |
+| **Equal weights** | Naive baseline: average all models equally. Surprisingly hard to beat. |
 
 ---
 
@@ -116,6 +140,8 @@ try.
 | Combination trilogy | 2026-10-17 → 10-18 | exp42–44: FFORMA, regime router, news selector |
 | Kill confirmations | 2026-10-18 | exp45–46: learned regimes, news dense |
 | Proposed method | 2026-10-18 | exp47–51: build, tools, reasoning, extensions, kitchen sink |
+| Monash + Vector | 2026-10-18 | exp52–53, exp60–63: Tourism, M3, vs Vector baselines |
+| LLM ladder | 2026-10-18 → 10-19 | exp55–59: 6 rungs on Gemini Flash |
 
 ---
 
@@ -413,7 +439,134 @@ possible validation of the exp47 significance filter.
 
 ---
 
-## 9. Tool Optimization
+## 9. Monash Benchmarks (exp60–62)
+
+We validated the proposed method on two Monash forecasting-repository
+benchmarks plus an M4 news-augmentation test.
+
+### 9.1 exp60: Tourism Monthly (366 series, h=24)
+
+| Method | Mean CRPS | vs proposed |
+|---|---|---|
+| **Proposed** | **0.1282** | — |
+| Equal weights | 0.1869 | p=1.9e-68 |
+| Best single (snaive) | 0.1387 | p=2.6e-34 |
+
+Our snaive MASE (1.080) beats every published Monash baseline (best:
+DeepAR 1.409). With TSFMs in the zoo, TimesFM-2.5 (0.0965) and Chronos-2
+(0.0972) dominate — the proposed method (0.0974) ties the best single
+(p=0.42). Honest framing: when one model dominates, the router adds
+nothing beyond matching the ex-ante best.
+
+### 9.2 exp61: M3 Monthly (1,428 series, h=18)
+
+| Method | Mean CRPS | vs proposed |
+|---|---|---|
+| **Proposed** | **0.1476** | — |
+| Equal weights | 0.1641 | p=2.7e-44 |
+| Best single (ets) | 0.1630 | p=3.5e-35 |
+
+Regime structure differs per dataset (tourism: 296/366 seasonal→snaive;
+M3: balanced across snaive/arima/ets). The method adapts.
+
+### 9.3 exp62: M4 + news — honest negative
+
+Adding the news module to M4-100: news-on 0.14502 vs news-off 0.1451.
+The gate fires on 97% of origins but changes nothing. Combined with
+exp60/61 news arms (tourism +0.4%, M3 −0.3%), the news module is
+**inert on real data** — it fires constantly but moves no numbers.
+
+---
+
+## 10. Vector Comparisons (exp52–53, exp63)
+
+We benchmarked against the Vector Institute bootcamp's own baselines.
+
+### 10.1 exp52: We beat their floor
+
+Our proposed method beats Vector's `LastValuePredictor` on Food CPI:
+**1.0662 vs 1.2091 CRPS (11.8%, p=7.1e-04, 50/59 origins)**. Weak baseline,
+single dataset — but a clean win.
+
+### 10.2 exp53: Their LLM beats us decisively
+
+Vector's `QuantileGridLLMPredictor` beats our proposed method on Food CPI:
+**0.5688 vs 1.0339 CRPS (45% better, p=5.4e-05, LLM wins 43/58 origins)**.
+The LLM is a better probabilist on smooth macro series (tighter,
+better-centered intervals) and has semantic context ("Canada Food CPI")
+our method lacks. Honest framing: ours beats classical baselines; a
+well-designed LLM elicitation beats ours. This motivated the LLM ladder.
+
+### 10.3 exp63: LLM as combiner — honest negative
+
+LLM (gpt-oss-120b) as per-series forecast combiner over the 7-model
+tourism zoo: **0.1169 vs statistical router 0.0992 (p=1.7e-08 against
+the LLM)** and vs best-single 0.1005 (p=9.4e-08). The LLM had strictly
+more information than either baseline yet performed worse — likely
+over-thinking: spreading weight across models instead of trusting the
+validation signal. Extends the agentic honest negatives (exp23/24/25).
+
+---
+
+## 11. The LLM Integration Ladder (exp55–59)
+
+Six rungs to integrate LLMs with the proposed method, run on Gemini Flash
+via the Vector proxy (bypassing Groq's free-tier limits).
+
+```mermaid
+flowchart TB
+    R1["Rung 1: Dataset registry<br/>PIT-safe context per dataset ✅"]
+    R2["Rung 2: LLM as expert (exp55)<br/>✅ works on Food CPI"]
+    R3["Rung 3: LLM as calibrator (exp56)<br/>❌ 1.6729, worse than naive"]
+    R4["Rung 4: Per-dataset prompts (exp57)<br/>✅ V1 (0.4262) beats V2 (0.4599)"]
+    R5["Rung 5: Hybrid router (exp58)<br/>⚠️ 0.4526 beats Vector, loses to llm-V1"]
+    R6["Rung 6: Generalizability (exp59)<br/>❌ 36-64% worse on Tourism/M3"]
+    R1 --> R2 --> R3 --> R4 --> R5 --> R6
+```
+
+### 11.1 Rung 2 (exp55): LLM as expert — works on Food CPI
+
+Gemini Flash as a direct forecaster on Food CPI: competitive with the
+best classical methods. The semantic context ("Canada Food CPI") and
+calibration skill matter on smooth macro series.
+
+### 11.2 Rung 3 (exp56): LLM as calibrator — fails
+
+LLM asked to calibrate classical forecasts: **1.6729 CRPS, worse than
+naive (1.6915)**. The LLM is better at direct forecasting than at fixing
+classical outputs. Killed.
+
+### 11.3 Rung 4 (exp57): Per-dataset prompts — V1 wins
+
+Two prompt variants: V1 (metadata + history stats in words, 0.4262) beats
+V2 (V1 + macro lookup table, 0.4599). More context distracts; the concise
+prompt wins. All prompts are PIT-audited — see
+[PROMPT_LEAKAGE_AUDIT.md](PROMPT_LEAKAGE_AUDIT.md) for the per-field trace to pre-origin sources.
+
+### 11.4 Rung 5 (exp58): Hybrid — beats Vector, loses to best single
+
+Hybrid regime router over {4 classical + 3 LLM experts}: **0.4526**,
+beating Vector's 0.5688 by **20.4%** (success criterion met). But it
+**loses to llm-V1 alone (0.4262, p=0.045)** — the router adds no value when
+one expert dominates. The practical takeaway: use llm-V1 directly.
+
+### 11.5 Rung 6 (exp59): Generalizability — clean negative
+
+The rung-4 V1 prompt + Gemini Flash on Tourism/M3 (30 series each, h=1):
+Tourism **64% worse** than classical (1691 vs 1030), M3 **36% worse**
+(199.5 vs 147.2). The Food CPI win was dataset-specific. On strongly
+seasonal multi-series data, classical methods dominate.
+
+### 11.6 Ladder verdict
+
+**LLMs are brilliant specialists, poor generalists.** They dominate on
+smooth, context-rich macro series and fail on seasonal multi-series
+benchmarks. The proposed classical method remains the general solution;
+the LLM is a specialist tool for Food CPI-like series.
+
+---
+
+## 12. Tool Optimization
 
 ### 9.1 The tracker
 
@@ -458,9 +611,9 @@ proven behavior exactly (max diff 0.0 on all checks).
 
 ---
 
-## 10. What We Learned
+## 13. What We Learned
 
-### 10.1 Honest negatives are findings, not failures
+### 13.1 Honest negatives are findings, not failures
 
 The 17 kills define the boundary of what works. Selection from backward
 diagnostics fails on synthetic *and* real data (exp23, exp37) — a method
@@ -469,7 +622,7 @@ problem, not a data problem. Learned combination fails at our scale
 times (exp45, exp50, exp51) — hand rules encode domain knowledge that
 clustering cannot recover.
 
-### 10.2 Hand-picked priors beat learning at our scale
+### 13.2 Hand-picked priors beat learning at our scale
 
 This is the deepest pattern in the program. exp43's hand regimes beat
 exp45's learned regimes (p=0.00046). exp50's hand gate thresholds beat
@@ -478,7 +631,7 @@ components) loses to the filtered proposed method. At n=600 series and
 n=143 meetings, structural priors dominate flexible learning. The
 literature agrees (FFORMA needed 100k series).
 
-### 10.3 News does not help monthly forecasting — definitively
+### 13.3 News does not help monthly forecasting — definitively
 
 exp19 (clean negative), exp21 (−21.6%), exp25 (+25% worse, p=0.0013),
 exp46 (dense coverage, p=0.48) — four independent kills. The mechanism
@@ -486,12 +639,12 @@ works on synthetic (exp44, p=0.0068) but real monthly news is either
 already priced in (SMM −13.04%) or too crude as features (BoC keyword
 counts are contrarian noise). Track closed.
 
-### 10.4 The significance filter was correct
+### 13.4 The significance filter was correct
 
 exp51 threw everything at the wall. Nothing stuck. The 14-component
 proposed method is not missing real gains — it is correctly filtered.
 
-### 10.5 Agents are diagnosticians, not forecasters
+### 13.5 Agents are diagnosticians, not forecasters
 
 exp31 (autonomous interaction discovery) and exp36 (seasonality
 discrimination) show agents doing real data science. But as *forecasters*,
@@ -499,9 +652,26 @@ agents over-adjust (exp4), produce overconfident intervals (exp22), and
 select at random (exp23). The winning architecture uses the agent for
 diagnosis and gating, never for the numbers themselves.
 
+### 13.6 LLMs are specialists, not generalists
+
+The 6-rung ladder (exp55–59) is the clearest result of the program's final
+phase. On Food CPI — a smooth macro series where semantic context matters —
+Gemini Flash (0.4262) crushes every classical method (0.9661) and beats
+Vector's LLM baseline by 20%. On Tourism and M3 — seasonal multi-series
+benchmarks — the same LLM is 36–64% worse than classical. The LLM does not
+learn seasonality from a prompt; seasonal naive does it by construction.
+Use the right tool for the series type.
+
+### 13.7 The router is unnecessary when one expert dominates
+
+exp58's hybrid (0.4526) beats Vector's method but loses to llm-V1 alone
+(0.4262, p=0.045). When the best expert wins in every regime, combination
+only adds noise. The regime router earns its keep on M4/Tourism/M3 where
+experts trade wins across regimes — not on Food CPI where the LLM sweeps.
+
 ---
 
-## 11. Reproducibility
+## 14. Reproducibility
 
 - **Repo:** `VDavoodnia/agentic-forecasting`, branch `main`, `td-one/`
 - **Environment:** `.venv/bin/python` directly (`uv run` hangs in this VM)

@@ -1,8 +1,11 @@
 # TD-One Proposed Method: Architecture
 
-**Date:** 2026-10-18
-**Status:** Implemented (`src/td_one/agent/proposed_method.py`), tested (exp47)
-**Verdict:** Positive — beats equal weights, best single, and exp43 router on M4 (all p < 1e-8)
+**Date:** 2026-10-19 (final)
+**Status:** Implemented (`src/td_one/agent/proposed_method.py`), validated
+on M4, Tourism, M3, Food CPI, BoC (exp47/49/60/61)
+**Verdict:** Positive — beats equal weights, best single, and exp43 router
+on M4 (all p < 1e-8); beats equal weights and best single on Tourism
+(p=1.9e-68) and M3 (p=2.7e-44)
 
 ---
 
@@ -99,27 +102,42 @@ numbers — outputs (regime, confidence) only.
 |---|---|---|
 | Learned selection | exp23, exp37, exp41 | = random or tied with best single |
 | Learned combination | exp42 | Forecast combination puzzle (p=0.156) |
+| LLM as combiner | exp63 | Significantly worse than router (p=1.7e-08) |
 | Unsupervised regimes | exp45 | Hand rules win (p=0.00046) |
 | News-as-feature | exp19, exp21, exp25 | Clean/definitive negatives |
-| News monthly | exp46 | Definitive negative; track closed |
+| News monthly | exp46, exp62 | Definitive negative; track closed |
 | MNLogit (small-n) | exp30 | Overfits; simple rule wins |
 | M5 LLM router | exp12 | Loses to inverse-CRPS |
 | Macro overlay | exp8, exp15 | Retracted / hurts |
+| LLM as calibrator | exp56 | Worse than naive (1.6729) |
 
-## 4. Performance (exp47)
+## 4. Performance (exp47, exp60, exp61)
 
-| Dataset | Proposed | Equal | Best single | Router-only | vs equal | vs router |
-|---|---|---|---|---|---|---|
-| M4 (n=600) | **0.1451** | 0.1507 | 0.1505 | 0.1490 | **p=6.5e-09** | **p=6.7e-10** |
-| Synthetic (n=480) | 0.1036 | 0.1068 | 0.1028 | 0.1028 | p=0.072 | p=0.28 |
-| SMM (n=27) | 0.1389 | 0.1424 | 0.1377 | 0.1377 | p=0.66 | p=0.61 |
-| Food CPI (n=24) | 0.0141 | 0.0176 | 0.0143 | 0.0143 | p=3e-18* | p=0.005* |
+| Dataset | Proposed | Equal | Best single | vs equal | vs best |
+|---|---|---|---|---|---|
+| M4 (n=600) | **0.1451** | 0.1507 | 0.1505 | **p=6.5e-09** | **p=7.8e-11** |
+| Tourism (n=366) | **0.1282** | 0.1869 | 0.1387 | **p=1.9e-68** | **p=2.6e-34** |
+| M3 (n=1428) | **0.1476** | 0.1641 | 0.1630 | **p=2.7e-44** | **p=3.5e-35** |
+| Synthetic (n=480) | 0.1036 | 0.1068 | 0.1028 | p=0.072 | p=0.60 |
+| SMM (n=27) | 0.1389 | 0.1424 | 0.1377 | p=0.66 | p=0.61 |
+| Food CPI (n=24) | 0.0141 | 0.0176 | 0.0143 | p=3e-18* | p=0.005* |
 
 \* Correlated origins — p overstated.
 
 **Key:** proposed beats the exp43 router alone (p=6.7e-10 on M4). The
 system is more than the sum of its parts — gates + conformal add value
-beyond the router.
+beyond the router. On Synthetic/SMM where experts collapse, it degrades
+gracefully to best single.
+
+### 4.1 The LLM caveat (exp53, exp58–59)
+
+On Food CPI, a well-prompted LLM (Gemini Flash, 0.4262) beats the proposed
+method's classical experts (0.9661) decisively — and beats Vector's own LLM
+baseline (0.5688) by 20%. **But** the LLM does not generalize: on Tourism
+and M3 it is 36–64% worse than classical (exp59). The proposed method is
+the general solution; the LLM is a specialist for smooth, context-rich
+macro series. See `docs/LLM_INTEGRATION_LADDER.md` for the full 6-rung
+analysis.
 
 ## 5. Usage
 
@@ -152,6 +170,9 @@ print(out.explanation)
 1. **TSFM expert:** ❌ Tested — 0% expert selection rate on M4, doesn't improve router.
    Keep as standalone (exp18b: −12.2% on SMM), not as regime expert.
 2. **BoC discrete variant:** ✅ Implemented — `BoCForecaster`: EASY→rule, HARD→climatology.
+   Honest note (SELF_AUDIT item D): measured gain is 0.846→0.853 on n=143, i.e.
+   **one additional correct prediction** — not a statistically meaningful win.
+   Kept as the principled discrete path, not as a claimed improvement.
 3. **Semi-supervised regimes:** ❌ Tested — loss-clustering (p=0.44) can't beat hand rules.
    The domain prior ("seasonal→ARIMA") is doing real work.
 4. **Learned gate threshold:** ❌ Tested — learned (0.5/2.5/0.02) ties hand (0.6/3.5/0.03),

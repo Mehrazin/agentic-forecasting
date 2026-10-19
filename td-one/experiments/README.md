@@ -63,6 +63,18 @@ Numbering jumps from exp25 to exp40 (exp26–exp39 were never assigned).
 | exp49 | Final model run with updated toolset (13 tools) | ✅ reproduces exp47 exactly (0.1451/0.1507/0.1505) — toolset refactor changed nothing | [report](exp49_report.md) |
 | exp50 | 4 open extensions (TSFM expert, BoC discrete, loss regimes, learned gates) | ⚖️ 1/4 helps (BoC discrete ✅); 3 honest negatives | [report](exp50_report.md) |
 | exp51 | Kitchen sink: all nonsignificant positives combined | ❌ sink worse than proposed on M4 (+0.00073, p=0.25) and SMM (+0.00166, win 0.26); validates the significance filter | [report](exp51_report.md) |
+| exp52 | Proposed vs Vector's `LastValuePredictor` (their floor) | ✅ proposed wins 11.8% (1.0662 vs 1.2091, p=7.1e-04, 50/59) — weak baseline, superseded by exp53 | [report](exp52_report.md) |
+| exp53 | Vector's `QuantileGridLLMPredictor` (gpt-oss-120b) vs proposed, same 59 origins | ❌ **LLM wins decisively**: 0.5688 vs 1.0339, p=5.4e-05, 43/58 origins. Genuine skill (no memorization pattern); better calibration on smooth series | [report](exp53_report.md) |
+| exp54 | Rung 1: dataset registry — exp49 Food CPI + M4 rerun with registry-wired forecaster | ✅ reproduces exp49 exactly (max abs diff 1.8e-15 on M4, 0.0 on Food CPI) — expected null; value is the infrastructure | [report](exp54_report.md) |
+| exp55 | Rung 2: LLM as expert in the regime router | ✅ 59/59 ok, mean CRPS 0.5158 (variant `llm-generic`); evaluated in exp58 | [report](exp55_report.md) |
+| exp56 | Rung 3: LLM as calibrator of seasonal-naive 9-quantile grid | ❌ 21/22 ok, mean CRPS 1.6729 — worse than naive; killed | — |
+| exp57 | Rung 4: per-dataset prompts V1 (history stats in words) / V2 (+ PIT-safe macro) | ✅ V1 59/59 ok (0.4262), V2 59/59 ok (0.4599); V1 wins | — |
+| exp58 | Rung 5: hybrid regime router over {4 classical + 3 LLM experts} | ⚠️ 0.4526 beats Vector 0.5688 by 20% BUT loses to llm-V1 alone (0.4262, p=0.045) — router adds no value when one expert dominates | [report](exp58_report.md) |
+| exp59 | Rung 6: LLM generalizability on Tourism/M3 (30 series each, h=1) | ❌ clean negative: LLM 64% worse on Tourism, 36% worse on M3 — Food CPI win was dataset-specific | [report](exp59_report.md) |
+| exp60 | Full ladder on Tourism Monthly (Monash, 366 series, h=24) | ✅ proposed 0.1282 beats equal 0.1869 (p=1.9e-68) AND best single snaive 0.1387 (p=2.6e-34); 7-model: timesfm25 0.0965, proposed ties best (p=0.42); news-on: negligible Δ | [report](exp60_report.md) |
+| exp61 | Full ladder on M3 Monthly (Monash, 1428 series, h=18) | ✅ proposed 0.1476 beats equal 0.1641 (p=2.7e-44) AND best single ets 0.1630 (p=3.5e-35); 3rd dataset confirming the claim; news-on: negligible Δ | [report](exp61_report.md) |
+| exp62 | M4-100 with news module on | ✅ reproduces exp47 exactly (0.1451 vs 0.1507, p=7.2e-09); news fire 0.97, no material change — 3rd dataset where news adds nothing | [report](exp62_report.md) |
+| exp63 | LLM as forecast combiner vs statistical router (60 tourism series) | ❌ honest negative: LLM 0.1169 significantly WORSE than router 0.0992 (p=1.7e-08) and best-single 0.1005 — LLM subtracts value | [report](exp63_report.md) |
 
 ## Supporting reports
 

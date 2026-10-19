@@ -6,7 +6,7 @@ Start here. This page maps every document in `td-one/docs/` — what it is, who 
 
 | Doc | What you get |
 |---|---|
-| [METHODOLOGY.md](METHODOLOGY.md) | The full methodology: problem, model ladder (M0–M3), PIT protocol, metrics. The reference. |
+| [METHODOLOGY.md](METHODOLOGY.md) | The full methodology: problem, glossary, all tracks (exp1–exp63 + LLM ladder). The reference. |
 | [RESULTS.md](RESULTS.md) | Current experiment numbers. Every number links to a committed artifact. |
 | [REDESIGN.md](REDESIGN.md) | What we keep, what we kill, what we try next — with evidence. Governs future work. |
 
@@ -14,20 +14,22 @@ Start here. This page maps every document in `td-one/docs/` — what it is, who 
 
 | Doc | What you get |
 |---|---|
-| [reports/FULL_STORY.md](reports/FULL_STORY.md) | The narrative arc: synthetic benchmarks → agentic infrastructure (2026-10-17 snapshot). |
-| [reports/MANAGER_REPORT.md](reports/MANAGER_REPORT.md) | Plain-language project summary for colleagues new to TD-One (2026-10-17 snapshot). |
-| [reports/FINAL_SYNTHESIS.md](reports/FINAL_SYNTHESIS.md) | Multi-dataset benchmarking synthesis; updated as experiments complete. |
+| [reports/MANAGER_REPORT.md](reports/MANAGER_REPORT.md) | **Start here.** Plain-language project summary with glossary, diagrams, and tables (final, 2026-10-19). |
+| [reports/FINAL_SYNTHESIS.md](reports/FINAL_SYNTHESIS.md) | Technical synthesis across all datasets and tracks (final, 2026-10-19). |
 
 ## Results & evidence
 
 | Doc | What you get |
 |---|---|
-| [RESULTS.md](RESULTS.md) | Current results: R2 series + agentic track (exp42–exp48). Primary metric CRPS. |
+| [RESULTS.md](RESULTS.md) | Current results: all tracks (exp1–exp63 + LLM ladder). Primary metric CRPS. |
 | [RESULTS_ARCHIVE.md](RESULTS_ARCHIVE.md) | exp1–exp15 (superseded by R2, preserved for provenance). |
 | [POSITIVE_LIFT_AUDIT.md](POSITIVE_LIFT_AUDIT.md) | Inventory of every positive result (exp1–exp46 + benchmarks) used to design the proposed method. |
 | [NONSIGNIFICANT_POSITIVES.md](NONSIGNIFICANT_POSITIVES.md) | Audit of every positive-but-nonsignificant effect (exp1–exp50) with combinability verdicts; evidence base for exp51. |
+| [EVALUATION_INTEGRITY.md](EVALUATION_INTEGRITY.md) | Leakage audit, Monash protocol adherence, and Chronos-2/TimesFM-2.5 pretraining-contamination matrix (exp60/exp61). |
+| [SELF_AUDIT.md](SELF_AUDIT.md) | Adversarial self-review: multiple comparisons, M4 development bias, BoC-discrete downgrade, PIT re-verification, CRPS verification. Headlines survive; margins disclosed. |
+| [VECTOR_METHODOLOGY_AUDIT.md](VECTOR_METHODOLOGY_AUDIT.md) | Every methodological difference vs Vector's stack (CRPS scorer, quantile grids, LLM config, baselines); evidence base for exp52/exp53. |
 | [DIAGRAMS.md](DIAGRAMS.md) | Architecture and experiment diagrams (mermaid — renders on GitHub). |
-| [../experiments/README.md](../experiments/README.md) | Full experiment index, exp1–exp51, with verdicts and report links. |
+| [../experiments/README.md](../experiments/README.md) | Full experiment index, exp1–exp63 + LLM ladder, with verdicts and report links. |
 
 ## The agentic track
 
