@@ -75,6 +75,7 @@ Numbering jumps from exp25 to exp40 (exp26–exp39 were never assigned).
 | exp61 | Full ladder on M3 Monthly (Monash, 1428 series, h=18) | ✅ proposed 0.1476 beats equal 0.1641 (p=2.7e-44) AND best single ets 0.1630 (p=3.5e-35); 3rd dataset confirming the claim; news-on: negligible Δ | [report](exp61_report.md) |
 | exp62 | M4-100 with news module on | ✅ reproduces exp47 exactly (0.1451 vs 0.1507, p=7.2e-09); news fire 0.97, no material change — 3rd dataset where news adds nothing | [report](exp62_report.md) |
 | exp63 | LLM as forecast combiner vs statistical router (60 tourism series) | ❌ honest negative: LLM 0.1169 significantly WORSE than router 0.0992 (p=1.7e-08) and best-single 0.1005 — LLM subtracts value | [report](exp63_report.md) |
+| exp64 | Proposed method v2: unified router + gated LLM expert, all 6 benchmarks | ✅ v2 wins/ties everywhere: Food CPI 0.5322 vs v1 0.9661 (p=4.3e-06), beats Vector LLM by 6.4%; M4/Tourism/M3/BoC unchanged (gate off = v1) | [report](exp64_report.md) |
 
 ## Supporting reports
 

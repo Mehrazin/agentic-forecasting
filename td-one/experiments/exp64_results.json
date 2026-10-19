@@ -1,0 +1,74 @@
+{
+  "experiment": "exp64",
+  "method": "Proposed Method v2 (regime router + gated LLM expert)",
+  "timestamp": "2026-10-19T15:32:02.638889+00:00",
+  "food_cpi": {
+    "dataset": "food_cpi",
+    "n": 59,
+    "v2_crps": 0.5321591236198281,
+    "v1_crps": 0.9660713656113804,
+    "v2_vs_v1": {
+      "mean_a": 0.5321591236198281,
+      "mean_b": 0.9660713656113804,
+      "diff": -0.4339122419915524,
+      "p": 4.3281825425199096e-06,
+      "win_rate": 0.7457627118644068,
+      "n": 59
+    },
+    "v2_vs_vector_llm": {
+      "v2": 0.5321591236198281,
+      "vector_llm": 0.5688,
+      "improvement": 0.06441785580198996
+    },
+    "v2_baseline": "best_single(llm)",
+    "v1_baseline": "best_single(naive)"
+  },
+  "classical": {
+    "m4_v1_crps": 0.14505659994210743,
+    "m4_equal_crps": 0.15069387058543654,
+    "m4_best_single_crps": 0.15049490462523973,
+    "tourism_v1_crps": 0.12875899611042704,
+    "m3_v1_crps": 0.14724008884329365,
+    "gate_checks": {
+      "m4": {
+        "v2_llm_enabled": false,
+        "gate_off": true,
+        "models": [
+          "naive",
+          "m0",
+          "ets",
+          "arima"
+        ]
+      },
+      "tourism": {
+        "v2_llm_enabled": false,
+        "gate_off": true,
+        "models": [
+          "naive",
+          "snaive",
+          "ets",
+          "arima"
+        ]
+      },
+      "m3": {
+        "v2_llm_enabled": false,
+        "gate_off": true,
+        "models": [
+          "naive",
+          "snaive",
+          "ets",
+          "arima"
+        ]
+      }
+    },
+    "note": "v2 with LLM gated off is architecturally identical to v1; recorded v1 numbers stand."
+  },
+  "boc": {
+    "dataset": "boc_rates",
+    "method": "BoCForecaster (EASY->rule, HARD->climatology)",
+    "rule_accuracy": 0.837,
+    "climatology_accuracy": 0.791,
+    "n_meetings": 143,
+    "note": "Discrete path; LLM not applicable. See benchmarks/boc_rates/RESULTS.md."
+  }
+}

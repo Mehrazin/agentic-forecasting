@@ -1,20 +1,40 @@
-# TD-One Proposed Method: Architecture
+# TD-One Proposed Method: Architecture (v2)
 
 **Date:** 2026-10-19 (final)
-**Status:** Implemented (`src/td_one/agent/proposed_method.py`), validated
-on M4, Tourism, M3, Food CPI, BoC (exp47/49/60/61)
+**Status:** Implemented (`src/td_one/agent/proposed_method_v2.py`), validated
+on M4, Tourism, M3, Food CPI, BoC (exp47/49/60/61/64)
 **Verdict:** Positive — beats equal weights, best single, and exp43 router
 on M4 (all p < 1e-8); beats equal weights and best single on Tourism
-(p=1.9e-68) and M3 (p=2.7e-44)
+(p=1.9e-68) and M3 (p=3.5e-35); v2 beats v1 and Vector's LLM on Food CPI
+(p=4.3e-06)
 
 ---
 
 ## 1. Overview
 
-The proposed method is a **regime-probability router with gates** — the
-distillation of 47 experiments into a single system. Every component earned
-its place through a positive result; every exclusion was killed by a
-definitive negative (see `docs/POSITIVE_LIFT_AUDIT.md`).
+The proposed method v2 is a **regime-probability router with a gated LLM
+expert** — the distillation of 64 experiments into a single system. v1
+(exp47) routed among classical experts; v2 adds a Gemini Flash expert that
+fires only on series types where it helps (smooth macro data), staying off
+on seasonal multi-series data where it hurts.
+
+```mermaid
+flowchart TD
+    A[Input series] --> B[Regime detection<br/>hand-defined rules]
+    B --> C{Series-type gate}
+    C -->|Macro-like<br/>weak seasonality| D[LLM expert<br/>Gemini Flash, V1 prompts]
+    C -->|Seasonal / multi-series| E[Classical experts<br/>seasonal naive, ARIMA, ETS]
+    D --> F[Regime router<br/>logistic regression]
+    E --> F
+    F --> G{Do-nothing gate<br/>uncertain + weak evidence?}
+    G -->|Yes| H[Global best single]
+    G -->|No| I[Soft regime combination]
+    H --> J[Conformal calibration]
+    I --> J
+    J --> K[Output quantiles<br/>+ trust flag]
+```
+
+The v1 architecture (classical only) is preserved below for reference:
 
 ```mermaid
 flowchart TB
