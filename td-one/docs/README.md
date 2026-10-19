@@ -75,9 +75,9 @@ Active and historical plans live in [plans/](plans/). The agentic roadmap stays 
 
 | Doc | Status |
 |---|---|
-| [AGENTIC_ROADMAP.md](AGENTIC_ROADMAP.md) | Approved — executing (exp42–44 trilogy complete) |
-| [plans/NEXT_PHASE_PLAN.md](plans/NEXT_PHASE_PLAN.md) | Approved — executing (regime improvement + live news) |
-| [plans/MULTI_DATASET_PLAN.md](plans/MULTI_DATASET_PLAN.md) | Approved — executing (real-data validation) |
+| [AGENTIC_ROADMAP.md](AGENTIC_ROADMAP.md) | Approved — trilogy complete (exp42–44), proposed method shipped (exp47) |
+| [plans/NEXT_PHASE_PLAN.md](plans/NEXT_PHASE_PLAN.md) | Complete — regime router shipped; live-news track closed |
+| [plans/MULTI_DATASET_PLAN.md](plans/MULTI_DATASET_PLAN.md) | Complete — validated on M4, Tourism, M3 |
 | [plans/OPTION1_JOINT_TRAINING_PLAN.md](plans/OPTION1_JOINT_TRAINING_PLAN.md) | Assessed — naive joint training likely fails; FFORMA-style meta-learning is the path |
 | [plans/OPTION3_METALEARNING_PLAN.md](plans/OPTION3_METALEARNING_PLAN.md) | Designed — learn the selection policy from data (led to exp42) |
 
