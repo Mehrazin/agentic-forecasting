@@ -77,6 +77,7 @@ Numbering jumps from exp25 to exp40 (exp26–exp39 were never assigned).
 | exp63 | LLM as forecast combiner vs statistical router (60 tourism series) | ❌ honest negative: LLM 0.1169 significantly WORSE than router 0.0992 (p=1.7e-08) and best-single 0.1005 — LLM subtracts value | [report](exp63_report.md) |
 | exp64 | Proposed method v2: unified router + gated LLM expert, all 6 benchmarks | ✅ v2 wins/ties everywhere: Food CPI 0.5322 vs v1 0.9661 (p=4.3e-06), beats Vector LLM by 6.4%; M4/Tourism/M3/BoC unchanged (gate off = v1) | [report](exp64_report.md) |
 | exp65 | SMM with LLM expert (v2, Gemini Flash, 50 origins) | ⚖️ neutral: v2 0.000508 vs v1 0.000512 (p=0.69); LLM alone 0.000492 ties TimesFM-2.5 (0.000497) | [report](exp65_report.md) |
+| exp66 | LLM grouping + group-level attrition forecasting (4-arm ablation) | ❌ honest negative: LLM groups 0.01705 worse than random 0.00690; global 0.00227 wins — kill criterion triggered | [report](exp66_report.md) |
 
 ## Supporting reports
 

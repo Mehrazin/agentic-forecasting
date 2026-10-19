@@ -1,8 +1,16 @@
 # Loan Attrition: Grouped Forecasting + TSFM Red-Teaming — Build Plan
 
-**Status:** planning (2026-10-19). Tracks the implementation of the two new
+**Status:** Track 1 built (2026-10-19); exp66 honest negative. Tracks the implementation of the two new
 loan-domain research directions. Updated 2026-10-19 with news-aware grouping
 and semantic RAG.
+
+## exp66 verdict (2026-10-19)
+
+❌ **Honest negative.** LLM-discovered groups (CRPS 0.01705) did not beat
+random groups (0.00690); global (0.00227) won. Kill criterion triggered —
+do not iterate the prompt. Infrastructure (grouping, semantic RAG,
+risk reporter with citation enforcement) is solid and reusable. See
+`experiments/exp66_report.md`.
 
 ## Direction
 
@@ -47,10 +55,15 @@ Two tracks, eventually combined:
   credit increase). **Cache everything** — every fetch enriches the SQLite
   cache; never re-fetch.
 - **RAG upgrade:** current RAG is BM25 → Groq rerank. Upgrade to
-  **semantic retrieval + rerank** using Vector proxy embeddings
-  (`text-embedding-3-small`, verified available 2026-10-19 via /v1/models).
+  **semantic retrieval + rerank** using local embeddings
+  (all-MiniLM-L6-v2, 384-dim — Vector proxy returns 403
+  model_access_denied for embeddings, verified 2026-10-19).
   Pipeline: embed query → cosine retrieval over cached articles →
-  cross-encoder/LLM rerank → top-k to grouper/reporter.
+  LLM rerank → top-k to grouper/reporter.
+- **Top-k tuning** (2026-10-19, `scripts/tune_rag_k.py`, 20 hand-labeled
+  pairs): k=10 maximizes F1 (0.468), but retrieval uses k=50 biasing
+  toward recall (0.818) since the reranker filters cheaply; final k=5
+  for precision. See `src/td_one/rag/semantic.py` docstring.
 - News is PIT-gated via `articles_visible_asof(origin)` everywhere.
 
 ### Evaluation (4-arm ablation)
