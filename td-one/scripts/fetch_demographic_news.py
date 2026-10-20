@@ -47,7 +47,7 @@ DB_PATH = Path(__file__).resolve().parents[1] / "data" / "news" / "news_2026.db"
 
 def _ensure_fetch_log(con: sqlite3.Connection) -> None:
     con.execute(
-        """CREATE TABLE IF NOT EXISTS fetch_log (
+        """CREATE TABLE IF NOT EXISTS demo_fetch_log (
             topic TEXT, month TEXT, n_articles INT,
             fetched_at TEXT DEFAULT (datetime('now')),
             PRIMARY KEY (topic, month))"""
@@ -81,43 +81,44 @@ def main() -> None:
     con = sqlite3.connect(DB_PATH)
     _ensure_fetch_log(con)
     done = {
-        (r[0], r[1]) for r in con.execute("SELECT topic, month FROM fetch_log")
+        r[0] for r in con.execute("SELECT topic FROM demo_fetch_log")
     }
 
     client = PerplexityClient(preset="fast")
     total = 0
+    # One query per topic (no narrow month window — the LLM returns []
+    # rather than pin articles to a single month). Real pub_dates are
+    # stored per article; PIT filtering handles time scoping downstream.
     for topic in TOPICS:
-        for after, before in _month_range(args.months):
-            key = (topic, after[:7])
-            if key in done:
-                continue
-            if args.dry_run:
-                print(f"WOULD fetch: {topic} [{after}..{before})")
-                continue
+        if topic in done:
+            continue
+        if args.dry_run:
+            print(f"WOULD fetch: {topic}")
+            continue
+        try:
+            articles = client.search(topic, before=str(date.today()), limit=10)
+        except Exception as e:  # noqa: BLE001 — resume-safe
+            print(f"FAILED {topic}: {e}")
+            continue
+        n = 0
+        for a in articles:
             try:
-                articles = client.search(topic, before=before, after=after, limit=5)
-            except Exception as e:  # noqa: BLE001 — resume-safe
-                print(f"FAILED {topic} {after}: {e}")
-                continue
-            n = 0
-            for a in articles:
-                try:
-                    con.execute(
-                        "INSERT OR IGNORE INTO articles "
-                        "(pub_date, title, url, source) VALUES (?,?,?,?)",
-                        (a.pub_date, a.title, a.url, "perplexity-demographic"),
-                    )
-                    n += 1
-                except sqlite3.Error:
-                    pass
-            con.execute(
-                "INSERT OR REPLACE INTO fetch_log (topic, month, n_articles)"
-                " VALUES (?,?,?)",
-                (topic, after[:7], n),
-            )
-            con.commit()
-            total += n
-            print(f"fetched {topic} {after[:7]}: {n} articles")
+                con.execute(
+                    "INSERT OR IGNORE INTO articles "
+                    "(pub_date, title, url, source) VALUES (?,?,?,?)",
+                    (a.pub_date, a.title, a.url, "perplexity-demographic"),
+                )
+                n += 1
+            except sqlite3.Error:
+                pass
+        con.execute(
+            "INSERT OR REPLACE INTO demo_fetch_log (topic, month, n_articles)"
+            " VALUES (?,?,?)",
+            (topic, "all", n),
+        )
+        con.commit()
+        total += n
+        print(f"fetched {topic}: {n} articles")
     con.close()
     print(f"done: {total} new articles cached")
 
