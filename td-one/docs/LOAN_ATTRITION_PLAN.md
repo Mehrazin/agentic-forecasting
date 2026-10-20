@@ -191,9 +191,18 @@ without failure evidence.
   S3 (+30–59%) — TSFMs have no *relative* robustness edge, but Chronos-2 is
   best in *absolute* CRPS on 6/8 shifts. S4/S5 never break (honest negatives).
   Coverage collapses under level shifts (M0 0.61→0.08 at S1/4σ).
-- Full report: `experiments/exp67_report.md`. exp68 pre-registration is
-  locked in that report (dev S1/S4/S6, eval S2/S3/S5/S7, seeds 100+, dev
-  1–2σ / holdout 2–4σ).
+### exp68 outcome (2026-10-20) — Phase B COMPLETE: honest negative
+
+- Guard (`src/td_one/agent/shift_guard.py`): CUSUM on policy-rate covariate
+  (2-month lead) + PIT-filtered announcements → context truncation +
+  conformal widening (dev-calibrated). 18/18 guard tests green.
+- **Claim FAILED:** guard+TSFM (Chronos-2) vs TSFM-alone on holdout
+  (S2/S3/S5/S7, 2–4σ, seeds 100–101): +0.5% rel., p=0.824, win rate 14.6%.
+  Do-no-harm gates pass.
+- **Lesson:** context truncation hurts — Chronos-2 adapts better with full
+  (contaminated) context than with 9 post-shift points; correct detection
+  (S2: 12/12) gained nothing. Per pre-registration: no iteration.
+- Full report: `experiments/exp68_report.md`.
 
 ## Integration (exp69)
 Track 2's shift scenarios stress-test Track 1's group forecaster.

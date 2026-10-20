@@ -81,6 +81,7 @@ Numbering jumps from exp25 to exp40 (exp26–exp39 were never assigned).
 | exp66b | Grouping for explainability (full v2, prompt playground, LLM-as-selector) | ⚠️ pivot: LLM grouper works in isolation (5/5) but flaky in full pipeline — groupings not reproducible run-to-run; recommendation: deterministic groups + LLM explanations | [report](exp66b_report.md) |
 | exp66c | Deterministic grouping (kmeans + tree-surrogate rules) + LLM explanations | ✅ pivot validated: 10 reproducible groups, ≤4 plain-English conditions, 10/10 citation pass; grouping costs CRPS vs global (+0.009–0.016); static risk bins do NOT calibrate (inverted) | [report](exp66c_report.md) |
 | exp67 | TSFM red-team on 7 loan-attrition shifts (real Chronos-2/TimesFM-2.5 weights) | ⚖️ all models break together at 4σ S1 (+185–228%); S4/S5 never break (honest negative); Chronos-2 best absolute in 6/8 shifts; coverage collapses (m0 0.61→0.08) | [report](exp67_report.md) |
+| exp68 | Agentic shift guard (CUSUM + truncation + widening) vs TSFM-alone, pre-registered holdout | ❌ honest negative: guard +0.5% (p=0.824), wins 14.6% — context truncation hurts; correct detection ≠ benefit | [report](exp68_report.md) |
 
 ## Supporting reports
 
