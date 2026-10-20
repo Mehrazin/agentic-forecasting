@@ -409,3 +409,58 @@ def test_blocked_cv_equal_tool_baseline():
     )
     assert res["baseline"] == "equal_tool"
     assert len(res["crps"]) == 10
+
+
+def test_blocked_cv_news_features_fn_passthrough():
+    # Regression test: news_features_fn is actually passed to fc.predict
+    # (added for exp71 macro-signal integration).
+    recs = [_fake_record(s, origin=300 + s) for s in range(20)]
+    seen: list[int] = []
+
+    def nf_fn(r: dict) -> dict:
+        seen.append(r["origin"])
+        return {"coverage": 1.0, "stress_signal": 1.0}
+
+    def make() -> ProposedForecaster:
+        fc = ProposedForecaster(h=1, dataset="food_cpi", use_news=True)
+        fc.models = [*CLASSICAL]
+        return fc
+
+    res = blocked_cv_predict(
+        recs, FEATURE_NAMES, make, n_folds=4, baseline=make, news_features_fn=nf_fn
+    )
+    # fn called once per test origin (baseline calls must NOT carry news)
+    assert len(seen) == 20
+    assert all(np.isfinite(res["crps"])) and all(np.isfinite(res["baseline_crps"]))
+    # without the fn, nothing changes
+    res2 = blocked_cv_predict(recs, FEATURE_NAMES, make, n_folds=4, baseline=make)
+    assert res2["crps"] == res2["baseline_crps"]
+
+
+def test_news_modulation_single_regime_no_keyerror():
+    # Regression (exp70): degenerate router (all train records one regime)
+    # + news modulation must not KeyError on the target regime.
+    recs = []
+    for s in range(12):
+        r = _fake_record(s, origin=300 + s)
+        recs.append(r)
+
+    def make() -> ProposedForecaster:
+        # food_cpi spec; label_fn on fake feats may be degenerate single-regime
+        fc = ProposedForecaster(h=1, dataset="food_cpi", use_news=True)
+        fc.models = [*CLASSICAL]
+        return fc
+
+    fc = make()
+    fc.fit(recs, FEATURE_NAMES)
+    r = recs[0]
+    qm = {m: np.asarray(r["quantiles"][m], dtype=float) for m in fc.models}
+    feats = dict(zip(FEATURE_NAMES, r["features"], strict=True))
+    # train proxy array matching _TRAIN_PROXY length contract in combine
+    train = np.full(30, 0.5)
+    out = fc.predict(
+        train, qm, feats, FEATURE_NAMES,
+        news_features={"coverage": 0.9, "stress_signal": 1.5},
+    )
+    assert out.quantiles is not None
+    assert out.explanation and "news" in out.explanation

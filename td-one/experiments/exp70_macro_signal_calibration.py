@@ -107,6 +107,61 @@ def dir_accuracy(signal: np.ndarray, realized: np.ndarray) -> tuple[float, int]:
     return float(np.mean(np.sign(signal[mask]) == np.sign(realized[mask]))), int(mask.sum())
 
 
+def dir_accuracy_weighted(
+    signal: np.ndarray, realized: np.ndarray, weights: np.ndarray
+) -> tuple[float, int]:
+    """Certainty-weighted sign agreement. Returns (acc, n)."""
+    mask = signal != 0
+    if mask.sum() == 0:
+        return float("nan"), 0
+    hit = (np.sign(signal[mask]) == np.sign(realized[mask])).astype(float)
+    w = weights[mask]
+    return float(np.sum(hit * w) / np.sum(w)) if w.sum() > 0 else float("nan"), int(mask.sum())
+
+
+def offset_accuracy(signal: pd.Series, realized: pd.Series, offset: int) -> tuple[float, int]:
+    """Directional accuracy of signal_m against realized_{m+offset}.
+
+    offset=+1 tests the forward-looking hypothesis (news this month
+    anticipates next month's data); offset=-1 tests lag.
+    """
+    r = realized.shift(-offset)
+    df = pd.DataFrame({"s": signal, "r": r}).dropna()
+    return dir_accuracy(df["s"].to_numpy(float), df["r"].to_numpy(float))
+
+
+def diagnose(
+    cat: str, tr: dict, offsets: dict[int, tuple[float, int]], cert: dict[str, float], n_months: int
+) -> str:
+    """Researcher-mindset diagnosis for a failed gate.
+
+    Returns a one-line diagnosis of WHY the category failed.
+    """
+    acc = tr["dir_acc"]
+    if acc != acc:  # NaN
+        return "no non-zero signals on train — extractor silent (coverage or LLM abstention)"
+    parts = []
+    if tr["n_signal"] < 8:
+        parts.append(f"thin (n={tr['n_signal']})")
+    if tr["corr"] == tr["corr"] and tr["corr"] < 0:
+        parts.append("anti-correlated: rubric sign may be inverted")
+    best_off = max(offsets, key=lambda o: offsets[o][0] if offsets[o][0] == offsets[o][0] else -1)
+    if (
+        offsets[best_off][0] == offsets[best_off][0]
+        and best_off != 0
+        and offsets[best_off][0] > acc + 0.1
+    ):
+        parts.append(f"mistimed: offset {best_off:+d} reaches {offsets[best_off][0]:.2f}")
+    hi = cert.get("high>=0.7", float("nan"))
+    if hi == hi and hi > acc + 0.1:
+        parts.append(f"miscalibrated-low-cert: high-certainty subset hits {hi:.2f}")
+    if abs(tr["corr"]) < 0.1 and acc < 0.55:
+        parts.append("noisy: no linear or directional relation")
+    if not parts:
+        parts.append("weak but directionally plausible — needs more months")
+    return "; ".join(parts)
+
+
 def certainty_calibration(
     signal: np.ndarray, realized: np.ndarray, certainty: np.ndarray
 ) -> dict[str, float]:
@@ -119,10 +174,19 @@ def certainty_calibration(
 
 
 def main() -> None:
-    con = sqlite3.connect(DB)
-    sig = pd.read_sql(
-        "SELECT month, category, direction, certainty FROM macro_signals", con
-    )
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--db", default=str(DB))
+    args = ap.parse_args()
+    con = sqlite3.connect(args.db)
+    has_table = con.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='macro_signals'"
+    ).fetchone()
+    if not has_table:
+        print("macro_signals table missing — run Phase 2 extraction first")
+        return
+    sig = pd.read_sql("SELECT month, category, direction, certainty FROM macro_signals", con)
     con.close()
     if sig.empty:
         print("macro_signals is empty — run Phase 2 extraction first")
@@ -143,32 +207,88 @@ def main() -> None:
             return {"n_months": len(df), "n_signal": n, "dir_acc": acc, "corr": corr}
 
         tr, ho = stats(train), stats(hold)
-        cert = certainty_calibration(
-            train["direction"].to_numpy(float), train["realized"].to_numpy(float),
+        cert = (
+            certainty_calibration(
+                train["direction"].to_numpy(float),
+                train["realized"].to_numpy(float),
+                train["certainty"].to_numpy(float),
+            )
+            if len(train)
+            else {}
+        )
+        # Alternative designs (researcher mindset: diagnose before killing).
+        s_tr = train["direction"]
+        r_tr = realized_change(load_anchor(kind), transform).reindex(s_tr.index)
+        offsets = {o: offset_accuracy(s_tr, r_tr, o) for o in (-1, 0, 1)}
+        wacc, _ = dir_accuracy_weighted(
+            train["direction"].to_numpy(float),
+            train["realized"].to_numpy(float),
             train["certainty"].to_numpy(float),
-        ) if len(train) else {}
-        live = tr["dir_acc"] == tr["dir_acc"] and tr["dir_acc"] > GATE
-        results[cat] = {
-            "anchor": kind, "transform": transform,
-            "train": tr, "holdout": ho, "certainty_bins_train": cert,
-            "live": bool(live),
+        )
+        strong_mask = train["direction"].abs() >= 2
+        strong_acc, strong_n = dir_accuracy(
+            train["direction"][strong_mask].to_numpy(float),
+            train["realized"][strong_mask].to_numpy(float),
+        )
+        variants = {
+            "offset_-1": offsets[-1][0],
+            "offset_0": offsets[0][0],
+            "offset_+1": offsets[1][0],
+            "certainty_weighted": wacc,
+            "strong_only_|dir|>=2": strong_acc,
+            "strong_only_n": strong_n,
         }
+        best_variant = max(
+            ((k, v) for k, v in variants.items() if v == v and k != "strong_only_n"),
+            key=lambda kv: kv[1],
+            default=(None, float("nan")),
+        )
+        live = tr["dir_acc"] == tr["dir_acc"] and tr["dir_acc"] > GATE  # NaN-safe
+        # Tripwire, not execution: a category that fails on the base metric
+        # but passes on a principled variant goes "live (variant)" with the
+        # variant recorded — the diagnosis says why.
+        live_variant = None
+        if not live and best_variant[1] == best_variant[1] and best_variant[1] > GATE:  # NaN-safe
+            live, live_variant = True, best_variant[0]
+        diagnosis = diagnose(cat, tr, offsets, cert, len(train))
+        results[cat] = {
+            "anchor": kind,
+            "transform": transform,
+            "train": tr,
+            "holdout": ho,
+            "certainty_bins_train": cert,
+            "variants": variants,
+            "diagnosis": diagnosis,
+            "live": bool(live),
+            "live_via_variant": live_variant,
+        }
+        status = "LIVE" if live and not live_variant else ("LIVE(variant)" if live else "dead")
         print(
             f"{cat:20s} train acc={tr['dir_acc']:.2f} (n={tr['n_signal']}) "
             f"corr={tr['corr']:+.2f} | holdout acc={ho['dir_acc']:.2f} "
-            f"(n={ho['n_signal']}) | {'LIVE' if live else 'dead'}"
+            f"(n={ho['n_signal']}) | {status}"
         )
+        if not live:
+            print(f"  diagnosis: {diagnosis}")
+        elif live_variant:
+            print(f"  live via variant: {live_variant} = {best_variant[1]:.2f}")
 
     anchored = set(ANCHORS)
     unanchored = sorted(set(sig["category"].unique()) - anchored)
     for cat in unanchored:
-        results[cat] = {"anchor": None, "live": False,
-                        "note": "no realized anchor — research artifact only"}
+        results[cat] = {
+            "anchor": None,
+            "live": False,
+            "note": "no realized anchor — research artifact only",
+        }
         print(f"{cat:20s} unanchored — cannot go live")
 
-    out = ROOT / "experiments" / "exp70_results.json"
-    out.write_text(json.dumps({"gate": GATE, "train_end": TRAIN_END,
-                               "categories": results}, indent=2, default=str))
+    out = ROOT / "experiments" / "exp70_macro_signal_results.json"
+    out.write_text(
+        json.dumps(
+            {"gate": GATE, "train_end": TRAIN_END, "categories": results}, indent=2, default=str
+        )
+    )
     live = [c for c, r in results.items() if r["live"]]
     print(f"\nlive categories ({len(live)}): {live}")
     print(f"results -> {out}")

@@ -185,6 +185,7 @@ def blocked_cv_predict(
     baseline: str | Callable[[], ProposedForecaster] = "best_single",
     fold_mode: str = "time",
     seed: int = 0,
+    news_features_fn: Callable[[dict[str, Any]], dict[str, Any] | None] | None = None,
 ) -> dict[str, Any]:
     """Blocked K-fold CV: fit per fold on train records, predict test origins.
 
@@ -262,7 +263,8 @@ def blocked_cv_predict(
             qm = {m: np.asarray(r["quantiles"][m], dtype=float) for m in fc.models}
             feats = dict(zip(feature_names, r["features"], strict=True))
 
-            out = fc.predict(_TRAIN_PROXY, qm, feats, feature_names)
+            nf = news_features_fn(r) if news_features_fn is not None else None
+            out = fc.predict(_TRAIN_PROXY, qm, feats, feature_names, news_features=nf)
             c = _mean_crps(out.quantiles, actual)
             method_crps[i] = c
             fold_c.append(c)

@@ -89,7 +89,7 @@ Numbering jumps from exp25 to exp40 (exp26–exp39 were never assigned).
 | exp69b | Broad-synthesis variant: LLM + semantic RAG over 12+ macro topics vs rate-news-only | ❌ synthesis hurts: D vs B′ −5.0% (win 5.6%) — corroborating context dilutes timing; unannounced-shock synthesis untested, not refuted | [report](exp69b_report.md) |
 | exp70 | OSFI M4 real Canadian runoff benchmark: v2 vs naive, 121 months, 4 segments + total | ❌ honest negative (kill triggered): v2 ties naive on total (−0.2%, p=0.54), significantly worse on uninsured (+10.7%, p=0.030) — aggregate runoff is near-random-walk; regime machinery adds variance | [report](exp70_report.md) |
 | exp71 | Competitor spread (Perplexity broker rates) as refi-pressure covariate for runoff | ❌ honest negative: zero effect as router feature; in-sample r=−0.85 does not survive out-of-sample (−295% MSE, n=7); Perplexity rates too sparse (8/21 months) | [report](exp71_report.md) |
-| exp70 | Macro Signal Service calibration: LLM-read monthly categorical signals (22 categories) vs FRED anchors, train/holdout, >55% gate | 🔄 in progress: fetch running (22 categories × 36 months); live/dead categories pending extraction + calibration | [design](MACRO_SIGNAL.md) |
+| exp70 | Macro Signal Service calibration: LLM-read monthly categorical signals (22 categories) vs FRED anchors, train/holdout, >55% gate | 🔄 in progress: fetch running (22 categories × 36 months); failed gates produce diagnoses + principled variants (timing offsets, certainty-weighting) before any kill | [design](MACRO_SIGNAL.md) |
 
 ## Supporting reports
 

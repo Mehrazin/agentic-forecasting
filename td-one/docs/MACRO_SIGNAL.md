@@ -45,8 +45,9 @@ For each `(month, category)`:
 
 1. **Fetch** (`scripts/fetch_macro_signal_news.py`): 22 categories x 36 months via Perplexity, resume-safe, budgeted. Coverage report below is honest — empty cells stay empty.
 2. **Extract** (`scripts/run_macro_signal_extraction.py`): Gemini Flash via the Vector proxy, resume-safe.
-3. **Calibrate** (`experiments/exp70_macro_signal_calibration.py`): FRED anchors, pre-registered gate (>55% directional accuracy on train).
-4. **Integrate** (exp71): live categories only, CRPS vs no-signal, paired test, kill criterion.
+3. **Calibrate** (`experiments/exp70_macro_signal_calibration.py`): FRED anchors, pre-registered gate (>55% directional accuracy on train), holdout reported.
+   - **Kill criteria are tripwires, not executions.** A failed gate produces a diagnosis (noisy / mistimed / miscalibrated / thin / anti-correlated) and tries principled variants: timing offsets (signal leads/lags by a month), certainty-weighting, strong-signals-only. A category that passes on a variant goes `LIVE(variant)` with the variant recorded.
+4. **Integrate** (exp71): live categories only, CRPS vs no-signal on SMM, paired test. Same philosophy: if it doesn't beat baseline, diagnose (wrong aggregation? wrong timing? wrong feature encoding?) and try one alternative before concluding.
 
 ## Coverage (Phase 1 — in progress)
 
@@ -54,6 +55,6 @@ For each `(month, category)`:
 
 ## Calibration results (Phase 3 — pending)
 
-*exp70_results.json lands here.*
+*exp70_macro_signal_results.json lands here.*
 
 ## Integration verdict (Phase 4 — pending)

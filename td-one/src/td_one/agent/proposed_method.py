@@ -273,7 +273,9 @@ class ProposedForecaster:
                     (r for r in spec.regimes if r in ("stressed", "noisy", "volatile")),
                     spec.regimes[-1],
                 )
-                probs[target] = min(1.0, probs[target] + shift)
+                # .get: router may be degenerate (single-regime train fold) and
+                # probs may not contain `target` (macro-signal news path, exp70).
+                probs[target] = min(1.0, probs.get(target, 0.0) + shift)
                 total = sum(probs.values())
                 probs = {k: v / total for k, v in probs.items()}
                 news_used = True

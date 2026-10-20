@@ -162,7 +162,7 @@ MIN_GOOD = 3  # in-month articles below this trigger the single retry
 
 def last_complete_months(n: int, today: dt.date | None = None) -> list[str]:
     """Return the last ``n`` complete months as YYYY-MM, newest first."""
-    today = today or dt.date.today()
+    today = today or dt.datetime.now(dt.UTC).date()
     y, m = today.year, today.month - 1  # current month is incomplete
     if m == 0:
         y, m = y - 1, 12
@@ -212,8 +212,10 @@ def log_fetch(con: sqlite3.Connection, ym: str, category: str, n_new: int) -> No
 
 
 def init_article_categories(con: sqlite3.Connection) -> None:
-    """Link table: which category a fetch was for (URL dedup is global,
-    so one article can belong to several categories)."""
+    """Link articles to the category they were fetched for.
+
+    URL dedup is global, so one article can belong to several categories.
+    """
     con.execute(
         "CREATE TABLE IF NOT EXISTS article_categories ("
         " url TEXT, category TEXT, PRIMARY KEY (url, category))"
@@ -259,10 +261,7 @@ def fetch_cell(
     if len(in_month) < MIN_GOOD:
         # One retry: next phrasing + explicit window (works for some topics).
         retry_q = f"{phrasings[(month_idx + 1) % len(phrasings)]} — news from {label}"
-        try:
-            arts2 = client.search(retry_q, before=nxt, after=first, limit=12)
-        except Exception:  # noqa: BLE001 — retry is best-effort
-            arts2 = []
+        arts2 = client.search(retry_q, before=nxt, after=first, limit=12)
         seen = {a.url for a in in_month}
         in_month += [a for a in arts2 if a.pub_date.startswith(ym) and a.url not in seen]
     return in_month
@@ -307,11 +306,23 @@ def main() -> None:
             print(f"call cap reached ({calls}); stopping — rerun to resume", flush=True)
             break
         month_idx = months.index(ym)
-        try:
-            arts = fetch_cell(client, cat, ym, month_idx)
-        except Exception as e:  # noqa: BLE001 — resume-safe: log and move on
-            print(f"  !! {cat} {ym}: {e}", flush=True)
-            arts = []
+        arts: list[PerplexityArticle] = []
+        for attempt in range(3):
+            try:
+                arts = fetch_cell(client, cat, ym, month_idx)
+                break
+            except Exception as e:  # noqa: BLE001
+                if "429" in str(e):
+                    wait = 60 * (attempt + 1)
+                    print(f"  429 {cat} {ym}: backing off {wait}s", flush=True)
+                    time.sleep(wait)
+                    continue
+                print(f"  !! {cat} {ym}: {e}", flush=True)
+                break
+        else:
+            # 429s persisted: leave the cell unlogged so --resume retries it.
+            print(f"  !! {cat} {ym}: 429 persisted, skipping (not logged)", flush=True)
+            continue
         calls += 1  # fetch_cell may spend a 2nd call on retry; counted in report
         n = store(con, arts, cat)
         log_fetch(con, ym, cat, n)
@@ -319,7 +330,7 @@ def main() -> None:
         coverage.setdefault(cat, []).append(len(arts))
         if idx % 25 == 0:
             print(f"  [{idx}/{len(todo)}] {total_new} new articles, ~{calls} calls", flush=True)
-        time.sleep(1)
+        time.sleep(2)
 
     con.close()
     print(f"\nDone. {total_new} new articles from ~{calls} primary calls.")
