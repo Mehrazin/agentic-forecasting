@@ -1,0 +1,5449 @@
+{
+ "config": {
+  "mode": "real",
+  "calibration": {
+   "rate/medium": 0.08569341194679098,
+   "rate/large": 0.14098524660098571,
+   "policy/medium": 0.03437050841267977,
+   "policy/large": 0.05306114698554079
+  }
+ },
+ "summary": {
+  "primary_D_vs_B_straddle": {
+   "n": 36,
+   "mean_diff": 0.0024565146708279725,
+   "rel_improvement": -0.049949366448601186,
+   "win_rate": 0.05555555555555555,
+   "paired_p": 0.14773252547587604,
+   "verdict": "FAIL"
+  },
+  "D_vs_A_straddle": {
+   "n": 36,
+   "mean_diff": -0.0034115056444036537,
+   "rel_improvement": 0.06936760752841543,
+   "win_rate": 0.3888888888888889,
+   "paired_p": 0.43065991422594563,
+   "verdict": "FAIL"
+  },
+  "B_vs_A_straddle_replication": {
+   "n": 36,
+   "mean_diff": -0.005868020315231627,
+   "rel_improvement": 0.11931697397701664,
+   "win_rate": 0.4166666666666667,
+   "paired_p": 0.190876293042239,
+   "verdict": "FAIL"
+  },
+  "D_vs_C_straddle": {
+   "n": 36,
+   "mean_diff": 0.0021793164279001755,
+   "rel_improvement": -0.04431297567946235,
+   "win_rate": 0.027777777777777776,
+   "paired_p": 0.19378046062165882,
+   "verdict": "FAIL"
+  },
+  "do_no_harm_nonews_D": {
+   "n": 36,
+   "mean_diff": 0.0,
+   "rel_improvement": -0.0,
+   "win_rate": 0.0,
+   "paired_p": 1.0,
+   "verdict": "PASS"
+  },
+  "do_no_harm_post_D": {
+   "n": 24,
+   "mean_diff": 0.0,
+   "rel_improvement": -0.0,
+   "win_rate": 0.0,
+   "paired_p": 1.0,
+   "verdict": "PASS"
+  },
+  "retrieval_audit": {
+   "topics": {
+    "housing": 18,
+    "recession_risk": 18,
+    "direct": 96,
+    "fx": 24,
+    "food_inflation": 30,
+    "unemployment": 12,
+    "oil_geopolitics": 24,
+    "small_business": 12,
+    "elections": 18,
+    "immigration": 18,
+    "tax_rules": 18
+   },
+   "direct_share": 0.3333333333333333
+  },
+  "driving_trends_D": {
+   "rate hike expected": 18,
+   "borrowing costs rising": 3,
+   "mortgage renewal competition": 3,
+   "mortgage cost increase": 3,
+   "aggressive monetary tightening": 3,
+   "mortgage payment shock": 3,
+   "stricter lending standards": 3,
+   "mortgage rule tightening": 6,
+   "mortgage qualification tightening": 6,
+   "increased borrower churn": 3,
+   "borrower churn rising": 3,
+   "policy-driven attrition": 3,
+   "mortgage-rule tightening": 3,
+   "regulatory churn": 3,
+   "mortgage rule overhaul": 3,
+   "regulatory tightening": 3
+  }
+ },
+ "rows": [
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.022992181340844936,
+   "crps_B": 0.0488694394195386,
+   "crps_D": 0.05743814019285293,
+   "crps_C": 0.0488694394195386,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 3,
+    "driving_trends": [
+     "rate hike expected"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 2,
+    "driving_trends": [
+     "rate hike expected",
+     "borrowing costs rising"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.030133626055655702,
+   "crps_B": 0.030133626055655702,
+   "crps_D": 0.030133626055655702,
+   "crps_C": 0.030133626055655702,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.029649433454951316,
+   "crps_B": 0.04850134929115329,
+   "crps_D": 0.04850134929115329,
+   "crps_C": 0.04850134929115329,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 2,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage renewal pressure"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 2,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage renewal competition"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "oil_geopolitics",
+    "small_business",
+    "fx",
+    "food_inflation"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02985244367149863,
+   "crps_B": 0.02985244367149863,
+   "crps_D": 0.02985244367149863,
+   "crps_C": 0.02985244367149863,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.030114177207225524,
+   "crps_B": 0.05108619284593782,
+   "crps_D": 0.05108619284593782,
+   "crps_C": 0.05108619284593782,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 1,
+    "driving_trends": [
+     "rate hike expected"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 1,
+    "driving_trends": [
+     "rate hike expected"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "small_business",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03274963070932049,
+   "crps_B": 0.03274963070932049,
+   "crps_D": 0.03274963070932049,
+   "crps_C": 0.03274963070932049,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03263848537696259,
+   "crps_B": 0.03263848537696259,
+   "crps_D": 0.03263848537696259,
+   "crps_C": 0.04255422761105754,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics",
+    "sp500"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03263848537696259,
+   "crps_B": 0.03263848537696259,
+   "crps_D": 0.03263848537696259,
+   "crps_C": 0.03263848537696259,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.026067191365132324,
+   "crps_B": 0.026067191365132324,
+   "crps_D": 0.026067191365132324,
+   "crps_C": 0.03927482197301777,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.028154921668818535,
+   "crps_B": 0.028154921668818535,
+   "crps_D": 0.028154921668818535,
+   "crps_C": 0.028154921668818535,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.025094678656390125,
+   "crps_B": 0.025094678656390125,
+   "crps_D": 0.025094678656390125,
+   "crps_C": 0.047936569676001635,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "recession_risk",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.0247560654497777,
+   "crps_B": 0.0247560654497777,
+   "crps_D": 0.0247560654497777,
+   "crps_C": 0.0247560654497777,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.04873121918046111,
+   "crps_B": 0.04873121918046111,
+   "crps_D": 0.04873121918046111,
+   "crps_C": 0.04873121918046111,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": [
+     "rate hike confirmed",
+     "mortgage renewal pressure"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "small_business",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03544325829313983,
+   "crps_B": 0.03544325829313983,
+   "crps_D": 0.03544325829313983,
+   "crps_C": 0.03544325829313983,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.047120365735493726,
+   "crps_B": 0.047120365735493726,
+   "crps_D": 0.047120365735493726,
+   "crps_C": 0.047120365735493726,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": [
+     "rate hike expected"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "small_business",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.034131323714523897,
+   "crps_B": 0.034131323714523897,
+   "crps_D": 0.034131323714523897,
+   "crps_C": 0.034131323714523897,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.028854135764588725,
+   "crps_B": 0.030701664867160933,
+   "crps_D": 0.03941421836902863,
+   "crps_C": 0.030701664867160933,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 3,
+    "driving_trends": [
+     "rate hike expected"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 2,
+    "driving_trends": [
+     "rate hike expected",
+     "borrowing costs rising"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.023427280054343764,
+   "crps_B": 0.023427280054343764,
+   "crps_D": 0.023427280054343764,
+   "crps_C": 0.023427280054343764,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03033413932001733,
+   "crps_B": 0.030469643513857555,
+   "crps_D": 0.030469643513857555,
+   "crps_C": 0.030469643513857555,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 2,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage renewal pressure"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 2,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage renewal competition"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "oil_geopolitics",
+    "small_business",
+    "fx",
+    "food_inflation"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.0223248107494416,
+   "crps_B": 0.0223248107494416,
+   "crps_D": 0.0223248107494416,
+   "crps_C": 0.0223248107494416,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.033985048503913796,
+   "crps_B": 0.031888132416440076,
+   "crps_D": 0.031888132416440076,
+   "crps_C": 0.031888132416440076,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 1,
+    "driving_trends": [
+     "rate hike expected"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 1,
+    "driving_trends": [
+     "rate hike expected"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "small_business",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02127515962572495,
+   "crps_B": 0.02127515962572495,
+   "crps_D": 0.02127515962572495,
+   "crps_C": 0.02127515962572495,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.024287606216760224,
+   "crps_B": 0.024287606216760224,
+   "crps_D": 0.024287606216760224,
+   "crps_C": 0.03138361773475872,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics",
+    "sp500"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.024287606216760224,
+   "crps_B": 0.024287606216760224,
+   "crps_D": 0.024287606216760224,
+   "crps_C": 0.024287606216760224,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.030653574734251156,
+   "crps_B": 0.030653574734251156,
+   "crps_D": 0.030653574734251156,
+   "crps_C": 0.029565444093423245,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02297534231979026,
+   "crps_B": 0.02297534231979026,
+   "crps_D": 0.02297534231979026,
+   "crps_C": 0.02297534231979026,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.031227770986117356,
+   "crps_B": 0.031227770986117356,
+   "crps_D": 0.031227770986117356,
+   "crps_C": 0.03285064673501443,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "recession_risk",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02365039298284415,
+   "crps_B": 0.02365039298284415,
+   "crps_D": 0.02365039298284415,
+   "crps_C": 0.02365039298284415,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02792586066899292,
+   "crps_B": 0.02792586066899292,
+   "crps_D": 0.02792586066899292,
+   "crps_C": 0.02792586066899292,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": [
+     "rate hike confirmed",
+     "mortgage renewal pressure"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "small_business",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.020674839733306864,
+   "crps_B": 0.020674839733306864,
+   "crps_D": 0.020674839733306864,
+   "crps_C": 0.020674839733306864,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.05849955672971141,
+   "crps_B": 0.05849955672971141,
+   "crps_D": 0.05849955672971141,
+   "crps_C": 0.05849955672971141,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": [
+     "rate hike expected"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "small_business",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.018243051343176553,
+   "crps_B": 0.018243051343176553,
+   "crps_D": 0.018243051343176553,
+   "crps_C": 0.018243051343176553,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.046215667853329985,
+   "crps_B": 0.05155187605469954,
+   "crps_D": 0.0658341113791647,
+   "crps_C": 0.05155187605469954,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 3,
+    "driving_trends": [
+     "rate hike expected"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 2,
+    "driving_trends": [
+     "rate hike expected",
+     "borrowing costs rising"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.06995253588852306,
+   "crps_B": 0.06995253588852306,
+   "crps_D": 0.06995253588852306,
+   "crps_C": 0.06995253588852306,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.0490959150666999,
+   "crps_B": 0.04207245875483236,
+   "crps_D": 0.04207245875483236,
+   "crps_C": 0.04207245875483236,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 2,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage renewal pressure"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 2,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage renewal competition"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "oil_geopolitics",
+    "small_business",
+    "fx",
+    "food_inflation"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.07642603717611433,
+   "crps_B": 0.07642603717611433,
+   "crps_D": 0.07642603717611433,
+   "crps_C": 0.07642603717611433,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.04907941311638173,
+   "crps_B": 0.04032901468727223,
+   "crps_D": 0.04032901468727223,
+   "crps_C": 0.04032901468727223,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 1,
+    "driving_trends": [
+     "rate hike expected"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 1,
+    "driving_trends": [
+     "rate hike expected"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "small_business",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.07587642910335055,
+   "crps_B": 0.07587642910335055,
+   "crps_D": 0.07587642910335055,
+   "crps_C": 0.07587642910335055,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.030892131699836928,
+   "crps_B": 0.030892131699836928,
+   "crps_D": 0.030892131699836928,
+   "crps_C": 0.04186110311312728,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics",
+    "sp500"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.030892131699836928,
+   "crps_B": 0.030892131699836928,
+   "crps_D": 0.030892131699836928,
+   "crps_C": 0.030892131699836928,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03764353395607431,
+   "crps_B": 0.03764353395607431,
+   "crps_D": 0.03764353395607431,
+   "crps_C": 0.04110321973682674,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03397181919303369,
+   "crps_B": 0.03397181919303369,
+   "crps_D": 0.03397181919303369,
+   "crps_C": 0.03397181919303369,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.04805133735591493,
+   "crps_B": 0.04805133735591493,
+   "crps_D": 0.04805133735591493,
+   "crps_C": 0.043684560828609775,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "recession_risk",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.0400667383409004,
+   "crps_B": 0.0400667383409004,
+   "crps_D": 0.0400667383409004,
+   "crps_C": 0.0400667383409004,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.038978151477203196,
+   "crps_B": 0.038978151477203196,
+   "crps_D": 0.038978151477203196,
+   "crps_C": 0.038978151477203196,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": [
+     "rate hike confirmed",
+     "mortgage renewal pressure"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "small_business",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.06968199182128035,
+   "crps_B": 0.06968199182128035,
+   "crps_D": 0.06968199182128035,
+   "crps_C": 0.06968199182128035,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02984040503310454,
+   "crps_B": 0.02984040503310454,
+   "crps_D": 0.02984040503310454,
+   "crps_C": 0.02984040503310454,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": [
+     "rate hike expected"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "small_business",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.040971842756845366,
+   "crps_B": 0.040971842756845366,
+   "crps_D": 0.040971842756845366,
+   "crps_C": 0.040971842756845366,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03715442979803273,
+   "crps_B": 0.05281724914490733,
+   "crps_D": 0.03715442979803273,
+   "crps_C": 0.05281724914490733,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 3,
+    "driving_trends": [
+     "rate hike expected"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 0,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage cost increase"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.030133626055655702,
+   "crps_B": 0.030133626055655702,
+   "crps_D": 0.030133626055655702,
+   "crps_C": 0.030133626055655702,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.06130745002311921,
+   "crps_B": 0.0563887203583091,
+   "crps_D": 0.0563887203583091,
+   "crps_C": 0.0563887203583091,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 2,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage renewal pressure"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 2,
+    "driving_trends": [
+     "rate hike expected",
+     "aggressive monetary tightening"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "oil_geopolitics",
+    "small_business",
+    "fx",
+    "food_inflation"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02985244367149863,
+   "crps_B": 0.02985244367149863,
+   "crps_D": 0.02985244367149863,
+   "crps_C": 0.02985244367149863,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.07104943651177655,
+   "crps_B": 0.057766135531135826,
+   "crps_D": 0.057766135531135826,
+   "crps_C": 0.057766135531135826,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 1,
+    "driving_trends": [
+     "rate hike expected",
+     "borrowing costs rising"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 1,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage payment shock"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "direct",
+    "small_business"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03274963070932049,
+   "crps_B": 0.03274963070932049,
+   "crps_D": 0.03274963070932049,
+   "crps_C": 0.03274963070932049,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03263848537696259,
+   "crps_B": 0.03263848537696259,
+   "crps_D": 0.03263848537696259,
+   "crps_C": 0.051769533386756654,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "small",
+    "months_from_now": 0,
+    "driving_trends": [
+     "first-time buyer incentive"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics",
+    "sp500"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03263848537696259,
+   "crps_B": 0.03263848537696259,
+   "crps_D": 0.03263848537696259,
+   "crps_C": 0.03263848537696259,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.032360806533129935,
+   "crps_B": 0.032360806533129935,
+   "crps_D": 0.032360806533129935,
+   "crps_C": 0.04593491532474974,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "small",
+    "months_from_now": 0,
+    "driving_trends": [
+     "buyer support incentives"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.028154921668818535,
+   "crps_B": 0.028154921668818535,
+   "crps_D": 0.028154921668818535,
+   "crps_C": 0.028154921668818535,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03100600362839401,
+   "crps_B": 0.03100600362839401,
+   "crps_D": 0.03100600362839401,
+   "crps_C": 0.054183241714266306,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "recession_risk",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.0247560654497777,
+   "crps_B": 0.0247560654497777,
+   "crps_D": 0.0247560654497777,
+   "crps_C": 0.0247560654497777,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.10141748375174398,
+   "crps_B": 0.10141748375174398,
+   "crps_D": 0.10141748375174398,
+   "crps_C": 0.10141748375174398,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 0,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "direct",
+    "small_business"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03544325829313983,
+   "crps_B": 0.03544325829313983,
+   "crps_D": 0.03544325829313983,
+   "crps_C": 0.03544325829313983,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.11214121782365573,
+   "crps_B": 0.11214121782365573,
+   "crps_D": 0.11214121782365573,
+   "crps_C": 0.11214121782365573,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 0,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage renewal pressure"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "direct",
+    "small_business"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.034131323714523897,
+   "crps_B": 0.034131323714523897,
+   "crps_D": 0.034131323714523897,
+   "crps_C": 0.034131323714523897,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.1266088472844346,
+   "crps_B": 0.07269533118501814,
+   "crps_D": 0.1266088472844346,
+   "crps_C": 0.07269533118501814,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 3,
+    "driving_trends": [
+     "rate hike expected"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 0,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage cost increase"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.023427280054343764,
+   "crps_B": 0.023427280054343764,
+   "crps_D": 0.023427280054343764,
+   "crps_C": 0.023427280054343764,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.16001828261092102,
+   "crps_B": 0.0821538362109496,
+   "crps_D": 0.0821538362109496,
+   "crps_C": 0.0821538362109496,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 2,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage renewal pressure"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 2,
+    "driving_trends": [
+     "rate hike expected",
+     "aggressive monetary tightening"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "oil_geopolitics",
+    "small_business",
+    "fx",
+    "food_inflation"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.0223248107494416,
+   "crps_B": 0.0223248107494416,
+   "crps_D": 0.0223248107494416,
+   "crps_C": 0.0223248107494416,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.19936420486003928,
+   "crps_B": 0.09789098805656113,
+   "crps_D": 0.09789098805656113,
+   "crps_C": 0.09789098805656113,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 1,
+    "driving_trends": [
+     "rate hike expected",
+     "borrowing costs rising"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 1,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage payment shock"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "direct",
+    "small_business"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02127515962572495,
+   "crps_B": 0.02127515962572495,
+   "crps_D": 0.02127515962572495,
+   "crps_C": 0.02127515962572495,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.024287606216760224,
+   "crps_B": 0.024287606216760224,
+   "crps_D": 0.024287606216760224,
+   "crps_C": 0.04051985266299268,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "small",
+    "months_from_now": 0,
+    "driving_trends": [
+     "first-time buyer incentive"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics",
+    "sp500"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.024287606216760224,
+   "crps_B": 0.024287606216760224,
+   "crps_D": 0.024287606216760224,
+   "crps_C": 0.024287606216760224,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.048682568004899306,
+   "crps_B": 0.048682568004899306,
+   "crps_D": 0.048682568004899306,
+   "crps_C": 0.04242520861055834,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "small",
+    "months_from_now": 0,
+    "driving_trends": [
+     "buyer support incentives"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02297534231979026,
+   "crps_B": 0.02297534231979026,
+   "crps_D": 0.02297534231979026,
+   "crps_C": 0.02297534231979026,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.08472674998361503,
+   "crps_B": 0.08472674998361503,
+   "crps_D": 0.08472674998361503,
+   "crps_C": 0.05375765845556297,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "recession_risk",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02365039298284415,
+   "crps_B": 0.02365039298284415,
+   "crps_D": 0.02365039298284415,
+   "crps_C": 0.02365039298284415,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.08354906564715771,
+   "crps_B": 0.08354906564715771,
+   "crps_D": 0.08354906564715771,
+   "crps_C": 0.08354906564715771,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 0,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "direct",
+    "small_business"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.020674839733306864,
+   "crps_B": 0.020674839733306864,
+   "crps_D": 0.020674839733306864,
+   "crps_C": 0.020674839733306864,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.047445744514493335,
+   "crps_B": 0.047445744514493335,
+   "crps_D": 0.047445744514493335,
+   "crps_C": 0.047445744514493335,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 0,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage renewal pressure"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "direct",
+    "small_business"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.018243051343176553,
+   "crps_B": 0.018243051343176553,
+   "crps_D": 0.018243051343176553,
+   "crps_C": 0.018243051343176553,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.07294447572226977,
+   "crps_B": 0.0643032706700525,
+   "crps_D": 0.07294447572226977,
+   "crps_C": 0.0643032706700525,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 3,
+    "driving_trends": [
+     "rate hike expected"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 0,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage cost increase"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.06995253588852306,
+   "crps_B": 0.06995253588852306,
+   "crps_D": 0.06995253588852306,
+   "crps_C": 0.06995253588852306,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.0934689150298686,
+   "crps_B": 0.05997075053510547,
+   "crps_D": 0.05997075053510547,
+   "crps_C": 0.05997075053510547,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 2,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage renewal pressure"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 2,
+    "driving_trends": [
+     "rate hike expected",
+     "aggressive monetary tightening"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "oil_geopolitics",
+    "small_business",
+    "fx",
+    "food_inflation"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.07642603717611433,
+   "crps_B": 0.07642603717611433,
+   "crps_D": 0.07642603717611433,
+   "crps_C": 0.07642603717611433,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.10417950214078682,
+   "crps_B": 0.057707594618253005,
+   "crps_D": 0.057707594618253005,
+   "crps_C": 0.057707594618253005,
+   "signal_B": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 1,
+    "driving_trends": [
+     "rate hike expected",
+     "borrowing costs rising"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 1,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage payment shock"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "direct",
+    "small_business"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.07587642910335055,
+   "crps_B": 0.07587642910335055,
+   "crps_D": 0.07587642910335055,
+   "crps_C": 0.07587642910335055,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.030892131699836928,
+   "crps_B": 0.030892131699836928,
+   "crps_D": 0.030892131699836928,
+   "crps_C": 0.0510764088888264,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "small",
+    "months_from_now": 0,
+    "driving_trends": [
+     "first-time buyer incentive"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics",
+    "sp500"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.030892131699836928,
+   "crps_B": 0.030892131699836928,
+   "crps_D": 0.030892131699836928,
+   "crps_C": 0.030892131699836928,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.05051761435832526,
+   "crps_B": 0.05051761435832526,
+   "crps_D": 0.05051761435832526,
+   "crps_C": 0.05234709377268907,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "small",
+    "months_from_now": 0,
+    "driving_trends": [
+     "buyer support incentives"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03397181919303369,
+   "crps_B": 0.03397181919303369,
+   "crps_D": 0.03397181919303369,
+   "crps_C": 0.03397181919303369,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.07331314585770618,
+   "crps_B": 0.07331314585770618,
+   "crps_D": 0.07331314585770618,
+   "crps_C": 0.05684148561472491,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "recession_risk",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.0400667383409004,
+   "crps_B": 0.0400667383409004,
+   "crps_D": 0.0400667383409004,
+   "crps_C": 0.0400667383409004,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.07158244046850515,
+   "crps_B": 0.07158244046850515,
+   "crps_D": 0.07158244046850515,
+   "crps_C": 0.07158244046850515,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 0,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "direct",
+    "small_business"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.06968199182128035,
+   "crps_B": 0.06968199182128035,
+   "crps_D": 0.06968199182128035,
+   "crps_C": 0.06968199182128035,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.050474799059462394,
+   "crps_B": 0.050474799059462394,
+   "crps_D": 0.050474799059462394,
+   "crps_C": 0.050474799059462394,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "rate",
+    "magnitude_bucket": "large",
+    "months_from_now": 0,
+    "driving_trends": [
+     "rate hike expected",
+     "mortgage renewal pressure"
+    ]
+   },
+   "retrieved_topics": [
+    "housing",
+    "recession_risk",
+    "direct",
+    "direct",
+    "food_inflation",
+    "oil_geopolitics",
+    "direct",
+    "small_business"
+   ]
+  },
+  {
+   "shift": "S1",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.040971842756845366,
+   "crps_B": 0.040971842756845366,
+   "crps_D": 0.040971842756845366,
+   "crps_C": 0.040971842756845366,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.026424481828418018,
+   "crps_B": 0.03822310695476369,
+   "crps_D": 0.03822310695476369,
+   "crps_C": 0.03822310695476369,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 3,
+    "driving_trends": [
+     "mortgage rule tightening"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 3,
+    "driving_trends": [
+     "stricter lending standards",
+     "mortgage rule tightening"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "elections",
+    "immigration",
+    "tax_rules",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.030133626055655702,
+   "crps_B": 0.030133626055655702,
+   "crps_D": 0.030133626055655702,
+   "crps_C": 0.030133626055655702,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.028340931300759868,
+   "crps_B": 0.028340931300759868,
+   "crps_D": 0.03805179577929134,
+   "crps_C": 0.03805179577929134,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": [
+     "mortgage policy tightening",
+     "increased borrower churn"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 2,
+    "driving_trends": [
+     "mortgage qualification tightening",
+     "increased borrower churn"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "fx",
+    "food_inflation"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02985244367149863,
+   "crps_B": 0.02985244367149863,
+   "crps_D": 0.02985244367149863,
+   "crps_C": 0.02985244367149863,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.027286935283553238,
+   "crps_B": 0.03719674788250017,
+   "crps_D": 0.03719674788250017,
+   "crps_C": 0.03719674788250017,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 1,
+    "driving_trends": [
+     "mortgage qualification tightening",
+     "borrower churn rising"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 1,
+    "driving_trends": [
+     "mortgage qualification tightening",
+     "borrower churn rising"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03274963070932049,
+   "crps_B": 0.03274963070932049,
+   "crps_D": 0.03274963070932049,
+   "crps_C": 0.03274963070932049,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03263848537696259,
+   "crps_B": 0.03263848537696259,
+   "crps_D": 0.03263848537696259,
+   "crps_C": 0.0355388807606832,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics",
+    "sp500"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03263848537696259,
+   "crps_B": 0.03263848537696259,
+   "crps_D": 0.03263848537696259,
+   "crps_C": 0.03263848537696259,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.027243533052368384,
+   "crps_B": 0.027243533052368384,
+   "crps_D": 0.027243533052368384,
+   "crps_C": 0.03331736648458711,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.028154921668818535,
+   "crps_B": 0.028154921668818535,
+   "crps_D": 0.028154921668818535,
+   "crps_C": 0.028154921668818535,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.029129837885319563,
+   "crps_B": 0.029129837885319563,
+   "crps_D": 0.029129837885319563,
+   "crps_C": 0.03947857042515627,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": [
+     "lending standards tightening",
+     "housing speculation cooling"
+    ]
+   },
+   "retrieved_topics": [
+    "elections",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.0247560654497777,
+   "crps_B": 0.0247560654497777,
+   "crps_D": 0.0247560654497777,
+   "crps_C": 0.0247560654497777,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.04176290889116427,
+   "crps_B": 0.04176290889116427,
+   "crps_D": 0.04176290889116427,
+   "crps_C": 0.04176290889116427,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03544325829313983,
+   "crps_B": 0.03544325829313983,
+   "crps_D": 0.03544325829313983,
+   "crps_C": 0.03544325829313983,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03699339378019392,
+   "crps_B": 0.03699339378019392,
+   "crps_D": 0.03699339378019392,
+   "crps_C": 0.03699339378019392,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 300,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.034131323714523897,
+   "crps_B": 0.034131323714523897,
+   "crps_D": 0.034131323714523897,
+   "crps_C": 0.034131323714523897,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.01908868348010209,
+   "crps_B": 0.02243772644117681,
+   "crps_D": 0.02243772644117681,
+   "crps_C": 0.02243772644117681,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 3,
+    "driving_trends": [
+     "mortgage rule tightening"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 3,
+    "driving_trends": [
+     "stricter lending standards",
+     "mortgage rule tightening"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "elections",
+    "immigration",
+    "tax_rules",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.023427280054343764,
+   "crps_B": 0.023427280054343764,
+   "crps_D": 0.023427280054343764,
+   "crps_C": 0.023427280054343764,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.01824970693130892,
+   "crps_B": 0.01824970693130892,
+   "crps_D": 0.020898721892367165,
+   "crps_C": 0.020898721892367165,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": [
+     "mortgage policy tightening",
+     "increased borrower churn"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 2,
+    "driving_trends": [
+     "mortgage qualification tightening",
+     "increased borrower churn"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "fx",
+    "food_inflation"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.0223248107494416,
+   "crps_B": 0.0223248107494416,
+   "crps_D": 0.0223248107494416,
+   "crps_C": 0.0223248107494416,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.018532697432578415,
+   "crps_B": 0.019736088424853995,
+   "crps_D": 0.019736088424853995,
+   "crps_C": 0.019736088424853995,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 1,
+    "driving_trends": [
+     "mortgage qualification tightening",
+     "borrower churn rising"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 1,
+    "driving_trends": [
+     "mortgage qualification tightening",
+     "borrower churn rising"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02127515962572495,
+   "crps_B": 0.02127515962572495,
+   "crps_D": 0.02127515962572495,
+   "crps_C": 0.02127515962572495,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.024287606216760224,
+   "crps_B": 0.024287606216760224,
+   "crps_D": 0.024287606216760224,
+   "crps_C": 0.025712389172920545,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics",
+    "sp500"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.024287606216760224,
+   "crps_B": 0.024287606216760224,
+   "crps_D": 0.024287606216760224,
+   "crps_C": 0.024287606216760224,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02243418266804168,
+   "crps_B": 0.02243418266804168,
+   "crps_D": 0.02243418266804168,
+   "crps_C": 0.02381185203861368,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02297534231979026,
+   "crps_B": 0.02297534231979026,
+   "crps_D": 0.02297534231979026,
+   "crps_C": 0.02297534231979026,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.022989754551773017,
+   "crps_B": 0.022989754551773017,
+   "crps_D": 0.022989754551773017,
+   "crps_C": 0.026116555348476334,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": [
+     "lending standards tightening",
+     "housing speculation cooling"
+    ]
+   },
+   "retrieved_topics": [
+    "elections",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02365039298284415,
+   "crps_B": 0.02365039298284415,
+   "crps_D": 0.02365039298284415,
+   "crps_C": 0.02365039298284415,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.022053938714262294,
+   "crps_B": 0.022053938714262294,
+   "crps_D": 0.022053938714262294,
+   "crps_C": 0.022053938714262294,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.020674839733306864,
+   "crps_B": 0.020674839733306864,
+   "crps_D": 0.020674839733306864,
+   "crps_C": 0.020674839733306864,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.052334423799500304,
+   "crps_B": 0.052334423799500304,
+   "crps_D": 0.052334423799500304,
+   "crps_C": 0.052334423799500304,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 301,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.018243051343176553,
+   "crps_B": 0.018243051343176553,
+   "crps_D": 0.018243051343176553,
+   "crps_C": 0.018243051343176553,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.035486216827345374,
+   "crps_B": 0.03836851656170355,
+   "crps_D": 0.03836851656170355,
+   "crps_C": 0.03836851656170355,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 3,
+    "driving_trends": [
+     "mortgage rule tightening"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 3,
+    "driving_trends": [
+     "stricter lending standards",
+     "mortgage rule tightening"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "elections",
+    "immigration",
+    "tax_rules",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.06995253588852306,
+   "crps_B": 0.06995253588852306,
+   "crps_D": 0.06995253588852306,
+   "crps_C": 0.06995253588852306,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03160672855780914,
+   "crps_B": 0.03160672855780914,
+   "crps_D": 0.029225985863620105,
+   "crps_C": 0.029225985863620105,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": [
+     "mortgage policy tightening",
+     "increased borrower churn"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 2,
+    "driving_trends": [
+     "mortgage qualification tightening",
+     "increased borrower churn"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "fx",
+    "food_inflation"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.07642603717611433,
+   "crps_B": 0.07642603717611433,
+   "crps_D": 0.07642603717611433,
+   "crps_C": 0.07642603717611433,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02963755548717393,
+   "crps_B": 0.026606357908102327,
+   "crps_D": 0.026606357908102327,
+   "crps_C": 0.026606357908102327,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 1,
+    "driving_trends": [
+     "mortgage qualification tightening",
+     "borrower churn rising"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 1,
+    "driving_trends": [
+     "mortgage qualification tightening",
+     "borrower churn rising"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.07587642910335055,
+   "crps_B": 0.07587642910335055,
+   "crps_D": 0.07587642910335055,
+   "crps_C": 0.07587642910335055,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.030892131699836928,
+   "crps_B": 0.030892131699836928,
+   "crps_D": 0.030892131699836928,
+   "crps_C": 0.03345462158242014,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics",
+    "sp500"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.030892131699836928,
+   "crps_B": 0.030892131699836928,
+   "crps_D": 0.030892131699836928,
+   "crps_C": 0.030892131699836928,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03204591520195246,
+   "crps_B": 0.03204591520195246,
+   "crps_D": 0.03204591520195246,
+   "crps_C": 0.03248150913585276,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03397181919303369,
+   "crps_B": 0.03397181919303369,
+   "crps_D": 0.03397181919303369,
+   "crps_C": 0.03397181919303369,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03584763040472539,
+   "crps_B": 0.03584763040472539,
+   "crps_D": 0.03584763040472539,
+   "crps_C": 0.034557313800511885,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": [
+     "lending standards tightening",
+     "housing speculation cooling"
+    ]
+   },
+   "retrieved_topics": [
+    "elections",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.0400667383409004,
+   "crps_B": 0.0400667383409004,
+   "crps_D": 0.0400667383409004,
+   "crps_C": 0.0400667383409004,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02885911398287299,
+   "crps_B": 0.02885911398287299,
+   "crps_D": 0.02885911398287299,
+   "crps_C": 0.02885911398287299,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.06968199182128035,
+   "crps_B": 0.06968199182128035,
+   "crps_D": 0.06968199182128035,
+   "crps_C": 0.06968199182128035,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.024298281022020165,
+   "crps_B": 0.024298281022020165,
+   "crps_D": 0.024298281022020165,
+   "crps_C": 0.024298281022020165,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 2.0,
+   "seed": 302,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.040971842756845366,
+   "crps_B": 0.040971842756845366,
+   "crps_D": 0.040971842756845366,
+   "crps_C": 0.040971842756845366,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.027653219698646137,
+   "crps_B": 0.04477597103607127,
+   "crps_D": 0.04477597103607127,
+   "crps_C": 0.04477597103607127,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 3,
+    "driving_trends": [
+     "mortgage-rule overhaul",
+     "regulatory tightening"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 3,
+    "driving_trends": [
+     "mortgage rule tightening",
+     "policy-driven attrition"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "elections",
+    "immigration",
+    "tax_rules",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.030133626055655702,
+   "crps_B": 0.030133626055655702,
+   "crps_D": 0.030133626055655702,
+   "crps_C": 0.030133626055655702,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.036123933322384595,
+   "crps_B": 0.04728830625721079,
+   "crps_D": 0.04728830625721079,
+   "crps_C": 0.04728830625721079,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 2,
+    "driving_trends": [
+     "mortgage-rule tightening",
+     "regulatory shock"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 2,
+    "driving_trends": [
+     "mortgage-rule tightening",
+     "regulatory churn"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "fx",
+    "food_inflation"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02985244367149863,
+   "crps_B": 0.02985244367149863,
+   "crps_D": 0.02985244367149863,
+   "crps_C": 0.02985244367149863,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.037079897354836376,
+   "crps_B": 0.04689462740444341,
+   "crps_D": 0.04689462740444341,
+   "crps_C": 0.04689462740444341,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 1,
+    "driving_trends": [
+     "mortgage rule tightening",
+     "borrower churn"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 1,
+    "driving_trends": [
+     "mortgage rule overhaul",
+     "regulatory tightening"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03274963070932049,
+   "crps_B": 0.03274963070932049,
+   "crps_D": 0.03274963070932049,
+   "crps_C": 0.03274963070932049,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03263848537696259,
+   "crps_B": 0.03263848537696259,
+   "crps_D": 0.03263848537696259,
+   "crps_C": 0.03781967507812371,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "small",
+    "months_from_now": 2,
+    "driving_trends": [
+     "fiscal stimulus",
+     "housing support"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics",
+    "sp500"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03263848537696259,
+   "crps_B": 0.03263848537696259,
+   "crps_D": 0.03263848537696259,
+   "crps_C": 0.03263848537696259,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.027243533052368384,
+   "crps_B": 0.027243533052368384,
+   "crps_D": 0.027243533052368384,
+   "crps_C": 0.03791955866917121,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.028154921668818535,
+   "crps_B": 0.028154921668818535,
+   "crps_D": 0.028154921668818535,
+   "crps_C": 0.028154921668818535,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.029129837885319563,
+   "crps_B": 0.029129837885319563,
+   "crps_D": 0.029129837885319563,
+   "crps_C": 0.04693210200080471,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": [
+     "lending standards tightening",
+     "housing speculation cooling"
+    ]
+   },
+   "retrieved_topics": [
+    "elections",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.0247560654497777,
+   "crps_B": 0.0247560654497777,
+   "crps_D": 0.0247560654497777,
+   "crps_C": 0.0247560654497777,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.06686912612853807,
+   "crps_B": 0.06686912612853807,
+   "crps_D": 0.06686912612853807,
+   "crps_C": 0.06686912612853807,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03544325829313983,
+   "crps_B": 0.03544325829313983,
+   "crps_D": 0.03544325829313983,
+   "crps_C": 0.03544325829313983,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.05459883897219187,
+   "crps_B": 0.05459883897219187,
+   "crps_D": 0.05459883897219187,
+   "crps_C": 0.05459883897219187,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 300,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.034131323714523897,
+   "crps_B": 0.034131323714523897,
+   "crps_D": 0.034131323714523897,
+   "crps_C": 0.034131323714523897,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.022180131020252413,
+   "crps_B": 0.027053329050448115,
+   "crps_D": 0.027053329050448115,
+   "crps_C": 0.027053329050448115,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 3,
+    "driving_trends": [
+     "mortgage-rule overhaul",
+     "regulatory tightening"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 3,
+    "driving_trends": [
+     "mortgage rule tightening",
+     "policy-driven attrition"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "elections",
+    "immigration",
+    "tax_rules",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.023427280054343764,
+   "crps_B": 0.023427280054343764,
+   "crps_D": 0.023427280054343764,
+   "crps_C": 0.023427280054343764,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.024329379864669,
+   "crps_B": 0.02526921136962764,
+   "crps_D": 0.02526921136962764,
+   "crps_C": 0.02526921136962764,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 2,
+    "driving_trends": [
+     "mortgage-rule tightening",
+     "regulatory shock"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 2,
+    "driving_trends": [
+     "mortgage-rule tightening",
+     "regulatory churn"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "fx",
+    "food_inflation"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.0223248107494416,
+   "crps_B": 0.0223248107494416,
+   "crps_D": 0.0223248107494416,
+   "crps_C": 0.0223248107494416,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02766963047442855,
+   "crps_B": 0.02383014645402274,
+   "crps_D": 0.02383014645402274,
+   "crps_C": 0.02383014645402274,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 1,
+    "driving_trends": [
+     "mortgage rule tightening",
+     "borrower churn"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 1,
+    "driving_trends": [
+     "mortgage rule overhaul",
+     "regulatory tightening"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02127515962572495,
+   "crps_B": 0.02127515962572495,
+   "crps_D": 0.02127515962572495,
+   "crps_C": 0.02127515962572495,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.024287606216760224,
+   "crps_B": 0.024287606216760224,
+   "crps_D": 0.024287606216760224,
+   "crps_C": 0.027347926155035115,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "small",
+    "months_from_now": 2,
+    "driving_trends": [
+     "fiscal stimulus",
+     "housing support"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics",
+    "sp500"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.024287606216760224,
+   "crps_B": 0.024287606216760224,
+   "crps_D": 0.024287606216760224,
+   "crps_C": 0.024287606216760224,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02243418266804168,
+   "crps_B": 0.02243418266804168,
+   "crps_D": 0.02243418266804168,
+   "crps_C": 0.026314510210599603,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02297534231979026,
+   "crps_B": 0.02297534231979026,
+   "crps_D": 0.02297534231979026,
+   "crps_C": 0.02297534231979026,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.022989754551773017,
+   "crps_B": 0.022989754551773017,
+   "crps_D": 0.022989754551773017,
+   "crps_C": 0.030397089973866465,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": [
+     "lending standards tightening",
+     "housing speculation cooling"
+    ]
+   },
+   "retrieved_topics": [
+    "elections",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.02365039298284415,
+   "crps_B": 0.02365039298284415,
+   "crps_D": 0.02365039298284415,
+   "crps_C": 0.02365039298284415,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.04318621203111596,
+   "crps_B": 0.04318621203111596,
+   "crps_D": 0.04318621203111596,
+   "crps_C": 0.04318621203111596,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.020674839733306864,
+   "crps_B": 0.020674839733306864,
+   "crps_D": 0.020674839733306864,
+   "crps_C": 0.020674839733306864,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.0750588285304145,
+   "crps_B": 0.0750588285304145,
+   "crps_D": 0.0750588285304145,
+   "crps_C": 0.0750588285304145,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 301,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.018243051343176553,
+   "crps_B": 0.018243051343176553,
+   "crps_D": 0.018243051343176553,
+   "crps_C": 0.018243051343176553,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03526167913596503,
+   "crps_B": 0.039936656015666906,
+   "crps_D": 0.039936656015666906,
+   "crps_C": 0.039936656015666906,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 3,
+    "driving_trends": [
+     "mortgage-rule overhaul",
+     "regulatory tightening"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 3,
+    "driving_trends": [
+     "mortgage rule tightening",
+     "policy-driven attrition"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "elections",
+    "immigration",
+    "tax_rules",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 27,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.06995253588852306,
+   "crps_B": 0.06995253588852306,
+   "crps_D": 0.06995253588852306,
+   "crps_C": 0.06995253588852306,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03900739631905455,
+   "crps_B": 0.034162159260504615,
+   "crps_D": 0.034162159260504615,
+   "crps_C": 0.034162159260504615,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 2,
+    "driving_trends": [
+     "mortgage-rule tightening",
+     "regulatory shock"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 2,
+    "driving_trends": [
+     "mortgage-rule tightening",
+     "regulatory churn"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "fx",
+    "food_inflation"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 28,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.07642603717611433,
+   "crps_B": 0.07642603717611433,
+   "crps_D": 0.07642603717611433,
+   "crps_C": 0.07642603717611433,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.040108620393685485,
+   "crps_B": 0.03209478300167596,
+   "crps_D": 0.03209478300167596,
+   "crps_C": 0.03209478300167596,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 1,
+    "driving_trends": [
+     "mortgage rule tightening",
+     "borrower churn"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "large",
+    "months_from_now": 1,
+    "driving_trends": [
+     "mortgage rule overhaul",
+     "regulatory tightening"
+    ]
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 29,
+   "origin_class": "straddle",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.07587642910335055,
+   "crps_B": 0.07587642910335055,
+   "crps_D": 0.07587642910335055,
+   "crps_C": 0.07587642910335055,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.030892131699836928,
+   "crps_B": 0.030892131699836928,
+   "crps_D": 0.030892131699836928,
+   "crps_C": 0.03642239228625224,
+   "signal_B": {
+    "shift_type": "policy",
+    "magnitude_bucket": "small",
+    "months_from_now": 2,
+    "driving_trends": [
+     "fiscal stimulus",
+     "housing support"
+    ]
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics",
+    "sp500"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 24,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.030892131699836928,
+   "crps_B": 0.030892131699836928,
+   "crps_D": 0.030892131699836928,
+   "crps_C": 0.030892131699836928,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03204591520195246,
+   "crps_B": 0.03204591520195246,
+   "crps_D": 0.03204591520195246,
+   "crps_C": 0.0354587319751232,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "elections",
+    "direct",
+    "ai_startups",
+    "oil_geopolitics"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 25,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03397181919303369,
+   "crps_B": 0.03397181919303369,
+   "crps_D": 0.03397181919303369,
+   "crps_C": 0.03397181919303369,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.03584763040472539,
+   "crps_B": 0.03584763040472539,
+   "crps_D": 0.03584763040472539,
+   "crps_C": 0.036976049987040766,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "policy",
+    "magnitude_bucket": "medium",
+    "months_from_now": 0,
+    "driving_trends": [
+     "lending standards tightening",
+     "housing speculation cooling"
+    ]
+   },
+   "retrieved_topics": [
+    "elections",
+    "fx",
+    "food_inflation",
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "direct"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 26,
+   "origin_class": "nonews",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.0400667383409004,
+   "crps_B": 0.0400667383409004,
+   "crps_D": 0.0400667383409004,
+   "crps_C": 0.0400667383409004,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.04231009139225622,
+   "crps_B": 0.04231009139225622,
+   "crps_D": 0.04231009139225622,
+   "crps_C": 0.04231009139225622,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 31,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.06968199182128035,
+   "crps_B": 0.06968199182128035,
+   "crps_D": 0.06968199182128035,
+   "crps_C": 0.06968199182128035,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "shifted",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.035787430630838314,
+   "crps_B": 0.035787430630838314,
+   "crps_D": 0.035787430630838314,
+   "crps_C": 0.035787430630838314,
+   "signal_B": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "signal_D": {
+    "shift_type": "none",
+    "magnitude_bucket": "none",
+    "months_from_now": null,
+    "driving_trends": []
+   },
+   "retrieved_topics": [
+    "direct",
+    "direct",
+    "direct",
+    "elections",
+    "immigration",
+    "oil_geopolitics",
+    "tax_rules",
+    "unemployment"
+   ]
+  },
+  {
+   "shift": "S2",
+   "severity": 4.0,
+   "seed": 302,
+   "origin": 33,
+   "origin_class": "post",
+   "series": "placebo",
+   "status": "ok",
+   "error": "",
+   "crps_A": 0.040971842756845366,
+   "crps_B": 0.040971842756845366,
+   "crps_D": 0.040971842756845366,
+   "crps_C": 0.040971842756845366,
+   "signal_B": {},
+   "signal_D": {},
+   "retrieved_topics": []
+  }
+ ]
+}

@@ -78,7 +78,7 @@ Active and historical plans live in [plans/](plans/). The agentic roadmap stays 
 | Doc | Status |
 |---|---|
 | [AGENTIC_ROADMAP.md](AGENTIC_ROADMAP.md) | Approved — trilogy complete (exp42–44), proposed method shipped (exp47) |
-| [LOAN_ATTRITION_PLAN.md](LOAN_ATTRITION_PLAN.md) | Active — loan attrition program: Track 1 (grouping), Track 2 (TSFM red-team exp67 ✅ + guard exp68 ❌ + anticipatory exp69 ❌), integration |
+| [LOAN_ATTRITION_PLAN.md](LOAN_ATTRITION_PLAN.md) | Active — loan attrition program: Track 1 (grouping), Track 2 (TSFM red-team exp67 ✅ + guard exp68 ❌ + anticipatory exp69 ❌ + synthesis exp69b ❌), integration |
 | [plans/NEXT_PHASE_PLAN.md](plans/NEXT_PHASE_PLAN.md) | Complete — regime router shipped; live-news track closed |
 | [plans/MULTI_DATASET_PLAN.md](plans/MULTI_DATASET_PLAN.md) | Complete — validated on M4, Tourism, M3 |
 | [plans/OPTION1_JOINT_TRAINING_PLAN.md](plans/OPTION1_JOINT_TRAINING_PLAN.md) | Assessed — naive joint training likely fails; FFORMA-style meta-learning is the path |

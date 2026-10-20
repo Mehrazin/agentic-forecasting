@@ -230,7 +230,7 @@ without failure evidence.
 - Adjuster (`src/td_one/agent/anticipatory_adjuster.py`): LLM reads PIT-safe
   news → structure-only signal (type/direction/bucket/timing); calibrated
   (type, bucket) → level-shift from past episodes (seeds 200–202) applied to
-  Chronos-2 quantiles on straddle origins. 18/18 tests green.
+  Chronos-2 quantiles on straddle origins. 21/21 tests green (incl. exp69b driving_trends).
 - **Claim FAILED:** B vs A on straddle origins (S1/S2, 2–4σ, seeds 300–302):
   +10.2% rel., p=0.231, win rate 36%. **Oracle ceiling +11.4% (p=0.214)** —
   even perfect anticipation doesn't significantly help; the calibrated median
@@ -238,6 +238,11 @@ without failure evidence.
 - Works only at S1/4σ (B +30%, C +35%); hurts at 2σ and on S2. Do-no-harm
   gates pass exactly (no hallucination, no post-onset firing).
 - Per pre-registration: no iteration. Full report: `experiments/exp69_report.md`.
+- **Variant (exp69b):** broad macro synthesis (semantic RAG over 12+ topics,
+  `driving_trends` citations) vs rate-news-only — synthesis *hurts* (D vs B′
+  −5.0% rel., win 5.6%): corroborating context dilutes timing precision.
+  The unannounced-shock case (converging signals only) is untested, not
+  refuted. Full report: `experiments/exp69b_report.md`.
 
 ## Integration (exp70)
 Track 2's shift scenarios stress-test Track 1's group forecaster.

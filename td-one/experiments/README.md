@@ -84,6 +84,7 @@ Numbering jumps from exp25 to exp40 (exp26–exp39 were never assigned).
 | exp67 | TSFM red-team on 7 loan-attrition shifts (real Chronos-2/TimesFM-2.5 weights) | ⚖️ all models break together at 4σ S1 (+185–228%); S4/S5 never break (honest negative); Chronos-2 best absolute in 6/8 shifts; coverage collapses (m0 0.61→0.08) | [report](exp67_report.md) |
 | exp68 | Agentic shift guard (CUSUM + truncation + widening) vs TSFM-alone, pre-registered holdout | ❌ honest negative: guard +0.5% (p=0.824), wins 14.6% — context truncation hurts; correct detection ≠ benefit | [report](exp68_report.md) |
 | exp69 | Anticipatory LLM shift adjustment (LLM reads PIT-safe news → calibrated level-shift overlay on Chronos-2), pre-registered | ❌ honest negative: overlay +10.2% (p=0.231), wins 36%; oracle ceiling +11.4% (p=0.214) — mechanism is the limit, not the LLM; works only at S1/4σ (+30%) | [report](exp69_report.md) |
+| exp69b | Broad-synthesis variant: LLM + semantic RAG over 12+ macro topics vs rate-news-only | ❌ synthesis hurts: D vs B′ −5.0% (win 5.6%) — corroborating context dilutes timing; unannounced-shock synthesis untested, not refuted | [report](exp69b_report.md) |
 
 ## Supporting reports
 
