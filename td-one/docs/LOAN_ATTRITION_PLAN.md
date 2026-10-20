@@ -21,6 +21,22 @@ per window). Metrics: CRPS (parity check vs hand-written), explanation
 quality (citation rate, rule readability), risk-bin calibration.
 **No kill criterion** — report "costs X CRPS for Y explainability gain."
 
+### Pivot (from exp66b): deterministic grouping + LLM explanations
+
+LLM-proposed groupings are not reproducible run-to-run — fatal for
+explainability. **exp66c** implements the pivot:
+- `src/td_one/agent/deterministic_grouper.py` — KMeans (fixed seed) +
+  tree-surrogate rules, all passing `validate_rule()`. Same input →
+  identical groups (tested).
+- LLM keeps the explanation role via citation-enforced `risk_reporter.py`.
+- Results: 10 reproducible groups (2–4 conditions each), **10/10 citation
+  pass** with a total citation contract; grouping costs CRPS vs global
+  (+0.009–0.016) and vs hand-written (+0.006–0.010), beats random by ~40%.
+- **Honest negative inside the win:** static-attribute risk bins do not
+  calibrate — LOW-bin groups realized *higher* test attrition (0.128)
+  than HIGH-bin (0.087). Do not ship static risk bins as predictions.
+- See `experiments/exp66c_report.md`.
+
 ## Direction
 
 Two tracks, eventually combined:

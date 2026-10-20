@@ -1,0 +1,309 @@
+{
+  "config": {
+    "n_customers": 4000,
+    "n_months": 36,
+    "test_months": 9,
+    "seeds": [
+      42,
+      123
+    ],
+    "n_clusters": 5,
+    "grouper_seed": 42
+  },
+  "seeds": [
+    {
+      "seed": 42,
+      "arms": {
+        "A_global": 0.0004231345259442312,
+        "B_random": 0.02851024647009103,
+        "C_hand": 0.007112061017598346,
+        "G_deterministic": 0.01679308711885964
+      },
+      "readability": [
+        {
+          "group_id": "g0",
+          "conditions": 4,
+          "attrs": [
+            "children_6to17",
+            "government_benefit_income_monthly_cad",
+            "household_income_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g1",
+          "conditions": 4,
+          "attrs": [
+            "borrower_income_cad",
+            "government_benefit_income_monthly_cad",
+            "mortgage_payment_monthly_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g2",
+          "conditions": 4,
+          "attrs": [
+            "borrower_income_cad",
+            "government_benefit_income_monthly_cad",
+            "mortgage_payment_monthly_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g3",
+          "conditions": 4,
+          "attrs": [
+            "children_6to17",
+            "government_benefit_income_monthly_cad",
+            "household_income_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g4",
+          "conditions": 3,
+          "attrs": [
+            "borrower_income_cad",
+            "government_benefit_income_monthly_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g5",
+          "conditions": 3,
+          "attrs": [
+            "government_benefit_income_monthly_cad",
+            "household_income_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g6",
+          "conditions": 2,
+          "attrs": [
+            "adjusted_family_net_income_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g7",
+          "conditions": 3,
+          "attrs": [
+            "adjusted_family_net_income_cad",
+            "mortgage_balance_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g8",
+          "conditions": 4,
+          "attrs": [
+            "adjusted_family_net_income_cad",
+            "mortgage_balance_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g9",
+          "conditions": 4,
+          "attrs": [
+            "adjusted_family_net_income_cad",
+            "mortgage_balance_cad",
+            "mortgage_rate_pct"
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "group_id": "g0",
+          "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad > 225 and household_income_cad <= 158960 and children_6to17 > 0.5"
+        },
+        {
+          "group_id": "g1",
+          "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad <= 225 and borrower_income_cad <= 84754.2 and mortgage_payment_monthly_cad <= 2507"
+        },
+        {
+          "group_id": "g2",
+          "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad <= 225 and borrower_income_cad <= 84754.2 and mortgage_payment_monthly_cad > 2507"
+        },
+        {
+          "group_id": "g3",
+          "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad > 225 and household_income_cad <= 158960 and children_6to17 <= 0.5"
+        },
+        {
+          "group_id": "g4",
+          "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad <= 225 and borrower_income_cad > 84754.2"
+        },
+        {
+          "group_id": "g5",
+          "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad > 225 and household_income_cad > 158960"
+        },
+        {
+          "group_id": "g6",
+          "rule": "mortgage_rate_pct > 5.804 and adjusted_family_net_income_cad > 118951"
+        },
+        {
+          "group_id": "g7",
+          "rule": "mortgage_rate_pct > 5.804 and adjusted_family_net_income_cad <= 118951 and mortgage_balance_cad <= 332101"
+        },
+        {
+          "group_id": "g8",
+          "rule": "mortgage_rate_pct > 5.804 and adjusted_family_net_income_cad <= 118951 and mortgage_balance_cad > 332101 and mortgage_rate_pct <= 6.3255"
+        },
+        {
+          "group_id": "g9",
+          "rule": "mortgage_rate_pct > 5.804 and adjusted_family_net_income_cad <= 118951 and mortgage_balance_cad > 332101 and mortgage_rate_pct > 6.3255"
+        }
+      ]
+    },
+    {
+      "seed": 123,
+      "arms": {
+        "A_global": 0.010060718359502221,
+        "B_random": 0.027294886183775076,
+        "C_hand": 0.012974836817991713,
+        "G_deterministic": 0.018978773829727624
+      },
+      "readability": [
+        {
+          "group_id": "g0",
+          "conditions": 3,
+          "attrs": [
+            "adjusted_family_net_income_cad",
+            "mortgage_balance_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g1",
+          "conditions": 4,
+          "attrs": [
+            "adjusted_family_net_income_cad",
+            "mortgage_balance_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g2",
+          "conditions": 4,
+          "attrs": [
+            "adjusted_family_net_income_cad",
+            "mortgage_balance_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g3",
+          "conditions": 3,
+          "attrs": [
+            "adjusted_family_net_income_cad",
+            "government_benefit_income_monthly_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g4",
+          "conditions": 3,
+          "attrs": [
+            "adjusted_family_net_income_cad",
+            "government_benefit_income_monthly_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g5",
+          "conditions": 2,
+          "attrs": [
+            "adjusted_family_net_income_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g6",
+          "conditions": 4,
+          "attrs": [
+            "adjusted_family_net_income_cad",
+            "children_6to17",
+            "government_benefit_income_monthly_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g7",
+          "conditions": 4,
+          "attrs": [
+            "adjusted_family_net_income_cad",
+            "children_6to17",
+            "government_benefit_income_monthly_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g8",
+          "conditions": 4,
+          "attrs": [
+            "adjusted_family_net_income_cad",
+            "government_benefit_income_monthly_cad",
+            "mortgage_rate_pct"
+          ]
+        },
+        {
+          "group_id": "g9",
+          "conditions": 4,
+          "attrs": [
+            "adjusted_family_net_income_cad",
+            "government_benefit_income_monthly_cad",
+            "mortgage_rate_pct"
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "group_id": "g0",
+          "rule": "mortgage_rate_pct > 5.4945 and adjusted_family_net_income_cad <= 124218 and mortgage_balance_cad <= 348385"
+        },
+        {
+          "group_id": "g1",
+          "rule": "mortgage_rate_pct > 5.4945 and adjusted_family_net_income_cad <= 124218 and mortgage_balance_cad > 348385 and mortgage_balance_cad <= 397366"
+        },
+        {
+          "group_id": "g2",
+          "rule": "mortgage_rate_pct > 5.4945 and adjusted_family_net_income_cad <= 124218 and mortgage_balance_cad > 348385 and mortgage_balance_cad > 397366"
+        },
+        {
+          "group_id": "g3",
+          "rule": "mortgage_rate_pct <= 5.4945 and government_benefit_income_monthly_cad <= 375 and adjusted_family_net_income_cad > 127405"
+        },
+        {
+          "group_id": "g4",
+          "rule": "mortgage_rate_pct <= 5.4945 and government_benefit_income_monthly_cad > 375 and adjusted_family_net_income_cad > 102432"
+        },
+        {
+          "group_id": "g5",
+          "rule": "mortgage_rate_pct > 5.4945 and adjusted_family_net_income_cad > 124218"
+        },
+        {
+          "group_id": "g6",
+          "rule": "mortgage_rate_pct <= 5.4945 and government_benefit_income_monthly_cad <= 375 and adjusted_family_net_income_cad <= 127405 and children_6to17 <= 1.5"
+        },
+        {
+          "group_id": "g7",
+          "rule": "mortgage_rate_pct <= 5.4945 and government_benefit_income_monthly_cad <= 375 and adjusted_family_net_income_cad <= 127405 and children_6to17 > 1.5"
+        },
+        {
+          "group_id": "g8",
+          "rule": "mortgage_rate_pct <= 5.4945 and government_benefit_income_monthly_cad > 375 and adjusted_family_net_income_cad <= 102432 and mortgage_rate_pct <= 4.343"
+        },
+        {
+          "group_id": "g9",
+          "rule": "mortgage_rate_pct <= 5.4945 and government_benefit_income_monthly_cad > 375 and adjusted_family_net_income_cad <= 102432 and mortgage_rate_pct > 4.343"
+        }
+      ]
+    }
+  ],
+  "explanation_quality": {
+    "n_groups": 10,
+    "citation_pass_rate": 1.0
+  }
+}

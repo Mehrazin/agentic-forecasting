@@ -1,0 +1,172 @@
+[
+  {
+    "group_id": "g0",
+    "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad > 225 and household_income_cad <= 158960 and children_6to17 > 0.5",
+    "risk_level": "HIGH",
+    "stats": {
+      "n_members": 1301,
+      "mean_household_income_cad": 86479.0,
+      "dominant_province": "ON",
+      "train_realized_attrition": 0.1071,
+      "n_test_episodes": 114,
+      "realized_test_attrition": 0.0702,
+      "predicted_mean_attrition": 0.0933,
+      "risk_level": "HIGH"
+    },
+    "explanation": "This cohort of 1301 members, primarily based in Ontario, is classified as having a HIGH risk level [stat]. While the model predicted a mean attrition rate of 0.0933, the observed training attrition for this group stands at 0.1071 [stat]. Despite these projections, the 114 episodes in the test set showed a lower realized attrition of 0.0702 [stat]. These borrowers maintain a mean household income of 86479.0 CAD [stat].",
+    "citations_valid": true
+  },
+  {
+    "group_id": "g1",
+    "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad <= 225 and borrower_income_cad <= 84754.2 and mortgage_payment_monthly_cad <= 2507",
+    "risk_level": "LOW",
+    "stats": {
+      "n_members": 491,
+      "mean_household_income_cad": 82062.0,
+      "dominant_province": "ON",
+      "train_realized_attrition": 0.0484,
+      "n_test_episodes": 41,
+      "realized_test_attrition": 0.0732,
+      "predicted_mean_attrition": 0.0933,
+      "risk_level": "LOW"
+    },
+    "explanation": "This cohort consists of 491 members who are primarily located in Ontario [stat]. Despite having a mean household income of $82,062, they are categorized as having a low risk level regarding potential attrition [stat]. Recent data indicates a train realized attrition rate of 0.0484 for this group [stat]. Although the model predicted a mean attrition rate of 0.0933, the actual observed attrition among 41 test episodes remained relatively low at 0.0732 [stat].",
+    "citations_valid": true
+  },
+  {
+    "group_id": "g2",
+    "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad <= 225 and borrower_income_cad <= 84754.2 and mortgage_payment_monthly_cad > 2507",
+    "risk_level": "MEDIUM",
+    "stats": {
+      "n_members": 209,
+      "mean_household_income_cad": 79468.0,
+      "dominant_province": "ON",
+      "train_realized_attrition": 0.0833,
+      "n_test_episodes": 14,
+      "realized_test_attrition": 0.0714,
+      "predicted_mean_attrition": 0.0933,
+      "risk_level": "MEDIUM"
+    },
+    "explanation": "This cohort, consisting of 209 members, is currently classified as having a medium risk level [stat]. The members of this group have a mean household income of 79,468.0 CAD and are primarily located in Ontario [stat]. While the predicted mean attrition rate for this group is 0.0933, the realized attrition rate observed during training was 0.0833 [stat]. Recent testing across 14 episodes has shown a realized attrition rate of 0.0714 [stat].",
+    "citations_valid": true
+  },
+  {
+    "group_id": "g3",
+    "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad > 225 and household_income_cad <= 158960 and children_6to17 <= 0.5",
+    "risk_level": "LOW",
+    "stats": {
+      "n_members": 242,
+      "mean_household_income_cad": 84373.0,
+      "dominant_province": "ON",
+      "train_realized_attrition": 0.0,
+      "n_test_episodes": 24,
+      "realized_test_attrition": 0.1667,
+      "predicted_mean_attrition": 0.0933,
+      "risk_level": "LOW"
+    },
+    "explanation": "This cohort consists of 242 members who primarily reside in Ontario [stat]. While these borrowers demonstrated a 0.0% attrition rate during the training period, observed performance in the test set showed an actual attrition rate of 0.1667 [stat]. Despite this recent increase, the group is classified as having a low overall risk level [stat]. The current data suggests that the realized test attrition is higher than the predicted mean attrition of 0.0933 [stat].",
+    "citations_valid": true
+  },
+  {
+    "group_id": "g4",
+    "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad <= 225 and borrower_income_cad > 84754.2",
+    "risk_level": "LOW",
+    "stats": {
+      "n_members": 200,
+      "mean_household_income_cad": 202770.0,
+      "dominant_province": "ON",
+      "train_realized_attrition": 0.0417,
+      "n_test_episodes": 7,
+      "realized_test_attrition": 0.1429,
+      "predicted_mean_attrition": 0.0933,
+      "risk_level": "LOW"
+    },
+    "explanation": "This cohort of 200 members is characterized by a low risk level and strong financial standing [stat]. Despite a mean household income of $202,770.0, the group has experienced a realized attrition rate of 14.29% during recent testing [stat]. This observed test attrition is notably higher than the predicted mean attrition rate of 9.33% [stat]. These individuals are predominantly based in Ontario and remain a stable segment for the portfolio [stat].",
+    "citations_valid": true
+  },
+  {
+    "group_id": "g5",
+    "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad > 225 and household_income_cad > 158960",
+    "risk_level": "MEDIUM",
+    "stats": {
+      "n_members": 316,
+      "mean_household_income_cad": 221424.0,
+      "dominant_province": "ON",
+      "train_realized_attrition": 0.0645,
+      "n_test_episodes": 32,
+      "realized_test_attrition": 0.0312,
+      "predicted_mean_attrition": 0.0933,
+      "risk_level": "MEDIUM"
+    },
+    "explanation": "This cohort consists of 316 members who primarily reside in Ontario [stat]. Despite a predicted attrition rate of 9.33%, the actual realized attrition for this group has been 6.45% [stat]. Recent test episodes indicate that realized attrition is currently tracking lower at 3.12% [stat]. Consequently, this group is classified as having a medium risk level [stat].",
+    "citations_valid": true
+  },
+  {
+    "group_id": "g6",
+    "rule": "mortgage_rate_pct > 5.804 and adjusted_family_net_income_cad > 118951",
+    "risk_level": "MEDIUM",
+    "stats": {
+      "n_members": 211,
+      "mean_household_income_cad": 222612.0,
+      "dominant_province": "ON",
+      "train_realized_attrition": 0.0976,
+      "n_test_episodes": 20,
+      "realized_test_attrition": 0.1,
+      "predicted_mean_attrition": 0.0933,
+      "risk_level": "MEDIUM"
+    },
+    "explanation": "The g6 cohort consists of 211 members who primarily reside in Ontario [stat]. With a high mean household income of $222,612, this group maintains a medium risk level regarding mortgage attrition [stat]. While the predicted mean attrition for these borrowers is 0.0933, the training data shows a realized attrition rate of 0.0976 [stat]. Furthermore, testing across 20 episodes revealed a realized attrition rate of 0.1 [stat].",
+    "citations_valid": true
+  },
+  {
+    "group_id": "g7",
+    "rule": "mortgage_rate_pct > 5.804 and adjusted_family_net_income_cad <= 118951 and mortgage_balance_cad <= 332101",
+    "risk_level": "HIGH",
+    "stats": {
+      "n_members": 200,
+      "mean_household_income_cad": 82792.0,
+      "dominant_province": "ON",
+      "train_realized_attrition": 0.1053,
+      "n_test_episodes": 20,
+      "realized_test_attrition": 0.05,
+      "predicted_mean_attrition": 0.0933,
+      "risk_level": "HIGH"
+    },
+    "explanation": "This borrower cohort consists of 200 members who face a HIGH risk level regarding mortgage retention [stat]. With a mean household income of 82792.0 CAD, these borrowers are managing significant financial constraints alongside high interest rates [stat]. The group has historically demonstrated a realized attrition rate of 0.1053 [stat]. While our model predicted a mean attrition rate of 0.0933, the observed performance in recent test episodes shows a lower realized attrition of 0.05 [stat]. The majority of these borrowers are located in the province of ON [stat].",
+    "citations_valid": true
+  },
+  {
+    "group_id": "g8",
+    "rule": "mortgage_rate_pct > 5.804 and adjusted_family_net_income_cad <= 118951 and mortgage_balance_cad > 332101 and mortgage_rate_pct <= 6.3255",
+    "risk_level": "HIGH",
+    "stats": {
+      "n_members": 625,
+      "mean_household_income_cad": 83983.0,
+      "dominant_province": "ON",
+      "train_realized_attrition": 0.2179,
+      "n_test_episodes": 70,
+      "realized_test_attrition": 0.1143,
+      "predicted_mean_attrition": 0.0933,
+      "risk_level": "HIGH"
+    },
+    "explanation": "This cohort of 625 members is categorized as having a HIGH risk level [stat]. These borrowers possess a mean household income of 83,983.0 CAD and are primarily located in Ontario [stat]. While the training data showed a realized attrition rate of 0.2179, the model currently predicts a mean attrition of only 0.0933 [stat]. Recent performance data from 70 test episodes indicates a realized attrition rate of 0.1143 [stat].",
+    "citations_valid": true
+  },
+  {
+    "group_id": "g9",
+    "rule": "mortgage_rate_pct > 5.804 and adjusted_family_net_income_cad <= 118951 and mortgage_balance_cad > 332101 and mortgage_rate_pct > 6.3255",
+    "risk_level": "HIGH",
+    "stats": {
+      "n_members": 205,
+      "mean_household_income_cad": 85384.0,
+      "dominant_province": "ON",
+      "train_realized_attrition": 0.3265,
+      "n_test_episodes": 44,
+      "realized_test_attrition": 0.1136,
+      "predicted_mean_attrition": 0.0933,
+      "risk_level": "HIGH"
+    },
+    "explanation": "This cohort of 205 members faces a high risk level regarding mortgage retention [stat]. With a mean household income of $85,384, these borrowers are managing significant mortgage balances while contending with elevated interest rates [stat]. The historical training data reveals that this group has experienced a realized attrition rate of 32.65% [stat]. Despite a lower observed attrition of 11.36% in recent test episodes, the group remains classified as a high-risk segment [stat].",
+    "citations_valid": true
+  }
+]
