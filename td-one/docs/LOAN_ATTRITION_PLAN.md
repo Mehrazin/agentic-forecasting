@@ -58,6 +58,39 @@ explainability. **exp66c** implements the pivot:
   failure case (g3: both reads LOW, test 0.167).
 - See `experiments/exp66d_report.md`.
 
+### exp66e: uplift + SHAP tools for cohort recovery (user-directed)
+
+The user's hypothesis: unsupervised clustering failed because it
+clusters on feature similarity, not attrition relevance. Tools that
+measure *what drives attrition heterogeneity* should recover the
+cohorts.
+
+- `src/td_one/evaluation/shap_analysis.py` — GBM attrition model +
+  exact TreeSHAP values/interactions, top-interaction discovery,
+  planted-pair recall, SHAP-space clustering, per-group driver
+  summaries. (`shap>=0.45.0` declared in `pyproject.toml`; uv.lock
+  regen pending.)
+- `src/td_one/evaluation/uplift.py` — T-learner uplift (variable vs
+  fixed rate), decile segmentation. Descriptive heterogeneity
+  segmentation, not causal identification (treatment is self-selected).
+- **Phase 1 (exp66e):** SHAP clustering doubles ARI (0.091 vs 0.046
+  raw; `low_rate` F1 0.55) but stays weak; interaction recall@10 =
+  0.000 (top interactions are `term_months` pairs, not planted pairs);
+  uplift deciles = 0.002 (chance).
+- **Phase 2 (exp66e2):** `llm_grouper.py` gained `tool_context`;
+  LLM+tools ARI 0.025 vs LLM-without 0.026 — **honest negative**, tools
+  don't fix LLM group discovery. Deterministic grouping pivot stands.
+- **exp66f:** controlled classifier ablation (3 seeds) — the LLM-vs-bins
+  advantage is +0.154 with CI covering zero; news effect +0.031
+  [−0.45, +0.50]; **exp66d's classifier result is downgraded to "no
+  measurable advantage"**. Risk tools (`agent/risk_tools.py`: SHAP
+  drivers, counterfactual sensitivity, news-risk alignment, uplift
+  amenability): only counterfactuals show a directional signal
+  (+0.348, 1 seed); news alignment hurts (−0.174).
+- Verdict: SHAP analysis joins the analyst kit (explanation tool);
+  uplift stays on the shelf; LLM grouper gets no tool context.
+- See `experiments/exp66e_report.md`.
+
 ## Direction
 
 Two tracks, eventually combined:

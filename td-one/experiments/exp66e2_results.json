@@ -1,0 +1,72 @@
+{
+  "trials": [
+    {
+      "trial": 0,
+      "config": "baseline",
+      "ari": 0.0561429608615951,
+      "n_groups": 4,
+      "rules": [
+        "rate_type == 'variable' and primary_borrower_age < 41",
+        "mortgage_balance_cad > 390000 and credit_utilization_pct > 49",
+        "td_tenure_months > 71 and mortgage_rate_pct < 3.9",
+        "(not (rate_type == 'variable' and primary_borrower_age < 41) and not (mortgage_balance_cad > 390000 and credit_utilization_pct > 49) and not (td_tenure_months > 71 and mortgage_rate_pct < 3.9))"
+      ]
+    },
+    {
+      "trial": 0,
+      "config": "tools",
+      "ari": 0.015443441809052317,
+      "n_groups": 5,
+      "rules": [
+        "rate_type == 'variable' and td_liquid_deposits_cad <= 2200",
+        "term_months > 12 and term_months <= 36 and other_debt_payment_monthly_cad > 480",
+        "mortgage_rate_pct > 6.3 and mortgage_balance_cad > 390000",
+        "primary_borrower_age <= 33 and borrower_income_cad <= 48000",
+        "(not (rate_type == 'variable' and td_liquid_deposits_cad <= 2200) and not (term_months > 12 and term_months <= 36 and other_debt_payment_monthly_cad > 480) and not (mortgage_rate_pct > 6.3 and mortgage_balance_cad > 390000) and not (primary_borrower_age <= 33 and borrower_income_cad <= 48000))"
+      ]
+    },
+    {
+      "trial": 1,
+      "config": "baseline",
+      "ari": 0.026192961209142288,
+      "n_groups": 3,
+      "rules": [
+        "rate_type == 'variable' and other_debt_payment_monthly_cad > 480",
+        "mortgage_payment_monthly_cad > 2600 and credit_score_band == '720_plus'",
+        "(not (rate_type == 'variable' and other_debt_payment_monthly_cad > 480) and not (mortgage_payment_monthly_cad > 2600 and credit_score_band == '720_plus'))"
+      ]
+    },
+    {
+      "trial": 1,
+      "config": "tools",
+      "ari": 0.03544126518457197,
+      "n_groups": 5,
+      "rules": [
+        "rate_type == 'variable' and (other_debt_payment_monthly_cad > 480 or credit_utilization_pct > 49)",
+        "term_months < 36 and mortgage_payment_monthly_cad > 2600",
+        "household_income_cad < 81000 and mortgage_balance_cad > 390000",
+        "primary_borrower_age > 49 and td_tenure_months > 71",
+        "(not (rate_type == 'variable' and (other_debt_payment_monthly_cad > 480 or credit_utilization_pct > 49)) and not (term_months < 36 and mortgage_payment_monthly_cad > 2600) and not (household_income_cad < 81000 and mortgage_balance_cad > 390000) and not (primary_borrower_age > 49 and td_tenure_months > 71))"
+      ]
+    },
+    {
+      "trial": 2,
+      "config": "baseline",
+      "ari": -0.005751663200488352,
+      "n_groups": 2,
+      "rules": [
+        "rate_type == 'variable' and other_debt_payment_monthly_cad > 480",
+        "(not (rate_type == 'variable' and other_debt_payment_monthly_cad > 480))"
+      ]
+    },
+    {
+      "trial": 2,
+      "config": "tools",
+      "ari": null,
+      "n_groups": 0
+    }
+  ],
+  "baseline_mean_ari": 0.025528086290083015,
+  "tools_mean_ari": 0.02544235349681214,
+  "elapsed_s": 128.6
+}

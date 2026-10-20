@@ -1,0 +1,323 @@
+{
+  "config": {
+    "seeds": [
+      42,
+      123,
+      7
+    ],
+    "per_tool_seed": 42,
+    "n_customers": 4000,
+    "n_months": 36
+  },
+  "seeds": [
+    {
+      "seed": 42,
+      "metrics": {
+        "bins": {
+          "spearman": -0.37883611319363125,
+          "monotonic": false,
+          "n_groups": 10
+        },
+        "llm-stats": {
+          "spearman": 0.1198577533267986,
+          "monotonic": false,
+          "n_groups": 10
+        },
+        "llm-stats-news": {
+          "spearman": 0.055048188256318034,
+          "monotonic": false,
+          "n_groups": 10
+        },
+        "llm-stats+shap": {
+          "spearman": 0.10403129732205986,
+          "monotonic": false,
+          "n_groups": 10
+        },
+        "llm-stats+counterfactual": {
+          "spearman": 0.34815531191139565,
+          "monotonic": true,
+          "n_groups": 10
+        },
+        "llm-stats+uplift": {
+          "spearman": 0.1198577533267986,
+          "monotonic": false,
+          "n_groups": 10
+        },
+        "llm-stats+newsalign": {
+          "spearman": -0.17420655464493007,
+          "monotonic": false,
+          "n_groups": 10
+        },
+        "llm-stats+all-tools": {
+          "spearman": 0.1651445647689541,
+          "monotonic": false,
+          "n_groups": 10
+        }
+      },
+      "levels": {
+        "g0": {
+          "bins": "HIGH",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW",
+          "llm-stats+shap": "LOW",
+          "llm-stats+counterfactual": "LOW",
+          "llm-stats+uplift": "LOW",
+          "llm-stats+newsalign": "MEDIUM",
+          "llm-stats+all-tools": "LOW"
+        },
+        "g1": {
+          "bins": "LOW",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW",
+          "llm-stats+shap": "LOW",
+          "llm-stats+counterfactual": "LOW",
+          "llm-stats+uplift": "LOW",
+          "llm-stats+newsalign": "LOW",
+          "llm-stats+all-tools": "LOW"
+        },
+        "g2": {
+          "bins": "MEDIUM",
+          "llm-stats": "LOW",
+          "llm-stats-news": "MEDIUM",
+          "llm-stats+shap": "LOW",
+          "llm-stats+counterfactual": "LOW",
+          "llm-stats+uplift": "LOW",
+          "llm-stats+newsalign": "HIGH",
+          "llm-stats+all-tools": "LOW"
+        },
+        "g3": {
+          "bins": "LOW",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW",
+          "llm-stats+shap": "LOW",
+          "llm-stats+counterfactual": "LOW",
+          "llm-stats+uplift": "LOW",
+          "llm-stats+newsalign": "LOW",
+          "llm-stats+all-tools": "LOW"
+        },
+        "g4": {
+          "bins": "LOW",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW",
+          "llm-stats+shap": "LOW",
+          "llm-stats+counterfactual": "LOW",
+          "llm-stats+uplift": "LOW",
+          "llm-stats+newsalign": "LOW",
+          "llm-stats+all-tools": "LOW"
+        },
+        "g5": {
+          "bins": "MEDIUM",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW",
+          "llm-stats+shap": "LOW",
+          "llm-stats+counterfactual": "LOW",
+          "llm-stats+uplift": "LOW",
+          "llm-stats+newsalign": "LOW",
+          "llm-stats+all-tools": "LOW"
+        },
+        "g6": {
+          "bins": "MEDIUM",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW",
+          "llm-stats+shap": "MEDIUM",
+          "llm-stats+counterfactual": "LOW",
+          "llm-stats+uplift": "LOW",
+          "llm-stats+newsalign": "LOW",
+          "llm-stats+all-tools": "MEDIUM"
+        },
+        "g7": {
+          "bins": "HIGH",
+          "llm-stats": "MEDIUM",
+          "llm-stats-news": "MEDIUM",
+          "llm-stats+shap": "MEDIUM",
+          "llm-stats+counterfactual": "LOW",
+          "llm-stats+uplift": "MEDIUM",
+          "llm-stats+newsalign": "HIGH",
+          "llm-stats+all-tools": "MEDIUM"
+        },
+        "g8": {
+          "bins": "HIGH",
+          "llm-stats": "HIGH",
+          "llm-stats-news": "HIGH",
+          "llm-stats+shap": "MEDIUM",
+          "llm-stats+counterfactual": "HIGH",
+          "llm-stats+uplift": "HIGH",
+          "llm-stats+newsalign": "HIGH",
+          "llm-stats+all-tools": "HIGH"
+        },
+        "g9": {
+          "bins": "HIGH",
+          "llm-stats": "HIGH",
+          "llm-stats-news": "HIGH",
+          "llm-stats+shap": "HIGH",
+          "llm-stats+counterfactual": "HIGH",
+          "llm-stats+uplift": "HIGH",
+          "llm-stats+newsalign": "HIGH",
+          "llm-stats+all-tools": "HIGH"
+        }
+      }
+    },
+    {
+      "seed": 123,
+      "metrics": {
+        "bins": {
+          "spearman": 0.5168178647384396,
+          "monotonic": true,
+          "n_groups": 10
+        },
+        "llm-stats": {
+          "spearman": 0.38219196514047427,
+          "monotonic": true,
+          "n_groups": 10
+        },
+        "llm-stats-news": {
+          "spearman": 0.35935869237134305,
+          "monotonic": true,
+          "n_groups": 10
+        }
+      },
+      "levels": {
+        "g0": {
+          "bins": "HIGH",
+          "llm-stats": "HIGH",
+          "llm-stats-news": "HIGH"
+        },
+        "g1": {
+          "bins": "HIGH",
+          "llm-stats": "HIGH",
+          "llm-stats-news": "HIGH"
+        },
+        "g2": {
+          "bins": "HIGH",
+          "llm-stats": "HIGH",
+          "llm-stats-news": "HIGH"
+        },
+        "g3": {
+          "bins": "MEDIUM",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW"
+        },
+        "g4": {
+          "bins": "LOW",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW"
+        },
+        "g5": {
+          "bins": "HIGH",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW"
+        },
+        "g6": {
+          "bins": "MEDIUM",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW"
+        },
+        "g7": {
+          "bins": "MEDIUM",
+          "llm-stats": "LOW",
+          "llm-stats-news": "MEDIUM"
+        },
+        "g8": {
+          "bins": "LOW",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW"
+        },
+        "g9": {
+          "bins": "LOW",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW"
+        }
+      }
+    },
+    {
+      "seed": 7,
+      "metrics": {
+        "bins": {
+          "spearman": 0.2994831286573971,
+          "monotonic": true,
+          "n_groups": 10
+        },
+        "llm-stats": {
+          "spearman": 0.2608699597280257,
+          "monotonic": false,
+          "n_groups": 10
+        },
+        "llm-stats-news": {
+          "spearman": 0.4536437841818504,
+          "monotonic": false,
+          "n_groups": 10
+        }
+      },
+      "levels": {
+        "g0": {
+          "bins": "LOW",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW"
+        },
+        "g1": {
+          "bins": "LOW",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW"
+        },
+        "g2": {
+          "bins": "MEDIUM",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW"
+        },
+        "g3": {
+          "bins": "HIGH",
+          "llm-stats": "HIGH",
+          "llm-stats-news": "HIGH"
+        },
+        "g4": {
+          "bins": "HIGH",
+          "llm-stats": "HIGH",
+          "llm-stats-news": "HIGH"
+        },
+        "g5": {
+          "bins": "HIGH",
+          "llm-stats": "HIGH",
+          "llm-stats-news": "HIGH"
+        },
+        "g6": {
+          "bins": "LOW",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW"
+        },
+        "g7": {
+          "bins": "MEDIUM",
+          "llm-stats": "MEDIUM",
+          "llm-stats-news": "HIGH"
+        },
+        "g8": {
+          "bins": "MEDIUM",
+          "llm-stats": "LOW",
+          "llm-stats-news": "LOW"
+        },
+        "g9": {
+          "bins": "HIGH",
+          "llm-stats": "LOW",
+          "llm-stats-news": "MEDIUM"
+        }
+      }
+    }
+  ],
+  "bootstrap_comparisons": {
+    "llm-stats_vs_bins": {
+      "delta_spearman": 0.1544633668281209,
+      "ci_lo": -0.3776687018812224,
+      "ci_hi": 0.667067594826081
+    },
+    "news_effect": {
+      "delta_spearman": 0.030633394812806636,
+      "ci_lo": -0.44719489187266187,
+      "ci_hi": 0.4994415420168745
+    },
+    "llm-stats-news_vs_bins": {
+      "delta_spearman": 0.18509676164092753,
+      "ci_lo": -0.3554506838298119,
+      "ci_hi": 0.6735434090094214
+    }
+  },
+  "elapsed_s": 580.9
+}

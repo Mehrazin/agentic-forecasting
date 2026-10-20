@@ -97,8 +97,7 @@ def build_attribute_summaries(
         if col in cat or s.dtype == object or str(s.dtype) == "category":
             grp = df.groupby(col, observed=True)[attrition_col].agg(["mean", "count"])
             parts = [
-                f"{lvl}: rate={r['mean']:.3f} (n={int(r['count'])})"
-                for lvl, r in grp.iterrows()
+                f"{lvl}: rate={r['mean']:.3f} (n={int(r['count'])})" for lvl, r in grp.iterrows()
             ]
             out[col] = "; ".join(parts)
         elif pd.api.types.is_numeric_dtype(s):
@@ -106,9 +105,7 @@ def build_attribute_summaries(
                 binned = pd.qcut(s, q=numeric_bins, duplicates="drop")
             except ValueError:
                 continue
-            grp = df.groupby(binned, observed=True)[attrition_col].agg(
-                ["mean", "count"]
-            )
+            grp = df.groupby(binned, observed=True)[attrition_col].agg(["mean", "count"])
             parts = [
                 f"{_fmt_interval(iv)}: rate={r['mean']:.3f} (n={int(r['count'])})"
                 for iv, r in grp.iterrows()
@@ -260,9 +257,7 @@ class LLMGrouper:
             if proposals is None:
                 logger.warning("grouper: unparseable JSON (attempt %d)", attempt)
                 continue
-            groups = discover_candidate_groups(
-                df, proposals, min_group_n=min_group_n
-            )
+            groups = discover_candidate_groups(df, proposals, min_group_n=min_group_n)
             if groups:
                 return groups
             logger.warning("grouper: no valid groups (attempt %d)", attempt)
