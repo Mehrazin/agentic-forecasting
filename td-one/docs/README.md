@@ -69,6 +69,7 @@ Start here. This page maps every document in `td-one/docs/` — what it is, who 
 | [SCALE_UP_RUNBOOK.md](SCALE_UP_RUNBOOK.md) | End-to-end pipeline: simulate → PIT → segments → backtest. |
 | [SYNTHETIC_CALIBRATION.md](SYNTHETIC_CALIBRATION.md) | Phase-4 event DGP calibration: 9.1pp → 2–3pp effects, decay, interactions. |
 | [REDTEAM_TSF.md](REDTEAM_TSF.md) | TSFM red-team protocol (exp67): 7-shift loan taxonomy, breaking-point design, results summary. |
+| [GROUPING_EXAMPLES.md](GROUPING_EXAMPLES.md) | Worked examples for the grouping track (exp66d): 4 cohorts end-to-end — rule → members → forecast → risk → citation-grounded explanation, incl. the failure case. |
 
 ## Plans
 

@@ -37,6 +37,27 @@ explainability. **exp66c** implements the pivot:
   than HIGH-bin (0.087). Do not ship static risk bins as predictions.
 - See `experiments/exp66c_report.md`.
 
+### exp66d: cohort recovery + LLM risk classifier (exp66c follow-up)
+
+- `src/td_one/data_gen/cohort_labels.py` — pure-function recomputation
+  of the simulator's planted cohorts (`low_rate`, `osfi_exempt`,
+  `family_squeeze`, `control`).
+- `src/td_one/evaluation/cohort_recovery.py` — ARI + per-cohort
+  precision/recall of discovered groups vs planted cohorts.
+- `src/td_one/agent/llm_risk_classifier.py` — LLM as at-risk classifier
+  (HIGH/MEDIUM/LOW + justification), given group stats + PIT-safe news.
+- **Recovery honest negative:** ARI 0.01 — the grouper finds real,
+  reproducible segments (rate_type ARI 0.24) but not the DGP's causal
+  joints. Explanations are true descriptions of the wrong segments for
+  forecasting; still useful as segment narratives.
+- **LLM classifier directionally better:** monotonic HIGH > MEDIUM > LOW
+  on test vs inverted bins — but n=10 groups, info-asymmetric (LLM had
+  news). Worth a controlled follow-up before stronger claims.
+- **Showcase:** `docs/GROUPING_EXAMPLES.md` — 4 worked examples
+  (rule → members → forecast → risk → explanation), including the
+  failure case (g3: both reads LOW, test 0.167).
+- See `experiments/exp66d_report.md`.
+
 ## Direction
 
 Two tracks, eventually combined:

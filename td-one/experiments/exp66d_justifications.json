@@ -1,0 +1,62 @@
+{
+  "g0": {
+    "level": "LOW",
+    "justification": "RISK: LOW\nJUSTIFICATION: The cohort demonstrates a low historical attrition rate of 10.71% based on a significant sample size of 1,301 members [stat]. Furthermore, the cohort's stability is supported by stable interest rate environments during the training period [url:0], [url:1], [url:3].",
+    "citations_valid": true,
+    "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad > 225 and household_income_cad <= 158960 and children_6to17 > 0.5"
+  },
+  "g1": {
+    "level": "LOW",
+    "justification": "RISK: LOW\nJUSTIFICATION: The cohort exhibits a low historical attrition rate of 4.84% and maintains a mean household income of $82,062, which aligns with their debt service profile [stat]. Furthermore, the observation period corresponds with a stable interest rate environment maintained by the Bank of Canada [url:0][url:1].",
+    "citations_valid": true,
+    "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad <= 225 and borrower_income_cad <= 84754.2 and mortgage_payment_monthly_cad <= 2507"
+  },
+  "g2": {
+    "level": "MEDIUM",
+    "justification": "RISK: MEDIUM\nJUSTIFICATION: While the cohort demonstrates a low historical attrition rate of 0.0833, these borrowers face high monthly payments exceeding 2507 CAD coupled with limited reliance on government benefit income [stat]. The broader mortgage market environment reflects shifting economic conditions since the last rate holds cited in 2021 [url:0], [url:4].",
+    "citations_valid": true,
+    "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad <= 225 and borrower_income_cad <= 84754.2 and mortgage_payment_monthly_cad > 2507"
+  },
+  "g3": {
+    "level": "LOW",
+    "justification": "RISK: LOW\nJUSTIFICATION: The cohort displays zero realized attrition during the training period with a robust mean household income of 84,373 CAD [stat]. Stability is further supported by consistent interest rate hold policies during the observation window [url:0], [url:1], [url:3].",
+    "citations_valid": true,
+    "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad > 225 and household_income_cad <= 158960 and children_6to17 <= 0.5"
+  },
+  "g4": {
+    "level": "LOW",
+    "justification": "RISK: LOW\nJUSTIFICATION: This cohort exhibits high household income and a low historical attrition rate of 4.17% [stat]. The mortgage rate constraint is favorable relative to recent market conditions where rates remained held or restrictive [url:4].",
+    "citations_valid": true,
+    "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad <= 225 and borrower_income_cad > 84754.2"
+  },
+  "g5": {
+    "level": "LOW",
+    "justification": "RISK: LOW\nJUSTIFICATION: This cohort demonstrates a very low historical attrition rate of 6.45% and maintains a high mean household income of 221,424 CAD [stat]. Additionally, the borrowers benefit from low mortgage rates of 5.804% or less during a period of relative interest rate stability [stat] [url:0].",
+    "citations_valid": true,
+    "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad > 225 and household_income_cad > 158960"
+  },
+  "g6": {
+    "level": "LOW",
+    "justification": "RISK: LOW\nJUSTIFICATION: This cohort maintains a high mean household income of $222,612, well above the threshold criteria [stat]. With a low historical attrition rate of 9.76% and a cohort size of 211 members, the group demonstrates strong financial stability despite shifting mortgage market conditions [stat][url:2].",
+    "citations_valid": true,
+    "rule": "mortgage_rate_pct > 5.804 and adjusted_family_net_income_cad > 118951"
+  },
+  "g7": {
+    "level": "LOW",
+    "justification": "RISK: LOW\nJUSTIFICATION: The cohort maintains a relatively low historical attrition rate of 0.1053 and a manageable average household income of 82792.0 CAD [stat]. Furthermore, the interest rate environment remained stable across multiple central bank decisions during the period leading up to the forecast [url:4].",
+    "citations_valid": true,
+    "rule": "mortgage_rate_pct > 5.804 and adjusted_family_net_income_cad <= 118951 and mortgage_balance_cad <= 332101"
+  },
+  "g8": {
+    "level": "HIGH",
+    "justification": "RISK: HIGH\nJUSTIFICATION: The cohort displays a high historical attrition rate of 21.79% despite a mean household income of $83,983 [stat]. Elevated mortgage rates above 5.8% combined with high debt balances place this group in a vulnerable position as interest rate stability remains a central concern in the market [url:2][url:4].",
+    "citations_valid": true,
+    "rule": "mortgage_rate_pct > 5.804 and adjusted_family_net_income_cad <= 118951 and mortgage_balance_cad > 332101 and mortgage_rate_pct <= 6.3255"
+  },
+  "g9": {
+    "level": "HIGH",
+    "justification": "RISK: HIGH\nJUSTIFICATION: The cohort exhibits a significant historical attrition rate of 32.65% [stat] and carries high mortgage balances exceeding $332,101 with elevated rates above 6.3255% [stat]. Furthermore, rising interest rate environments exacerbate the financial strain on households with a mean income of only $85,384 [stat], [url:4].",
+    "citations_valid": true,
+    "rule": "mortgage_rate_pct > 5.804 and adjusted_family_net_income_cad <= 118951 and mortgage_balance_cad > 332101 and mortgage_rate_pct > 6.3255"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "config": {
+    "n_customers": 4000,
+    "n_months": 36,
+    "test_months": 9,
+    "seed": 42,
+    "n_clusters": 5,
+    "grouper_seed": 42
+  },
+  "cohort_recovery": {
+    "ari": 0.009963518046603259,
+    "per_cohort": {
+      "control": {
+        "group_id": "g8",
+        "precision": 0.72,
+        "recall": 0.20727775218793182,
+        "f1": 0.32188841201716734,
+        "n_true": 2171,
+        "n_pred": 625
+      },
+      "family_squeeze": {
+        "group_id": "g0",
+        "precision": 0.1191391237509608,
+        "recall": 0.541958041958042,
+        "f1": 0.1953371140516698,
+        "n_true": 286,
+        "n_pred": 1301
+      },
+      "low_rate": {
+        "group_id": "g0",
+        "precision": 0.42275172943889316,
+        "recall": 0.4749568221070812,
+        "f1": 0.4473363155754371,
+        "n_true": 1158,
+        "n_pred": 1301
+      },
+      "osfi_exempt": {
+        "group_id": "g8",
+        "precision": 0.1424,
+        "recall": 0.23116883116883116,
+        "f1": 0.17623762376237623,
+        "n_true": 385,
+        "n_pred": 625
+      }
+    },
+    "cohort_counts": {
+      "control": 2171,
+      "low_rate": 1158,
+      "osfi_exempt": 385,
+      "family_squeeze": 286
+    }
+  },
+  "classifier": {
+    "bins": {
+      "g0": "HIGH",
+      "g1": "LOW",
+      "g2": "MEDIUM",
+      "g3": "LOW",
+      "g4": "LOW",
+      "g5": "MEDIUM",
+      "g6": "MEDIUM",
+      "g7": "HIGH",
+      "g8": "HIGH",
+      "g9": "HIGH"
+    },
+    "llm_levels": {
+      "g0": "LOW",
+      "g1": "LOW",
+      "g2": "MEDIUM",
+      "g3": "LOW",
+      "g4": "LOW",
+      "g5": "LOW",
+      "g6": "LOW",
+      "g7": "LOW",
+      "g8": "HIGH",
+      "g9": "HIGH"
+    },
+    "bins_test_calibration": {
+      "HIGH": 0.08702437912964228,
+      "LOW": 0.1275648470770422,
+      "MEDIUM": 0.0675595238095238
+    },
+    "llm_test_calibration": {
+      "LOW": 0.09058856854680256,
+      "MEDIUM": 0.07142857142857142,
+      "HIGH": 0.11396103896103896
+    }
+  },
+  "examples": [
+    "g0",
+    "g8",
+    "g5",
+    "g3"
+  ]
+}

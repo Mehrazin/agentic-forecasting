@@ -1,0 +1,92 @@
+[
+  {
+    "group_id": "g0",
+    "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad > 225 and household_income_cad <= 158960 and children_6to17 > 0.5",
+    "best_cohort_match": [
+      [
+        "low_rate",
+        0.4473363155754371
+      ],
+      [
+        "family_squeeze",
+        0.1953371140516698
+      ]
+    ],
+    "stats": {
+      "n_members": 1301,
+      "mean_household_income_cad": 86479.0,
+      "dominant_province": "ON",
+      "train_realized_attrition": 0.1071,
+      "n_test_episodes": 114,
+      "realized_test_attrition": 0.0702,
+      "predicted_mean_attrition": 0.0933,
+      "risk_level_bins": "HIGH",
+      "risk_level_llm": "LOW"
+    },
+    "explanation": "This borrower cohort consists of 1301 individuals primarily located in Ontario [stat]. While automated models categorize the risk level as high, the LLM assessment suggests a low risk of attrition [stat]. Recent policy decisions indicate that the Bank of Canada has maintained stable interest rates [url:4]. Consequently, the observed attrition rate for this group in testing is 0.0702, which is lower than the predicted mean attrition of 0.0933 [stat].",
+    "citations_valid": true
+  },
+  {
+    "group_id": "g8",
+    "rule": "mortgage_rate_pct > 5.804 and adjusted_family_net_income_cad <= 118951 and mortgage_balance_cad > 332101 and mortgage_rate_pct <= 6.3255",
+    "best_cohort_match": [
+      [
+        "control",
+        0.32188841201716734
+      ],
+      [
+        "osfi_exempt",
+        0.17623762376237623
+      ]
+    ],
+    "stats": {
+      "n_members": 625,
+      "mean_household_income_cad": 83983.0,
+      "dominant_province": "ON",
+      "train_realized_attrition": 0.2179,
+      "n_test_episodes": 70,
+      "realized_test_attrition": 0.1143,
+      "predicted_mean_attrition": 0.0933,
+      "risk_level_bins": "HIGH",
+      "risk_level_llm": "HIGH"
+    },
+    "explanation": "This cohort consists of 625 members primarily located in Ontario [stat]. With a mean household income of 83,983 CAD and high mortgage balances, these borrowers face significant pressure in the current mortgage market [stat][url:2]. The group has been categorized as high risk due to a historical realized attrition rate of 21.79% [stat]. Although the Bank of Canada has previously maintained interest rate holds, this specific segment remains vulnerable to churn [stat][url:4].",
+    "citations_valid": true
+  },
+  {
+    "group_id": "g5",
+    "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad > 225 and household_income_cad > 158960",
+    "best_cohort_match": [],
+    "stats": {
+      "n_members": 316,
+      "mean_household_income_cad": 221424.0,
+      "dominant_province": "ON",
+      "train_realized_attrition": 0.0645,
+      "n_test_episodes": 32,
+      "realized_test_attrition": 0.0312,
+      "predicted_mean_attrition": 0.0933,
+      "risk_level_bins": "MEDIUM",
+      "risk_level_llm": "LOW"
+    },
+    "explanation": "This cohort consists of 316 members with a high mean household income of 221,424 CAD [stat]. While the predicted mean attrition for this group is 0.0933, the realized attrition in our test episodes has been significantly lower at 0.0312 [stat]. These borrowers benefit from mortgage rates below 5.804%, a stable environment supported by the Bank of Canada\u2019s recent decisions to hold interest rates steady [url:0]. Consequently, this cohort is categorized as having a low risk level regarding potential attrition [stat].",
+    "citations_valid": true
+  },
+  {
+    "group_id": "g3",
+    "rule": "mortgage_rate_pct <= 5.804 and government_benefit_income_monthly_cad > 225 and household_income_cad <= 158960 and children_6to17 <= 0.5",
+    "best_cohort_match": [],
+    "stats": {
+      "n_members": 242,
+      "mean_household_income_cad": 84373.0,
+      "dominant_province": "ON",
+      "train_realized_attrition": 0.0,
+      "n_test_episodes": 24,
+      "realized_test_attrition": 0.1667,
+      "predicted_mean_attrition": 0.0933,
+      "risk_level_bins": "LOW",
+      "risk_level_llm": "LOW"
+    },
+    "explanation": "This cohort consists of 242 members primarily located in Ontario with a mean household income of $84,373 [stat]. Although the predicted mean attrition rate for this group is 0.0933, recent testing episodes revealed a realized attrition rate of 0.1667 [stat]. The Bank of Canada has maintained a consistent stance on interest rates, which influences the broader mortgage market environment [url:0] [url:4]. Consequently, while the risk level is currently categorized as low, market participants should remain aware of potential shifts in borrower behavior [stat].",
+    "citations_valid": true
+  }
+]
