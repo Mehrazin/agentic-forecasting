@@ -9,6 +9,7 @@ Start here. This page maps every document in `td-one/docs/` — what it is, who 
 | [FINAL_RESULTS.md](FINAL_RESULTS.md) | **Start here.** Final numbers only — no experiment codes, human-readable names, benchmarks in tables. |
 | [METHODOLOGY.md](METHODOLOGY.md) | The full methodology: problem, glossary, all tracks (exp1–exp63 + LLM ladder). The reference. |
 | [REDESIGN.md](REDESIGN.md) | What we keep, what we kill, what we try next — with evidence. Governs future work. |
+| [MACRO_SIGNAL.md](MACRO_SIGNAL.md) | Macro Signal Service: LLM-read monthly categorical macro signals, calibrated against realized data. |
 
 ## The story (for new readers)
 
