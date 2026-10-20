@@ -67,6 +67,7 @@ Start here. This page maps every document in `td-one/docs/` — what it is, who 
 | [LITERATURE_AGENTIC_SURVEY.md](LITERATURE_AGENTIC_SURVEY.md) | Agentic forecasting, model selection, news augmentation — informing the post-exp23/exp37 methodology. |
 | [LITERATURE_SURVEY_AGENTIC.md](LITERATURE_SURVEY_AGENTIC.md) | Methodology-improvement survey: selection under instability, regime detection, leakage-safe feature discovery. |
 | [REAL_DATA_SURVEY.md](REAL_DATA_SURVEY.md) | Real dataset candidates for validation. |
+| [REAL_DATA_INTEGRATION.md](REAL_DATA_INTEGRATION.md) | Real-data integration: OSFI M4 runoff benchmark (exp70 ❌), competitor spread (exp71 ❌), FRED adds. |
 | [SCALE_UP_RUNBOOK.md](SCALE_UP_RUNBOOK.md) | End-to-end pipeline: simulate → PIT → segments → backtest. |
 | [SYNTHETIC_CALIBRATION.md](SYNTHETIC_CALIBRATION.md) | Phase-4 event DGP calibration: 9.1pp → 2–3pp effects, decay, interactions. |
 | [REDTEAM_TSF.md](REDTEAM_TSF.md) | TSFM red-team protocol (exp67): 7-shift loan taxonomy, breaking-point design, results summary. |

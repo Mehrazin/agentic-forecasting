@@ -213,17 +213,25 @@ def month_label(m: int) -> str:
 
 def calibrate_level_shifts(
     episodes: list[tuple[str, str, np.ndarray, int]],
+    absolute: bool = False,
 ) -> dict[tuple[str, str], float]:
     """Learn magnitude-bucket -> level-shift from *past* shock episodes.
 
     Args:
         episodes: ``(shift_type, magnitude_bucket, attrition_rate, onset)``
             for calibration episodes only (disjoint seeds from test).
+        absolute: If True, store ``|median change|`` (magnitude only).
+            The sign then comes entirely from the LLM's ``direction`` at
+            test time. This is the correct generalization when calibration
+            and test episodes can move in opposite directions (e.g. a
+            hiking-cycle calibration applied to a cutting-cycle test on
+            real data): the signed version would flip the test shift the
+            wrong way. Default False preserves exp69's behavior.
 
     Returns:
         ``{(shift_type, bucket): median level change in rate space}``,
         where level change = median(post[onset:onset+6]) -
-        median(pre[onset-6:onset]).
+        median(pre[onset-6:onset]) (or its absolute value).
 
     """
     from collections import defaultdict
@@ -235,7 +243,8 @@ def calibrate_level_shifts(
             raise ValueError(f"episode too short around onset {onset}")
         pre = float(np.median(r[onset - 6 : onset]))
         post = float(np.median(r[onset : onset + 6]))
-        changes[(stype, bucket)].append(post - pre)
+        delta = post - pre
+        changes[(stype, bucket)].append(abs(delta) if absolute else delta)
     return {k: float(np.median(v)) for k, v in changes.items()}
 
 

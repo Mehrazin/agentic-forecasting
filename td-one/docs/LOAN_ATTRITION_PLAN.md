@@ -100,7 +100,10 @@ Two tracks, eventually combined:
   explanations. Forecasting is part of the agent's toolkit.
 - **Track 2 (exp67/68):** Red-team Chronos-2/TimesFM-2.5 on loan-domain
   distributional shifts; build an agentic guard; evaluate on held-out shifts.
-- **Integration (exp70):** Track 2's shift scenarios stress-test Track 1's
+- **Real data (exp70/71):** OSFI M4 runoff benchmark (exp70) and competitor
+  spread covariate (exp71) — both honest negatives; see
+  `docs/REAL_DATA_INTEGRATION.md`.
+- **Integration (exp72):** Track 2's shift scenarios stress-test Track 1's
   group forecaster. S3 (regional divergence) is the meeting point.
 
 ## Track 1 — LLM Grouping + Group-Level Forecasting (exp66)

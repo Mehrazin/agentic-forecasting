@@ -29,9 +29,7 @@ class FakeClient:
 
 def _db() -> sqlite3.Connection:
     con = sqlite3.connect(":memory:")
-    con.execute(
-        "CREATE TABLE articles (pub_date TEXT, title TEXT, url TEXT UNIQUE, source TEXT)"
-    )
+    con.execute("CREATE TABLE articles (pub_date TEXT, title TEXT, url TEXT UNIQUE, source TEXT)")
     con.execute(
         "CREATE TABLE article_categories (url TEXT, category TEXT, PRIMARY KEY (url, category))"
     )
