@@ -1,0 +1,262 @@
+{
+  "gate": 0.55,
+  "train_end": "2025-06",
+  "categories": {
+    "inflation": {
+      "anchor": "cpi",
+      "transform": "delta",
+      "train": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "holdout": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "certainty_bins_train": {},
+      "variants": {
+        "offset_-1": NaN,
+        "offset_0": NaN,
+        "offset_+1": NaN,
+        "certainty_weighted": NaN,
+        "strong_only_|dir|>=2": NaN,
+        "strong_only_n": 0
+      },
+      "diagnosis": "no non-zero signals on train \u2014 extractor silent (coverage or LLM abstention)",
+      "live": false,
+      "live_via_variant": null
+    },
+    "basic_needs": {
+      "anchor": "cpi",
+      "transform": "delta",
+      "train": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "holdout": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "certainty_bins_train": {},
+      "variants": {
+        "offset_-1": NaN,
+        "offset_0": NaN,
+        "offset_+1": NaN,
+        "certainty_weighted": NaN,
+        "strong_only_|dir|>=2": NaN,
+        "strong_only_n": 0
+      },
+      "diagnosis": "no non-zero signals on train \u2014 extractor silent (coverage or LLM abstention)",
+      "live": false,
+      "live_via_variant": null
+    },
+    "services_costs": {
+      "anchor": "cpi",
+      "transform": "delta",
+      "train": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "holdout": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "certainty_bins_train": {},
+      "variants": {
+        "offset_-1": NaN,
+        "offset_0": NaN,
+        "offset_+1": NaN,
+        "certainty_weighted": NaN,
+        "strong_only_|dir|>=2": NaN,
+        "strong_only_n": 0
+      },
+      "diagnosis": "no non-zero signals on train \u2014 extractor silent (coverage or LLM abstention)",
+      "live": false,
+      "live_via_variant": null
+    },
+    "food_prices": {
+      "anchor": "food_cpi",
+      "transform": "mom_pct",
+      "train": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "holdout": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "certainty_bins_train": {},
+      "variants": {
+        "offset_-1": NaN,
+        "offset_0": NaN,
+        "offset_+1": NaN,
+        "certainty_weighted": NaN,
+        "strong_only_|dir|>=2": NaN,
+        "strong_only_n": 0
+      },
+      "diagnosis": "no non-zero signals on train \u2014 extractor silent (coverage or LLM abstention)",
+      "live": false,
+      "live_via_variant": null
+    },
+    "central_bank_rates": {
+      "anchor": "boc_rate",
+      "transform": "delta",
+      "train": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "holdout": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "certainty_bins_train": {},
+      "variants": {
+        "offset_-1": NaN,
+        "offset_0": NaN,
+        "offset_+1": NaN,
+        "certainty_weighted": NaN,
+        "strong_only_|dir|>=2": NaN,
+        "strong_only_n": 0
+      },
+      "diagnosis": "no non-zero signals on train \u2014 extractor silent (coverage or LLM abstention)",
+      "live": false,
+      "live_via_variant": null
+    },
+    "labour": {
+      "anchor": "unemployment",
+      "transform": "delta",
+      "train": {
+        "n_months": 21,
+        "n_signal": 18,
+        "dir_acc": 0.5,
+        "corr": -0.03627381250550038
+      },
+      "holdout": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "certainty_bins_train": {
+        "low<0.4": NaN,
+        "med": 0.5,
+        "high>=0.7": NaN
+      },
+      "variants": {
+        "offset_-1": 0.4117647058823529,
+        "offset_0": 0.5,
+        "offset_+1": 1.0,
+        "certainty_weighted": 0.5,
+        "strong_only_|dir|>=2": NaN,
+        "strong_only_n": 0
+      },
+      "diagnosis": "anti-correlated: rubric sign may be inverted; mistimed: offset +1 reaches 1.00; noisy: no linear or directional relation",
+      "live": true,
+      "live_via_variant": "offset_+1"
+    },
+    "fx": {
+      "anchor": "dexcaus",
+      "transform": "mom_pct_flip",
+      "train": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "holdout": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "certainty_bins_train": {},
+      "variants": {
+        "offset_-1": NaN,
+        "offset_0": NaN,
+        "offset_+1": NaN,
+        "certainty_weighted": NaN,
+        "strong_only_|dir|>=2": NaN,
+        "strong_only_n": 0
+      },
+      "diagnosis": "no non-zero signals on train \u2014 extractor silent (coverage or LLM abstention)",
+      "live": false,
+      "live_via_variant": null
+    },
+    "housing": {
+      "anchor": "permits",
+      "transform": "mom_pct",
+      "train": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "holdout": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "certainty_bins_train": {},
+      "variants": {
+        "offset_-1": NaN,
+        "offset_0": NaN,
+        "offset_+1": NaN,
+        "certainty_weighted": NaN,
+        "strong_only_|dir|>=2": NaN,
+        "strong_only_n": 0
+      },
+      "diagnosis": "no non-zero signals on train \u2014 extractor silent (coverage or LLM abstention)",
+      "live": false,
+      "live_via_variant": null
+    },
+    "wars_geopolitics": {
+      "anchor": "wti",
+      "transform": "mom_pct",
+      "train": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "holdout": {
+        "n_months": 0,
+        "n_signal": 0,
+        "dir_acc": NaN,
+        "corr": NaN
+      },
+      "certainty_bins_train": {},
+      "variants": {
+        "offset_-1": NaN,
+        "offset_0": NaN,
+        "offset_+1": NaN,
+        "certainty_weighted": NaN,
+        "strong_only_|dir|>=2": NaN,
+        "strong_only_n": 0
+      },
+      "diagnosis": "no non-zero signals on train \u2014 extractor silent (coverage or LLM abstention)",
+      "live": false,
+      "live_via_variant": null
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "n": 19,
+  "armA_no_spread_crps": 0.002556237108929041,
+  "armB_spread_crps": 0.002556237108929041,
+  "diff_pct": 0.0,
+  "p": NaN,
+  "win_rate_B": 0.0,
+  "note": "UNDERPOWERED pilot: competitor coverage is 8 raw months."
+}
