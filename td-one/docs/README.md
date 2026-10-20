@@ -68,6 +68,7 @@ Start here. This page maps every document in `td-one/docs/` — what it is, who 
 | [REAL_DATA_SURVEY.md](REAL_DATA_SURVEY.md) | Real dataset candidates for validation. |
 | [SCALE_UP_RUNBOOK.md](SCALE_UP_RUNBOOK.md) | End-to-end pipeline: simulate → PIT → segments → backtest. |
 | [SYNTHETIC_CALIBRATION.md](SYNTHETIC_CALIBRATION.md) | Phase-4 event DGP calibration: 9.1pp → 2–3pp effects, decay, interactions. |
+| [REDTEAM_TSF.md](REDTEAM_TSF.md) | TSFM red-team protocol (exp67): 7-shift loan taxonomy, breaking-point design, results summary. |
 
 ## Plans
 
@@ -76,6 +77,7 @@ Active and historical plans live in [plans/](plans/). The agentic roadmap stays 
 | Doc | Status |
 |---|---|
 | [AGENTIC_ROADMAP.md](AGENTIC_ROADMAP.md) | Approved — trilogy complete (exp42–44), proposed method shipped (exp47) |
+| [LOAN_ATTRITION_PLAN.md](LOAN_ATTRITION_PLAN.md) | Active — loan attrition program: Track 1 (grouping), Track 2 (TSFM red-team exp67 ✅ + guard exp68), integration |
 | [plans/NEXT_PHASE_PLAN.md](plans/NEXT_PHASE_PLAN.md) | Complete — regime router shipped; live-news track closed |
 | [plans/MULTI_DATASET_PLAN.md](plans/MULTI_DATASET_PLAN.md) | Complete — validated on M4, Tourism, M3 |
 | [plans/OPTION1_JOINT_TRAINING_PLAN.md](plans/OPTION1_JOINT_TRAINING_PLAN.md) | Assessed — naive joint training likely fails; FFORMA-style meta-learning is the path |

@@ -475,9 +475,36 @@ def run_seed(seed: int) -> dict:
 
 
 def main() -> None:
+    import json as _json
+
+    ckpt_path = Path(__file__).resolve().parent / "exp66b_checkpoint.json"
+    # Resume: load completed seeds
     all_results: dict[int, dict] = {}
+    if ckpt_path.exists():
+        try:
+            loaded = _json.loads(ckpt_path.read_text())
+            all_results = {int(k): v for k, v in loaded.items()}
+            print(f"resumed: {sorted(all_results)} already done")
+        except (OSError, ValueError):
+            pass
     for seed in SEEDS:
+        if seed in all_results:
+            continue
         all_results[seed] = run_seed(seed)
+        # Checkpoint after each seed (VM restarts wipe /tmp and kill procs)
+        def _clean(o):
+            if isinstance(o, dict):
+                return {k: _clean(v) for k, v in o.items() if k != "per_group"}
+            if isinstance(o, (list, tuple)):
+                return [_clean(v) for v in o]
+            if isinstance(o, float) and (np.isnan(o) or np.isinf(o)):
+                return None
+            return o
+
+        ckpt_path.write_text(
+            _json.dumps({str(k): _clean(v) for k, v in all_results.items()}, indent=1, default=str)
+        )
+        print(f"checkpointed seed {seed}")
 
     print("\n\n===== exp66b summary =====")
     arms = [

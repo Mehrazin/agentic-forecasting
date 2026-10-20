@@ -182,6 +182,19 @@ dates, rate levels, borrower mix) are structural blind spots.
 **Order is load-bearing:** red-team numbers before the guard. No guard
 without failure evidence.
 
+### exp67 outcome (2026-10-20) — Phase A COMPLETE, Phase B unblocked
+
+- Grid finished: 7 shifts × [1σ, 4σ] × 2 seeds × 9 origins; Chronos-2 /
+  TimesFM-2.5 (real weights) vs naive / M0; placebo-controlled; PIT gate
+  passes (pre-shift degradation +0% in all 28 cells).
+- All models break together at 4σ on S1 (+185–228%), S2 (+65–79%),
+  S3 (+30–59%) — TSFMs have no *relative* robustness edge, but Chronos-2 is
+  best in *absolute* CRPS on 6/8 shifts. S4/S5 never break (honest negatives).
+  Coverage collapses under level shifts (M0 0.61→0.08 at S1/4σ).
+- Full report: `experiments/exp67_report.md`. exp68 pre-registration is
+  locked in that report (dev S1/S4/S6, eval S2/S3/S5/S7, seeds 100+, dev
+  1–2σ / holdout 2–4σ).
+
 ## Integration (exp69)
 Track 2's shift scenarios stress-test Track 1's group forecaster.
 S3 (regional divergence) is the natural meeting point: Track 1 groups the
