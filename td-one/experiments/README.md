@@ -83,6 +83,7 @@ Numbering jumps from exp25 to exp40 (exp26–exp39 were never assigned).
 | exp66d | Cohort recovery + LLM risk classifier (exp66c follow-up) | ❌ recovery honest negative: ARI 0.01 — grouper finds real segments, not the planted cohorts; LLM classifier monotonic on test vs inverted bins (n=10, directional) | [report](exp66d_report.md) |
 | exp67 | TSFM red-team on 7 loan-attrition shifts (real Chronos-2/TimesFM-2.5 weights) | ⚖️ all models break together at 4σ S1 (+185–228%); S4/S5 never break (honest negative); Chronos-2 best absolute in 6/8 shifts; coverage collapses (m0 0.61→0.08) | [report](exp67_report.md) |
 | exp68 | Agentic shift guard (CUSUM + truncation + widening) vs TSFM-alone, pre-registered holdout | ❌ honest negative: guard +0.5% (p=0.824), wins 14.6% — context truncation hurts; correct detection ≠ benefit | [report](exp68_report.md) |
+| exp69 | Anticipatory LLM shift adjustment (LLM reads PIT-safe news → calibrated level-shift overlay on Chronos-2), pre-registered | ❌ honest negative: overlay +10.2% (p=0.231), wins 36%; oracle ceiling +11.4% (p=0.214) — mechanism is the limit, not the LLM; works only at S1/4σ (+30%) | [report](exp69_report.md) |
 
 ## Supporting reports
 

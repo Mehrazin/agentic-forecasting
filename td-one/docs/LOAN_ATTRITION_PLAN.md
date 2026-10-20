@@ -67,7 +67,7 @@ Two tracks, eventually combined:
   explanations. Forecasting is part of the agent's toolkit.
 - **Track 2 (exp67/68):** Red-team Chronos-2/TimesFM-2.5 on loan-domain
   distributional shifts; build an agentic guard; evaluate on held-out shifts.
-- **Integration (exp69):** Track 2's shift scenarios stress-test Track 1's
+- **Integration (exp70):** Track 2's shift scenarios stress-test Track 1's
   group forecaster. S3 (regional divergence) is the meeting point.
 
 ## Track 1 — LLM Grouping + Group-Level Forecasting (exp66)
@@ -225,7 +225,21 @@ without failure evidence.
   (S2: 12/12) gained nothing. Per pre-registration: no iteration.
 - Full report: `experiments/exp68_report.md`.
 
-## Integration (exp69)
+### exp69 outcome (2026-10-20) — anticipatory LLM adjustment: honest negative
+
+- Adjuster (`src/td_one/agent/anticipatory_adjuster.py`): LLM reads PIT-safe
+  news → structure-only signal (type/direction/bucket/timing); calibrated
+  (type, bucket) → level-shift from past episodes (seeds 200–202) applied to
+  Chronos-2 quantiles on straddle origins. 18/18 tests green.
+- **Claim FAILED:** B vs A on straddle origins (S1/S2, 2–4σ, seeds 300–302):
+  +10.2% rel., p=0.231, win rate 36%. **Oracle ceiling +11.4% (p=0.214)** —
+  even perfect anticipation doesn't significantly help; the calibrated median
+  shift is blunt vs per-episode noise. LLM ≈ oracle (B vs C, p=0.73).
+- Works only at S1/4σ (B +30%, C +35%); hurts at 2σ and on S2. Do-no-harm
+  gates pass exactly (no hallucination, no post-onset firing).
+- Per pre-registration: no iteration. Full report: `experiments/exp69_report.md`.
+
+## Integration (exp70)
 Track 2's shift scenarios stress-test Track 1's group forecaster.
 S3 (regional divergence) is the natural meeting point: Track 1 groups the
 entities, Track 2 shifts the groups.

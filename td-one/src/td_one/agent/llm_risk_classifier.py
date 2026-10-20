@@ -43,6 +43,7 @@ def build_risk_classification_prompt(
     rule: str,
     stats: dict,
     articles: list[dict],
+    extra_sections: list[str] | None = None,
 ) -> tuple[str, str]:
     """Build (system, user) prompt for group risk classification."""
     system = (
@@ -68,6 +69,8 @@ def build_risk_classification_prompt(
             lines.append(f"[{i}] {a.get('title', '')} ({a.get('pub_date', '')}) [url:{i}]")
     else:
         lines += ["", "News: none retrieved."]
+    for section in extra_sections or []:
+        lines += ["", section]
     return system, "\n".join(lines)
 
 
@@ -78,13 +81,16 @@ def classify_risk_llm(
     stats: dict,
     articles: list[dict],
     max_retries: int = 1,
+    extra_sections: list[str] | None = None,
 ) -> RiskClassification:
     """Classify one group's risk via the LLM.
 
     Retries when the response has no parseable ``RISK:`` line. Raises
     ``ValueError`` if all attempts fail to parse.
     """
-    system, user = build_risk_classification_prompt(group_id, rule, stats, articles)
+    system, user = build_risk_classification_prompt(
+        group_id, rule, stats, articles, extra_sections=extra_sections
+    )
     last_text = ""
     for _ in range(max_retries + 1):
         text = llm.complete(user, system=system)  # type: ignore[union-attr]

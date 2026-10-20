@@ -65,3 +65,8 @@ The agentic guard — CUSUM shift detection from covariates, context surgery,
 shift-aware quantile widening — is designed against the measured breaking
 points, on dev shifts S1/S4/S6, evaluated on held-out S2/S3/S5/S7.
 See `docs/LOAN_ATTRITION_PLAN.md`.
+
+**Update 2026-10-20:** exp68 (honest negative) and exp69 — anticipatory LLM
+shift adjustment (LLM reads PIT-safe news → calibrated level-shift overlay;
+also honest negative, `experiments/exp69_report.md`) — are both complete.
+No tested intervention beats Chronos-2-alone on shifted series.

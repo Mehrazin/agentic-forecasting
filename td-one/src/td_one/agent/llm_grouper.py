@@ -43,6 +43,7 @@ class GrouperContext:
 
     attribute_summaries: dict[str, str]  # attr -> "level: n=..., attr_rate=..."
     news_summaries: list[str] = field(default_factory=list)
+    tool_context: list[str] = field(default_factory=list)  # analyst-tool findings
     origin: str = ""
     max_groups: int = DEFAULT_MAX_GROUPS
 
@@ -176,6 +177,14 @@ def build_grouper_prompt(
     if ctx.news_summaries:
         lines += ["", "Relevant news (published before the forecast origin):"]
         lines += [f"- {s}" for s in ctx.news_summaries]
+    if ctx.tool_context:
+        lines += [
+            "",
+            "Analyst-tool findings (from causal/explainability models fit on",
+            "the same training data — use these to ground your groups in",
+            "measured attrition drivers, not just raw attribute rates):",
+        ]
+        lines += [f"- {s}" for s in ctx.tool_context]
     lines += [
         "",
         "Propose borrower groups likely to have distinct attrition behavior.",
@@ -227,6 +236,7 @@ class LLMGrouper:
         attrition_col: str,
         categorical: list[str] | None = None,
         news_summaries: list[str] | None = None,
+        tool_context: list[str] | None = None,
         origin: str = "",
         min_group_n: int = 200,
         baseline_crps: float | None = None,
@@ -237,6 +247,7 @@ class LLMGrouper:
         ctx = GrouperContext(
             attribute_summaries=summaries,
             news_summaries=news_summaries or [],
+            tool_context=tool_context or [],
             origin=origin,
             max_groups=self.max_groups,
         )

@@ -27,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from td_one.news.perplexity import PerplexityClient
 
-TOPICS = [
+DEMO_TOPICS = [
     "Ontario first-time home buyers mortgage",
     "British Columbia housing market borrowers",
     "Alberta mortgage borrowers oil economy",
@@ -41,6 +41,26 @@ TOPICS = [
     "rental investor mortgage Canada",
     "rural borrower mortgage Atlantic Canada",
 ]
+
+MACRO_TOPICS = [
+    "Canada immigration policy changes permanent residency",
+    "Canada food prices inflation groceries cost of living",
+    "Canada income tax changes brackets credits 2025 2026",
+    "Canadian federal election polls political shift policy",
+    "Canada US trade tariffs commerce CUSMA renegotiation",
+    "global supply chain shifts manufacturing trade war",
+    "AI startups funding Canada tech sector",
+    "S&P 500 stock market outlook recession fears",
+    "Bank of Canada interest rate decision outlook",
+    "Canada unemployment jobs labour market trends",
+    "global oil energy prices geopolitics",
+    "Canada housing market forecast prices sales",
+    "Canadian dollar exchange rate outlook",
+    "global recession risks IMF World Bank outlook",
+    "Canada small business bankruptcies insolvencies",
+]
+
+TOPICS = DEMO_TOPICS + MACRO_TOPICS
 
 DB_PATH = Path(__file__).resolve().parents[1] / "data" / "news" / "news_2026.db"
 

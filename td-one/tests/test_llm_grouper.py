@@ -156,3 +156,21 @@ def test_attribute_summaries_rounded(df) -> None:
     for e in edges:
         precise = re.findall(r"\d+\.\d{3,}", e)
         assert not precise, f"over-precise edge: {e}"
+
+
+def test_build_grouper_prompt_with_tool_context(df) -> None:
+    """Tool findings render in the prompt when provided, absent otherwise."""
+    s = build_attribute_summaries(df, "switched", categorical=["province"])
+    from td_one.agent.llm_grouper import GrouperContext
+
+    ctx = GrouperContext(
+        attribute_summaries=s,
+        tool_context=["SHAP: rate_type x origination_year is the top interaction"],
+    )
+    _, user = build_grouper_prompt(ctx)
+    assert "Analyst-tool findings" in user
+    assert "rate_type x origination_year" in user
+
+    ctx2 = GrouperContext(attribute_summaries=s)
+    _, user2 = build_grouper_prompt(ctx2)
+    assert "Analyst-tool findings" not in user2
