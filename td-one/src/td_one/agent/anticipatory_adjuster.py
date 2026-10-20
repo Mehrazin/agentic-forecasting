@@ -152,14 +152,15 @@ class AnticipatoryClassifier:
     """
 
     PROMPT_TEMPLATE = (
-        "You are an anticipatory shift classifier for a loan-attrition "
-        "forecasting system. Today is month {origin_label}. Below are news "
-        "articles published on or before today (PIT-safe). A central bank "
-        "rate decision or a mortgage-policy announcement in the news may "
-        "shift borrower attrition in the coming months.\n\n"
+        "You are an anticipatory shift classifier for a forecasting system. "
+        "Target: {target_desc}. Today is month {origin_label}. Below are "
+        "news articles published on or before today (PIT-safe). An economic "
+        "development in the news — a central bank rate decision, a policy "
+        "announcement, a supply disruption — may shift the target in the "
+        "coming months.\n\n"
         "Output ONLY a JSON object with keys:\n"
         '  "shift_type": one of "rate", "policy", "volatility", "none"\n'
-        '  "direction": one of "up", "down", "none" (attrition direction)\n'
+        '  "direction": one of "up", "down", "none" (direction of the TARGET)\n'
         '  "magnitude_bucket": one of "small", "medium", "large", "none"\n'
         '  "months_from_now": integer >= 0, or null if no shift is coming\n'
         '  "timing_confidence": one of "high", "medium", "low"\n'
@@ -167,7 +168,7 @@ class AnticipatoryClassifier:
         '  "driving_trends": list of short trend labels that drove your\n'
         "    classification (e.g. 'rate hike expected', 'recession risk\n"
         "    rising', 'housing cooling'). Empty list if no shift.\n\n"
-        "Rules: if no article announces a coming rate/policy change, output "
+        "Rules: if no article announces a coming change, output "
         '"none" for shift_type/direction/magnitude_bucket and null timing. '
         "Do NOT invent shifts from unrelated news. Base magnitude on the "
         "article's language (basis points, adjectives like "
@@ -180,8 +181,9 @@ class AnticipatoryClassifier:
         "Articles:\n{articles}"
     )
 
-    def __init__(self, client: LLMClient):
+    def __init__(self, client: LLMClient, target_desc: str = "loan attrition rate"):
         self._client = client
+        self._target_desc = target_desc
 
     def __call__(
         self, articles: list[dict[str, object]], origin: int, origin_label: str
@@ -192,7 +194,9 @@ class AnticipatoryClassifier:
         for a in visible:
             lines.append(f"[{a.get('article_date')}] {a.get('title')}: {a.get('body', '')}")
         prompt = self.PROMPT_TEMPLATE.format(
-            origin_label=origin_label, articles="\n".join(lines) if lines else "(no articles)"
+            target_desc=self._target_desc,
+            origin_label=origin_label,
+            articles="\n".join(lines) if lines else "(no articles)",
         )
         try:
             raw = self._client.complete(prompt)
